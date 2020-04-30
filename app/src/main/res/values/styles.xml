@@ -1,0 +1,19 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="selectedChatSelectorButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/chat_selector_btn_background</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="unselectedChatSelectorButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+</resources>
