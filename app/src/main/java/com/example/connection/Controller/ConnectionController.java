@@ -2,7 +2,9 @@ package com.example.connection.Controller;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -25,6 +27,7 @@ import java.util.List;
 
 public class ConnectionController {
 
+    WifiManager wifiManager;
     WifiP2pConfig config;
     Connection connection;
     WifiP2pManager mManager;
@@ -34,6 +37,8 @@ public class ConnectionController {
     List<WifiP2pDevice> newList;
     HashMap<String, String> macAdresses;
     TCP_Client client;
+    BroadcastReceiver wifiScanReceiver;
+    IntentFilter intentFilter;
     /*WifiP2pDevice[] deviceArray;
     InetAddress groupOwnerAddress;
     WifiP2pManager.PeerListListener peerListListener;
@@ -63,6 +68,24 @@ public class ConnectionController {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);*/
+        wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
+        Scan();
+        wifiScanReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context c, Intent intent) {
+                boolean success = intent.getBooleanExtra(
+                        WifiManager.EXTRA_RESULTS_UPDATED, false);
+                if (success) {
+                    scanSuccess();
+                } else {
+                    // scan failure handling
+                    scanFailure();
+                }
+            }
+        };
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        connection.registerReceiver(wifiScanReceiver, intentFilter);
         config = new WifiP2pConfig.Builder()
                 .setNetworkName("DIRECT-CONNEXION")
                 .setPassphrase("12345678")
@@ -71,8 +94,27 @@ public class ConnectionController {
                 .build();
     }
 
-    public void CreateGroup(){
+    public void CreateGroup() {
         mManager.createGroup(mChannel, config, null);
+    }
+
+    public void Scan() {
+        boolean success = wifiManager.startScan();
+        if (!success) {
+            System.out.println("Scan started failed");
+            scanFailure();
+        }
+    }
+
+    private void scanSuccess() {
+        List<ScanResult> results = wifiManager.getScanResults();
+    }
+
+    private void scanFailure() {
+        // handle failure: new scan did NOT succeed
+        // consider using old scan results: these are the OLD results!
+        List<ScanResult> results = wifiManager.getScanResults();
+
     }
 
     /*public String Discovery() {
@@ -142,7 +184,7 @@ public class ConnectionController {
         mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                ConnectionToDevice = "Connected to the group" ;
+                ConnectionToDevice = "Connected to the group";
             }
 
             @Override
@@ -157,13 +199,13 @@ public class ConnectionController {
         //INVIO MESSAGGI-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         String msg = message;
         //if (!config.deviceAddress.equals(groupOwnerAddress.getHostAddress())) {
-            client = new TCP_Client();
-            try {
-                client.startConnection(null/*groupOwnerAddress.getHostAddress()*/, 8080);
-                client.sendMessage(msg);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        client = new TCP_Client();
+        try {
+            client.startConnection(null/*groupOwnerAddress.getHostAddress()*/, 8080);
+            client.sendMessage(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //}
     }
 
