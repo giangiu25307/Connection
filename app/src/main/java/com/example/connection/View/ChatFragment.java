@@ -1,6 +1,8 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,11 +22,20 @@ import java.util.Arrays;
 public class ChatFragment extends Fragment implements View.OnClickListener {
 
     Button messagesButton, groupsButton, requestButton;
+    private int textColor;
+    private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.chat_fragment, null);
+
+        sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
+        if(sharedPreferences.getString("appTheme", "light").equals("light")){
+            textColor = Color.BLACK;
+        }else{
+            textColor = Color.WHITE;
+        }
 
         messagesButton = view.findViewById(R.id.chatButton);
         groupsButton = view.findViewById(R.id.groupsButton);
@@ -46,7 +57,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                 currentButton.setTextColor(Color.WHITE);
             }else{
                 currentButton.setBackgroundColor(Color.TRANSPARENT);
-                currentButton.setTextColor(Color.BLACK);
+                currentButton.setTextColor(textColor);
             }
         }
 

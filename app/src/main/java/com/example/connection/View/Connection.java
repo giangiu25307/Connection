@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
@@ -47,6 +48,9 @@ public class Connection extends AppCompatActivity {
 
     private Fragment fragment;
     private CountDownTimer countDownTimer;
+    private Boolean startTimer = false;
+    private long secondsRemaining = 1500;
+    private SharedPreferences sharedPreferences;
 
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
@@ -55,9 +59,10 @@ public class Connection extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        loadTheme();
         fragment = new SplashScreenFragment();
         loadFragment(false);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -67,28 +72,26 @@ public class Connection extends AppCompatActivity {
         }else {
             connectionController = new ConnectionController(this);
         }
-        countDownTimer = new CountDownTimer(1000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                fragment = new HomeFragment();
-                loadFragment(true);
-            }
-        };
+        createCountDowntimer();
         countDownTimer.start();
 
     }
 
     private void loadTheme(){
         Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(Color.WHITE);
-        window.setNavigationBarColor(Color.WHITE);
-        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        if(sharedPreferences.getString("appTheme", "light").equals("light")){
+            setTheme(R.style.AppTheme);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.WHITE);
+            window.setNavigationBarColor(Color.WHITE);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        }else{
+            setTheme(R.style.DarkTheme);
+            int color = getColor(R.color.regularBlack);
+            window.setNavigationBarColor(color);
+            window.setStatusBarColor(color);
+        }
+
     }
 
     private void loadFragment(boolean transition){
@@ -100,9 +103,28 @@ public class Connection extends AppCompatActivity {
         transaction.commit();
     }
 
+    private void createCountDowntimer(){
+        countDownTimer = new CountDownTimer(secondsRemaining, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                secondsRemaining = millisUntilFinished;
+            }
+
+            @Override
+            public void onFinish() {
+                fragment = new HomeFragment();
+                loadFragment(true);
+            }
+        };
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        if(startTimer){
+            createCountDowntimer();
+            countDownTimer.start();
+        }
         //registerReceiver(connectionController.getmReceiver(), connectionController.getmIntentFilter());
     }
 
@@ -112,5 +134,10 @@ public class Connection extends AppCompatActivity {
         //unregisterReceiver(connectionController.getmReceiver());
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        countDownTimer.cancel();
+        startTimer = true;
+    }
 }

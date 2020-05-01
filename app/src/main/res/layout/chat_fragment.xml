@@ -15,15 +15,15 @@
             android:id="@+id/chatToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5">
-
+            android:layout_weight="5"
+            android:background="?attr/barBackground">
 
             <TextView
                 android:id="@+id/totalChat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1 total chat"
-                android:textColor="@android:color/black"
+                android:textColor="?attr/textColor"
                 android:textSize="21sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:tint="@android:color/black"
+                android:tint="?attr/iconTint"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imageView2"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:tint="@android:color/black"
+                android:tint="?attr/iconTint"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -62,7 +62,8 @@
             android:id="@+id/chatSelectorLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="5">
+            android:layout_weight="5"
+            android:background="?attr/layoutBackground">
 
             <Button
                 android:id="@+id/chatButton"
@@ -91,6 +92,7 @@
                 android:paddingEnd="15dp"
                 android:text="Groups"
                 android:textAllCaps="false"
+                android:textColor="?attr/textColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -106,6 +108,7 @@
                 android:paddingEnd="15dp"
                 android:text="Global"
                 android:textAllCaps="false"
+                android:textColor="?attr/textColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/groupsButton"
@@ -116,7 +119,8 @@
             android:id="@+id/chatLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="?attr/layoutBackground">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/chatRecyclerView"

@@ -3,10 +3,18 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#ffffff</color>
     <color name="colorAccent">#282828</color>
+    <color name="reversedColorPrimary">#282828</color>
+    <color name="reversedColorPrimaryDark">#282828</color>
+    <color name="reversedColorAccent">#ffffff</color>
 
     <color name="pink">#ED4A64</color>
     <color name="green">#25D366</color>
     <color name="gray">#D0D0D0</color>
+
+    <color name="lightGray">#F7F7F7</color>
+    <color name="lightBlack">#282828</color>
+
+    <color name="regularBlack">#191919</color>
 
     <color name="trasparent">#00ffffff</color>
 </resources>

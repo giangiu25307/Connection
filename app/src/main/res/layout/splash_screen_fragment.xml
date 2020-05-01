@@ -10,14 +10,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/splashScreenLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/splashScreenLayoutBackground">
 
         <TextView
             android:id="@+id/splashscreen_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CONNECTION"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/textColor"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

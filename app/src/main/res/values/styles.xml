@@ -4,6 +4,22 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="splashScreenLayoutBackground">@android:color/white</item>
+        <item name="layoutBackground">@color/lightGray</item>
+        <item name="barBackground">@android:color/white</item>
+        <item name="textColor">@android:color/black</item>
+        <item name="iconTint">@android:color/black</item>
+    </style>
+
+    <style name="DarkTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/reversedColorPrimary</item>
+        <item name="colorPrimaryDark">@color/reversedColorPrimaryDark</item>
+        <item name="colorAccent">@color/reversedColorAccent</item>
+        <item name="splashScreenLayoutBackground">@color/regularBlack</item>
+        <item name="layoutBackground">@color/lightBlack</item>
+        <item name="barBackground">@color/regularBlack</item>
+        <item name="textColor">@android:color/white</item>
+        <item name="iconTint">@android:color/white</item>
     </style>
 
     <style name="selectedChatSelectorButton" parent="Widget.AppCompat.Button.Borderless">
@@ -13,7 +29,7 @@
 
     <style name="unselectedChatSelectorButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">?attr/textColor</item>
     </style>
 
 </resources>

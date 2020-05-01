@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="themeAttrs">
+        <attr name="splashScreenLayoutBackground" format="color"/>
+        <attr name="layoutBackground" format="color"/>
+        <attr name="barBackground" format="color"/>
+        <attr name="textColor" format="color"/>
+        <attr name="iconTint" format="color"/>
+    </declare-styleable>
+
+</resources>
