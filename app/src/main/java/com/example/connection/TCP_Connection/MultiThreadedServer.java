@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MultiThreadedServer implements Runnable {
-    protected int serverPort = 8080;
+    protected int serverPort = 50000;
     protected ServerSocket serverSocket = null;
     protected boolean isStopped = false;
     protected Thread runningThread = null;
@@ -25,7 +25,11 @@ public class MultiThreadedServer implements Runnable {
             Socket clientSocket = null;
             try {
                 clientSocket = this.serverSocket.accept();
-                //clientSocket.getInetAddress();
+                if(clientSocket.getInputStream().toString().contains(clientSocket.getInetAddress().toString())){//check se l'indirrizzo ip è giusto per evitare falsificazione dati
+                    //Scrittura su file della stringa riguardante l'accoppiamento id-ip
+                }else{
+                    //leggi messaggio ricevuto
+                }
             } catch (IOException e) {
                 if (isStopped()) {
                     System.out.println("Server Stopped.");
