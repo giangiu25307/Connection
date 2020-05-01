@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.ColorSpace;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -15,6 +16,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.View.Connection;
 import com.example.connection.View.WiFiDirectBroadcastReceiver;
@@ -40,6 +42,7 @@ public class ConnectionController {
     BroadcastReceiver wifiScanReceiver;
     IntentFilter intentFilter;
     List<ScanResult> results;
+    User user;
     /*WifiP2pDevice[] deviceArray;
     InetAddress groupOwnerAddress;
     WifiP2pManager.PeerListListener peerListListener;
@@ -51,7 +54,6 @@ public class ConnectionController {
     WifiP2pManager.ConnectionInfoListener connectionInfoListener;*/
 
     public ConnectionController(Connection connection) {
-
         this.connection = connection;
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
@@ -87,11 +89,15 @@ public class ConnectionController {
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         connection.registerReceiver(wifiScanReceiver, intentFilter);
         resetConfig();
-        if(!checkWifiScanResult())CreateGroup();
-        else {
-            setConfig();
-            ConnectionToGroup(); //Manca la modifica della network del config per l'autoconnessione
-        }
+    }
+
+    private void checkDevices(){
+
+    }
+
+    private void removeGroup(){
+        mManager.removeGroup(mChannel,null);
+        resetConfig();
     }
 
     private void CreateGroup() {
@@ -107,20 +113,17 @@ public class ConnectionController {
 
     private void scanSuccess() {
         results = wifiManager.getScanResults();
+        if(getWifiDirectName().equals(""))CreateGroup();
+        else {
+            setConfig();
+            ConnectionToGroup();
+        }
     }
 
     private void scanFailure() {
         // handle failure: new scan did NOT succeed
         // consider using old scan results: these are the OLD results!
         results = wifiManager.getScanResults();
-    }
-
-    private boolean checkWifiScanResult(){
-    //CONTROLLA SE NEL RISULTATO DEL SCANSIONE WIFI HA TROVATO UNA RETE CREATA DALLA NOSTRA APP-------------------------------------------------------------------------------------------------------------------
-        for (int i=0;i<results.size();i++){
-            if (results.get(i).SSID.contains("DIRECT-"))return true;
-        }
-        return false;
     }
 
     /*public String Discovery() {
@@ -191,6 +194,7 @@ public class ConnectionController {
             @Override
             public void onSuccess() {
                 ConnectionToDevice = "Connected to the group";
+                SendUniqueData();
             }
 
             @Override
@@ -200,18 +204,16 @@ public class ConnectionController {
         });
     }
 
-    public void SendMessage(String message) {
-        //INVIO MESSAGGI-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        String msg = message;
-        //if (!config.deviceAddress.equals(groupOwnerAddress.getHostAddress())) {
+    private void SendUniqueData() {
+        //INVIO IP E ID-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        String msg = user.getInetAddress()+";"+user.getIdphone();
         client = new TCP_Client();
         try {
-            client.startConnection(null/*groupOwnerAddress.getHostAddress()*/, 8080);
+            client.startConnection("192.168.49.1", 50000);
             client.sendMessage(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //}
     }
 
     private void setConfig(){
@@ -236,12 +238,13 @@ public class ConnectionController {
 
     private void resetConfig(){
         config = new WifiP2pConfig.Builder()
-                .setNetworkName("DIRECT-CONNEXION")//DA CERCARE COME OTTENERE IL NOME DEL DISPOSITIVO
+                .setNetworkName("DIRECT-"+user.getIdphone())
                 .setPassphrase("12345678")
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
                 .enablePersistentMode(false)
                 .build();
     }
+
     /*public String ConnectionListener(){
         //SERVE SOLO A CAPIRE CHI è HOST O CLIENT, DA RIMUOVERE PER CREARE UNA VERA E PROPRIA CHAT-------------------------------------------------------------------------------------------------------------------
         connectionInfoListener = new WifiP2pManager.ConnectionInfoListener() {
