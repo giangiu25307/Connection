@@ -39,6 +39,7 @@ public class ConnectionController {
     TCP_Client client;
     BroadcastReceiver wifiScanReceiver;
     IntentFilter intentFilter;
+    List<ScanResult> results;
     /*WifiP2pDevice[] deviceArray;
     InetAddress groupOwnerAddress;
     WifiP2pManager.PeerListListener peerListListener;
@@ -54,7 +55,6 @@ public class ConnectionController {
         this.connection = connection;
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
-        config = new WifiP2pConfig();
         ConnectionToDevice = "";
         ConnectionStatus = "";
         macAdresses = new HashMap<>();
@@ -92,33 +92,37 @@ public class ConnectionController {
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
                 .enablePersistentMode(false)
                 .build();
+        if(!checkWifiScanResult())CreateGroup();
+        //else ConnectionToGroup(); Manca la modifica della network del config per l'autoconnessione
     }
 
-    public void CreateGroup() {
+    private void CreateGroup() {
         mManager.createGroup(mChannel, config, null);
     }
 
     private void Scan() {
         boolean success = wifiManager.startScan();
         if (!success) {
-            System.out.println("Scan started failed");
             scanFailure();
         }
     }
 
     private void scanSuccess() {
-
-        List<ScanResult> results = wifiManager.getScanResults();
-        for (int i = 0;i<results.size();i++){
-            System.out.println(results.get(i));
-        }
+        results = wifiManager.getScanResults();
     }
 
     private void scanFailure() {
         // handle failure: new scan did NOT succeed
         // consider using old scan results: these are the OLD results!
-        List<ScanResult> results = wifiManager.getScanResults();
+        results = wifiManager.getScanResults();
+    }
 
+    private boolean checkWifiScanResult(){
+    //CONTROLLA SE NEL RISULTATO DEL SCANSIONE WIFI HA TROVATO UNA RETE CREATA DALLA NOSTRA APP-------------------------------------------------------------------------------------------------------------------
+        for (int i=0;i<results.size();i++){
+            if (results.get(i).SSID.contains("DIRECT-"))return true;
+        }
+        return false;
     }
 
     /*public String Discovery() {
@@ -179,7 +183,7 @@ public class ConnectionController {
         return DeviceFound;
     }*/
 
-    public String ConnectionToGroup() {
+    private void ConnectionToGroup() {
         //CONNESSIONE GRUPPO---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         /*final WifiP2pDevice device = deviceArray[i];
         if (!macAdresses.containsValue(device.deviceAddress))
@@ -196,7 +200,6 @@ public class ConnectionController {
                 ConnectionToDevice = "Not Connected";
             }
         });
-        return ConnectionToDevice;
     }
 
     public void SendMessage(String message) {
@@ -211,6 +214,10 @@ public class ConnectionController {
             e.printStackTrace();
         }
         //}
+    }
+
+    private void setConfig(){
+        config=null;
     }
 
     /*public String ConnectionListener(){
