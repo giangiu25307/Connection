@@ -98,7 +98,7 @@ public class ConnectionController {
         mManager.createGroup(mChannel, config, null);
     }
 
-    public void Scan() {
+    private void Scan() {
         boolean success = wifiManager.startScan();
         if (!success) {
             System.out.println("Scan started failed");
