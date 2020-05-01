@@ -93,7 +93,10 @@ public class ConnectionController {
                 .enablePersistentMode(false)
                 .build();
         if(!checkWifiScanResult())CreateGroup();
-        //else ConnectionToGroup(); Manca la modifica della network del config per l'autoconnessione
+        else {
+            setConfig();
+            ConnectionToGroup(); //Manca la modifica della network del config per l'autoconnessione
+        }
     }
 
     private void CreateGroup() {
@@ -217,9 +220,24 @@ public class ConnectionController {
     }
 
     private void setConfig(){
-        config=null;
+        String networkName = getWifiDirectName();
+        if(!networkName.equals("")) {
+            config = new WifiP2pConfig.Builder()
+                    .setNetworkName(networkName)
+                    .setPassphrase("12345678")
+                    .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
+                    .enablePersistentMode(false)
+                    .build();
+        }
     }
 
+    private String getWifiDirectName(){
+        String networkName="";
+        for (int i=0; i<results.size();i++){
+            if (results.get(i).SSID.contains("DIRECT-"))networkName=results.get(i).SSID;
+        }
+        return networkName;
+    }
     /*public String ConnectionListener(){
         //SERVE SOLO A CAPIRE CHI è HOST O CLIENT, DA RIMUOVERE PER CREARE UNA VERA E PROPRIA CHAT-------------------------------------------------------------------------------------------------------------------
         connectionInfoListener = new WifiP2pManager.ConnectionInfoListener() {
