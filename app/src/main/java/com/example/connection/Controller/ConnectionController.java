@@ -107,7 +107,11 @@ public class ConnectionController {
     }
 
     private void scanSuccess() {
+
         List<ScanResult> results = wifiManager.getScanResults();
+        for (int i = 0;i<results.size();i++){
+            System.out.println(results.get(i));
+        }
     }
 
     private void scanFailure() {
