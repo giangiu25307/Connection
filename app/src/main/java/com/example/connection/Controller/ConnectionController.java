@@ -86,12 +86,7 @@ public class ConnectionController {
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         connection.registerReceiver(wifiScanReceiver, intentFilter);
-        config = new WifiP2pConfig.Builder()
-                .setNetworkName("DIRECT-CONNEXION")
-                .setPassphrase("12345678")
-                .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                .enablePersistentMode(false)
-                .build();
+        resetConfig();
         if(!checkWifiScanResult())CreateGroup();
         else {
             setConfig();
@@ -237,6 +232,15 @@ public class ConnectionController {
             if (results.get(i).SSID.contains("DIRECT-"))networkName=results.get(i).SSID;
         }
         return networkName;
+    }
+
+    private void resetConfig(){
+        config = new WifiP2pConfig.Builder()
+                .setNetworkName("DIRECT-CONNEXION")//DA CERCARE COME OTTENERE IL NOME DEL DISPOSITIVO
+                .setPassphrase("12345678")
+                .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
+                .enablePersistentMode(false)
+                .build();
     }
     /*public String ConnectionListener(){
         //SERVE SOLO A CAPIRE CHI è HOST O CLIENT, DA RIMUOVERE PER CREARE UNA VERA E PROPRIA CHAT-------------------------------------------------------------------------------------------------------------------
