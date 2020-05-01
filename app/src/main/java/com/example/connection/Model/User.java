@@ -2,10 +2,12 @@ package com.example.connection.Model;
 
 public class User {
 
-    String username,password,mail,gender,name,surname,country,city;
+
+    String idphone,username,password,mail,gender,name,surname,country,city;
     int number,age;
 
-    public User(String username, String password, String mail, String gender, String name, String surname, String country, String city, int number, int age) {
+    public User(String idphone,String username, String password, String mail, String gender, String name, String surname, String country, String city, int number, int age) {
+        this.idphone=idphone;
         this.username = username;
         this.password = password;
         this.mail = mail;
@@ -16,6 +18,14 @@ public class User {
         this.city = city;
         this.number = number;
         this.age = age;
+    }
+
+    public String getIdphone() {
+        return idphone;
+    }
+
+    public void setIdphone(String idphone) {
+        this.idphone = idphone;
     }
 
     public String getUsername() {
