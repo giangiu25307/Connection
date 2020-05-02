@@ -27,6 +27,10 @@ public class User {
         return inetAddress;
     }
 
+    public String getAll(){
+        return idphone+";"+mail+";"+gender+";"+name+";"+surname+";"+country+";"+city+";"+age+";"+inetAddress;
+    }
+
     public String getIdphone() {
         return idphone;
     }

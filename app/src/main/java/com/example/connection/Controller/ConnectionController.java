@@ -4,22 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.ColorSpace;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 
 import com.example.connection.Model.User;
-import com.example.connection.TCP_Connection.TCP_Client;
+import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
-import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -38,7 +31,7 @@ public class ConnectionController {
     List<WifiP2pDevice> peers;
     List<WifiP2pDevice> newList;
     HashMap<String, String> macAdresses;
-    TCP_Client client;
+    Multicast client;
     BroadcastReceiver wifiScanReceiver;
     IntentFilter intentFilter;
     List<ScanResult> results;
@@ -206,14 +199,9 @@ public class ConnectionController {
 
     private void SendUniqueData() {
         //INVIO IP E ID-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        String msg = user.getInetAddress()+";"+user.getIdphone();
-        client = new TCP_Client();
-        try {
-            client.startConnection("192.168.49.1", 50000);
-            client.sendMessage(msg);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String msg = user.getAll();
+        client = new Multicast();
+        client.sendMsg(msg);
     }
 
     private void setConfig(){
