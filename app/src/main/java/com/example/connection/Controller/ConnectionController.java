@@ -7,15 +7,17 @@ import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
-import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
 
 import com.example.connection.Model.User;
+import com.example.connection.TCP_Connection.MultiThreadedServer;
+import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.IOException;
+import java.net.InetAddress;
 import java.util.List;
 
 public class ConnectionController {
@@ -26,14 +28,14 @@ public class ConnectionController {
     WifiP2pManager mManager;
     WifiP2pManager.Channel mChannel;
     String ConnectionStatus, ConnectionToDevice;
-    List<WifiP2pDevice> peers;
-    List<WifiP2pDevice> newList;
-    HashMap<String, String> macAdresses;
-    Multicast client;
+    WifiP2pGroup group;
+    Multicast udpClient;
+    TCP_Client tcpClient;
     BroadcastReceiver wifiScanReceiver;
     IntentFilter intentFilter;
     List<ScanResult> results;
     User user;
+    MultiThreadedServer tcpServer;
 
     public ConnectionController(Connection connection) {
         this.connection = connection;
@@ -41,10 +43,10 @@ public class ConnectionController {
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         ConnectionToDevice = "";
         ConnectionStatus = "";
-        macAdresses = new HashMap<>();
+        /*macAdresses = new HashMap<>();
         peers = new ArrayList<WifiP2pDevice>();
         newList = new ArrayList<WifiP2pDevice>();
-        /*boolean DeviceFound=true;
+        boolean DeviceFound=true;
         SearchPeers();
         mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel,peerListListener,connectionInfoListener);
         mIntentFilter = new IntentFilter();
@@ -74,7 +76,14 @@ public class ConnectionController {
     }
 
     private void checkDevices(){
+        if(group.getClientList().size()==1){
+            try {
+                tcpClient.startConnection("192.168.49.1",50000);
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void removeGroup(){
@@ -131,8 +140,8 @@ public class ConnectionController {
     private void sendUniqueData() {
         //INVIO IP E ID-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         String msg = user.getAll();
-        client = new Multicast();
-        client.sendMsg(msg);
+        udpClient = new Multicast();
+        udpClient.sendMsg(msg);
     }
 
     private void setConfig(){
@@ -164,7 +173,10 @@ public class ConnectionController {
                 .build();
     }
 
-    /*WifiP2pDevice[] deviceArray;
+    /*Collection<WifiP2pDevice> peers;
+    List<WifiP2pDevice> newList;
+    HashMap<String, String> macAdresses;
+    WifiP2pDevice[] deviceArray;
     InetAddress groupOwnerAddress;
     WifiP2pManager.PeerListListener peerListListener;
     String[] deviceNameArray;

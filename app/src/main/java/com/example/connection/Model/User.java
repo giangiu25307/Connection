@@ -28,7 +28,7 @@ public class User {
     }
 
     public String getAll(){
-        return idphone+";"+mail+";"+gender+";"+name+";"+surname+";"+country+";"+city+";"+age+";"+inetAddress;
+        return idphone+";"+inetAddress+";"+mail+";"+gender+";"+name+";"+surname+";"+country+";"+city+";"+age;
     }
 
     public String getIdphone() {
