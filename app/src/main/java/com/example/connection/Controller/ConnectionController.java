@@ -14,8 +14,6 @@ import com.example.connection.Model.User;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,15 +34,6 @@ public class ConnectionController {
     IntentFilter intentFilter;
     List<ScanResult> results;
     User user;
-    /*WifiP2pDevice[] deviceArray;
-    InetAddress groupOwnerAddress;
-    WifiP2pManager.PeerListListener peerListListener;
-    String[] deviceNameArray;
-    boolean DeviceFound;
-    WifiManager wifiManager;
-    BroadcastReceiver mReceiver;
-    IntentFilter mIntentFilter;
-    WifiP2pManager.ConnectionInfoListener connectionInfoListener;*/
 
     public ConnectionController(Connection connection) {
         this.connection = connection;
@@ -93,7 +82,7 @@ public class ConnectionController {
         resetConfig();
     }
 
-    private void CreateGroup() {
+    private void createGroup() {
         mManager.createGroup(mChannel, config, null);
     }
 
@@ -106,10 +95,10 @@ public class ConnectionController {
 
     private void scanSuccess() {
         results = wifiManager.getScanResults();
-        if(getWifiDirectName().equals(""))CreateGroup();
+        if(getWifiDirectName().equals("")) createGroup();
         else {
             setConfig();
-            ConnectionToGroup();
+            connectionToGroup();
         }
     }
 
@@ -118,6 +107,72 @@ public class ConnectionController {
         // consider using old scan results: these are the OLD results!
         results = wifiManager.getScanResults();
     }
+
+    private void connectionToGroup() {
+        //CONNESSIONE GRUPPO---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        /*final WifiP2pDevice device = deviceArray[i];
+        if (!macAdresses.containsValue(device.deviceAddress))
+            macAdresses.put(device.deviceName, device.deviceAddress);
+        config.deviceAddress = device.deviceAddress;*/
+        mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                ConnectionToDevice = "Connected to the group";
+                sendUniqueData();
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                ConnectionToDevice = "Not Connected";
+            }
+        });
+    }
+
+    private void sendUniqueData() {
+        //INVIO IP E ID-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        String msg = user.getAll();
+        client = new Multicast();
+        client.sendMsg(msg);
+    }
+
+    private void setConfig(){
+        String networkName = getWifiDirectName();
+        if(!networkName.equals("")) {
+            config = new WifiP2pConfig.Builder()
+                    .setNetworkName(networkName)
+                    .setPassphrase("12345678")
+                    .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
+                    .enablePersistentMode(false)
+                    .build();
+        }
+    }
+
+    private String getWifiDirectName(){
+        String networkName="";
+        for (int i=0; i<results.size();i++){
+            if (results.get(i).SSID.contains("DIRECT-"))networkName=results.get(i).SSID;
+        }
+        return networkName;
+    }
+
+    private void resetConfig(){
+        config = new WifiP2pConfig.Builder()
+                .setNetworkName("DIRECT-"+user.getIdphone())
+                .setPassphrase("12345678")
+                .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
+                .enablePersistentMode(false)
+                .build();
+    }
+
+    /*WifiP2pDevice[] deviceArray;
+    InetAddress groupOwnerAddress;
+    WifiP2pManager.PeerListListener peerListListener;
+    String[] deviceNameArray;
+    boolean DeviceFound;
+    WifiManager wifiManager;
+    BroadcastReceiver mReceiver;
+    IntentFilter mIntentFilter;
+    WifiP2pManager.ConnectionInfoListener connectionInfoListener;*/
 
     /*public String Discovery() {
         //RICERCA DISPOSITIVI VICINI-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -176,62 +231,6 @@ public class ConnectionController {
         };
         return DeviceFound;
     }*/
-
-    private void ConnectionToGroup() {
-        //CONNESSIONE GRUPPO---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        /*final WifiP2pDevice device = deviceArray[i];
-        if (!macAdresses.containsValue(device.deviceAddress))
-            macAdresses.put(device.deviceName, device.deviceAddress);
-        config.deviceAddress = device.deviceAddress;*/
-        mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                ConnectionToDevice = "Connected to the group";
-                SendUniqueData();
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                ConnectionToDevice = "Not Connected";
-            }
-        });
-    }
-
-    private void SendUniqueData() {
-        //INVIO IP E ID-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        String msg = user.getAll();
-        client = new Multicast();
-        client.sendMsg(msg);
-    }
-
-    private void setConfig(){
-        String networkName = getWifiDirectName();
-        if(!networkName.equals("")) {
-            config = new WifiP2pConfig.Builder()
-                    .setNetworkName(networkName)
-                    .setPassphrase("12345678")
-                    .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                    .enablePersistentMode(false)
-                    .build();
-        }
-    }
-
-    private String getWifiDirectName(){
-        String networkName="";
-        for (int i=0; i<results.size();i++){
-            if (results.get(i).SSID.contains("DIRECT-"))networkName=results.get(i).SSID;
-        }
-        return networkName;
-    }
-
-    private void resetConfig(){
-        config = new WifiP2pConfig.Builder()
-                .setNetworkName("DIRECT-"+user.getIdphone())
-                .setPassphrase("12345678")
-                .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                .enablePersistentMode(false)
-                .build();
-    }
 
     /*public String ConnectionListener(){
         //SERVE SOLO A CAPIRE CHI è HOST O CLIENT, DA RIMUOVERE PER CREARE UNA VERA E PROPRIA CHAT-------------------------------------------------------------------------------------------------------------------

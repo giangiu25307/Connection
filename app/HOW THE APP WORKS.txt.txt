@@ -1,0 +1,53 @@
+--Package Controller
+°Class ConnectionController:
+	-DEF: Controllo delle Connessioni che avvengono mentre l'app è attiva
+	-Metodi:
+		-public ConnectionController(Connection connection): Costruttore
+		-private void checkDevices: quantità dispostivi connessi
+		-private void removeGroup: rimuove la mia rete
+		-private void createGroup: crea la mia rete
+		-private void Scan: cerca reti disponibili
+		-private void connectionToGroup:si connette alla prima rete trovata
+		-private void sendUniqueData: invia broadcast i propri dati
+		-private void setConfig: configura la connesione del gruppo a una rete nostra trovata
+		-private String getWifiDirectName: ritorna il nome della rete esistente, se non esiste ritorna una stringa vuota
+		-private void resetConfig: reimposta le configurazioni di base per creare la rete
+
+--Package Model
+°Class User:	
+	-DEF: Modello dell'utente
+	-Metodi:
+		-setter and getter per ogni variabile
+		-public String getAll: fornisce tutte le informazioni personali
+
+--Package TCP_Connection
+°Class MultiThreadedServer implements Runnable:
+	-DEF: Creazione Server multithreaded per la connessione TCP
+	-Metodi:
+		-public MultiThreadedServer(int port): Costruttore
+		-public void run: avvia la connessione col client
+		-public syncrhonized void stop: chiude la connessione
+		-private void openServerSocket: apre la porta del server
+°Class TCP_Client:
+	-DEF: Client per la connessione TCP
+	-Metodi:
+		-public void startConnection(String ip,int port) throws IOException: inizia la connesione sulla porta e ip specificati
+		-public void sendMessage(String msg) throws IOException: invia il messaggio attraverso la TCP
+		-public void stopConnection throws IOException: chiude la connessione
+°Class WorkerRunnable implements Runnable
+	-DEF: Thread utilizzato da MultiThreadedServer
+
+--Package UDP_Connection
+°Class Multicast implements Runnable:
+	-DEF: Classe per la connesione Broadcast/UDP
+	-Metodi:
+		-public Multicast: Costruttore
+		-public void sendMsg(String msg): invia il messaggio in broadcast
+		-public String receiveMsg: riceve i messaggi inviati in broadcast
+
+--Package View
+°Class WifiDirectBroadcastReceiver extends BroadcastReceiver:
+	-DEF: Classe utile per il controllo dei dispositivi wifi direct p2p
+	-Metodi: 
+		-public WiFiDirectBroadcastReceiver(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, WifiP2pManager.PeerListListener peerListListener,WifiP2pManager.ConnectionInfoListener connectionInfoListener): Costruttore
+		-public void onReceive(Context context, Intent intent): controlla se il wifi è accesso o spento; quali dispostivi ci sono vicino a te
