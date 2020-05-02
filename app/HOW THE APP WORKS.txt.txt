@@ -51,3 +51,42 @@
 	-Metodi: 
 		-public WiFiDirectBroadcastReceiver(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, WifiP2pManager.PeerListListener peerListListener,WifiP2pManager.ConnectionInfoListener connectionInfoListener): Costruttore
 		-public void onReceive(Context context, Intent intent): controlla se il wifi è accesso o spento; quali dispostivi ci sono vicino a te
+
+°Class ChatFragment extends Fragment:
+	-DEF: Classe per la gestione di tutta la parte chat dell'app
+	-Metodi:
+		-public View onCreateView (@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState): istanziamento dei bottoni e assegnazione testo dei bottoni in base al tema
+		-private void changeView: cambia lo stile dei bottoni delle sezioni delle chat e cambia la lista delle chat
+		-public void onClick(View v): è l'onclicklistener dei bottoni
+
+°Class Connection extends AppCompatActivity
+	-DEF: inizializza il tema, gestisce il fragment da visualizzare all'apertura dell'app
+	-Metodi: 
+		-protected void onCreate(Bundle savedInstanceState): chiama i metodi per settare il tema, i fragment iniziali e crea il timer per cambiare fragment da spalshscreen all'home. Richiede i permessi per il gps
+		-private void loadTheme: setta il tema dell'app
+		-private void loadFragment: setta i fragment inziiali dell'app, prima lo splashscreen e dopo l'homefragment
+		-private void createCountDownTimer(): crea il timer per passare dal splashscreen all'homefragment
+		-protected void onResume(): serve a far ripartire il time se l'activity è stata stoppata
+		-protected void onPasue
+		-procted void onstop: serve a settare una variabile per indicare che il timer deve ripartire all'onresume
+
+°Class HomeFragment extends Fragment
+	-DEF: serve a settare il fragment iniziale e gestisce la navigationBar
+	-Metodi:
+		-public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState): setta il fragment iniziale e setta l'onClickListener della navigationBar
+		-private void loadfragment: gestisce lo sostituzione dei fragment
+°Class MapFragment extends fragment
+	-DEF: serve a gestire la parte riguardante la mappa delle persone
+	-Metodi:
+		-public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState): per ora non fa ancora nulla
+
+°Class SettingFragment extends Fragment:
+	-DEF: serve a gestire le impostazioni
+	-Metodi: 
+		-public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState): inizializza l'onClickListener per le voci delle impostazioni
+		-private void changetheme(String theme, AlertDialog alertDialog): serve a impostare il tema dell'app
+
+°Class SplashScreenFragment extends Fragment
+	-DEF: serve a gestire lo splash screen
+	-Metodi:
+		-public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState): modifica il font della scritta connection nello splashscreen
