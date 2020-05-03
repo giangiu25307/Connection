@@ -37,7 +37,7 @@ public class ChatController {
     }
 
     public String ipFinder(String id) {
-        //Luca e Giangiu insieme a lui devono implementare un sistema che quando clicchi la persona desiderata con la quale parlare ritorni l'id
+        //Luca e Giangiu devono implementare un sistema che quando clicchi la persona desiderata con la quale parlare ritorni l'id
         String ip = "";
         try {
             FileReader fr = new FileReader("data.txt");

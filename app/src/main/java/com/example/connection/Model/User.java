@@ -5,12 +5,12 @@ import java.net.InetAddress;
 public class User {
 
 
-    String idphone, username, password, mail, gender, name, surname, country, city;
+    String idUser, username, password, mail, gender, name, surname, country, city;
     int number, age;
     InetAddress inetAddress;
 
-    public User(String idphone, String username, String password, String mail, String gender, String name, String surname, String country, String city, int number, int age) {
-        this.idphone = idphone;
+    public User(String idUser, String username, String password, String mail, String gender, String name, String surname, String country, String city, int number, int age) {
+        this.idUser = idUser;
         this.username = username;
         this.password = password;
         this.mail = mail;
@@ -28,15 +28,15 @@ public class User {
     }
 
     public String getAll(){
-        return idphone+";"+inetAddress+";"+mail+";"+gender+";"+name+";"+surname+";"+country+";"+city+";"+age;
+        return idUser +";"+inetAddress+";"+mail+";"+gender+";"+name+";"+surname+";"+country+";"+city+";"+age;
     }
 
-    public String getIdphone() {
-        return idphone;
+    public String getIdUser() {
+        return idUser;
     }
 
-    public void setIdphone(String idphone) {
-        this.idphone = idphone;
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
     }
 
     public String getUsername() {

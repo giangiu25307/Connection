@@ -17,7 +17,6 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.List;
 
 public class ConnectionController {
@@ -166,7 +165,7 @@ public class ConnectionController {
 
     private void resetConfig(){
         config = new WifiP2pConfig.Builder()
-                .setNetworkName("DIRECT-"+user.getIdphone())
+                .setNetworkName("DIRECT-"+user.getIdUser())
                 .setPassphrase("12345678")
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
                 .enablePersistentMode(false)
