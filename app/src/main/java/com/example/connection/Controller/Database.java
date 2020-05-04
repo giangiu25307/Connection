@@ -60,7 +60,7 @@ public class Database extends SQLiteOpenHelper {
                     + "FOREIGN KEY (id_chat) REFERENCES MESSAGE (id_chat)"
                     + ")";
 
-            String CREATE_IP_TABLE = "CREATE TABLE MESSAGE ( "
+            String CREATE_IP_TABLE = "CREATE TABLE IP ( "
                     + "id_user INTEGER NOT NULL" + ", "
                     + "ip TEXT NOT NULL"
                     + ")";

@@ -3,6 +3,7 @@ package com.example.connection.View;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +14,9 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.connection.Adapter.ChatAdapter;
 import com.example.connection.R;
 
 import java.util.ArrayList;
@@ -44,6 +47,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         groupsButton.setOnClickListener(this);
         requestButton.setOnClickListener(this);
 
+        setupRecyclerView(view);
+
         return view;
     }
 
@@ -61,6 +66,18 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             }
         }
 
+    }
+
+    private void setupRecyclerView(View view){
+
+        RecyclerView recyclerView = view.findViewById(R.id.chatRecyclerView);
+        ChatAdapter chatAdapter = new ChatAdapter(getContext(), getAllChat());
+
+    }
+
+    private Cursor getAllChat(){
+
+        return null;
     }
 
     @Override
