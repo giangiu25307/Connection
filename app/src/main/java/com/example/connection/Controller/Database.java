@@ -1,10 +1,14 @@
 package com.example.connection.Controller;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import java.nio.file.Paths;
 
 public class Database extends SQLiteOpenHelper {
 
@@ -20,7 +24,7 @@ public class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         String CREATE_USER_TABLE = "CREATE TABLE USER ( "
-                + "id_user INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL" + ", "
+                + "id_user INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
                 + "number INTEGER NOT NULL" + ", "
                 + "name TEXT NOT NULL" + ", "
                 + "surname TEXT NOT NULL" + ", "
@@ -34,16 +38,16 @@ public class Database extends SQLiteOpenHelper {
                 + ")";
 
         String CREATE_MESSAGE_TABLE = "CREATE TABLE MESSAGE ( "
-                + "id_chat INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL" + ", "
+                + "id_chat INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
                 + "msg TEXT" + ", "
                 + "path TEXT"
                 + ")";
 
         String CREATE_CHAT_TABLE = "CREATE TABLE CHAT ( "
-                + "id_chat INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL" + ", "
+                + "id_chat INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
                 + "id_sender INTEGER NOT NULL" + ", "
-                + "id_receiver INTEGER NOT NULL"+","
-                + "PRIMARY KEY (id_chat)"+","
+                + "id_receiver INTEGER NOT NULL" + ","
+                + "PRIMARY KEY (id_chat)" + ","
                 + "FOREIGN KEY (id_chat) REFERENCES MESSAGE (id_chat)"
                 + ")";
 
@@ -68,59 +72,49 @@ public class Database extends SQLiteOpenHelper {
     }
 
     //CRUD OPERATIONS
-    /*
-    public void addNote(Note note) {
+
+    public void addMsg(String msg, int idSender, int idReceiver) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_TITLE, note.getTitle());
-        values.put(KEY_NOTE, note.getNote());
+        ContentValues chatValues = new ContentValues();
+        chatValues.put("id_sender", idSender);
+        chatValues.put("id_receiver", idReceiver);
+        ContentValues msgValues = new ContentValues();
+        msgValues.put("msg", msg);
 
-
-        db.insert(TABLE_NAME, null, values);
+        db.insert("MESSAGE", null, msgValues);
+        db.insert("CHAT", null, chatValues);
         db.close();
     }
 
-    public Note getNote(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    public void addMsg(Paths paths, int idSender, int idReceiver) {
 
-        Cursor c = db.query(TABLE_NAME, COLS_ID_TITLE_NOTE, KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues chatValues = new ContentValues();
+        chatValues.put("id_sender", idSender);
+        chatValues.put("id_receiver", idReceiver);
+        ContentValues msgValues = new ContentValues();
+        msgValues.put("path", paths.toString());
+
+        db.insert("MESSAGE", null, msgValues);
+        db.insert("CHAT", null, chatValues);
+        db.close();
+    }
+
+    public String getMsg(int idSender, int idReceiver) {//questo metodo non dovrà ritornare nulla ma mostrare con due appositi metodi o la chat o l'immagine al ricevitore del seguente messaggio
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT msg,path" +
+                "FROM CHAT C INNER JOIN MESSAGE M ON M.id_chat = C.id_chat" +
+                "WHERE C.id_sender = '" + idSender + "' and C.id_receiver = '" + idReceiver + "'";
+        Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
         }
         db.close();
-
-        Log.d(TAG, "Get Note Result " + c.getString(0) + "," + c.getString(1) + "," + c.getString(2));
-        Note note = new Note(Integer.parseInt(c.getString(0)), c.getString(1), c.getString(2));
-        return note;
+        if (!c.getString(1).equals("")) return c.getString(1);//ritorno un messaggio
+        else return c.getString(2);//ritorno una path per esempio per un immagine
     }
-
-    public List<Note> getAllNotes() {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        List<Note> noteList = new ArrayList<>();
-
-        Cursor cursor = db.query(TABLE_NAME, COLS_ID_TITLE_NOTE, null, null, null, null, null);
-
-
-        if (cursor != null && cursor.moveToFirst()) {
-
-            do {
-                Note note = new Note();
-                note.setId(Integer.parseInt(cursor.getString(0)));
-                note.setTitle(cursor.getString(1));
-                note.setNote(cursor.getString(2));
-                noteList.add(note);
-
-            } while (cursor.moveToNext());
-
-
-        }
-        db.close();
-        return noteList;
-
-    }*/
-
 
 }
