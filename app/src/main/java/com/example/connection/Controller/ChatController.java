@@ -1,12 +1,10 @@
 package com.example.connection.Controller;
 
-import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.MultiThreadedServer;
 import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.UDP_Connection.Multicast;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -36,7 +34,7 @@ public class ChatController {
         }
     }
 
-    public String ipFinder(String id) {
+    public String ipFinder(String id) {//da basare sul db
         //Luca e Giangiu devono implementare un sistema che quando clicchi la persona desiderata con la quale parlare ritorni l'id
         String ip = "";
         try {
