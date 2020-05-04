@@ -8,52 +8,69 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import java.io.File;
 import java.nio.file.Paths;
 
 public class Database extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "Connection";
-
+    Context context;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context=context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String CREATE_USER_TABLE = "CREATE TABLE USER ( "
-                + "id_user INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
-                + "number INTEGER NOT NULL" + ", "
-                + "name TEXT NOT NULL" + ", "
-                + "surname TEXT NOT NULL" + ", "
-                + "age INTEGER NOT NULL" + ", "
-                + "gender TEXT NOT NULL" + ", "
-                + "mail TEXT NOT NULL" + ", "
-                + "username TEXT NOT NULL" + ", "
-                + "password TEXT NOT NULL" + ", "
-                + "country TEXT NOT NULL" + ", "
-                + "city TEXT NOT NULL"
-                + ")";
+        File f=new File(context.getFilesDir().toString()+"/connection.db");
+        if(f.exists()){
+            db.openOrCreateDatabase(context.getFilesDir().toString()+"/connection.db",null);
+            String query="DELETE FROM IP";
+            db.execSQL(query);
+        }else{
+            db.openOrCreateDatabase(context.getFilesDir().toString()+"/connection.db",null);
+            String CREATE_USER_TABLE = "CREATE TABLE USER ( "
+                    + "id_user INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
+                    + "number INTEGER NOT NULL" + ", "
+                    + "name TEXT NOT NULL" + ", "
+                    + "surname TEXT NOT NULL" + ", "
+                    + "age INTEGER NOT NULL" + ", "
+                    + "gender TEXT NOT NULL" + ", "
+                    + "mail TEXT NOT NULL" + ", "
+                    + "username TEXT NOT NULL" + ", "
+                    + "password TEXT NOT NULL" + ", "
+                    + "country TEXT NOT NULL" + ", "
+                    + "city TEXT NOT NULL"
+                    + ")";
 
-        String CREATE_MESSAGE_TABLE = "CREATE TABLE MESSAGE ( "
-                + "id_chat INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
-                + "msg TEXT" + ", "
-                + "path TEXT"
-                + ")";
+            String CREATE_MESSAGE_TABLE = "CREATE TABLE MESSAGE ( "
+                    + "id_chat INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
+                    + "msg TEXT" + ", "
+                    + "path TEXT"
+                    + ")";
 
-        String CREATE_CHAT_TABLE = "CREATE TABLE CHAT ( "
-                + "id_chat INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
-                + "id_sender INTEGER NOT NULL" + ", "
-                + "id_receiver INTEGER NOT NULL" + ","
-                + "PRIMARY KEY (id_chat)" + ","
-                + "FOREIGN KEY (id_chat) REFERENCES MESSAGE (id_chat)"
-                + ")";
+            String CREATE_CHAT_TABLE = "CREATE TABLE CHAT ( "
+                    + "id_chat INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
+                    + "id_sender INTEGER NOT NULL" + ", "
+                    + "id_receiver INTEGER NOT NULL" + ","
+                    + "PRIMARY KEY (id_chat)" + ","
+                    + "FOREIGN KEY (id_chat) REFERENCES MESSAGE (id_chat)"
+                    + ")";
 
-        db.execSQL(CREATE_USER_TABLE);
-        db.execSQL(CREATE_MESSAGE_TABLE);
-        db.execSQL(CREATE_CHAT_TABLE);
+            String CREATE_IP_TABLE = "CREATE TABLE MESSAGE ( "
+                    + "id_user INTEGER NOT NULL" + ", "
+                    + "ip TEXT NOT NULL"
+                    + ")";
+
+            db.execSQL(CREATE_USER_TABLE);
+            db.execSQL(CREATE_MESSAGE_TABLE);
+            db.execSQL(CREATE_CHAT_TABLE);
+            db.execSQL(CREATE_IP_TABLE);
+        }
+
     }
 
     @Override
@@ -61,10 +78,8 @@ public class Database extends SQLiteOpenHelper {
 
         String DROP_TABLE = "DROP TABLE IF EXISTS USER";
         db.execSQL(DROP_TABLE);
-        onCreate(db);
         DROP_TABLE = "DROP TABLE IF EXISTS CHAT";
         db.execSQL(DROP_TABLE);
-        onCreate(db);
         DROP_TABLE = "DROP TABLE IF EXISTS MESSAGE";
         db.execSQL(DROP_TABLE);
         onCreate(db);
