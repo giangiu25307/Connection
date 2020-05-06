@@ -29,9 +29,12 @@ public class Task {
         public static final String NETWORK_IPS = "NETWORK_IPS";
         public static final String IP = "ip";
         public static final String GROUPS = "GROUPS";
+        public static final String USER_GROUPS = "USER_GROUPS";
         public static final String ID_GROUP = "id_group";
         public static final String GROUP_MESSAGE = "GROUP_MESSAGE";
         public static final String GLOBAL_MESSAGE = "GROUPS_MESSAGE";
+        public static final String DATE = "date";
+        public static final String LAST_MESSAGE = "last_message";
     }
 
 }
