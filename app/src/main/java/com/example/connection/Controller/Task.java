@@ -23,13 +23,13 @@ public class Task {
         public static final String MSG = "msg";
         public static final String PATH = "path";
         public static final String CHAT = "CHAT";
-        public static final String ID_TALKER1 = "id_talker1";
+        public static final String ID_RECEIVER = "id_receiver";
         public static final String ID_SENDER = "id_sender";
-        public static final String ID_TALKER2 = "id_talker2";
         public static final String NETWORK_IPS = "NETWORK_IPS";
         public static final String IP = "ip";
         public static final String GROUPS = "GROUPS";
-        public static final String USER_GROUPS = "USER_GROUPS";
+        public static final String GROUP_NAME = "GROUP_NAME";
+        public static final String USERS_GROUP = "USER_GROUP";
         public static final String ID_GROUP = "id_group";
         public static final String GROUP_MESSAGE = "GROUP_MESSAGE";
         public static final String GLOBAL_MESSAGE = "GROUPS_MESSAGE";
