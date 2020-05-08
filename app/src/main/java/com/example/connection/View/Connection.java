@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -78,20 +79,45 @@ public class Connection extends AppCompatActivity {
     }
 
     private void loadTheme(){
-        Window window = getWindow();
-        if(sharedPreferences.getString("appTheme", "light").equals("light")){
+        String theme = sharedPreferences.getString("appTheme", "light");
+        if(theme.equals("light")){
             setTheme(R.style.AppTheme);
+            setStatusAndNavbarColor(true);
+        }else if(theme.equals("dark")){
+            setTheme(R.style.DarkTheme);
+            setStatusAndNavbarColor(false);
+        }else{
+            int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+            switch (nightModeFlags) {
+                case Configuration.UI_MODE_NIGHT_NO:
+                case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                    setTheme(R.style.AppTheme);
+                    setStatusAndNavbarColor(true);
+                    break;
+
+                case Configuration.UI_MODE_NIGHT_YES:
+                    setTheme(R.style.DarkTheme);
+                    setStatusAndNavbarColor(false);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    }
+
+    private void setStatusAndNavbarColor(boolean light){
+        Window window = getWindow();
+        if(light){
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.WHITE);
             window.setNavigationBarColor(Color.WHITE);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }else{
-            setTheme(R.style.DarkTheme);
             int color = getColor(R.color.regularBlack);
             window.setNavigationBarColor(color);
             window.setStatusBarColor(color);
         }
-
     }
 
     private void loadFragment(boolean transition){

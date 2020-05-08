@@ -32,4 +32,8 @@
         <item name="android:textColor">?attr/textColor</item>
     </style>
 
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/rounded_20dp_background</item>
+    </style>
+
 </resources>
