@@ -13,10 +13,11 @@ public class ChatController {
     TCP_Client tcp;
     Multicast udp;
     MultiThreadedServer tcpServer;
-
+    Database database;
     public ChatController() {
         tcp = new TCP_Client();
         udp = new Multicast();
+
     }
 
     public void sendUDPMsg(String msg) {

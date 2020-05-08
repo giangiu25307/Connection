@@ -35,6 +35,7 @@ public class Task {
         public static final String GLOBAL_MESSAGE = "GROUPS_MESSAGE";
         public static final String DATE = "date";
         public static final String LAST_MESSAGE = "last_message";
+        public static final String NOT_READ_MESSAGE = "no_read_message";
     }
 
 }

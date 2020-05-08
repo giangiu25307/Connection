@@ -62,12 +62,13 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.LAST_MESSAGE + " TEXT NOT NULL,"
                 + Task.TaskEntry.LAST_MESSAGE + "TEXT,"
                 + Task.TaskEntry.NAME + "TEXT"
+                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
                 + ")";
 
         String CREATE_USER_GROUP_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.USERS_GROUP + " ( "
                 + Task.TaskEntry.ID_GROUP + " INTEGER NOT NULL, "
                 + Task.TaskEntry.ID_USER + " INTEGER NOT NULL, "
-                + Task.TaskEntry.NAME + "TEXT,"
+                + Task.TaskEntry.IP + "TEXT,"
                 + "FOREIGN KEY (" + Task.TaskEntry.ID_USER + ") REFERENCES " + Task.TaskEntry.USER + "(" + Task.TaskEntry.ID_USER + ") ON DELETE CASCADE,"
                 + "FOREIGN KEY (" + Task.TaskEntry.ID_GROUP + ") REFERENCES " + Task.TaskEntry.GROUPS + "(" + Task.TaskEntry.ID_GROUP + ") ON DELETE CASCADE"
                 + ")";
@@ -78,6 +79,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.GROUP_NAME + " TEXT NOT NULL,"
                 + Task.TaskEntry.DATE + " DATETIME, "
                 + Task.TaskEntry.LAST_MESSAGE + "TEXT"
+                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
                 + ")";
 
         String CREATE_GLOBAL_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GLOBAL_MESSAGE + " ( "
@@ -85,6 +87,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.MSG + " INTEGER NOT NULL,"
                 + Task.TaskEntry.DATE + " DATETIME"
                 + Task.TaskEntry.LAST_MESSAGE + "TEXT"
+                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
                 + ")";
 
         String CREATE_IP_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.NETWORK_IPS + " ( "
@@ -126,7 +129,6 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
         msgValues.put(Task.TaskEntry.MSG, msg);
         db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
-        //db.close();ridondanza
         lastMessageChat(msg,idChat);
     }
 
@@ -144,7 +146,6 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
         msgValues.put(Task.TaskEntry.PATH, paths.toString());
         db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
-        db.close();
         lastMessageChat(paths.toString(),idChat);
     }
 
@@ -213,7 +214,7 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.ID_GROUP,idgroup);
         msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
         msgValues.put(Task.TaskEntry.MSG, msg);
-        db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
+        db.insert(Task.TaskEntry.GROUP_MESSAGE, null, msgValues);
         lastMessageChat(msg,idgroup);
     }
 
@@ -230,7 +231,7 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.ID_GROUP,idgroup);
         msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
         msgValues.put(Task.TaskEntry.PATH, paths.toString());
-        db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
+        db.insert(Task.TaskEntry.GROUP_MESSAGE, null, msgValues);
         lastMessageGroup(paths.toString(),idgroup);
     }
 
@@ -246,18 +247,30 @@ public class Database extends SQLiteOpenHelper {
         return idGroup;
     }
 
-    public void createGroup(String id_users[],int idgroup) {
+    public void createGroup(String id_users[],int idgroup,String name) {
+        ContentValues chatValues = new ContentValues();
         for (int i=0;i<id_users.length;i++) {
-            ContentValues chatValues = new ContentValues();
             chatValues.put(Task.TaskEntry.ID_GROUP, idgroup);
             chatValues.put(Task.TaskEntry.ID_USER, id_users[i]);
-            //chatValues.put(Task.TaskEntry.NAME, name);
+            chatValues.put(Task.TaskEntry.IP, findGroupIp(id_users[i]));
             db.insert(Task.TaskEntry.USERS_GROUP, null, chatValues);
         }
+        chatValues.put(Task.TaskEntry.ID_GROUP, idgroup);
+        chatValues.put(Task.TaskEntry.GROUP_NAME, name);
+        db.insert(Task.TaskEntry.GROUPS, null, chatValues);
     }
+     public String findGroupIp(String id_user){
+         String query = "SELECT ip" +
+                 " FROM NETWORK_IPS" +
+                 " WHERE id_user ='" +id_user+ "'" ;
+         Cursor c = db.rawQuery(query, null);
+         if (c != null) {
+             c.moveToFirst();
+         }
+         return c.getString(0);
+     }
 
-
-    public Cursor getAllGroupMsg(int idGroup) {//questo metodo non dovrà ritornare nulla ma mostrare con due appositi metodi o la chat o l'immagine al ricevitore del seguente messaggio
+    public Cursor getAllGroupMsg(int idGroup) {
         String query = "SELECT id_sender,msg,path,date" +
                 " FROM GROUP_MESSAGE" +
                 " WHERE id_group = (SELECT id_group" +
@@ -281,6 +294,7 @@ public class Database extends SQLiteOpenHelper {
         }
         return c;
     }
+    //globale
     public void addGlobalMsg(String msg, int idSender) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
@@ -289,10 +303,14 @@ public class Database extends SQLiteOpenHelper {
         lastMessageChat(msg,idSender);
     }
 
-    private void lastMessageGroup(String msg,String idSender){
-        String query="UPDATE "+ Task.TaskEntry.GROUPS+
-                " SET "+ Task.TaskEntry.LAST_MESSAGE+" = " +msg+","
-               + " SET " + Task.TaskEntry.ID_SENDER+"' = '"+idSender+"'";
-        db.execSQL(query);
+
+    public Cursor getGlobalMessage(){
+        String query = "SELECT *" +
+                " FROM "+ Task.TaskEntry.GLOBAL_MESSAGE;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c;
     }
 }

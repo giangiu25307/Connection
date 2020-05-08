@@ -3,7 +3,9 @@ package com.example.connection.TCP_Connection;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.TCP_Connection.WorkerRunnable;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -28,8 +30,8 @@ public class MultiThreadedServer implements Runnable {
             Socket clientSocket = null;
             try {
                 clientSocket = this.serverSocket.accept();
-                receive=clientSocket.getInputStream().toString();
-                //richiamo metodo di altra classe che prende l'id e lo scrive in un file per l'associazione dei messaggi
+                BufferedReader in = new BufferedReader (new InputStreamReader(clientSocket.getInputStream()));
+                receive=in.readLine();
             } catch (IOException e) {
                 if (isStopped()) {
                     System.out.println("Server Stopped.");
