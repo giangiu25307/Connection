@@ -12,7 +12,7 @@ public class Database extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "Connection";
-    SQLiteDatabase db = this.getWritableDatabase();
+    SQLiteDatabase db;
     Context context;
 
     public Database(Context context) {
@@ -21,8 +21,9 @@ public class Database extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-
+    public void onCreate(SQLiteDatabase database) {
+        db=database;
+        db = this.getWritableDatabase();
         String CREATE_USER_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.USER + " ( "
                 + Task.TaskEntry.ID_USER + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Task.TaskEntry.NUMBER + " INTEGER NOT NULL, "
@@ -103,7 +104,6 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(CREATE_GROUP_MESSAGE_TABLE);
         db.execSQL(CREATE_GLOBAL_MESSAGE_TABLE);
         db.execSQL(CREATE_USER_GROUP_TABLE);
-        db.close();
     }
 
     @Override
@@ -252,14 +252,14 @@ public class Database extends SQLiteOpenHelper {
         for (int i=0;i<id_users.length;i++) {
             chatValues.put(Task.TaskEntry.ID_GROUP, idgroup);
             chatValues.put(Task.TaskEntry.ID_USER, id_users[i]);
-            chatValues.put(Task.TaskEntry.IP, findGroupIp(id_users[i]));
+            chatValues.put(Task.TaskEntry.IP, findIp(id_users[i]));
             db.insert(Task.TaskEntry.USERS_GROUP, null, chatValues);
         }
         chatValues.put(Task.TaskEntry.ID_GROUP, idgroup);
         chatValues.put(Task.TaskEntry.GROUP_NAME, name);
         db.insert(Task.TaskEntry.GROUPS, null, chatValues);
     }
-     public String findGroupIp(String id_user){
+     public String findIp(String id_user){
          String query = "SELECT ip" +
                  " FROM NETWORK_IPS" +
                  " WHERE id_user ='" +id_user+ "'" ;

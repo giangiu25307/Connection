@@ -5,11 +5,11 @@ import java.net.InetAddress;
 public class User {
 
 
-    String idUser, username, password, mail, gender, name, surname, country, city;
-    int number, age;
+    String  username, password, mail, gender, name, surname, country, city;
+    int number, age,idUser;
     InetAddress inetAddress;
 
-    public User(String idUser, String username, String password, String mail, String gender, String name, String surname, String country, String city, int number, int age) {
+    public User(int idUser, String username, String password, String mail, String gender, String name, String surname, String country, String city, int number, int age) {
         this.idUser = idUser;
         this.username = username;
         this.password = password;
@@ -31,11 +31,11 @@ public class User {
         return idUser +";"+inetAddress+";"+mail+";"+gender+";"+name+";"+surname+";"+country+";"+city+";"+age;
     }
 
-    public String getIdUser() {
+    public int getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(String idUser) {
+    public void setIdUser(int idUser) {
         this.idUser = idUser;
     }
 
