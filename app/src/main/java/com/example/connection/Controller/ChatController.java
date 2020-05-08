@@ -22,7 +22,8 @@ public class ChatController {
         tcp = new TCP_Client();
         udp = new Multicast();
         database=new Database(connection.getApplicationContext());
-        user=new User(1,"rikyfaso","123456","rikyfaso999@hotmail.com","maschio","riccardo","fasolo","italia","bologna",3,20);
+        String userInfo[]=database.getMyInformation();
+        user=new User(Integer.parseInt(userInfo[0]),userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],Integer.parseInt(userInfo[9]),Integer.parseInt(userInfo[10]));
     }
 
     public void sendUDPMsg(String msg) {

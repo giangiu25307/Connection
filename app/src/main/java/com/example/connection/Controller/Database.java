@@ -267,7 +267,7 @@ public class Database extends SQLiteOpenHelper {
          if (c != null) {
              c.moveToFirst();
          }
-         return c.getString(0);
+         return c.getString(1);
      }
 
     public Cursor getAllGroupMsg(int idGroup) {
@@ -313,4 +313,27 @@ public class Database extends SQLiteOpenHelper {
         }
         return c;
     }
+
+    public String[] getMyInformation(){
+        String user[]=new String[11];
+        String query = "SELECT *"+
+                " FROM "+ Task.TaskEntry.USER;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        user[0]=c.getString(0);
+        user[1]=c.getString(7);
+        user[2]=c.getString(8);
+        user[3]=c.getString(6);
+        user[4]=c.getString(5);
+        user[5]=c.getString(2);
+        user[6]=c.getString(3);
+        user[7]=c.getString(9);
+        user[8]=c.getString(11);
+        user[9]=c.getString(1);
+        user[10]=c.getString(4);
+        return user;
+    }
+
 }
