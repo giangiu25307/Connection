@@ -46,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Connection extends AppCompatActivity {
-
     private Fragment fragment;
     private CountDownTimer countDownTimer;
     private Boolean startTimer = false;

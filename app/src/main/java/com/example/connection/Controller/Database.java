@@ -269,6 +269,17 @@ public class Database extends SQLiteOpenHelper {
          }
          return c.getString(1);
      }
+    public String findId_user(String ip){
+
+        String query = "SELECT id_user " +
+                " FROM NETWORK_IPS" +
+                " WHERE ip ='" +ip+ "'" ;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c.getString(1);
+    }
 
     public Cursor getAllGroupMsg(int idGroup) {
         String query = "SELECT id_sender,msg,path,date" +

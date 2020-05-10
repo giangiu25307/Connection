@@ -1,7 +1,9 @@
 package com.example.connection.TCP_Connection;
 
-import com.example.connection.Controller.ChatController;
-import com.example.connection.TCP_Connection.WorkerRunnable;
+import android.os.AsyncTask;
+
+import com.example.connection.Controller.Database;
+import com.example.connection.View.Connection;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,40 +11,20 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class MultiThreadedServer implements Runnable {
+public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     protected int serverPort = 50000;
     protected ServerSocket serverSocket = null;
     protected boolean isStopped = false;
     protected Thread runningThread = null;
-    String receive;
+    private String receive;
+    private Database database;
+    private Connection connection;
 
-    public MultiThreadedServer(int port) {
+    public MultiThreadedServer(int port,Database database, Connection connection) {
         this.serverPort = port;
+        this.database=database;
         receive="";
-    }
-
-    public void run() {
-        synchronized (this) {
-            this.runningThread = Thread.currentThread();
-        }
-        openServerSocket();
-        while (!isStopped()) {
-            Socket clientSocket = null;
-            try {
-                clientSocket = this.serverSocket.accept();
-                BufferedReader in = new BufferedReader (new InputStreamReader(clientSocket.getInputStream()));
-                receive=in.readLine();
-            } catch (IOException e) {
-                if (isStopped()) {
-                    System.out.println("Server Stopped.");
-                    return;
-                }
-                throw new RuntimeException(
-                        "Error accepting client connection", e);
-            }
-            new Thread(new WorkerRunnable(clientSocket)).start();
-        }
-        System.out.println("Server Stopped.");
+        this.connection=connection;
     }
 
     public void receiveMsg(){}//creare scrittura su file della chat tenendo da conto gli id
@@ -68,4 +50,27 @@ public class MultiThreadedServer implements Runnable {
         }
     }
 
+    @Override
+    protected Void doInBackground(Void... voids) {
+        synchronized (this) {
+            this.runningThread = Thread.currentThread();
+        }
+        openServerSocket();
+        while (!isStopped()) {
+            Socket clientSocket = null;
+            try {
+                clientSocket = this.serverSocket.accept();
+            } catch (IOException e) {
+                if (isStopped()) {
+                    System.out.println("Server Stopped.");
+                    return null;
+                }
+                throw new RuntimeException(
+                        "Error accepting client connection", e);
+            }
+            new Thread(new WorkerRunnable(clientSocket,database,connection)).start();
+        }
+        System.out.println("Server Stopped.");
+        return null;
+    }
 }
