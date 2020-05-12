@@ -139,7 +139,7 @@ public class ConnectionController {
     private void sendUniqueData() {
         //INVIO IP E ID-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         String msg = user.getAll();
-        udpClient = new Multicast();
+        udpClient = new Multicast(user);
         udpClient.sendMsg(msg);
     }
 

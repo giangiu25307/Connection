@@ -28,7 +28,7 @@ public class User {
     }
 
     public String getAll(){
-        return idUser +";"+inetAddress+";"+mail+";"+gender+";"+name+";"+surname+";"+country+";"+city+";"+age;
+        return idUser +"£€"+inetAddress+"£€"+mail+"£€"+gender+"£€"+name+"£€"+surname+"£€"+country+"£€"+city+"£€"+age;
     }
 
     public int getIdUser() {

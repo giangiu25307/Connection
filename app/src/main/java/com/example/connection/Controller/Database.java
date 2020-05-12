@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.connection.Model.User;
+
 import java.nio.file.Paths;
 
 public class Database extends SQLiteOpenHelper {
@@ -208,9 +210,9 @@ public class Database extends SQLiteOpenHelper {
 
     //GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //duplicare i metodi sopra
-    public void addGroupMsg(String msg, int idSender,String GroupName) {
+    public void addGroupMsg(String msg, int idSender,String idgroup) {
         ContentValues msgValues = new ContentValues();
-        int idgroup = retrieveIdGroup(GroupName);
+        //int idgroup = retrieveIdGroup(GroupName);
         msgValues.put(Task.TaskEntry.ID_GROUP,idgroup);
         msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
         msgValues.put(Task.TaskEntry.MSG, msg);
@@ -305,6 +307,18 @@ public class Database extends SQLiteOpenHelper {
         }
         return c;
     }
+    public boolean checkGroupId(String id){
+        String query = "SELECT 1" +
+                " FROM "+ Task.TaskEntry.GROUPS+
+                " WHERE id_group ='"+id+"'";
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            return true;
+        }else{
+            return false;
+        }
+
+    }
     //globale
     public void addGlobalMsg(String msg, int idSender) {
         ContentValues msgValues = new ContentValues();
@@ -347,4 +361,36 @@ public class Database extends SQLiteOpenHelper {
         return user;
     }
 
+    public void addUser(String idUser,String inetAddress,String mail,String gender,String name,String surname,String country,String city,String age){
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.ID_USER,idUser);
+        msgValues.put(Task.TaskEntry.MAIL,mail);
+        msgValues.put(Task.TaskEntry.GENDER,gender);
+        msgValues.put(Task.TaskEntry.NAME,name);
+        msgValues.put(Task.TaskEntry.SURNAME,surname);
+        msgValues.put(Task.TaskEntry.COUNTRY,country);
+        msgValues.put(Task.TaskEntry.CITY,city);
+        msgValues.put(Task.TaskEntry.AGE,age);
+        db.insert(Task.TaskEntry.USER, null, msgValues);
+        ContentValues ipValues = new ContentValues();
+        ipValues.put(Task.TaskEntry.ID_USER,idUser);
+        ipValues.put(Task.TaskEntry.IP,inetAddress);
+        db.insert(Task.TaskEntry.NETWORK_IPS, null, ipValues);
+    }
+
+    public void addNumber(String number,String idUser){
+        String query="UPDATE "+ Task.TaskEntry.USER+
+                " SET "+ Task.TaskEntry.NUMBER+" = " +number+
+                " WHERE '"+ Task.TaskEntry.ID_USER+"' = '"+idUser+"'";
+        db.execSQL(query);
+    }
+    public Cursor  getAllUsers(){
+        String query = "SELECT *" +
+                " FROM "+ Task.TaskEntry.USER;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c;
+    }
 }

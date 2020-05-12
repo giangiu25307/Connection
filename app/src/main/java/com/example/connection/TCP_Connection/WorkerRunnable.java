@@ -42,9 +42,12 @@ class WorkerRunnable implements Runnable {
                     fos.write(message);
                     fos.close();
                     database.addMsg(Paths.get(connection.getApplicationContext().getCacheDir()+currentDateandTime+".jpeg"),database.getMyInformation()[0],database.findId_user(ip));
-                } else {
+                } else if(.equals(sendInfo£€)){
+                    //vabbè faccio già il pull e continuo da me
+                } else{
                     byte[] message = new byte[length];
                     dIn.readFully(message, 0, message.length); // read the message
+                    database.addMsg(message.toString(),database.getMyInformation()[0],database.findId_user(ip));
                 }
             }
 
