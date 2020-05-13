@@ -52,23 +52,22 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                 String received = new String(recv.getData(), 0, recv.getLength());
                 String splittedR[] = received.split("£€");
                 if (splittedR[0].equals("info")) {
-
                     if (user.getInetAddress().equals("192.168.49.1")) {
                         tcp_client.startConnection(splittedR[2], 50000);
-                        Cursor c = database.getAllUsers();//unire user con networkip
+                        Cursor c = database.getAllUsers();
                         tcp_client.sendMessage(this.cursorToString(c));
-                        database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9]);//check adduser
+                        database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);//check adduser
                     } else {
-                        database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9]);
+                        database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);
                     }
                 } else if (splittedR[0].equals("message")) {
                     for (int i = 3; i < splittedR.length; i++) {
                         received += splittedR[i];
                     }
                     database.addGlobalMsg(received, splittedR[1]);
-                } else if (database.checkGroupId(splittedR[0])) {
-                    database.addGroupMsg(received, splittedR[1], splittedR[0]);
-
+                /*} else if (database.checkGroupId(splittedR[0])) {
+                    database.addGroupMsg(received, Integer.parseInt(splittedR[1]), Integer.parseInt(splittedR[0]));
+                */
                 } else if (splittedR[0].equals("localization")) {
                     //implementare la localizzazione
                 }
@@ -92,7 +91,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         }
     }
 
-    public void sendGroupMsg(String idGroup, String msg) {
+    /*public void sendGroupMsg(String idGroup, String msg) {
         try {
             msg = idGroup + "£€" + user.getIdUser() + "£€" + user.getUsername() + "£€" + msg; //IMPLEMENTARE CRIPTAZIONEEEEEEEEEE
             byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
@@ -103,7 +102,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public void sendInfo() {
         try {
@@ -122,20 +121,19 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         new Thread(new Multicast(user, database)).start();
         return null;
     }
-    public String cursorToString(Cursor c){
+    private String cursorToString(Cursor c){
         c.moveToFirst();
         int i=0;
         String msg="sendInfo£€";
-        while(c.isAfterLast() == false){
+        while(!c.isAfterLast()){
             while(i<c.getColumnCount()){
-                msg=msg+c.getString(i)+",";
+                msg+=c.getString(i)+",";
                 i++;
             }
             msg+=";";
             c.moveToNext();
             i=0;
         }
-
         c.close();
         return msg;
     }

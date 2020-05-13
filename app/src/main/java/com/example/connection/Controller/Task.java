@@ -25,17 +25,16 @@ public class Task {
         public static final String CHAT = "CHAT";
         public static final String ID_RECEIVER = "id_receiver";
         public static final String ID_SENDER = "id_sender";
-        public static final String NETWORK_IPS = "NETWORK_IPS";
         public static final String IP = "ip";
-        public static final String GROUPS = "GROUPS";
-        public static final String GROUP_NAME = "GROUP_NAME";
-        public static final String USERS_GROUP = "USER_GROUP";
-        public static final String ID_GROUP = "id_group";
-        public static final String GROUP_MESSAGE = "GROUP_MESSAGE";
         public static final String GLOBAL_MESSAGE = "GROUPS_MESSAGE";
         public static final String DATE = "date";
         public static final String LAST_MESSAGE = "last_message";
-        public static final String NOT_READ_MESSAGE = "no_read_message";
+        public static final String NOT_READ_MESSAGE = "not_read_message";
+        /*public static final String GROUPS = "GROUPS";
+        public static final String GROUP_NAME = "GROUP_NAME";
+        public static final String USERS_GROUP = "USER_GROUP";
+        public static final String ID_GROUP = "id_group";
+        public static final String GROUP_MESSAGE = "GROUP_MESSAGE";*/
     }
 
 }

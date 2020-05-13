@@ -27,30 +27,53 @@ public class Database extends SQLiteOpenHelper {
         db=database;
         db = this.getWritableDatabase();
         String CREATE_USER_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.USER + " ( "
-                + Task.TaskEntry.ID_USER + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + Task.TaskEntry.NUMBER + " INTEGER NOT NULL, "
+                + Task.TaskEntry.ID_USER + " TEXT PRIMARY KEY, "
+                + Task.TaskEntry.USERNAME + " TEXT NOT NULL, "
+                + Task.TaskEntry.MAIL + " TEXT NOT NULL, "
+                + Task.TaskEntry.GENDER + " TEXT NOT NULL, "
                 + Task.TaskEntry.NAME + " TEXT NOT NULL, "
                 + Task.TaskEntry.SURNAME + " TEXT NOT NULL, "
-                + Task.TaskEntry.AGE + " INTEGER NOT NULL, "
-                + Task.TaskEntry.GENDER + " TEXT NOT NULL, "
-                + Task.TaskEntry.MAIL + " TEXT NOT NULL, "
-                + Task.TaskEntry.USERNAME + " TEXT NOT NULL, "
-                + Task.TaskEntry.PASSWORD + " TEXT NOT NULL, "
                 + Task.TaskEntry.COUNTRY + " TEXT NOT NULL, "
+                + Task.TaskEntry.CITY + " TEXT NOT NULL,"
+                + Task.TaskEntry.NUMBER + " TEXT NOT NULL, "
+                + Task.TaskEntry.AGE + " TEXT NOT NULL, "
                 + Task.TaskEntry.PROFILE_PIC + " TEXT NOT NULL, "
-                + Task.TaskEntry.CITY + " TEXT NOT NULL"
+                + Task.TaskEntry.IP + " TEXT"
                 + ")";
 
         String CREATE_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.MESSAGE + " ( "
                 + Task.TaskEntry.ID_CHAT + " INTEGER NOT NULL, "
-                + Task.TaskEntry.ID_SENDER + " INTEGER NOT NULL, "
+                + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
                 + Task.TaskEntry.MSG + " TEXT, "
                 + Task.TaskEntry.PATH + " TEXT, "
                 + Task.TaskEntry.DATE + " DATETIME, "
                 + "FOREIGN KEY (" + Task.TaskEntry.ID_CHAT + ") REFERENCES " + Task.TaskEntry.CHAT + "(" + Task.TaskEntry.ID_CHAT + ") ON DELETE CASCADE"
                 + ")";
 
-        String CREATE_GROUP_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GROUP_MESSAGE + " ( "
+
+
+        String CREATE_CHAT_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.CHAT + " ( "
+                + Task.TaskEntry.ID_CHAT + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + Task.TaskEntry.ID_RECEIVER + " TEXT NOT NULL, "
+                + Task.TaskEntry.LAST_MESSAGE + "TEXT,"
+                + Task.TaskEntry.NAME + "TEXT,"
+                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
+                + ")";
+
+        String CREATE_GLOBAL_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GLOBAL_MESSAGE + " ( "
+                + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
+                + Task.TaskEntry.MSG + " TEXT NOT NULL,"
+                + Task.TaskEntry.DATE + " DATETIME"
+                + Task.TaskEntry.LAST_MESSAGE + "TEXT"
+                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
+                + ")";
+
+        db.execSQL(CREATE_USER_TABLE);
+        db.execSQL(CREATE_MESSAGE_TABLE);
+        db.execSQL(CREATE_CHAT_TABLE);
+        db.execSQL(CREATE_GLOBAL_MESSAGE_TABLE);
+
+        /*String CREATE_GROUP_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GROUP_MESSAGE + " ( "
                 + Task.TaskEntry.ID_GROUP + " INTEGER NOT NULL, "
                 + Task.TaskEntry.ID_SENDER + " INTEGER NOT NULL, "
                 + Task.TaskEntry.MSG + " TEXT, "
@@ -58,16 +81,6 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.DATE + " DATETIME, "
                 + "FOREIGN KEY (" + Task.TaskEntry.ID_GROUP + ") REFERENCES " + Task.TaskEntry.CHAT + "(" + Task.TaskEntry.ID_GROUP + ") ON DELETE CASCADE"
                 + ")";
-
-        String CREATE_CHAT_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.CHAT + " ( "
-                + Task.TaskEntry.ID_CHAT + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + Task.TaskEntry.ID_RECEIVER + " INTEGER NOT NULL, "
-                + Task.TaskEntry.LAST_MESSAGE + " TEXT NOT NULL,"
-                + Task.TaskEntry.LAST_MESSAGE + "TEXT,"
-                + Task.TaskEntry.NAME + "TEXT"
-                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
-                + ")";
-
         String CREATE_USER_GROUP_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.USERS_GROUP + " ( "
                 + Task.TaskEntry.ID_GROUP + " INTEGER NOT NULL, "
                 + Task.TaskEntry.ID_USER + " INTEGER NOT NULL, "
@@ -84,28 +97,9 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.LAST_MESSAGE + "TEXT"
                 + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
                 + ")";
-
-        String CREATE_GLOBAL_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GLOBAL_MESSAGE + " ( "
-                + Task.TaskEntry.ID_SENDER + " INTEGER NOT NULL, "
-                + Task.TaskEntry.MSG + " INTEGER NOT NULL,"
-                + Task.TaskEntry.DATE + " DATETIME"
-                + Task.TaskEntry.LAST_MESSAGE + "TEXT"
-                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
-                + ")";
-
-        String CREATE_IP_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.NETWORK_IPS + " ( "
-                + Task.TaskEntry.ID_USER + " INTEGER NOT NULL, "
-                + Task.TaskEntry.IP + " TEXT"
-                + ")";
-
-        db.execSQL(CREATE_USER_TABLE);
-        db.execSQL(CREATE_MESSAGE_TABLE);
-        db.execSQL(CREATE_CHAT_TABLE);
-        db.execSQL(CREATE_IP_TABLE);
         db.execSQL(CREATE_GROUPS_TABLE);
         db.execSQL(CREATE_GROUP_MESSAGE_TABLE);
-        db.execSQL(CREATE_GLOBAL_MESSAGE_TABLE);
-        db.execSQL(CREATE_USER_GROUP_TABLE);
+        db.execSQL(CREATE_USER_GROUP_TABLE);*/
     }
 
     @Override
@@ -124,7 +118,7 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
     //CHAT-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    public void addMsg(String msg, int idReceiver, int idSender) {
+    public void addMsg(String msg, String idReceiver, String idSender) {
         ContentValues msgValues = new ContentValues();
         int idChat = retrieveIdChat(idReceiver);
         msgValues.put(Task.TaskEntry.ID_CHAT,idChat);
@@ -134,14 +128,7 @@ public class Database extends SQLiteOpenHelper {
         lastMessageChat(msg,idChat);
     }
 
-    private void lastMessageChat(String msg, int idChat){
-        String query="UPDATE "+ Task.TaskEntry.CHAT+
-        " SET "+ Task.TaskEntry.LAST_MESSAGE+" = " +msg+
-        " WHERE '"+ Task.TaskEntry.ID_CHAT+"' = '"+idChat+"'";
-        db.execSQL(query);
-    }
-
-    public void addMsg(Paths paths, int idReceiver, int idSender) {
+    public void addMsg(Paths paths, String idReceiver, String idSender) {
         ContentValues msgValues = new ContentValues();
         int idChat = retrieveIdChat(idReceiver);
         msgValues.put(Task.TaskEntry.ID_CHAT,idChat);
@@ -151,7 +138,14 @@ public class Database extends SQLiteOpenHelper {
         lastMessageChat(paths.toString(),idChat);
     }
 
-    private int retrieveIdChat(int idReceiver) {
+    private void lastMessageChat(String msg, int idChat){
+        String query="UPDATE "+ Task.TaskEntry.CHAT+
+                " SET "+ Task.TaskEntry.LAST_MESSAGE+" = " +msg+
+                " WHERE '"+ Task.TaskEntry.ID_CHAT+"' = '"+idChat+"'";
+        db.execSQL(query);
+    }
+
+    private int retrieveIdChat(String idReceiver) {
         int idChat = 0;
         String query = "SELECT id_chat" +
                 " FROM CHAT" +
@@ -164,14 +158,14 @@ public class Database extends SQLiteOpenHelper {
         return idChat;
     }
 
-    public void createChat(int idReceiver,String name) {
+    public void createChat(String idReceiver,String name) {
         ContentValues chatValues = new ContentValues();
         chatValues.put(Task.TaskEntry.ID_RECEIVER, idReceiver);
         chatValues.put(Task.TaskEntry.NAME, name);
         db.insert(Task.TaskEntry.CHAT, null, chatValues);
     }
 
-    public boolean checkChatExist(int idReceiver) {
+    public boolean checkChatExist(String idReceiver) {
         String query = "SELECT id_chat" +
                 " FROM CHAT" +
                 " WHERE id_receiver='" + idReceiver + "'";
@@ -183,7 +177,7 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getAllMsg(int idReceiver) {//questo metodo non dovrà ritornare nulla ma mostrare con due appositi metodi o la chat o l'immagine al ricevitore del seguente messaggio
+    public Cursor getAllMsg(String idReceiver) {
         String query = "SELECT id_sender,msg,path,date" +
                 " FROM MESSAGE" +
                 " WHERE id_chat = (SELECT id_chat" +
@@ -208,9 +202,115 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
-    //GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    //globale
+    public void addGlobalMsg(String msg, String idSender) {
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
+        msgValues.put(Task.TaskEntry.MSG, msg);
+        db.insert(Task.TaskEntry.GLOBAL_MESSAGE, null, msgValues);
+        lastGlobalMessageChat(msg,idSender);
+    }
+
+    public Cursor getGlobalMessage(){
+        String query = "SELECT *" +
+                " FROM "+ Task.TaskEntry.GLOBAL_MESSAGE;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c;
+    }
+
+    private void lastGlobalMessageChat(String msg, String idSender){
+        String query="UPDATE "+ Task.TaskEntry.GLOBAL_MESSAGE+
+                " SET "+ Task.TaskEntry.LAST_MESSAGE+" = " +msg+
+                " WHERE '"+ Task.TaskEntry.ID_CHAT+"' = '"+idSender+"'";
+        db.execSQL(query);
+    }
+
+    //USER
+    public String[] getMyInformation(){
+        String user[]=new String[11];
+        String query = "SELECT *"+
+                " FROM "+ Task.TaskEntry.USER;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        user[0]=c.getString(0);
+        user[1]=c.getString(1);
+        user[2]=c.getString(2);
+        user[3]=c.getString(3);
+        user[4]=c.getString(4);
+        user[5]=c.getString(5);
+        user[6]=c.getString(6);
+        user[7]=c.getString(7);
+        user[8]=c.getString(9);
+        user[9]=c.getString(10);
+        user[10]=c.getString(11);
+        return user;
+    }
+
+    public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String profilePic){
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.USERNAME,username);
+        msgValues.put(Task.TaskEntry.ID_USER,idUser);
+        msgValues.put(Task.TaskEntry.MAIL,mail);
+        msgValues.put(Task.TaskEntry.GENDER,gender);
+        msgValues.put(Task.TaskEntry.NAME,name);
+        msgValues.put(Task.TaskEntry.SURNAME,surname);
+        msgValues.put(Task.TaskEntry.COUNTRY,country);
+        msgValues.put(Task.TaskEntry.CITY,city);
+        msgValues.put(Task.TaskEntry.AGE,age);
+        msgValues.put(Task.TaskEntry.IP,inetAddress);
+        msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
+        db.insert(Task.TaskEntry.USER, null, msgValues);
+        ContentValues ipValues = new ContentValues();
+    }
+
+    public void addNumber(String number,String idUser){
+        String query="UPDATE "+ Task.TaskEntry.USER+
+                " SET "+ Task.TaskEntry.NUMBER+" = " +number+
+                " WHERE '"+ Task.TaskEntry.ID_USER+"' = '"+idUser+"'";
+        db.execSQL(query);
+    }
+
+    public Cursor  getAllUsers(){
+        String query = "SELECT *" +
+                " FROM "+ Task.TaskEntry.USER;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c;
+    }
+
+    public String findIp(String id_user){
+        String query = "SELECT " + Task.TaskEntry.IP+
+                " FROM " + Task.TaskEntry.USER+
+                " WHERE id_user ='" +id_user+ "'" ;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c.getString(0);
+    }
+    public String findId_user(String ip){
+
+        String query = "SELECT " + Task.TaskEntry.ID_USER+
+                " FROM " +Task.TaskEntry.USER+
+                " WHERE ip ='" +ip+ "'" ;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c.getString(1);
+    }
+
+    /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //duplicare i metodi sopra
-    public void addGroupMsg(String msg, int idSender,String idgroup) {
+    public void addGroupMsg(String msg, int idSender,int idgroup) {
         ContentValues msgValues = new ContentValues();
         //int idgroup = retrieveIdGroup(GroupName);
         msgValues.put(Task.TaskEntry.ID_GROUP,idgroup);
@@ -261,27 +361,6 @@ public class Database extends SQLiteOpenHelper {
         chatValues.put(Task.TaskEntry.GROUP_NAME, name);
         db.insert(Task.TaskEntry.GROUPS, null, chatValues);
     }
-     public String findIp(String id_user){
-         String query = "SELECT ip" +
-                 " FROM NETWORK_IPS" +
-                 " WHERE id_user ='" +id_user+ "'" ;
-         Cursor c = db.rawQuery(query, null);
-         if (c != null) {
-             c.moveToFirst();
-         }
-         return c.getString(1);
-     }
-    public String findId_user(String ip){
-
-        String query = "SELECT id_user " +
-                " FROM NETWORK_IPS" +
-                " WHERE ip ='" +ip+ "'" ;
-        Cursor c = db.rawQuery(query, null);
-        if (c != null) {
-            c.moveToFirst();
-        }
-        return c.getString(1);
-    }
 
     public Cursor getAllGroupMsg(int idGroup) {
         String query = "SELECT id_sender,msg,path,date" +
@@ -318,79 +397,5 @@ public class Database extends SQLiteOpenHelper {
             return false;
         }
 
-    }
-    //globale
-    public void addGlobalMsg(String msg, int idSender) {
-        ContentValues msgValues = new ContentValues();
-        msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
-        msgValues.put(Task.TaskEntry.MSG, msg);
-        db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
-        lastMessageChat(msg,idSender);
-    }
-
-
-    public Cursor getGlobalMessage(){
-        String query = "SELECT *" +
-                " FROM "+ Task.TaskEntry.GLOBAL_MESSAGE;
-        Cursor c = db.rawQuery(query, null);
-        if (c != null) {
-            c.moveToFirst();
-        }
-        return c;
-    }
-
-    public String[] getMyInformation(){
-        String user[]=new String[11];
-        String query = "SELECT *"+
-                " FROM "+ Task.TaskEntry.USER;
-        Cursor c = db.rawQuery(query, null);
-        if (c != null) {
-            c.moveToFirst();
-        }
-        user[0]=c.getString(0);
-        user[1]=c.getString(7);
-        user[2]=c.getString(8);
-        user[3]=c.getString(6);
-        user[4]=c.getString(5);
-        user[5]=c.getString(2);
-        user[6]=c.getString(3);
-        user[7]=c.getString(9);
-        user[8]=c.getString(11);
-        user[9]=c.getString(1);
-        user[10]=c.getString(4);
-        return user;
-    }
-
-    public void addUser(String idUser,String inetAddress,String mail,String gender,String name,String surname,String country,String city,String age){
-        ContentValues msgValues = new ContentValues();
-        msgValues.put(Task.TaskEntry.ID_USER,idUser);
-        msgValues.put(Task.TaskEntry.MAIL,mail);
-        msgValues.put(Task.TaskEntry.GENDER,gender);
-        msgValues.put(Task.TaskEntry.NAME,name);
-        msgValues.put(Task.TaskEntry.SURNAME,surname);
-        msgValues.put(Task.TaskEntry.COUNTRY,country);
-        msgValues.put(Task.TaskEntry.CITY,city);
-        msgValues.put(Task.TaskEntry.AGE,age);
-        db.insert(Task.TaskEntry.USER, null, msgValues);
-        ContentValues ipValues = new ContentValues();
-        ipValues.put(Task.TaskEntry.ID_USER,idUser);
-        ipValues.put(Task.TaskEntry.IP,inetAddress);
-        db.insert(Task.TaskEntry.NETWORK_IPS, null, ipValues);
-    }
-
-    public void addNumber(String number,String idUser){
-        String query="UPDATE "+ Task.TaskEntry.USER+
-                " SET "+ Task.TaskEntry.NUMBER+" = " +number+
-                " WHERE '"+ Task.TaskEntry.ID_USER+"' = '"+idUser+"'";
-        db.execSQL(query);
-    }
-    public Cursor  getAllUsers(){
-        String query = "SELECT *" +
-                " FROM "+ Task.TaskEntry.USER;
-        Cursor c = db.rawQuery(query, null);
-        if (c != null) {
-            c.moveToFirst();
-        }
-        return c;
-    }
+    }*/
 }

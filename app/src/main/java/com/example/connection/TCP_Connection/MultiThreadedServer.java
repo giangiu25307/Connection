@@ -27,8 +27,6 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         this.connection=connection;
     }
 
-    public void receiveMsg(){}//creare scrittura su file della chat tenendo da conto gli id
-
     private synchronized boolean isStopped() {
         return this.isStopped;
     }

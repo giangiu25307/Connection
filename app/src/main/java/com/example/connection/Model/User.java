@@ -5,14 +5,12 @@ import java.net.InetAddress;
 public class User {
 
 
-    String  username, password, mail, gender, name, surname, country, city;
-    int number, age,idUser;
+    String  username, mail, gender, name, surname, country, city,profilePic,number, age,idUser;
     InetAddress inetAddress;
 
-    public User(int idUser, String username, String password, String mail, String gender, String name, String surname, String country, String city, int number, int age) {
+    public User(String idUser, String username, String mail, String gender, String name, String surname, String country, String city, String number, String age, String profilePic) {
         this.idUser = idUser;
         this.username = username;
-        this.password = password;
         this.mail = mail;
         this.gender = gender;
         this.name = name;
@@ -21,6 +19,7 @@ public class User {
         this.city = city;
         this.number = number;
         this.age = age;
+        this.profilePic=profilePic;
     }
 
     public InetAddress getInetAddress() {
@@ -28,14 +27,14 @@ public class User {
     }
 
     public String getAll(){
-        return idUser +"£€"+inetAddress+"£€"+mail+"£€"+gender+"£€"+name+"£€"+surname+"£€"+country+"£€"+city+"£€"+age;
+        return idUser +"£€"+inetAddress+"£€"+username+"£€"+mail+"£€"+gender+"£€"+name+"£€"+surname+"£€"+country+"£€"+city+"£€"+age+"£€"+profilePic;
     }
 
-    public int getIdUser() {
+    public String getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(String idUser) {
         this.idUser = idUser;
     }
 
@@ -45,14 +44,6 @@ public class User {
 
     public void setUsername(String username) {
         username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getMail() {
@@ -103,19 +94,27 @@ public class User {
         this.city = city;
     }
 
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 }

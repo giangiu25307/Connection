@@ -17,17 +17,17 @@ public class ChatController {
     Multicast udp;
     MultiThreadedServer tcpServer;
     Database database;
-    User user,user1;
+    User user;
     public ChatController(Connection connection) {
         tcp = new TCP_Client();
-        udp = new Multicast();
+        udp = new Multicast(user,database);
         database=new Database(connection.getApplicationContext());
         String userInfo[]=database.getMyInformation();
-        user=new User(Integer.parseInt(userInfo[0]),userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],Integer.parseInt(userInfo[9]),Integer.parseInt(userInfo[10]));
+        user=new User(userInfo[0],userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],userInfo[9],userInfo[10]);
     }
 
-    public void sendUDPMsg(String msg) {
-        udp.sendMsg(String.valueOf(user.getIdUser())+":"+msg);
+    public void sendGlobalMsg(String msg) {
+        udp.sendGlobalMsg(user.getIdUser()+":"+msg);
         database.addGlobalMsg(msg,user.getIdUser());
     }
 
@@ -36,24 +36,20 @@ public class ChatController {
             String ip = database.findIp(idReceiver);
             tcp.startConnection(ip, 50000);
             tcp.sendMessage(msg);
-            database.addMsg(msg,Integer.parseInt(idReceiver),user.getIdUser());
-            tcp.stopConnection();
+            database.addMsg(msg,idReceiver,user.getIdUser());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     public void sendTCPPath(Paths path, String idReceiver) {
         try {
             String ip = database.findIp(idReceiver);
             tcp.startConnection(ip, 50000);
             tcp.sendMessage(path.toString());//encoding to byte DA FARE
-            database.addMsg(path.toString(),Integer.parseInt(idReceiver),user.getIdUser());
-            tcp.stopConnection();
+            database.addMsg(path.toString(),idReceiver,user.getIdUser());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-
 }

@@ -126,7 +126,6 @@ public class ConnectionController {
             @Override
             public void onSuccess() {
                 ConnectionToDevice = "Connected to the group";
-                sendUniqueData();
             }
 
             @Override
@@ -134,13 +133,6 @@ public class ConnectionController {
                 ConnectionToDevice = "Not Connected";
             }
         });
-    }
-
-    private void sendUniqueData() {
-        //INVIO IP E ID-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        String msg = user.getAll();
-        udpClient = new Multicast(user);
-        udpClient.sendMsg(msg);
     }
 
     private void setConfig(){
