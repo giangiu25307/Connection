@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
 
@@ -17,6 +19,7 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectionController {
@@ -35,13 +38,15 @@ public class ConnectionController {
     List<ScanResult> results;
     User user;
     MultiThreadedServer tcpServer;
+    Database database;
 
-    public ConnectionController(Connection connection) {
+    public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         ConnectionToDevice = "";
         ConnectionStatus = "";
+        this.database = database;
         /*macAdresses = new HashMap<>();
         peers = new ArrayList<WifiP2pDevice>();
         newList = new ArrayList<WifiP2pDevice>();
@@ -74,10 +79,10 @@ public class ConnectionController {
         resetConfig();
     }
 
-    private void checkDevices(){
-        if(group.getClientList().size()==1){
+    private void checkDevices() {
+        if (group.getClientList().size() == 1) {
             try {
-                tcpClient.startConnection("192.168.49.1",50000);
+                tcpClient.startConnection("192.168.49.1", 50000);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -85,8 +90,8 @@ public class ConnectionController {
         }
     }
 
-    private void removeGroup(){
-        mManager.removeGroup(mChannel,null);
+    private void removeGroup() {
+        mManager.removeGroup(mChannel, null);
         resetConfig();
     }
 
@@ -103,7 +108,7 @@ public class ConnectionController {
 
     private void scanSuccess() {
         results = wifiManager.getScanResults();
-        if(getWifiDirectName().equals("")) createGroup();
+        if (getWifiDirectName().equals("")) createGroup();
         else {
             setConfig();
             connectionToGroup();
@@ -135,7 +140,7 @@ public class ConnectionController {
         });
     }
 
-    private void disconnectToGroup(){
+    private void disconnectToGroup() {
         mManager.cancelConnect(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -149,9 +154,9 @@ public class ConnectionController {
         });
     }
 
-    private void setConfig(){
+    private void setConfig() {
         String networkName = getWifiDirectName();
-        if(!networkName.equals("")) {
+        if (!networkName.equals("")) {
             config = new WifiP2pConfig.Builder()
                     .setNetworkName(networkName)
                     .setPassphrase("12345678")
@@ -161,21 +166,26 @@ public class ConnectionController {
         }
     }
 
-    private String getWifiDirectName(){
-        String networkName="";
-        for (int i=0; i<results.size();i++){
-            if (results.get(i).SSID.contains("DIRECT-"))networkName=results.get(i).SSID;
+    private String getWifiDirectName() {
+        String networkName = "";
+        for (int i = 0; i < results.size(); i++) {
+            if (results.get(i).SSID.contains("DIRECT-")) networkName = results.get(i).SSID;
         }
         return networkName;
     }
 
-    private void resetConfig(){
+    private void resetConfig() {
         config = new WifiP2pConfig.Builder()
-                .setNetworkName("DIRECT-"+user.getIdUser())
+                .setNetworkName("DIRECT-" + user.getIdUser())
                 .setPassphrase("12345678")
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
                 .enablePersistentMode(false)
                 .build();
+    }
+
+    public void clientList() {
+        //vedere l'errore che viene fornito alla disconessione
+        //se la potenza è troppo bassa il dispositivo si disconette in automatico
     }
 
     /*Collection<WifiP2pDevice> peers;

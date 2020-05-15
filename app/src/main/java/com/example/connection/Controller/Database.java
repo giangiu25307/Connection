@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.connection.Model.User;
-
 import java.nio.file.Paths;
 
 public class Database extends SQLiteOpenHelper {
@@ -42,7 +40,7 @@ public class Database extends SQLiteOpenHelper {
                 + ")";
 
         String CREATE_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.MESSAGE + " ( "
-                + Task.TaskEntry.ID_CHAT + " INTEGER NOT NULL, "
+                + Task.TaskEntry.ID_CHAT + " TEXT NOT NULL, "
                 + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
                 + Task.TaskEntry.MSG + " TEXT, "
                 + Task.TaskEntry.PATH + " TEXT, "
@@ -53,8 +51,7 @@ public class Database extends SQLiteOpenHelper {
 
 
         String CREATE_CHAT_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.CHAT + " ( "
-                + Task.TaskEntry.ID_CHAT + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + Task.TaskEntry.ID_RECEIVER + " TEXT NOT NULL, "
+                + Task.TaskEntry.ID_CHAT + " TEXT PRIMARY KEY, "
                 + Task.TaskEntry.LAST_MESSAGE + "TEXT,"
                 + Task.TaskEntry.NAME + "TEXT,"
                 + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
@@ -160,7 +157,7 @@ public class Database extends SQLiteOpenHelper {
 
     public void createChat(String idReceiver,String name) {
         ContentValues chatValues = new ContentValues();
-        chatValues.put(Task.TaskEntry.ID_RECEIVER, idReceiver);
+        chatValues.put(Task.TaskEntry.ID_CHAT, idReceiver);
         chatValues.put(Task.TaskEntry.NAME, name);
         db.insert(Task.TaskEntry.CHAT, null, chatValues);
     }
@@ -309,9 +306,9 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void deleteUser(String idUser){
-        String query = "SELECT " + Task.TaskEntry.ID_CHAT+
+        String query = "SELECT *" +
                 " FROM "+ Task.TaskEntry.CHAT+
-                " WHERE "+ Task.TaskEntry.ID_RECEIVER+"="+idUser;
+                " WHERE "+ Task.TaskEntry.ID_CHAT +"="+idUser;
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             query="UPDATE "+ Task.TaskEntry.USER+

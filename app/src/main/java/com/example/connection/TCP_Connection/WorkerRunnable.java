@@ -52,7 +52,7 @@ class WorkerRunnable implements Runnable {
                         String splitted[]=splittedR[1].split(",;");
                         for (int i=0;i<splitted.length;i++){
                             String user[]=splitted[i].split(",");
-                            database.addUser(user[0],user[1],user[2],user[3],user[4],user[5],user[6],user[7],user[8],user[9]);
+                            database.addUser(user[0],user[1],user[2],user[3],user[4],user[5],user[6],user[7],user[8],user[9],user[10]);
                         }
                     }else{
                         database.addMsg(msg, database.getMyInformation()[0], database.findId_user(ip));

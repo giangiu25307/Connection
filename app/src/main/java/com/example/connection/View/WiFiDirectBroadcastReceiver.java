@@ -7,11 +7,14 @@ import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.widget.Toast;
 
+import com.example.connection.Controller.ConnectionController;
+
 public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
     WifiP2pManager.PeerListListener peerListListener;
     WifiP2pManager.ConnectionInfoListener connectionInfoListener;
+    ConnectionController connectionController;
 
     public WiFiDirectBroadcastReceiver(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, WifiP2pManager.PeerListListener peerListListener,WifiP2pManager.ConnectionInfoListener connectionInfoListener) {
         this.mManager = mManager;
@@ -38,7 +41,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             if (mManager == null) {
                 return;
             }
-
+            connectionController.clientList();
             /*NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo.isConnected()) {
                 mManager.requestConnectionInfo(mChannel, connectionInfoListener);
