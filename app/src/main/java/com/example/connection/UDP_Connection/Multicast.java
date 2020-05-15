@@ -70,6 +70,8 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                 */
                 } else if (splittedR[0].equals("localization")) {
                     //implementare la localizzazione
+                }else if(splittedR[0].equals("leave")) {
+                    database.deleteUser(splittedR[1]);
                 }
             }
         } catch (IOException e) {
@@ -91,19 +93,6 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         }
     }
 
-    /*public void sendGroupMsg(String idGroup, String msg) {
-        try {
-            msg = idGroup + "£€" + user.getIdUser() + "£€" + user.getUsername() + "£€" + msg; //IMPLEMENTARE CRIPTAZIONEEEEEEEEEE
-            byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
-            s.setTimeToLive(255);
-            s.send(message);
-            database.addGlobalMsg(msg, user.getIdUser());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-
     public void sendInfo() {
         try {
             String info = "info£€" + user.getAll();
@@ -115,6 +104,17 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         }
     }
 
+    public void imLeaving(){
+        try {
+            String leave = "leave£€" + user.getIdUser();
+            byte[] bytes = leave.getBytes(StandardCharsets.UTF_8);
+            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
+            s.send(message);
+            database.leave();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected Void doInBackground(Void... voids) {
@@ -137,4 +137,17 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         c.close();
         return msg;
     }
+
+    /*public void sendGroupMsg(String idGroup, String msg) {
+        try {
+            msg = idGroup + "£€" + user.getIdUser() + "£€" + user.getUsername() + "£€" + msg; //IMPLEMENTARE CRIPTAZIONEEEEEEEEEE
+            byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
+            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
+            s.setTimeToLive(255);
+            s.send(message);
+            database.addGlobalMsg(msg, user.getIdUser());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
 }

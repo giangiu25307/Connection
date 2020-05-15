@@ -308,6 +308,29 @@ public class Database extends SQLiteOpenHelper {
         return c.getString(1);
     }
 
+    public void deleteUser(String idUser){
+        String query = "SELECT " + Task.TaskEntry.ID_CHAT+
+                " FROM "+ Task.TaskEntry.CHAT+
+                " WHERE "+ Task.TaskEntry.ID_RECEIVER+"="+idUser;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            query="UPDATE "+ Task.TaskEntry.USER+
+                    " SET "+ Task.TaskEntry.IP+" = NULL" +
+                    " WHERE '"+ Task.TaskEntry.ID_USER+"' = '"+idUser+"'";
+            db.execSQL(query);
+        } else {
+            query = " DELETE FROM " + Task.TaskEntry.USER
+                    + " WHERE '" + Task.TaskEntry.ID_USER + "' = '" + idUser + "'";
+            db.execSQL(query);
+        }
+    }
+
+    public void leave(){
+        String query="UPDATE "+ Task.TaskEntry.USER+
+                " SET "+ Task.TaskEntry.IP+" = NULL";
+        db.execSQL(query);
+    }
+
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //duplicare i metodi sopra
     public void addGroupMsg(String msg, int idSender,int idgroup) {

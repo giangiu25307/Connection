@@ -135,6 +135,20 @@ public class ConnectionController {
         });
     }
 
+    private void disconnectToGroup(){
+        mManager.cancelConnect(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                System.out.println("disconnected");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                System.out.println("failed to disconnect");
+            }
+        });
+    }
+
     private void setConfig(){
         String networkName = getWifiDirectName();
         if(!networkName.equals("")) {
