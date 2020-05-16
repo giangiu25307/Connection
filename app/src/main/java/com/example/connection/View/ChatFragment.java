@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,7 +27,7 @@ import java.util.Arrays;
 
 public class ChatFragment extends Fragment implements View.OnClickListener {
 
-    Button messagesButton, groupsButton, requestButton;
+    private ImageView globalButton;
     private int textColor;
     private SharedPreferences sharedPreferences;
 
@@ -40,31 +43,15 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             textColor = Color.WHITE;
         }
 
-        messagesButton = view.findViewById(R.id.chatButton);
-        groupsButton = view.findViewById(R.id.groupsButton);
-        requestButton = view.findViewById(R.id.globalButton);
-        messagesButton.setOnClickListener(this);
-        groupsButton.setOnClickListener(this);
-        requestButton.setOnClickListener(this);
+        globalButton = view.findViewById(R.id.globalButton);
+        globalButton.setOnClickListener(this);
 
-        setupRecyclerView(view);
+        //setupRecyclerView(view);
 
         return view;
     }
 
     private void changeView(int button){
-        ArrayList<Button> buttonArray = new ArrayList<>(Arrays.asList(messagesButton, groupsButton, requestButton));
-        Button currentButton;
-        for (int i = 0; i <= 2; i++){
-            currentButton = buttonArray.get(i);
-            if(button == i){
-                currentButton.setBackground(getResources().getDrawable(R.drawable.chat_selector_btn_background));
-                currentButton.setTextColor(Color.WHITE);
-            }else{
-                currentButton.setBackgroundColor(Color.TRANSPARENT);
-                currentButton.setTextColor(textColor);
-            }
-        }
 
     }
 
@@ -83,14 +70,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.chatButton:
-                changeView(0);
-                break;
-            case R.id.groupsButton:
-                changeView(1);
-                break;
             case R.id.globalButton:
-                changeView(2);
+                //changeView(2);
                 break;
             default:
                 break;
