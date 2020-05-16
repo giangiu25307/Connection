@@ -20,7 +20,7 @@ public class TCP_Client {
     private Socket clientSocket;
     private   OutputStream out;
     private DataOutputStream dos;
-
+    private String msg="message£€";
     public void startConnection(String ip, int port) throws IOException {
         clientSocket = new Socket(ip, port);
         out = clientSocket.getOutputStream();
@@ -28,7 +28,8 @@ public class TCP_Client {
     }
 
     public void sendMessage(String msg) throws IOException {
-        byte[] array = msg.getBytes();
+        this.msg+=msg;
+        byte[] array = this.msg.getBytes();
         dos.writeInt(array.length);
         dos.write(array, 0, array.length);
     }

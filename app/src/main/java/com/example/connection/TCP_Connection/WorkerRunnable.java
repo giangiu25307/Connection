@@ -1,5 +1,6 @@
 package com.example.connection.TCP_Connection;
 
+import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.View.Connection;
 
@@ -19,11 +20,13 @@ class WorkerRunnable implements Runnable {
     private Database database;
     SimpleDateFormat sdf;
     Connection connection;
+    ConnectionController connectionController;
 
-    public WorkerRunnable(Socket clientSocket, Database database, Connection connection) {
+    public WorkerRunnable(Socket clientSocket, Database database, Connection connection,ConnectionController connectionController) {
         this.connection = connection;
         this.clientSocket = clientSocket;
         this.database = database;
+        this.connectionController = connectionController;
     }
 
     public void run() {
@@ -47,14 +50,17 @@ class WorkerRunnable implements Runnable {
                     byte[] message = new byte[length];
                     dIn.readFully(message, 0, message.length); // read the message
                     String msg=message.toString();
-                    String splittedR[]=msg.split("£€");
+                    String splittedR[]=msg.split("£€");//INVIO DA PARTE DEL GROUP OWNER DI TUTTI I DATI DI TUTTI GLI UTENTI AL NUOVO ENTRATO
                     if (splittedR[0].equals("sendInfo")){
                         String splitted[]=splittedR[1].split(",;");
                         for (int i=0;i<splitted.length;i++){
                             String user[]=splitted[i].split(",");
                             database.addUser(user[0],user[1],user[2],user[3],user[4],user[5],user[6],user[7],user[8],user[9],user[10]);
                         }
-                    }else{
+                    }else if(splittedR[0].equals("GO_LEAVES_BY")) {
+                        database.deleteUser(database.findId_user("192.168.49.1"));
+                        connectionController.disconnectToGroup();
+                    }else if(splittedR[0].equals("message")){
                         database.addMsg(msg, database.getMyInformation()[0], database.findId_user(ip));
                     }
                 }

@@ -110,7 +110,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             byte[] bytes = leave.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             s.send(message);
-            database.leave();
+            database.deleteAllUser();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -47,17 +48,18 @@ public class ConnectionController {
         ConnectionToDevice = "";
         ConnectionStatus = "";
         this.database = database;
-        /*macAdresses = new HashMap<>();
-        peers = new ArrayList<WifiP2pDevice>();
-        newList = new ArrayList<WifiP2pDevice>();
-        boolean DeviceFound=true;
-        SearchPeers();
-        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel,peerListListener,connectionInfoListener);
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);*/
+        final Thread thread = new Thread(){
+        public void run() {
+            try {
+                while(true){
+                    clientList();
+                    this.sleep(100);
+                }
+            } catch(InterruptedException v) {
+                System.out.println(v);
+            }
+        }
+    };
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         Scan();
         wifiScanReceiver = new BroadcastReceiver() {
@@ -140,7 +142,8 @@ public class ConnectionController {
         });
     }
 
-    private void disconnectToGroup() {
+    public void disconnectToGroup() {
+        udpClient.imLeaving();
         mManager.cancelConnect(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -184,9 +187,37 @@ public class ConnectionController {
     }
 
     public void clientList() {
-        //vedere l'errore che viene fornito alla disconessione
-        //se la potenza è troppo bassa il dispositivo si disconette in automatico
+        WifiManager wifiManager = (WifiManager) connection.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        int numberOfLevels = 5;
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), numberOfLevels);
+        if (level<=2){
+            disconnectToGroup();
+        }
     }
+
+    public void GOLeaves(){
+        String maxId = database.getMaxId();
+        try {
+            tcpClient.startConnection(database.findIp(maxId),50000);
+            tcpClient.sendMessage("GO_LEAVES_BY£€");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /*macAdresses = new HashMap<>();
+        peers = new ArrayList<WifiP2pDevice>();
+        newList = new ArrayList<WifiP2pDevice>();
+        boolean DeviceFound=true;
+        SearchPeers();
+        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel,peerListListener,connectionInfoListener);
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);*/
 
     /*Collection<WifiP2pDevice> peers;
     List<WifiP2pDevice> newList;

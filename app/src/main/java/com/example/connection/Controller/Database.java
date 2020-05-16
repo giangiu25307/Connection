@@ -322,10 +322,22 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    public void leave(){
-        String query="UPDATE "+ Task.TaskEntry.USER+
+    public void deleteAllUser(){
+        String query="DELETE FROM USER " +
+                " WHERE NOT EXISTS(SELECT NULL" +
+                "                    FROM CHAT f" +
+                "                   WHERE f.id_chat = USER.id_user)";
+        db.execSQL(query);
+        query = "UPDATE "+ Task.TaskEntry.USER+
                 " SET "+ Task.TaskEntry.IP+" = NULL";
         db.execSQL(query);
+    }
+
+    public String getMaxId(){
+        String query = " SELECT MAX("+ Task.TaskEntry.ID_USER+")"+
+                " FROM "+ Task.TaskEntry.USER;
+        Cursor c = db.rawQuery(query,null);
+        return c.getString(0);
     }
 
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

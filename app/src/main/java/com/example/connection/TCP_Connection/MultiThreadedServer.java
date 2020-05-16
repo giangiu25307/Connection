@@ -2,6 +2,7 @@ package com.example.connection.TCP_Connection;
 
 import android.os.AsyncTask;
 
+import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.View.Connection;
 
@@ -19,12 +20,14 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     private String receive;
     private Database database;
     private Connection connection;
+    private ConnectionController connectionController;
 
-    public MultiThreadedServer(int port,Database database, Connection connection) {
+    public MultiThreadedServer(int port,Database database, Connection connection,ConnectionController connectionController) {
         this.serverPort = port;
         this.database=database;
         receive="";
         this.connection=connection;
+        this.connectionController = connectionController;
     }
 
     private synchronized boolean isStopped() {
@@ -66,7 +69,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
                 throw new RuntimeException(
                         "Error accepting client connection", e);
             }
-            new Thread(new WorkerRunnable(clientSocket,database,connection)).start();
+            new Thread(new WorkerRunnable(clientSocket,database,connection,connectionController)).start();
         }
         System.out.println("Server Stopped.");
         return null;
