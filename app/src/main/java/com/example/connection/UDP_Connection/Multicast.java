@@ -3,6 +3,7 @@ package com.example.connection.UDP_Connection;
 import android.database.Cursor;
 import android.os.AsyncTask;
 
+import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Controller.Task;
 import com.example.connection.Model.User;
@@ -24,9 +25,11 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     private DatagramSocket socket = null;
     User user;
     TCP_Client tcp_client;
+    ConnectionController connectionController;
     private Database database;
 
-    public Multicast(User user, Database database) {
+    public Multicast(User user, Database database,ConnectionController connectionController) {
+        this.connectionController=connectionController;
         try {
             tcp_client = new TCP_Client();
             this.database = database;
@@ -73,6 +76,12 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                 }else if(splittedR[0].equals("leave")) {
                     database.deleteUser(splittedR[1]);
                 }
+                else if (splittedR[0].equals("GO_LEAVES_BYE£€")){
+                    database.deleteAllUser();
+                    connectionController.setConfig(splittedR[1]);
+                    connectionController.connectionToGroup();
+
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -118,7 +127,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        new Thread(new Multicast(user, database)).start();
+        new Thread(new Multicast(user, database,connectionController)).start();
         return null;
     }
     private String cursorToString(Cursor c){

@@ -9,9 +9,9 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
-import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.CountDownTimer;
 
 import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.MultiThreadedServer;
@@ -20,7 +20,6 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectionController {
@@ -40,6 +39,7 @@ public class ConnectionController {
     User user;
     MultiThreadedServer tcpServer;
     Database database;
+    int count=0;
 
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
@@ -61,7 +61,7 @@ public class ConnectionController {
         }
     };
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
-        Scan();
+        scan();
         wifiScanReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context c, Intent intent) {
@@ -97,15 +97,17 @@ public class ConnectionController {
         resetConfig();
     }
 
-    private void createGroup() {
+    public void createGroup() {
+        this.resetConfig();
         mManager.createGroup(mChannel, config, null);
     }
 
-    private void Scan() {
+    private void scan() {
         boolean success = wifiManager.startScan();
         if (!success) {
             scanFailure();
         }
+        scanSuccess();
     }
 
     private void scanSuccess() {
@@ -123,7 +125,7 @@ public class ConnectionController {
         results = wifiManager.getScanResults();
     }
 
-    private void connectionToGroup() {
+    public void connectionToGroup() {
         //CONNESSIONE GRUPPO---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         /*final WifiP2pDevice device = deviceArray[i];
         if (!macAdresses.containsValue(device.deviceAddress))
@@ -137,9 +139,24 @@ public class ConnectionController {
 
             @Override
             public void onFailure(int reason) {
-                ConnectionToDevice = "Not Connected";
+                if (count < 3) {
+                    new CountDownTimer(3000, 1000) {
+
+                        public void onTick(long millisUntilFinished) {
+                        }
+
+                        public void onFinish() {
+                            count++;
+                            connectionToGroup();
+                        }
+                    }.start();
+                }
+                else{
+                    scan();
+                }
             }
         });
+
     }
 
     public void disconnectToGroup() {
@@ -157,11 +174,20 @@ public class ConnectionController {
         });
     }
 
-    private void setConfig() {
+    public void setConfig() {
         String networkName = getWifiDirectName();
         if (!networkName.equals("")) {
             config = new WifiP2pConfig.Builder()
                     .setNetworkName(networkName)
+                    .setPassphrase("12345678")
+                    .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
+                    .enablePersistentMode(false)
+                    .build();
+        }
+    }public void setConfig(String networkName) {
+        if (!networkName.equals("")) {
+            config = new WifiP2pConfig.Builder()
+                    .setNetworkName("DIRECT-"+networkName)
                     .setPassphrase("12345678")
                     .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
                     .enablePersistentMode(false)
@@ -197,16 +223,28 @@ public class ConnectionController {
     }
 
     public void GOLeaves(){
-        String maxId = database.getMaxId();
+        final String maxId = database.getMaxId();
         try {
             tcpClient.startConnection(database.findIp(maxId),50000);
             tcpClient.sendMessage("GO_LEAVES_BY£€");
+            new CountDownTimer(3000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                }
+
+                public void onFinish() {
+                udpClient.sendGlobalMsg("GO_LEAVES_BYE£€"+maxId);
+                }
+            }.start();
+            this.removeGroup();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
-
+    public  Cursor getAllClientList(){
+        return database.getAllUsers();
+    }
     /*macAdresses = new HashMap<>();
         peers = new ArrayList<WifiP2pDevice>();
         newList = new ArrayList<WifiP2pDevice>();

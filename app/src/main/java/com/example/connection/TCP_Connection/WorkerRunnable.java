@@ -60,6 +60,7 @@ class WorkerRunnable implements Runnable {
                     }else if(splittedR[0].equals("GO_LEAVES_BY")) {
                         database.deleteUser(database.findId_user("192.168.49.1"));
                         connectionController.disconnectToGroup();
+                        connectionController.createGroup();
                     }else if(splittedR[0].equals("message")){
                         database.addMsg(msg, database.getMyInformation()[0], database.findId_user(ip));
                     }
