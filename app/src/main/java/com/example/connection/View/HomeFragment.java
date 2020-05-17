@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.connection.Controller.ConnectionController;
 import com.example.connection.R;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
@@ -19,6 +20,11 @@ public class HomeFragment extends Fragment {
 
     ChipNavigationBar chipNavigationBar;
     Fragment fragment;
+    ConnectionController connectionController;
+
+    public HomeFragment(ConnectionController connectionController) {
+        this.connectionController = connectionController;
+    }
 
     @Nullable
     @Override
@@ -29,7 +35,7 @@ public class HomeFragment extends Fragment {
 
         if(savedInstanceState == null){
             chipNavigationBar.setItemSelected(R.id.map, true);
-            fragment = new MapFragment();
+            fragment = new MapFragment(connectionController);
             loadFragment();
         }
 
@@ -38,7 +44,7 @@ public class HomeFragment extends Fragment {
             public void onItemSelected(int i) {
                 switch (i){
                     case R.id.map:
-                        fragment = new MapFragment();
+                        fragment = new MapFragment(connectionController);
                         break;
                     case R.id.chat:
                         fragment = new ChatFragment();

@@ -70,7 +70,7 @@ public class Connection extends AppCompatActivity {
                     PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         }else {
-            connectionController = new ConnectionController(this);
+            connectionController = new ConnectionController(this, null);
         }
         createCountDowntimer();
         countDownTimer.start();
@@ -137,7 +137,7 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                fragment = new HomeFragment();
+                fragment = new HomeFragment(connectionController);
                 loadFragment(true);
             }
         };
