@@ -14,15 +14,26 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 
 public class TCP_Client {
+    SSLContext sslContext=null;
+    private SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+    private SSLSocket sslsocket;
     private Socket clientSocket;
     private   OutputStream out;
     private DataOutputStream dos;
     private String msg="message£€";
-    public void startConnection(String ip, int port) throws IOException {
-        clientSocket = new Socket(ip, port);
+
+    public void startConnection(String ip, int port) throws IOException, NoSuchAlgorithmException {
+        sslContext = SSLContext.getInstance("TLSv1.2");
+        sslsocket=(SSLSocket) sslContext.getSocketFactory().createSocket(ip, port);
+        sslsocket.startHandshake();
         out = clientSocket.getOutputStream();
         dos = new DataOutputStream(out);
     }
