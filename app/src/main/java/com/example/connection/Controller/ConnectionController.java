@@ -20,6 +20,7 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class ConnectionController {
@@ -86,7 +87,7 @@ public class ConnectionController {
             try {
                 tcpClient.startConnection("192.168.49.1", 50000);
 
-            } catch (IOException e) {
+            } catch (IOException | NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
         }
@@ -237,7 +238,7 @@ public class ConnectionController {
                 }
             }.start();
             this.removeGroup();
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
 
