@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -36,6 +35,7 @@ class WorkerRunnable implements Runnable {
             DataInputStream dIn = new DataInputStream(clientSocket.getInputStream());
             int length = dIn.readInt();                    // read length of incoming message
             if (length > 0) {
+                //reading if it's a image ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
                 if (dIn.readInt() == 0xffd8ffe0) {
                     byte[] message = new byte[length];
                     dIn.readFully(message, 0, message.length);
@@ -50,18 +50,21 @@ class WorkerRunnable implements Runnable {
                     byte[] message = new byte[length];
                     dIn.readFully(message, 0, message.length); // read the message
                     String msg=message.toString();
-                    String splittedR[]=msg.split("£€");//INVIO DA PARTE DEL GROUP OWNER DI TUTTI I DATI DI TUTTI GLI UTENTI AL NUOVO ENTRATO
+                    String splittedR[]=msg.split("£€");
                     if (splittedR[0].equals("sendInfo")){
+                        //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
                         String splitted[]=splittedR[1].split(",;");
                         for (int i=0;i<splitted.length;i++){
                             String user[]=splitted[i].split(",");
                             database.addUser(user[0],user[1],user[2],user[3],user[4],user[5],user[6],user[7],user[8],user[9],user[10]);
                         }
                     }else if(splittedR[0].equals("GO_LEAVES_BY")) {
+                        //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
                         database.deleteUser(database.findId_user("192.168.49.1"));
                         connectionController.disconnectToGroup();
                         connectionController.createGroup();
                     }else if(splittedR[0].equals("message")){
+                        //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                         database.addMsg(msg, database.getMyInformation()[0], database.findId_user(ip));
                     }
                 }

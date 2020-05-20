@@ -4,6 +4,7 @@ import android.provider.BaseColumns;
 
 public class Task {
 
+    //LIST OF ALL THE DATABASE VARIABLE --------------------------------------------------------------------------------------------------------------------------------
     public class TaskEntry implements BaseColumns {
         public static final String USER = "USER";
         public static final String ID_USER = "id_user";

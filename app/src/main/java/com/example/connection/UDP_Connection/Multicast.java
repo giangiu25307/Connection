@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
-import com.example.connection.Controller.Task;
 import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.TCP_Client;
 
@@ -16,6 +15,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 
 public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
 
@@ -31,6 +31,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     public Multicast(User user, Database database,ConnectionController connectionController) {
         this.connectionController=connectionController;
         try {
+            s=new MulticastSocket();
             tcp_client = new TCP_Client();
             this.database = database;
             this.user = user;
@@ -55,8 +56,13 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                 String received = new String(recv.getData(), 0, recv.getLength());
                 String splittedR[] = received.split("£€");
                 if (splittedR[0].equals("info")) {
+                    //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
                     if (user.getInetAddress().equals("192.168.49.1")) {
-                        tcp_client.startConnection(splittedR[2], 50000);
+                        try {
+                            tcp_client.startConnection(splittedR[2], 50000);
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        }
                         Cursor c = database.getAllUsers();
                         tcp_client.sendMessage(this.cursorToString(c));
                         database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);//check adduser
@@ -64,6 +70,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                         database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);
                     }
                 } else if (splittedR[0].equals("message")) {
+                    //receiving a message -----------------------------------------------------------------------------------------------------------------------------------------------
                     for (int i = 3; i < splittedR.length; i++) {
                         received += splittedR[i];
                     }
@@ -74,9 +81,11 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                 } else if (splittedR[0].equals("localization")) {
                     //implementare la localizzazione
                 }else if(splittedR[0].equals("leave")) {
+                    //A user is leaving the group :( ------------------------------------------------------------------------------------------------------------------------------------
                     database.deleteUser(splittedR[1]);
                 }
                 else if (splittedR[0].equals("GO_LEAVES_BYE£€")){
+                    //the group owner is leaving the group -------------------------------------------------------------------------------------------------------------------------------
                     database.deleteAllUser();
                     connectionController.setConfig(splittedR[1]);
                     connectionController.connectionToGroup();
@@ -88,7 +97,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         }
     }
 
-    // join a Multicast group and send the group salutations
+    //Send a global message ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendGlobalMsg(String msg) {
         try {
             msg = "globalmessage£€" + user.getIdUser() + "£€" + user.getUsername() + "£€" + msg;
@@ -102,6 +111,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         }
     }
 
+    //send my info ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendInfo() {
         try {
             String info = "info£€" + user.getAll();
@@ -113,6 +123,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         }
     }
 
+    //i'm telling everyone that i'm leaving the group ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void imLeaving(){
         try {
             String leave = "leave£€" + user.getIdUser();
@@ -130,6 +141,8 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         new Thread(new Multicast(user, database,connectionController)).start();
         return null;
     }
+
+    //take all the user group info from the database and transform the in to a BIG string ----------------------------------------------------------------------------------------------------------------
     private String cursorToString(Cursor c){
         c.moveToFirst();
         int i=0;

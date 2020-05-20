@@ -45,6 +45,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         return this.isStopped;
     }
 
+    //close the server socket --------------------------------------------------------------------------------------------------------------------------------
     public synchronized void stop() {
         this.isStopped = true;
         try {
@@ -54,6 +55,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         }
     }
 
+    //open the server socket --------------------------------------------------------------------------------------------------------------------------------
     private void openServerSocket() {
         try {
             this.serverSocket =(SSLServerSocket) sslContext.getServerSocketFactory().createServerSocket(serverPort);

@@ -82,6 +82,7 @@ public class ConnectionController {
         resetConfig();
     }
 
+    // this exist for the handshake when two group owner are meeting each other, THIS NEED TO BE FINISH BEFORE THE APP IS RELEASED -----------------------------------------------------------------------------------
     private void checkDevices() {
         if (group.getClientList().size() == 1) {
             try {
@@ -93,16 +94,19 @@ public class ConnectionController {
         }
     }
 
+    //Remove a group --------------------------------------------------------------------------------------------------------------------------------
     private void removeGroup() {
         mManager.removeGroup(mChannel, null);
         resetConfig();
     }
 
+    //Create a group --------------------------------------------------------------------------------------------------------------------------------
     public void createGroup() {
         this.resetConfig();
         mManager.createGroup(mChannel, config, null);
     }
 
+    //Scan for the near group --------------------------------------------------------------------------------------------------------------------------------
     private void scan() {
         boolean success = wifiManager.startScan();
         if (!success) {
@@ -111,6 +115,7 @@ public class ConnectionController {
         scanSuccess();
     }
 
+    //The scan has found an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
     private void scanSuccess() {
         results = wifiManager.getScanResults();
         if (getWifiDirectName().equals("")) createGroup();
@@ -120,15 +125,16 @@ public class ConnectionController {
         }
     }
 
+    //The scan has not found an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
     private void scanFailure() {
         // handle failure: new scan did NOT succeed
         // consider using old scan results: these are the OLD results!
         results = wifiManager.getScanResults();
     }
 
+    //Connection to a group---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void connectionToGroup() {
-        //CONNESSIONE GRUPPO---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        /*final WifiP2pDevice device = deviceArray[i];
+                /*final WifiP2pDevice device = deviceArray[i];
         if (!macAdresses.containsValue(device.deviceAddress))
             macAdresses.put(device.deviceName, device.deviceAddress);
         config.deviceAddress = device.deviceAddress;*/
@@ -160,6 +166,7 @@ public class ConnectionController {
 
     }
 
+    //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
     public void disconnectToGroup() {
         udpClient.imLeaving();
         mManager.cancelConnect(mChannel, new WifiP2pManager.ActionListener() {
@@ -175,6 +182,7 @@ public class ConnectionController {
         });
     }
 
+    //set the config to an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
     public void setConfig() {
         String networkName = getWifiDirectName();
         if (!networkName.equals("")) {
@@ -196,6 +204,7 @@ public class ConnectionController {
         }
     }
 
+    //Retrieve the name of an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
     private String getWifiDirectName() {
         String networkName = "";
         for (int i = 0; i < results.size(); i++) {
@@ -204,6 +213,7 @@ public class ConnectionController {
         return networkName;
     }
 
+    //Reset the config to the my configuration for the mine group--------------------------------------------------------------------------------------------------------------------------------
     private void resetConfig() {
         config = new WifiP2pConfig.Builder()
                 .setNetworkName("DIRECT-" + user.getIdUser())
@@ -213,6 +223,7 @@ public class ConnectionController {
                 .build();
     }
 
+    //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
     public void clientList() {
         WifiManager wifiManager = (WifiManager) connection.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         int numberOfLevels = 5;
@@ -223,6 +234,7 @@ public class ConnectionController {
         }
     }
 
+    //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
     public void GOLeaves(){
         final String maxId = database.getMaxId();
         try {
@@ -243,6 +255,8 @@ public class ConnectionController {
         }
 
     }
+
+    //return the all client list --------------------------------------------------------------------------------------------------------------------------------
     public  Cursor getAllClientList(){
         return database.getAllUsers();
     }

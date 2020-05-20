@@ -5,15 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.SSLContext;
@@ -30,6 +26,7 @@ public class TCP_Client {
     private DataOutputStream dos;
     private String msg="message£€";
 
+    //start a connection with another user --------------------------------------------------------------------------------------------------------------------------------
     public void startConnection(String ip, int port) throws IOException, NoSuchAlgorithmException {
         sslContext = SSLContext.getInstance("TLSv1.2");
         sslsocket=(SSLSocket) sslContext.getSocketFactory().createSocket(ip, port);
@@ -38,12 +35,15 @@ public class TCP_Client {
         dos = new DataOutputStream(out);
     }
 
+    //send a message --------------------------------------------------------------------------------------------------------------------------------
     public void sendMessage(String msg) throws IOException {
         this.msg+=msg;
         byte[] array = this.msg.getBytes();
         dos.writeInt(array.length);
         dos.write(array, 0, array.length);
     }
+
+    //send a image throw tcp --------------------------------------------------------------------------------------------------------------------------------
     public void sendImage(ImageView image) throws IOException {
         Bitmap bmp=((BitmapDrawable)image.getDrawable()).getBitmap(); //String str = et.getText().toString();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -54,7 +54,7 @@ public class TCP_Client {
         stopConnection();
     }
 
-
+    //Close the connection --------------------------------------------------------------------------------------------------------------------------------
     private void stopConnection() throws IOException {
         out.close();
         dos.close();
