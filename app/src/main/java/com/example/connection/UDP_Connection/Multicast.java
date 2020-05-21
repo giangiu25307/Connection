@@ -28,6 +28,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     ConnectionController connectionController;
     private Database database;
 
+
     public Multicast(User user, Database database,ConnectionController connectionController) {
         this.connectionController=connectionController;
         try {
@@ -36,7 +37,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             this.database = database;
             this.user = user;
             group = InetAddress.getByName("192.168.49.255");
-            MulticastSocket s = new MulticastSocket(6789);
+            s = new MulticastSocket(6789);
             s.joinGroup(group);
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -96,6 +97,8 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             e.printStackTrace();
         }
     }
+
+
 
     //Send a global message ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendGlobalMsg(String msg) {

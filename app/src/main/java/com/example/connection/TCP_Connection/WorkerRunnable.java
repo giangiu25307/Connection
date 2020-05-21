@@ -3,6 +3,7 @@ package com.example.connection.TCP_Connection;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.View.Connection;
+import com.example.connection.localization.localizationController;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -10,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -20,12 +22,15 @@ class WorkerRunnable implements Runnable {
     SimpleDateFormat sdf;
     Connection connection;
     ConnectionController connectionController;
+    TCP_Client tcp_client;
+    localizationController localizationController;
 
-    public WorkerRunnable(Socket clientSocket, Database database, Connection connection,ConnectionController connectionController) {
+    public WorkerRunnable(Socket clientSocket, Database database, Connection connection,ConnectionController connectionController,localizationController localizationController) {
         this.connection = connection;
         this.clientSocket = clientSocket;
         this.database = database;
         this.connectionController = connectionController;
+        this.localizationController = localizationController;
     }
 
     public void run() {
@@ -66,11 +71,24 @@ class WorkerRunnable implements Runnable {
                     }else if(splittedR[0].equals("message")){
                         //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                         database.addMsg(msg, database.getMyInformation()[0], database.findId_user(ip));
+                    }else if(splittedR[0].equals("REQUEST-MEET")){
+                        //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
+                        //database.setAccept(valore ritornato da bergo);
+                        tcp_client.startConnection(clientSocket.getInetAddress().toString(),50000);
+                        tcp_client.sendMessage("RESPONSE-MEET£€"+database.getMyInformation()[0]+"£€"/*+valore di bergo*/);
+
+                    }
+                    else if(splittedR[0].equals("RESPONSE-MEET")){
+                        database.setAccept(splittedR[1],splittedR[2]);
+                    }
+                    else if(splittedR[0].equals("RESULT-MEET")){
+                       //modifica gui luca
+                        
                     }
                 }
             }
 
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException e) {
             //report exception somewhere.
             e.printStackTrace();
         }
