@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 public class Database extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Connection";
     SQLiteDatabase db;
     Context context;
@@ -22,7 +22,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        db=database;
+        System.out.println("DATABASE");
         db = this.getWritableDatabase();
         String CREATE_USER_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.USER + " ( "
                 + Task.TaskEntry.ID_USER + " TEXT PRIMARY KEY, "
@@ -36,7 +36,8 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NUMBER + " TEXT NOT NULL, "
                 + Task.TaskEntry.AGE + " TEXT NOT NULL, "
                 + Task.TaskEntry.PROFILE_PIC + " TEXT NOT NULL, "
-                + Task.TaskEntry.IP + " TEXT"
+                + Task.TaskEntry.IP + " TEXT,"
+                + Task.TaskEntry.ACCEPT + " INTEGER "
                 + ")";
 
         String CREATE_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.MESSAGE + " ( "
@@ -344,6 +345,17 @@ public class Database extends SQLiteOpenHelper {
                 " FROM "+ Task.TaskEntry.USER;
         Cursor c = db.rawQuery(query,null);
         return c.getString(0);
+    }
+
+    public boolean getAccept(){
+        String query = " SELECT "+ Task.TaskEntry.ACCEPT+""+
+                " FROM "+ Task.TaskEntry.USER;
+        Cursor c = db.rawQuery(query,null);
+        return false;
+    }
+
+    public void setAccept(String id,String accept){
+
     }
 
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -11,7 +11,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.security.NoSuchAlgorithmException;
 
-public class localizationController {
+public class LocalizationController {
 
     RTTSocket rtt;
     Database database;
@@ -20,7 +20,7 @@ public class localizationController {
     Connection connection;
 
 
-    public localizationController(Database database,Connection connection) throws SocketException {
+    public LocalizationController(Database database, Connection connection) throws SocketException {
         rtt = new RTTSocket();
         this.database = database;
         gps=new GPS(connection);

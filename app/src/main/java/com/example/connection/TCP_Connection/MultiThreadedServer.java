@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.View.Connection;
+import com.example.connection.localization.LocalizationController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +30,8 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     private Database database;
     private Connection connection;
     private ConnectionController connectionController;
-     SSLContext sslContext=null;
+    private SSLContext sslContext=null;
+    private LocalizationController localizationController;
 
     public MultiThreadedServer(int port,Database database, Connection connection,ConnectionController connectionController) throws NoSuchAlgorithmException, KeyManagementException {
         sslContext = SSLContext.getInstance("TLSv1.2");
@@ -82,7 +84,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
                 throw new RuntimeException(
                         "Error accepting client connection", e);
             }
-            new Thread(new WorkerRunnable(clientSocket,database,connection,connectionController)).start();
+            new Thread(new WorkerRunnable(clientSocket,database,connection,connectionController,localizationController)).start();
         }
         System.out.println("Server Stopped.");
         return null;

@@ -36,6 +36,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.Database;
 import com.example.connection.R;
 import com.example.connection.TCP_Connection.TCP_Client;
 
@@ -51,12 +52,14 @@ public class Connection extends AppCompatActivity {
     private Boolean startTimer = false;
     private long secondsRemaining = 1500;
     private SharedPreferences sharedPreferences;
+    private Database database;
 
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        database = new Database(getApplicationContext());
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -70,7 +73,7 @@ public class Connection extends AppCompatActivity {
                     PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         }else {
-            connectionController = new ConnectionController(this, null);
+            //connectionController = new ConnectionController(this, null);
         }
         createCountDowntimer();
         countDownTimer.start();
