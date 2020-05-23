@@ -22,8 +22,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        db=database;
-        db = this.getWritableDatabase();
+        System.out.printf("ciao");
         String CREATE_USER_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.USER + " ( "
                 + Task.TaskEntry.ID_USER + " TEXT PRIMARY KEY, "
                 + Task.TaskEntry.USERNAME + " TEXT NOT NULL, "
@@ -33,7 +32,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.SURNAME + " TEXT NOT NULL, "
                 + Task.TaskEntry.COUNTRY + " TEXT NOT NULL, "
                 + Task.TaskEntry.CITY + " TEXT NOT NULL,"
-                + Task.TaskEntry.NUMBER + " TEXT NOT NULL, "
+                + Task.TaskEntry.NUMBER + " TEXT  DEFAULT 0, "
                 + Task.TaskEntry.AGE + " TEXT NOT NULL, "
                 + Task.TaskEntry.PROFILE_PIC + " TEXT NOT NULL, "
                 + Task.TaskEntry.IP + " TEXT"
@@ -65,10 +64,11 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
                 + ")";
 
-        db.execSQL(CREATE_USER_TABLE);
-        db.execSQL(CREATE_MESSAGE_TABLE);
-        db.execSQL(CREATE_CHAT_TABLE);
-        db.execSQL(CREATE_GLOBAL_MESSAGE_TABLE);
+        database.execSQL(CREATE_USER_TABLE);
+        database.execSQL(CREATE_MESSAGE_TABLE);
+        database.execSQL(CREATE_CHAT_TABLE);
+        database.execSQL(CREATE_GLOBAL_MESSAGE_TABLE);
+
 
         /*String CREATE_GROUP_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GROUP_MESSAGE + " ( "
                 + Task.TaskEntry.ID_GROUP + " INTEGER NOT NULL, "
@@ -256,6 +256,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String profilePic){
+        db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.USERNAME,username);
         msgValues.put(Task.TaskEntry.ID_USER,idUser);
@@ -344,6 +345,13 @@ public class Database extends SQLiteOpenHelper {
                 " FROM "+ Task.TaskEntry.USER;
         Cursor c = db.rawQuery(query,null);
         return c.getString(0);
+    }
+
+    public boolean getAccept() {
+        return false;
+    }
+
+    public void setAccept(String s, String s1) {
     }
 
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

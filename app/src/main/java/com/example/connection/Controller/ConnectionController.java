@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -104,6 +105,7 @@ public class ConnectionController {
     public void createGroup() {
         this.resetConfig();
         mManager.createGroup(mChannel, config, null);
+        System.out.println("ciao");
     }
 
     //Scan for the near group --------------------------------------------------------------------------------------------------------------------------------
@@ -216,7 +218,8 @@ public class ConnectionController {
     //Reset the config to the my configuration for the mine group--------------------------------------------------------------------------------------------------------------------------------
     private void resetConfig() {
         config = new WifiP2pConfig.Builder()
-                .setNetworkName("DIRECT-" + user.getIdUser())
+               // .setNetworkName("DIRECT-" + user.getIdUser())
+                .setNetworkName("DIRECT-prova")
                 .setPassphrase("12345678")
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
                 .enablePersistentMode(false)
