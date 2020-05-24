@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +46,12 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
         globalButton = view.findViewById(R.id.globalButton);
         globalButton.setOnClickListener(this);
+
+        TextView textView = view.findViewById(R.id.requestTextView);
+        textView.setText("1");
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.left_to_right);
+        textView.startAnimation(animation);
+
 
         //setupRecyclerView(view);
 
