@@ -218,8 +218,7 @@ public class ConnectionController {
     //Reset the config to the my configuration for the mine group--------------------------------------------------------------------------------------------------------------------------------
     private void resetConfig() {
         config = new WifiP2pConfig.Builder()
-               // .setNetworkName("DIRECT-" + user.getIdUser())
-                .setNetworkName("DIRECT-prova")
+                .setNetworkName("DIRECT-" + user.getIdUser())
                 .setPassphrase("12345678")
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
                 .enablePersistentMode(false)

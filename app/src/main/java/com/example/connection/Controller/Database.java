@@ -18,11 +18,11 @@ public class Database extends SQLiteOpenHelper {
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+        db=this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        System.out.printf("ciao");
         String CREATE_USER_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.USER + " ( "
                 + Task.TaskEntry.ID_USER + " TEXT PRIMARY KEY, "
                 + Task.TaskEntry.USERNAME + " TEXT NOT NULL, "
@@ -256,7 +256,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String profilePic){
-        db=this.getWritableDatabase();
+
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.USERNAME,username);
         msgValues.put(Task.TaskEntry.ID_USER,idUser);
@@ -344,14 +344,28 @@ public class Database extends SQLiteOpenHelper {
         String query = " SELECT MAX("+ Task.TaskEntry.ID_USER+")"+
                 " FROM "+ Task.TaskEntry.USER;
         Cursor c = db.rawQuery(query,null);
+        if (c != null) {
+            c.moveToFirst();
+        }
         return c.getString(0);
     }
 
-    public boolean getAccept() {
-        return false;
+    public String getAccept(String idUser) {
+        String query = "SELECT " + Task.TaskEntry.ACCEPT +
+                " FROM "+ Task.TaskEntry.USER+
+                " WHERE "+ Task.TaskEntry.ID_USER +"="+idUser;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c.getString(0);
     }
 
-    public void setAccept(String s, String s1) {
+    public void setAccept(String idUser, String value) {
+        String query="UPDATE "+ Task.TaskEntry.USER+
+                " SET "+ Task.TaskEntry.ACCEPT+" = " +value+
+                " WHERE '"+ Task.TaskEntry.ID_USER+"' = '"+idUser+"'";
+        db.execSQL(query);
     }
 
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
