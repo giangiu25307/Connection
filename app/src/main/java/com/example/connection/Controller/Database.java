@@ -148,8 +148,8 @@ public class Database extends SQLiteOpenHelper {
     }
 
     private Cursor getLastMessageChat(int idChat){
-        String query="SELECT * " +
-                " FROM "+ Task.TaskEntry.MESSAGE +
+        String query="SELECT c.last_message, m.date " +
+                " FROM "+ Task.TaskEntry.MESSAGE +" m INNER JOIN "+ Task.TaskEntry.CHAT+ " c ON c.id_chat = m.id_chat"+
                 " WHERE '"+ Task.TaskEntry.ID_CHAT + "' = '" + idChat + "'";
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
