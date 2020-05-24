@@ -282,7 +282,8 @@ public class Database extends SQLiteOpenHelper {
 
     public Cursor  getAllUsers(){
         String query = "SELECT *" +
-                " FROM "+ Task.TaskEntry.USER;
+                " FROM "+ Task.TaskEntry.USER+
+                " WHERE "+ Task.TaskEntry.IP+" IS NOT NULL";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
