@@ -52,6 +52,7 @@ public class Connection extends AppCompatActivity {
     private Boolean startTimer = false;
     private long secondsRemaining = 1500;
     private SharedPreferences sharedPreferences;
+    Database database;
 
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
@@ -64,9 +65,9 @@ public class Connection extends AppCompatActivity {
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        database = new Database(this);
         fragment = new SplashScreenFragment();
         loadFragment(false);
-        Database database=new Database(this);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION);
@@ -77,7 +78,10 @@ public class Connection extends AppCompatActivity {
         }
         createCountDowntimer();
         countDownTimer.start();
-       database.addUser("Wciao","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
+        database.addUser("aaaaa","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
+        database.createChat("1", "Andrew");
+        database.addMsg("Ciao", "1", "1");
+
 
     }
 
@@ -141,7 +145,7 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                fragment = new HomeFragment(connectionController);
+                fragment = new HomeFragment(connectionController, database);
                 loadFragment(true);
             }
         };

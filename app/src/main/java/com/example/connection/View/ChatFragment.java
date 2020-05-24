@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Adapter.ChatAdapter;
+import com.example.connection.Controller.Database;
 import com.example.connection.R;
 
 import java.util.ArrayList;
@@ -31,6 +32,11 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     private ImageView globalButton;
     private int textColor;
     private SharedPreferences sharedPreferences;
+    Database database;
+
+    public ChatFragment(Database database) {
+        this.database = database;
+    }
 
     @Nullable
     @Override
@@ -63,9 +69,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setupRecyclerView(View view){
-
         RecyclerView recyclerView = view.findViewById(R.id.chatRecyclerView);
-        ChatAdapter chatAdapter = new ChatAdapter(getContext(), getAllChat());
+        ChatAdapter chatAdapter = new ChatAdapter(getContext(), getAllChat(), database);
 
     }
 

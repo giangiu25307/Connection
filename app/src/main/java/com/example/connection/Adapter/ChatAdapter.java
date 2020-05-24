@@ -2,6 +2,8 @@ package com.example.connection.Adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +18,15 @@ import com.example.connection.Controller.Database;
 import com.example.connection.Controller.Task;
 import com.example.connection.R;
 
+import java.io.File;
+
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private Context context;
     private Cursor cursor;
     private Database database;
+    private Cursor c;
+    private Bitmap bitmap;
 
     public ChatAdapter(Context context, Cursor cursor, Database database) {
         this.context = context;
@@ -52,20 +58,35 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             return;
         }
 
-        Cursor c = database.getUSer(Task.TaskEntry.ID_USER);
+        c = database.getUSer(Task.TaskEntry.ID_USER);
 
 
         long id = cursor.getLong(cursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-        String nameUser = c.getString(cursor.getColumnIndex(Task.TaskEntry.USERNAME));
+        String userName = c.getString(cursor.getColumnIndex(Task.TaskEntry.USERNAME));
         String lastMessage = c.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
-        String profilePic = c.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
+        String profilePicPosition = c.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
+        File profilePic = new  File(profilePicPosition);
 
-        String timeLatsMessage = cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
+        if(profilePic.exists()){
+
+            bitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
+            ImageView profilePicImageView = holder.profilePic;
+            profilePicImageView.setImageBitmap(bitmap);
+        }
+
+        c = database.getLastMessageChat(Task.TaskEntry.ID_CHAT);
+        String timeLastMessage = cursor.getString(cursor.getColumnIndex(Task.TaskEntry.DATE));
 
 
-        TextView name = holder.name;
-        name.setText(nameUser);
         holder.itemView.setTag(id);
+
+        TextView userNameTextView = holder.name;
+        TextView lastMessageTextView = holder.lastMessage;
+        TextView lastMessageTimeTextView = holder.name;
+        userNameTextView.setText(userName);
+        lastMessageTextView.setText(lastMessage);
+        lastMessageTimeTextView.setText(timeLastMessage);
+
     }
 
     @Override
@@ -91,7 +112,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         OnChatClickListener listener;
 
         private ConstraintLayout chatlayout;
-        private ImageView profilePhoto;
+        private ImageView profilePic;
         private TextView name, lastMessage, timeLastMessage;
 
         private ViewHolder(View itemView, OnChatClickListener listener){
@@ -99,7 +120,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             this.listener = listener;
 
             chatlayout = itemView.findViewById(R.id.chatLayout);
-            profilePhoto = itemView.findViewById(R.id.profilePhoto);
+            profilePic = itemView.findViewById(R.id.profilePhoto);
             name = itemView.findViewById(R.id.name);
             lastMessage = itemView.findViewById(R.id.lastMessage);
             timeLastMessage = itemView.findViewById(R.id.timeLastMessage);

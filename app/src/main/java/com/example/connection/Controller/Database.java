@@ -18,7 +18,7 @@ public class Database extends SQLiteOpenHelper {
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-        db=this.getWritableDatabase();
+
     }
 
     @Override
@@ -121,6 +121,7 @@ public class Database extends SQLiteOpenHelper {
     }
     //CHAT-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void addMsg(String msg, String idReceiver, String idSender) {
+        db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         int idChat = retrieveIdChat(idReceiver);
         msgValues.put(Task.TaskEntry.ID_CHAT,idChat);
@@ -147,7 +148,7 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
-    private Cursor getLastMessageChat(int idChat){
+    public Cursor getLastMessageChat(String idChat){
         String query="SELECT c.last_message, m.date " +
                 " FROM "+ Task.TaskEntry.MESSAGE +" m INNER JOIN "+ Task.TaskEntry.CHAT+ " c ON c.id_chat = m.id_chat"+
                 " WHERE '"+ Task.TaskEntry.ID_CHAT + "' = '" + idChat + "'";
@@ -170,6 +171,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void createChat(String idReceiver,String name) {
+        db=this.getWritableDatabase();
         ContentValues chatValues = new ContentValues();
         chatValues.put(Task.TaskEntry.ID_CHAT, idReceiver);
         chatValues.put(Task.TaskEntry.NAME, name);
@@ -264,7 +266,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String profilePic){
-
+        db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.USERNAME,username);
         msgValues.put(Task.TaskEntry.ID_USER,idUser);

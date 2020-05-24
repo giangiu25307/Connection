@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.Database;
 import com.example.connection.R;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
@@ -21,9 +22,11 @@ public class HomeFragment extends Fragment {
     ChipNavigationBar chipNavigationBar;
     Fragment fragment;
     ConnectionController connectionController;
+    Database database;
 
-    public HomeFragment(ConnectionController connectionController) {
+    public HomeFragment(ConnectionController connectionController, Database database) {
         this.connectionController = connectionController;
+        this.database = database;
     }
 
     @Nullable
@@ -47,7 +50,7 @@ public class HomeFragment extends Fragment {
                         fragment = new MapFragment(connectionController);
                         break;
                     case R.id.chat:
-                        fragment = new ChatFragment();
+                        fragment = new ChatFragment(database);
                         break;
                     case R.id.settings:
                         fragment = new SettingsFragment();
