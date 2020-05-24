@@ -35,7 +35,8 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NUMBER + " TEXT  DEFAULT 0, "
                 + Task.TaskEntry.AGE + " TEXT NOT NULL, "
                 + Task.TaskEntry.PROFILE_PIC + " TEXT NOT NULL, "
-                + Task.TaskEntry.IP + " TEXT"
+                + Task.TaskEntry.IP + " TEXT, "
+                + Task.TaskEntry.ACCEPT + " TEXT "
                 + ")";
 
         String CREATE_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.MESSAGE + " ( "
@@ -46,8 +47,6 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.DATE + " DATETIME, "
                 + "FOREIGN KEY (" + Task.TaskEntry.ID_CHAT + ") REFERENCES " + Task.TaskEntry.CHAT + "(" + Task.TaskEntry.ID_CHAT + ") ON DELETE CASCADE"
                 + ")";
-
-
 
         String CREATE_CHAT_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.CHAT + " ( "
                 + Task.TaskEntry.ID_CHAT + " TEXT PRIMARY KEY, "
@@ -146,6 +145,15 @@ public class Database extends SQLiteOpenHelper {
                 " SET "+ Task.TaskEntry.LAST_MESSAGE+" = " +msg+
                 " WHERE '"+ Task.TaskEntry.ID_CHAT+"' = '"+idChat+"'";
         db.execSQL(query);
+    }
+
+    private Cursor getLastMessageChat(int idChat){
+        String query="SELECT * " +
+                " FROM "+ Task.TaskEntry.MESSAGE +
+                " WHERE '"+ Task.TaskEntry.ID_CHAT + "' = '" + idChat + "'";
+        Cursor cursor = db.rawQuery(query, null);
+        return cursor;
+
     }
 
     private int retrieveIdChat(String idReceiver) {
@@ -311,6 +319,15 @@ public class Database extends SQLiteOpenHelper {
             c.moveToFirst();
         }
         return c.getString(1);
+    }
+
+    public Cursor getUSer(String id){
+        String query = "SELECT * " +
+                " FROM " +Task.TaskEntry.USER+
+                " WHERE id_user ='" + id + "'" ;
+        Cursor c = db.rawQuery(query, null);
+
+        return c;
     }
 
     public void deleteUser(String idUser){

@@ -1,5 +1,7 @@
 package com.example.connection.Model;
 
+import androidx.annotation.NonNull;
+
 import java.net.InetAddress;
 
 public class User {
@@ -116,5 +118,15 @@ public class User {
 
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", profilePic='" + profilePic + '\'' +
+                ", age='" + age + '\'' +
+                '}';
     }
 }

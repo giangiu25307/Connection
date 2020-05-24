@@ -20,10 +20,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private Context context;
     private Cursor cursor;
+    private Database database;
 
-    public ChatAdapter(Context context, Cursor cursor) {
+    public ChatAdapter(Context context, Cursor cursor, Database database) {
         this.context = context;
         this.cursor = cursor;
+        this.database = database;
     }
 
     @NonNull
@@ -50,8 +52,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             return;
         }
 
-        String nameUser = cursor.getString(cursor.getColumnIndex(Task.TaskEntry.NAME));
-        long id = cursor.getLong(cursor.getColumnIndex(Task.TaskEntry.ID_USER));
+        Cursor c = database.getUSer(Task.TaskEntry.ID_USER);
+
+
+        long id = cursor.getLong(cursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+        String nameUser = c.getString(cursor.getColumnIndex(Task.TaskEntry.USERNAME));
+        String lastMessage = c.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
+        String profilePic = c.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
+
+        String timeLatsMessage = cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
+
 
         TextView name = holder.name;
         name.setText(nameUser);
