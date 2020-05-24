@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -104,6 +105,7 @@ public class ConnectionController {
     public void createGroup() {
         this.resetConfig();
         mManager.createGroup(mChannel, config, null);
+        System.out.println("ciao");
     }
 
     //Scan for the near group --------------------------------------------------------------------------------------------------------------------------------

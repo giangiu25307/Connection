@@ -36,6 +36,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.Database;
 import com.example.connection.R;
 import com.example.connection.TCP_Connection.TCP_Client;
 
@@ -65,15 +66,18 @@ public class Connection extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
         loadFragment(false);
+        Database database=new Database(this);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         }else {
-            connectionController = new ConnectionController(this, null);
+
+
         }
         createCountDowntimer();
         countDownTimer.start();
+       database.addUser("Wciao","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
 
     }
 

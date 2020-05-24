@@ -30,6 +30,7 @@ public class Task {
         public static final String DATE = "date";
         public static final String LAST_MESSAGE = "last_message";
         public static final String NOT_READ_MESSAGE = "not_read_message";
+        public static final String ACCEPT = "accept";
         /*public static final String GROUPS = "GROUPS";
         public static final String GROUP_NAME = "GROUP_NAME";
         public static final String USERS_GROUP = "USER_GROUP";

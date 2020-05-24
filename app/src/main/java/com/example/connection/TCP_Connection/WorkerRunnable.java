@@ -82,7 +82,17 @@ class WorkerRunnable implements Runnable {
                         database.setAccept(splittedR[1],splittedR[2]);
                     }
                     else if(splittedR[0].equals("RESULT-MEET")){
-                       //modifica gui luca
+                        if(database.getAccept(splittedR[1]).equals("yes")){
+                            tcp_client.startConnection(clientSocket.getInetAddress().toString(),50000);
+                            tcp_client.sendMessage("RESULT-MEET£€"+database.getMyInformation()[0]+splittedR[2]+"£€"+localizationController.gpsDirection(Double.parseDouble(splittedR[3]),Double.parseDouble(splittedR[4])));
+                            //modifica gui luca
+
+                        }
+                       else{
+                            tcp_client.startConnection(clientSocket.getInetAddress().toString(),50000);
+                            tcp_client.sendMessage("RESPONSE-MEET£€"+database.getMyInformation()[0]+"£€"/*+valore di bergo*/);
+                        }
+
                         
                     }
                 }
