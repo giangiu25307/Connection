@@ -57,21 +57,14 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         textView.setText("1");
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.left_to_right);
         textView.startAnimation(animation);
-
-
-        //setupRecyclerView(view);
-
+        setupRecyclerView(view);
         return view;
-    }
-
-    private void changeView(int button){
-
     }
 
     private void setupRecyclerView(View view){
         RecyclerView recyclerView = view.findViewById(R.id.chatRecyclerView);
-        ChatAdapter chatAdapter = new ChatAdapter(getContext(), getAllChat(), database);
-
+        ChatAdapter chatAdapter=new ChatAdapter(getContext(),database.getAllChat(),database);
+        recyclerView.setAdapter(chatAdapter);
     }
 
     private Cursor getAllChat(){

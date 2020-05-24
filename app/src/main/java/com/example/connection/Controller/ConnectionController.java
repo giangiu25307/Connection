@@ -12,7 +12,10 @@ import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.Build;
 import android.os.CountDownTimer;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.MultiThreadedServer;
@@ -43,13 +46,14 @@ public class ConnectionController {
     Database database;
     int count=0;
 
-    public ConnectionController(Connection connection, Database database) {
+    public ConnectionController(Connection connection, Database database,User user) {
         this.connection = connection;
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         ConnectionToDevice = "";
         ConnectionStatus = "";
         this.database = database;
+        this.user=user;
         final Thread thread = new Thread(){
         public void run() {
             try {
@@ -185,17 +189,23 @@ public class ConnectionController {
     }
 
     //set the config to an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public void setConfig() {
         String networkName = getWifiDirectName();
         if (!networkName.equals("")) {
-            config = new WifiP2pConfig.Builder()
-                    .setNetworkName(networkName)
-                    .setPassphrase("12345678")
-                    .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                    .enablePersistentMode(false)
-                    .build();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                config = new WifiP2pConfig.Builder()
+                        .setNetworkName(networkName)
+                        .setPassphrase("12345678")
+                        .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
+                        .enablePersistentMode(false)
+                        .build();
+            }
         }
-    }public void setConfig(String networkName) {
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void setConfig(String networkName) {
         if (!networkName.equals("")) {
             config = new WifiP2pConfig.Builder()
                     .setNetworkName("DIRECT-"+networkName)
@@ -216,6 +226,7 @@ public class ConnectionController {
     }
 
     //Reset the config to the my configuration for the mine group--------------------------------------------------------------------------------------------------------------------------------
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     private void resetConfig() {
         config = new WifiP2pConfig.Builder()
                 .setNetworkName("DIRECT-" + user.getIdUser())
@@ -260,7 +271,8 @@ public class ConnectionController {
 
     //return the all client list --------------------------------------------------------------------------------------------------------------------------------
     public  Cursor getAllClientList(){
-        return database.getAllUsers();
+
+            return database.getAllUsers();
     }
     /*macAdresses = new HashMap<>();
         peers = new ArrayList<WifiP2pDevice>();

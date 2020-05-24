@@ -62,8 +62,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
 
         long id = cursor.getLong(cursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+        System.out.println(id);
         String userName = c.getString(cursor.getColumnIndex(Task.TaskEntry.USERNAME));
-        String lastMessage = c.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
+        String lastMessage = cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
         String profilePicPosition = c.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
         File profilePic = new  File(profilePicPosition);
 

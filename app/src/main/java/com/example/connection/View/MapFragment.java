@@ -36,44 +36,40 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.map_fragment, null);
+            Cursor c = connectionController.getAllClientList();
+            c.moveToFirst();
+            ListView listView = view.findViewById(R.id.listView);
 
-        Cursor c = connectionController.getAllClientList();
-        c.moveToFirst();
-        ListView listView = view.findViewById(R.id.listView);
-
-        final ArrayList<User> userList = new ArrayList<>();
-        String [] arrayName = new String[c.getCount()];
-        for(int i = 0; i < c.getCount(); i++){
-            user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-            userList.add(user);
-            arrayName[i] = c.getString(1);
-            c.moveToNext();
-
-        }
-
-
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> adapter, View v, int position, long id){
-
-                user = userList.get(position);
-
-                String information = user.toString();
-
-                int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(getContext(), information, duration);
-                toast.show();
-
+            final ArrayList<User> userList = new ArrayList<>();
+            String[] arrayName = new String[c.getCount()];
+            for (int i = 0; i < c.getCount(); i++) {
+                user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
+                userList.add(user);
+                arrayName[i] = c.getString(1);
+                c.moveToNext();
 
             }
 
-        });
 
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
+            listView.setAdapter(arrayAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
+
+                    user = userList.get(position);
+
+                    String information = user.toString();
+
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(getContext(), information, duration);
+                    toast.show();
+
+
+                }
+
+            });
         return view;
-
+        }
     }
 
-}
