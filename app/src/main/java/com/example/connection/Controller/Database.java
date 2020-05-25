@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 public class Database extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Connection";
     SQLiteDatabase db;
     Context context;
@@ -50,16 +50,16 @@ public class Database extends SQLiteOpenHelper {
 
         String CREATE_CHAT_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.CHAT + " ( "
                 + Task.TaskEntry.ID_CHAT + " TEXT PRIMARY KEY, "
-                + Task.TaskEntry.LAST_MESSAGE + "TEXT,"
-                + Task.TaskEntry.NAME + "TEXT,"
+                + Task.TaskEntry.LAST_MESSAGE + "TEXT, "
+                + Task.TaskEntry.NAME + "TEXT, "
                 + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
                 + ")";
 
         String CREATE_GLOBAL_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GLOBAL_MESSAGE + " ( "
                 + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
-                + Task.TaskEntry.MSG + " TEXT NOT NULL,"
-                + Task.TaskEntry.DATE + " DATETIME"
-                + Task.TaskEntry.LAST_MESSAGE + "TEXT"
+                + Task.TaskEntry.MSG + " TEXT NOT NULL, "
+                + Task.TaskEntry.DATE + " DATETIME, "
+                + Task.TaskEntry.LAST_MESSAGE + "TEXT, "
                 + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
                 + ")";
 

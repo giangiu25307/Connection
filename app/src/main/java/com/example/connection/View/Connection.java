@@ -78,7 +78,7 @@ public class Connection extends AppCompatActivity {
         }
         createCountDowntimer();
         countDownTimer.start();
-        database.addUser("aaaaa","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
+        database.addUser("a","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
         database.createChat("1", "Andrew");
         database.addMsg("Ciao", "1", "1");
 
