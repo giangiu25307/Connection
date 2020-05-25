@@ -29,8 +29,6 @@ public class GPS  implements LocationListener {
 
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
-
     }
 
     public double getLatitude() {

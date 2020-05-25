@@ -235,10 +235,10 @@ public class Database extends SQLiteOpenHelper {
     }
 
     private void lastGlobalMessageChat(String msg, String idSender){
-        String query="UPDATE "+ Task.TaskEntry.GLOBAL_MESSAGE+
-                " SET "+ Task.TaskEntry.LAST_MESSAGE+" = " +msg+
-                " WHERE '"+ Task.TaskEntry.ID_CHAT+"' = '"+idSender+"'";
-        db.execSQL(query);
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.LAST_MESSAGE, msg);
+        db.update(Task.TaskEntry.GLOBAL_MESSAGE,msgValues, Task.TaskEntry.ID_SENDER+" = "+idSender,null);
     }
 
     //USER
@@ -282,11 +282,30 @@ public class Database extends SQLiteOpenHelper {
         ContentValues ipValues = new ContentValues();
     }
 
+    public void SetMyInformation(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String number,String profilePic){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.ID_USER,idUser);
+        msgValues.put(Task.TaskEntry.USERNAME,username);
+        msgValues.put(Task.TaskEntry.MAIL,mail);
+        msgValues.put(Task.TaskEntry.GENDER,gender);
+        msgValues.put(Task.TaskEntry.NAME,name);
+        msgValues.put(Task.TaskEntry.SURNAME,surname);
+        msgValues.put(Task.TaskEntry.COUNTRY,country);
+        msgValues.put(Task.TaskEntry.CITY,city);
+        msgValues.put(Task.TaskEntry.AGE,age);
+        msgValues.put(Task.TaskEntry.NUMBER,number);
+        msgValues.put(Task.TaskEntry.IP,inetAddress);
+        msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
+        db.insert(Task.TaskEntry.USER, null, msgValues);
+        ContentValues ipValues = new ContentValues();
+    }
+
     public void addNumber(String number,String idUser){
-        String query="UPDATE "+ Task.TaskEntry.USER+
-                " SET "+ Task.TaskEntry.NUMBER+" = " +number+
-                " WHERE '"+ Task.TaskEntry.ID_USER+"' = '"+idUser+"'";
-        db.execSQL(query);
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.NUMBER, number);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+idUser,null);
     }
 
     public Cursor  getAllUsers(){
@@ -335,15 +354,15 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void deleteUser(String idUser){
+        db=this.getWritableDatabase();
         String query = "SELECT *" +
                 " FROM "+ Task.TaskEntry.CHAT+
                 " WHERE "+ Task.TaskEntry.ID_CHAT +"="+idUser;
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
-            query="UPDATE "+ Task.TaskEntry.USER+
-                    " SET "+ Task.TaskEntry.IP+" = NULL" +
-                    " WHERE '"+ Task.TaskEntry.ID_USER+"' = '"+idUser+"'";
-            db.execSQL(query);
+            ContentValues msgValues = new ContentValues();
+            msgValues.put(Task.TaskEntry.IP, "NULL");
+            db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+idUser,null);
         } else {
             query = " DELETE FROM " + Task.TaskEntry.USER
                     + " WHERE '" + Task.TaskEntry.ID_USER + "' = '" + idUser + "'";
@@ -352,14 +371,16 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void deleteAllUser(){
+        db=this.getWritableDatabase();
         String query="DELETE FROM USER " +
                 " WHERE NOT EXISTS(SELECT NULL" +
                 "                    FROM CHAT f" +
                 "                   WHERE f.id_chat = USER.id_user)";
         db.execSQL(query);
-        query = "UPDATE "+ Task.TaskEntry.USER+
-                " SET "+ Task.TaskEntry.IP+" = NULL";
-        db.execSQL(query);
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.IP, "NULL");
+        db.update(Task.TaskEntry.USER,msgValues, null,null);
+
     }
 
     public String getMaxId(){
@@ -384,10 +405,15 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void setAccept(String idUser, String value) {
-        String query="UPDATE "+ Task.TaskEntry.USER+
-                " SET "+ Task.TaskEntry.ACCEPT+" = " +value+
-                " WHERE '"+ Task.TaskEntry.ID_USER+"' = '"+idUser+"'";
-        db.execSQL(query);
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.ACCEPT, value);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+idUser,null);
+    }
+
+    public void setNumber(String idUser, String value) {
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.NUMBER, value);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+idUser,null);
     }
 
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
