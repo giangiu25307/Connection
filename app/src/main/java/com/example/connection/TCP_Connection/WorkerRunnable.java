@@ -24,6 +24,7 @@ class WorkerRunnable implements Runnable {
     ConnectionController connectionController;
     TCP_Client tcp_client;
     localizationController localizationController;
+    String idChat=null;
 
     public WorkerRunnable(Socket clientSocket, Database database, Connection connection,ConnectionController connectionController,localizationController localizationController) {
         this.connection = connection;
@@ -50,7 +51,8 @@ class WorkerRunnable implements Runnable {
                     FileOutputStream fos = new FileOutputStream(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg");
                     fos.write(message);
                     fos.close();
-                    database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", database.getMyInformation()[0], database.findId_user(ip));
+                    idChat=database.findId_user(ip);
+                    database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", database.getMyInformation()[0], idChat,idChat);
                 } else {
                     byte[] message = new byte[length];
                     dIn.readFully(message, 0, message.length); // read the message
@@ -70,7 +72,8 @@ class WorkerRunnable implements Runnable {
                         connectionController.createGroup();
                     }else if(splittedR[0].equals("message")){
                         //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
-                        database.addMsg(msg, database.getMyInformation()[0], database.findId_user(ip));
+                        idChat=database.findId_user(ip);
+                        database.addMsg(msg, database.getMyInformation()[0], idChat, idChat);
                     }else if(splittedR[0].equals("REQUEST-MEET")){
                         //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
                         //database.setAccept(valore ritornato da bergo);

@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Database extends SQLiteOpenHelper {
 
@@ -43,7 +45,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
                 + Task.TaskEntry.MSG + " TEXT, "
                 + Task.TaskEntry.PATH + " TEXT, "
-                + Task.TaskEntry.DATE + " DATETIME, "
+                + Task.TaskEntry.DATETIME + " TEXT, "
                 + "FOREIGN KEY (" + Task.TaskEntry.ID_CHAT + ") REFERENCES " + Task.TaskEntry.CHAT + "(" + Task.TaskEntry.ID_CHAT + ") ON DELETE CASCADE"
                 + ")";
 
@@ -51,13 +53,14 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.ID_CHAT + " TEXT PRIMARY KEY, "
                 + Task.TaskEntry.LAST_MESSAGE + " TEXT, "
                 + Task.TaskEntry.NAME + " TEXT, "
+                + Task.TaskEntry.DATETIME + " TEXT, "
                 + Task.TaskEntry.NOT_READ_MESSAGE + " INTEGER "
                 + ")";
 
         String CREATE_GLOBAL_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GLOBAL_MESSAGE + " ( "
                 + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
                 + Task.TaskEntry.MSG + " TEXT NOT NULL, "
-                + Task.TaskEntry.DATE + " DATETIME, "
+                + Task.TaskEntry.DATETIME + " TEXT, "
                 + Task.TaskEntry.LAST_MESSAGE + "TEXT, "
                 + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER "
                 + ")";
@@ -119,37 +122,38 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
     //CHAT-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    public void addMsg(String msg, String idReceiver, String idSender) {
+    public void addMsg(String msg, String idReceiver, String idSender,String idChat) {
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
-       String idChat = retrieveIdChat(idReceiver);
         msgValues.put(Task.TaskEntry.ID_CHAT,idChat);
         msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
         msgValues.put(Task.TaskEntry.MSG, msg);
+        msgValues.put(Task.TaskEntry.DATETIME, String.valueOf(LocalDateTime.now()));
         db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
         lastMessageChat(msg,idChat);
     }
 
-    public void addMsg(Paths paths, String idReceiver, String idSender) {
+    public void addMsg(Paths paths, String idReceiver, String idSender,String idChat) {
         ContentValues msgValues = new ContentValues();
-        String idChat = retrieveIdChat(idReceiver);
         msgValues.put(Task.TaskEntry.ID_CHAT,idChat);
         msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
         msgValues.put(Task.TaskEntry.PATH, paths.toString());
+        msgValues.put(Task.TaskEntry.DATETIME, String.valueOf(LocalDateTime.now()));
         db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
         lastMessageChat(paths.toString(),idChat);
     }
 
     private void lastMessageChat(String msg, String idChat){
-        String query="UPDATE "+ Task.TaskEntry.CHAT+
-                " SET "+ Task.TaskEntry.LAST_MESSAGE+" = '" +msg+
-                "' WHERE '"+ Task.TaskEntry.ID_CHAT+"' = '"+idChat+"'";
-        db.execSQL(query);
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.LAST_MESSAGE, msg);
+        msgValues.put(Task.TaskEntry.DATETIME, String.valueOf(LocalDateTime.now()));
+        db.update(Task.TaskEntry.CHAT,msgValues,Task.TaskEntry.ID_CHAT+"="+idChat,null);
     }
 
     public Cursor getLastMessageChat(String idChat){
-        String query="SELECT c.last_message, m.date " +
-                " FROM "+ Task.TaskEntry.MESSAGE +" m INNER JOIN "+ Task.TaskEntry.CHAT+ " c ON c.id_chat = m.id_chat"+
+        String query="SELECT last_message, datetime " +
+                " FROM "+ Task.TaskEntry.CHAT +
                 " WHERE '"+ Task.TaskEntry.ID_CHAT + "' = '" + idChat + "'";
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
@@ -176,10 +180,10 @@ public class Database extends SQLiteOpenHelper {
         db.insert(Task.TaskEntry.CHAT, null, chatValues);
     }
 
-    public boolean checkChatExist(String idReceiver) {
+    public boolean checkChatExist(String idChat) {
         String query = "SELECT id_chat" +
                 " FROM CHAT" +
-                " WHERE id_receiver='" + idReceiver + "'";
+                " WHERE id_chat='" + idChat + "'";
         Cursor c = db.rawQuery(query, null);
         if (c == null) {
             return false;
@@ -188,14 +192,11 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getAllMsg(String idReceiver) {
-        String query = "SELECT id_sender,msg,path,date" +
-                " FROM MESSAGE" +
-                " WHERE id_chat = (SELECT id_chat" +
-                " FROM CHAT" +
-                " GROUP BY "+ Task.TaskEntry.DATE+
-                " HAVING id_receiver='" + idReceiver + "'" +
-                ") ORDER BY DESC";
+    public Cursor getAllMsg(String idChat) {
+        String query = " SELECT id_sender,msg,path,datetime " +
+                " FROM MESSAGE " +
+                " WHERE id_chat = " + idChat +
+                " ORDER BY DESC ";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
@@ -204,7 +205,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public Cursor getAllChat(){
-        String query = "SELECT " +Task.TaskEntry.ID_CHAT+", "+ Task.TaskEntry.NAME+", "+ Task.TaskEntry.LAST_MESSAGE+
+        String query = "SELECT " +Task.TaskEntry.ID_CHAT+", "+ Task.TaskEntry.NAME+", "+ Task.TaskEntry.LAST_MESSAGE+", "+Task.TaskEntry.DATETIME+
                 " FROM "+ Task.TaskEntry.CHAT;
         Cursor c = db.rawQuery(query, null);
         if (c != null) {

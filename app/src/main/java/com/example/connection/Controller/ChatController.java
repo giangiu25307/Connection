@@ -44,7 +44,7 @@ public class ChatController {
                 e.printStackTrace();
             }
             tcp.sendMessage(msg);
-            database.addMsg(msg,idReceiver,user.getIdUser());
+            database.addMsg(msg,idReceiver,user.getIdUser(),idReceiver);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,7 +60,7 @@ public class ChatController {
                 e.printStackTrace();
             }
             tcp.sendMessage(path.toString());//encoding to byte DA FARE
-            database.addMsg(path.toString(),idReceiver,user.getIdUser());
+            database.addMsg(path.toString(),idReceiver,user.getIdUser(),idReceiver);
         } catch (IOException e) {
             e.printStackTrace();
         }

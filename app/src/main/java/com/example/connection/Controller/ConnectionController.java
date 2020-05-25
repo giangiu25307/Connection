@@ -109,7 +109,7 @@ public class ConnectionController {
     public void createGroup() {
         this.resetConfig();
         mManager.createGroup(mChannel, config, null);
-        System.out.println("ciao");
+
     }
 
     //Scan for the near group --------------------------------------------------------------------------------------------------------------------------------

@@ -21,6 +21,10 @@ import com.example.connection.Controller.Task;
 import com.example.connection.R;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
@@ -28,6 +32,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private Cursor chatCursor, userCursor;
     private Database database;
     private Bitmap bitmap;
+    SimpleDateFormat format = new SimpleDateFormat();
+    Date date=new Date();
 
     public ChatAdapter(Context context, Cursor chatCursor, Database database) {
         this.context = context;
@@ -64,12 +70,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         userCursor = database.getUSer(nameUser);
         userCursor.moveToFirst();
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(userCursor));
+        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
 
         long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
         System.out.println(id);
         String userName = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.USERNAME));
         String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
         String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
+        String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
         File profilePic = new  File(profilePicPosition);
 
         if(profilePic.exists()){
@@ -88,8 +96,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         TextView userNameTextView = holder.name;
         TextView lastMessageTextView = holder.lastMessage;
         TextView lastMessageTimeTextView = holder.name;
+        TextView timeLastMessageTextView = holder.timeLastMessage;
         userNameTextView.setText(userName);
         lastMessageTextView.setText(lastMessage);
+        try {
+            date=format.parse(datetime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        datetime= date.getHours()+":"+date.getMinutes();
+        timeLastMessageTextView.setText(datetime);
         //lastMessageTimeTextView.setText(timeLastMessage);
 
     }

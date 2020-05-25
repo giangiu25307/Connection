@@ -84,9 +84,9 @@ public class Connection extends AppCompatActivity {
         countDownTimer.start();
         connectionController=new ConnectionController(this,database,user);
         //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
-        //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
+       // database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.createChat("1", "Andrew");
-        //database.addMsg("Ciao", "2", "null");
+        database.addMsg("Ciao", "1", "prova","1");
 
 
     }
