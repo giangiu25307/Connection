@@ -10,15 +10,14 @@ import java.nio.file.Paths;
 
 public class Database extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Connection";
-    SQLiteDatabase db;
+    SQLiteDatabase db=this.getWritableDatabase();
     Context context;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-
     }
 
     @Override
@@ -50,17 +49,17 @@ public class Database extends SQLiteOpenHelper {
 
         String CREATE_CHAT_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.CHAT + " ( "
                 + Task.TaskEntry.ID_CHAT + " TEXT PRIMARY KEY, "
-                + Task.TaskEntry.LAST_MESSAGE + "TEXT,"
-                + Task.TaskEntry.NAME + "TEXT,"
-                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
+                + Task.TaskEntry.LAST_MESSAGE + " TEXT, "
+                + Task.TaskEntry.NAME + " TEXT, "
+                + Task.TaskEntry.NOT_READ_MESSAGE + " INTEGER "
                 + ")";
 
         String CREATE_GLOBAL_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GLOBAL_MESSAGE + " ( "
                 + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
-                + Task.TaskEntry.MSG + " TEXT NOT NULL,"
-                + Task.TaskEntry.DATE + " DATETIME"
-                + Task.TaskEntry.LAST_MESSAGE + "TEXT"
-                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER"
+                + Task.TaskEntry.MSG + " TEXT NOT NULL, "
+                + Task.TaskEntry.DATE + " DATETIME, "
+                + Task.TaskEntry.LAST_MESSAGE + "TEXT, "
+                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER "
                 + ")";
 
         database.execSQL(CREATE_USER_TABLE);
@@ -123,7 +122,7 @@ public class Database extends SQLiteOpenHelper {
     public void addMsg(String msg, String idReceiver, String idSender) {
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
-        int idChat = retrieveIdChat(idReceiver);
+       String idChat = retrieveIdChat(idReceiver);
         msgValues.put(Task.TaskEntry.ID_CHAT,idChat);
         msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
         msgValues.put(Task.TaskEntry.MSG, msg);
@@ -133,7 +132,7 @@ public class Database extends SQLiteOpenHelper {
 
     public void addMsg(Paths paths, String idReceiver, String idSender) {
         ContentValues msgValues = new ContentValues();
-        int idChat = retrieveIdChat(idReceiver);
+        String idChat = retrieveIdChat(idReceiver);
         msgValues.put(Task.TaskEntry.ID_CHAT,idChat);
         msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
         msgValues.put(Task.TaskEntry.PATH, paths.toString());
@@ -141,10 +140,10 @@ public class Database extends SQLiteOpenHelper {
         lastMessageChat(paths.toString(),idChat);
     }
 
-    private void lastMessageChat(String msg, int idChat){
+    private void lastMessageChat(String msg, String idChat){
         String query="UPDATE "+ Task.TaskEntry.CHAT+
-                " SET "+ Task.TaskEntry.LAST_MESSAGE+" = " +msg+
-                " WHERE '"+ Task.TaskEntry.ID_CHAT+"' = '"+idChat+"'";
+                " SET "+ Task.TaskEntry.LAST_MESSAGE+" = '" +msg+
+                "' WHERE '"+ Task.TaskEntry.ID_CHAT+"' = '"+idChat+"'";
         db.execSQL(query);
     }
 
@@ -157,23 +156,22 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
-    private int retrieveIdChat(String idReceiver) {
-        int idChat = 0;
+    private String retrieveIdChat(String idChat) {
         String query = "SELECT id_chat" +
                 " FROM CHAT" +
-                " WHERE id_receiver='" + idReceiver + "'";
+                " WHERE id_chat='" + idChat + "'";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
         }
-        idChat = c.getColumnIndex(Task.TaskEntry.ID_CHAT);
-        return idChat;
+        return c.getString(0);
+
     }
 
-    public void createChat(String idReceiver,String name) {
+    public void createChat(String idChat,String name) {
         db=this.getWritableDatabase();
         ContentValues chatValues = new ContentValues();
-        chatValues.put(Task.TaskEntry.ID_CHAT, idReceiver);
+        chatValues.put(Task.TaskEntry.ID_CHAT, idChat);
         chatValues.put(Task.TaskEntry.NAME, name);
         db.insert(Task.TaskEntry.CHAT, null, chatValues);
     }
@@ -206,7 +204,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public Cursor getAllChat(){
-        String query = "SELECT " +Task.TaskEntry.ID_CHAT+","+ Task.TaskEntry.NAME+","+ Task.TaskEntry.DATE+","+ Task.TaskEntry.LAST_MESSAGE+
+        String query = "SELECT " +Task.TaskEntry.ID_CHAT+", "+ Task.TaskEntry.NAME+", "+ Task.TaskEntry.LAST_MESSAGE+
                 " FROM "+ Task.TaskEntry.CHAT;
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
@@ -268,8 +266,8 @@ public class Database extends SQLiteOpenHelper {
     public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String profilePic){
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
-        msgValues.put(Task.TaskEntry.USERNAME,username);
         msgValues.put(Task.TaskEntry.ID_USER,idUser);
+        msgValues.put(Task.TaskEntry.USERNAME,username);
         msgValues.put(Task.TaskEntry.MAIL,mail);
         msgValues.put(Task.TaskEntry.GENDER,gender);
         msgValues.put(Task.TaskEntry.NAME,name);
@@ -291,12 +289,15 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public Cursor  getAllUsers(){
+        db=this.getWritableDatabase();
         String query = "SELECT *" +
                 " FROM "+ Task.TaskEntry.USER+
                 " WHERE "+ Task.TaskEntry.IP+" IS NOT NULL";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
+        }else{
+            return null;
         }
         return c;
     }

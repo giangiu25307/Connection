@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Adapter.ChatAdapter;
@@ -63,8 +64,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
     private void setupRecyclerView(View view){
         RecyclerView recyclerView = view.findViewById(R.id.chatRecyclerView);
-        ChatAdapter chatAdapter=new ChatAdapter(getContext(),database.getAllChat(),database);
+        ChatAdapter chatAdapter = new ChatAdapter(getContext(), database.getAllChat(), database);
         recyclerView.setAdapter(chatAdapter);
+        System.out.println("Prova adapter");
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private Cursor getAllChat(){

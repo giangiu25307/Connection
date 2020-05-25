@@ -2,8 +2,10 @@ package com.example.connection.Adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +25,15 @@ import java.io.File;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private Context context;
-    private Cursor cursor;
+    private Cursor chatCursor, userCursor;
     private Database database;
-    private Cursor c;
     private Bitmap bitmap;
 
-    public ChatAdapter(Context context, Cursor cursor, Database database) {
+    public ChatAdapter(Context context, Cursor chatCursor, Database database) {
         this.context = context;
-        this.cursor = cursor;
+        this.chatCursor = chatCursor;
         this.database = database;
+        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
     }
 
     @NonNull
@@ -44,8 +46,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
             @Override
             public void openChat(int p) {
-                cursor.moveToPosition(p);
-                final long id = cursor.getLong(cursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+                chatCursor.moveToPosition(p);
+                final long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
             }
         });
 
@@ -54,18 +56,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ChatAdapter.ViewHolder holder, int position) {
-        if(!cursor.moveToPosition(position)){
+        if(!chatCursor.moveToPosition(position)){
             return;
         }
 
-        c = database.getUSer(Task.TaskEntry.ID_USER);
+        String nameUser = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+        userCursor = database.getUSer(nameUser);
+        userCursor.moveToFirst();
+        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(userCursor));
 
-
-        long id = cursor.getLong(cursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+        long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
         System.out.println(id);
-        String userName = c.getString(cursor.getColumnIndex(Task.TaskEntry.USERNAME));
-        String lastMessage = cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
-        String profilePicPosition = c.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
+        String userName = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.USERNAME));
+        String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
+        String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
         File profilePic = new  File(profilePicPosition);
 
         if(profilePic.exists()){
@@ -75,8 +79,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             profilePicImageView.setImageBitmap(bitmap);
         }
 
-        c = database.getLastMessageChat(Task.TaskEntry.ID_CHAT);
-        String timeLastMessage = cursor.getString(cursor.getColumnIndex(Task.TaskEntry.DATE));
+        userCursor = database.getLastMessageChat(Task.TaskEntry.ID_CHAT);
+        //String timeLastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATE));
 
 
         holder.itemView.setTag(id);
@@ -86,21 +90,21 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         TextView lastMessageTimeTextView = holder.name;
         userNameTextView.setText(userName);
         lastMessageTextView.setText(lastMessage);
-        lastMessageTimeTextView.setText(timeLastMessage);
+        //lastMessageTimeTextView.setText(timeLastMessage);
 
     }
 
     @Override
     public int getItemCount(){
-        return cursor.getCount();
+        return chatCursor.getCount();
     }
 
     public void swapCursor(Cursor newCursor){
-        if(cursor != null){
-            cursor.close();
+        if(chatCursor != null){
+            chatCursor.close();
         }
 
-        cursor = newCursor;
+        chatCursor = newCursor;
 
         if (newCursor != null){
             notifyDataSetChanged();

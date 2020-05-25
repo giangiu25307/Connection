@@ -35,8 +35,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.connection.Adapter.ChatAdapter;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.TCP_Connection.TCP_Client;
 
@@ -53,9 +55,10 @@ public class Connection extends AppCompatActivity {
     private long secondsRemaining = 1500;
     private SharedPreferences sharedPreferences;
     Database database;
-
+    User user;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,7 @@ public class Connection extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         database = new Database(this);
+        user=new User("aaaaa","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
         fragment = new SplashScreenFragment();
         loadFragment(false);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -78,9 +82,11 @@ public class Connection extends AppCompatActivity {
         }
         createCountDowntimer();
         countDownTimer.start();
-        database.addUser("aaaaa","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
-        database.createChat("1", "Andrew");
-        database.addMsg("Ciao", "1", "1");
+        connectionController=new ConnectionController(this,database,user);
+        //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
+        //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
+        //database.createChat("1", "Andrew");
+        //database.addMsg("Ciao", "2", "null");
 
 
     }
