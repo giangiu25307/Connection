@@ -163,6 +163,8 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         return msg;
     }
 
+    //MAYBE WE NEED TO ADD MULTICAST LOCK !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
     /*public void sendGroupMsg(String idGroup, String msg) {
         try {
             msg = idGroup + "£€" + user.getIdUser() + "£€" + user.getUsername() + "£€" + msg; //IMPLEMENTARE CRIPTAZIONEEEEEEEEEE
