@@ -1,6 +1,7 @@
 package com.example.connection.View;
 
 import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -8,10 +9,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
@@ -47,6 +51,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
 
 public class Connection extends AppCompatActivity {
     private Fragment fragment;
@@ -86,8 +91,8 @@ public class Connection extends AppCompatActivity {
         //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
        // database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.createChat("1", "Andrew");
-        database.addMsg("Ciao", "1", "prova","1");
-
+        //database.addMsg("Ciao", "1", "prova","1");
+        //connectionController.Discovery();
 
     }
 
@@ -164,13 +169,13 @@ public class Connection extends AppCompatActivity {
             createCountDowntimer();
             countDownTimer.start();
         }
-        //registerReceiver(connectionController.getmReceiver(), connectionController.getmIntentFilter());
+        registerReceiver(connectionController.getmReceiver(), connectionController.getmIntentFilter());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //unregisterReceiver(connectionController.getmReceiver());
+        unregisterReceiver(connectionController.getmReceiver());
     }
 
     @Override
