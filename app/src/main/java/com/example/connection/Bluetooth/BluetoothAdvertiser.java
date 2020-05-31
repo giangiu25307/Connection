@@ -19,15 +19,30 @@ public class BluetoothAdvertiser {
     AdvertiseCallback mAdvertiseCallback;
 
     public BluetoothAdvertiser() {
-         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
+        setAdvertiseData();
+        setAdvertiseSettings();
+        mAdvertiseCallback = new AdvertiseCallback() {
+            @Override
+            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+                super.onStartSuccess(settingsInEffect);
+            }
+
+
+            @Override
+            public void onStartFailure(int errorCode) {
+                System.out.println(  "??????????????Advertising onStartFailure: " + errorCode );
+                super.onStartFailure(errorCode);
+            }
+        };
     }
     protected void setAdvertiseData() {
         ParcelUuid pUuid = new ParcelUuid( UUID.fromString(( "CDB7950D-73F1-4D4D-8E47-C090502DBD63" ) ));
         mAdvertiseData = new AdvertiseData.Builder()
-                .setIncludeDeviceName( true )
-                .addServiceUuid( pUuid )
-                .addServiceData( pUuid, "nomewifidirect".getBytes( Charset.forName( "UTF-8" ) ) )
+                .setIncludeDeviceName( false )
+                .addServiceData( pUuid, "connectionxca".getBytes( Charset.forName( "UTF-8" ) ) )
+                .setIncludeTxPowerLevel(false)
                 .build();
     }
 
@@ -40,6 +55,8 @@ public class BluetoothAdvertiser {
                 .build();
     }
     public void startBLE(){
+
         mBluetoothLeAdvertiser.startAdvertising(mAdvertiseSettings, mAdvertiseData, mAdvertiseCallback);
+
     }
 }

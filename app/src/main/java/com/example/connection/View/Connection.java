@@ -2,56 +2,27 @@ package com.example.connection.View;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.net.wifi.WpsInfo;
-import android.net.wifi.p2p.WifiP2pConfig;
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pGroup;
-import android.net.wifi.p2p.WifiP2pInfo;
-import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.example.connection.Adapter.ChatAdapter;
+import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.TCP_Connection.TCP_Client;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
 
 public class Connection extends AppCompatActivity {
     private Fragment fragment;
@@ -93,7 +64,8 @@ public class Connection extends AppCompatActivity {
         //database.createChat("1", "Andrew");
         //database.addMsg("Ciao", "1", "prova","1");
         //connectionController.Discovery();
-
+        BluetoothAdvertiser bluetoothAdvertiser=new BluetoothAdvertiser();
+        bluetoothAdvertiser.startBLE();
     }
 
     private void loadTheme(){
