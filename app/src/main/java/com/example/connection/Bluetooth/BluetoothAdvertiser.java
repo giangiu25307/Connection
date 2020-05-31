@@ -11,14 +11,14 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
-public class Bluetooth {
+public class BluetoothAdvertiser {
     BluetoothAdapter mBluetoothAdapter;
     BluetoothLeAdvertiser mBluetoothLeAdvertiser;
     AdvertiseData mAdvertiseData;
     AdvertiseSettings mAdvertiseSettings;
     AdvertiseCallback mAdvertiseCallback;
 
-    public Bluetooth () {
+    public BluetoothAdvertiser() {
          mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
     }
