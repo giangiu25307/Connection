@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
+import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
@@ -59,13 +60,13 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         connectionController=new ConnectionController(this,database,user);
+        BluetoothScanner bluetoothScanner=new BluetoothScanner();
         //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
        // database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.createChat("1", "Andrew");
         //database.addMsg("Ciao", "1", "prova","1");
         //connectionController.Discovery();
-        BluetoothAdvertiser bluetoothAdvertiser=new BluetoothAdvertiser();
-        bluetoothAdvertiser.startBLE();
+        bluetoothScanner.startBLEScan();
     }
 
     private void loadTheme(){

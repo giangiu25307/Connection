@@ -2,59 +2,63 @@ package com.example.connection.Bluetooth;
 
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.os.Handler;
+import android.os.ParcelUuid;
+import android.text.TextUtils;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 
 public class BluetoothScanner extends ListActivity {
+    private BluetoothLeScanner mBluetoothLeScanner;
+    private Handler mHandler = new Handler();
+    ScanSettings settings;
+    public BluetoothScanner(){
+        mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
+       /* ScanFilter filter = new ScanFilter.Builder()
+                .setServiceUuid( new ParcelUuid(UUID.fromString( "" ) ) )
+                .build();
+        filters.add( filter );*/
+        settings = new ScanSettings.Builder()
+                .setScanMode( ScanSettings.SCAN_MODE_LOW_LATENCY )
+                .build();
 
-    private BluetoothAdapter bluetoothAdapter;
-    private boolean mScanning;
-    private Handler handler;
-    //private LeDeviceListAdapter leDeviceListAdapter; Classe insistente?! grande google sempre un ottimo lavoro
-    ArrayList<BluetoothDevice> bluetoothDevices=new ArrayList<BluetoothDevice>();
-
-    // Stops scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 10000;
-
-    private void scanLeDevice(final boolean enable) {
-        if (enable) {
-            // Stops scanning after a pre-defined scan period.
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mScanning = false;
-                    bluetoothAdapter.stopLeScan(leScanCallback);
-                }
-            }, SCAN_PERIOD);
-
-            mScanning = true;
-            bluetoothAdapter.startLeScan(leScanCallback);
-        } else {
-            mScanning = false;
-            bluetoothAdapter.stopLeScan(leScanCallback);
-        }
     }
+    private ScanCallback mScanCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+            if( result == null || result.getDevice() == null || TextUtils.isEmpty(result.getDevice().getName())){
+                System.out.println("ciao");
+                return;
+            }
 
+            StringBuilder builder = new StringBuilder( result.getDevice().getName() );
 
-    // Device scan callback.
-    private BluetoothAdapter.LeScanCallback leScanCallback =
-            new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(final BluetoothDevice device, int rssi,
-                                     byte[] scanRecord) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            bluetoothDevices.add(device);
-                            //leDeviceListAdapter.addDevice(device);
-                            //leDeviceListAdapter.notifyDataSetChanged();
-                        }
-                    });
-                }
-            };
+            builder.append("\n").append(new String(result.getScanRecord().getServiceData(result.getScanRecord().getServiceUuids().get(0)), Charset.forName("UTF-8")));
+            System.out.println(builder);
+        }
 
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+        }
 
+        @Override
+        public void onScanFailed(int errorCode) {
+            System.out.println( "Discovery onScanFailed: " + errorCode );
+            super.onScanFailed(errorCode);
+        }
+    };
+    public void startBLEScan(){
+        mBluetoothLeScanner.startScan(null, settings, mScanCallback);
+    }
 }
