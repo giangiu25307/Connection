@@ -11,15 +11,24 @@ import android.os.Handler;
 import android.os.ParcelUuid;
 import android.text.TextUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import static java.nio.charset.StandardCharsets.*;
 
 
 public class BluetoothScanner extends ListActivity {
     private BluetoothLeScanner mBluetoothLeScanner;
-    private Handler mHandler = new Handler();
     ScanSettings settings;
     public BluetoothScanner(){
         mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
@@ -29,6 +38,9 @@ public class BluetoothScanner extends ListActivity {
         filters.add( filter );*/
         settings = new ScanSettings.Builder()
                 .setScanMode( ScanSettings.SCAN_MODE_LOW_LATENCY )
+                .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
+                .setMatchMode(ScanSettings.MATCH_MODE_AGGRESSIVE)
+                .setNumOfMatches(ScanSettings.MATCH_NUM_ONE_ADVERTISEMENT)
                 .build();
 
     }
@@ -36,15 +48,21 @@ public class BluetoothScanner extends ListActivity {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
-            if( result == null || result.getDevice() == null || TextUtils.isEmpty(result.getDevice().getName())){
-                System.out.println("ciao");
+            if( result == null || result.getDevice() == null){
                 return;
             }
+            Set keys = result.getScanRecord().getServiceData().keySet();
 
-            StringBuilder builder = new StringBuilder( result.getDevice().getName() );
+            for (Iterator i = keys.iterator(); i.hasNext();) {
+                 byte[] array=  result.getScanRecord().getServiceData().get(i.next());
+                StringBuilder sb = new StringBuilder();
+                StringBuilder output = new StringBuilder("");
+                for (byte b : array) {
+                    output.append((char) Integer.parseInt(String.format("%02X", b), 16));
+                }
+                System.out.println(output.toString());
+            }
 
-            builder.append("\n").append(new String(result.getScanRecord().getServiceData(result.getScanRecord().getServiceUuids().get(0)), Charset.forName("UTF-8")));
-            System.out.println(builder);
         }
 
         @Override
