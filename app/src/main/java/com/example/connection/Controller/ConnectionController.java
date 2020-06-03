@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class ConnectionController {
 
@@ -275,9 +276,10 @@ public class ConnectionController {
     }
 
     //return the all client list --------------------------------------------------------------------------------------------------------------------------------
-    public  Cursor getAllClientList(){
+    public Optional<Cursor> getAllClientList(){
 
-            return database.getAllUsers();
+            return Optional.of(database.getAllUsers());
+
     }
 
 

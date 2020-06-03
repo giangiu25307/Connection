@@ -42,10 +42,11 @@ public class Connection extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        database = new Database(this);
+        connectionController=new ConnectionController(this,database,user);
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        database = new Database(this);
         user=new User("aaaaa","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
         fragment = new SplashScreenFragment();
         loadFragment(false);
@@ -59,14 +60,13 @@ public class Connection extends AppCompatActivity {
         }
         createCountDowntimer();
         countDownTimer.start();
-        connectionController=new ConnectionController(this,database,user);
-        BluetoothScanner bluetoothScanner=new BluetoothScanner();
+        //BluetoothScanner bluetoothScanner=new BluetoothScanner();
         //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
-       // database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
-        //database.createChat("1", "Andrew");
-        //database.addMsg("Ciao", "1", "prova","1");
+        database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
+        database.createChat("1", "Andrew");
+        database.addMsg("Ciao", "1", "prova","1");
         //connectionController.Discovery();
-        bluetoothScanner.startBLEScan();
+        //bluetoothScanner.startBLEScan();
     }
 
     private void loadTheme(){
@@ -129,7 +129,7 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                fragment = new HomeFragment(connectionController, database);
+                fragment = new HomeFragment().newInstance(connectionController, database);
                 loadFragment(true);
             }
         };

@@ -24,9 +24,14 @@ public class HomeFragment extends Fragment {
     ConnectionController connectionController;
     Database database;
 
-    public HomeFragment(ConnectionController connectionController, Database database) {
-        this.connectionController = connectionController;
-        this.database = database;
+    public HomeFragment() {
+    }
+
+    public HomeFragment newInstance(ConnectionController connectionController, Database database) {
+        HomeFragment homeFragment = new HomeFragment();
+        homeFragment.setConnectionController(connectionController);
+        homeFragment.setDatabase(database);
+        return homeFragment;
     }
 
     @Nullable
@@ -72,4 +77,11 @@ public class HomeFragment extends Fragment {
         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
     }
 
+    public void setConnectionController(ConnectionController connectionController) {
+        this.connectionController = connectionController;
+    }
+
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
 }

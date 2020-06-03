@@ -35,9 +35,9 @@ public class MapFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       /* @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.map_fragment, null);
+          @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.map_fragment, null);
 
-            Cursor c = connectionController.getAllClientList();
+            Cursor c = connectionController.getAllClientList().get();
             c.moveToFirst();
             ListView listView = view.findViewById(R.id.listView);
 
@@ -50,7 +50,6 @@ public class MapFragment extends Fragment {
                 c.moveToNext();
 
             }
-
 
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
             listView.setAdapter(arrayAdapter);
@@ -66,12 +65,10 @@ public class MapFragment extends Fragment {
                     Toast toast = Toast.makeText(getContext(), information, duration);
                     toast.show();
 
-
                 }
 
             });
-        return view;*/
-       return null;
+        return view;
         }
     }
 
