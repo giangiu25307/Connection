@@ -35,7 +35,8 @@ public class MapFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.map_fragment, null);
+       /* @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.map_fragment, null);
+
             Cursor c = connectionController.getAllClientList();
             c.moveToFirst();
             ListView listView = view.findViewById(R.id.listView);
@@ -69,7 +70,8 @@ public class MapFragment extends Fragment {
                 }
 
             });
-        return view;
+        return view;*/
+       return null;
         }
     }
 

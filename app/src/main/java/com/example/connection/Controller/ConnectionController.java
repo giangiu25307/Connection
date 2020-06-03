@@ -10,7 +10,10 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pGroup;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.CountDownTimer;
@@ -22,9 +25,14 @@ import com.example.connection.TCP_Connection.MultiThreadedServer;
 import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
+import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 public class ConnectionController {
@@ -45,6 +53,18 @@ public class ConnectionController {
     MultiThreadedServer tcpServer;
     Database database;
     int count=0;
+    Collection<WifiP2pDevice> peers;
+    List<WifiP2pDevice> newList;
+    HashMap<String, String> macAdresses;
+    WifiP2pDevice[] deviceArray;
+    InetAddress groupOwnerAddress;
+    WifiP2pManager.PeerListListener peerListListener;
+    String[] deviceNameArray;
+    boolean DeviceFound;
+    BroadcastReceiver mReceiver;
+    IntentFilter mIntentFilter;
+    WifiP2pManager.ConnectionInfoListener connectionInfoListener;
+
 
     public ConnectionController(Connection connection, Database database,User user) {
         this.connection = connection;
@@ -54,37 +74,23 @@ public class ConnectionController {
         ConnectionStatus = "";
         this.database = database;
         this.user=user;
-        final Thread thread = new Thread(){
-        public void run() {
-            try {
-                while(true){
-                    clientList();
-                    this.sleep(100);
-                }
-            } catch(InterruptedException v) {
-                System.out.println(v);
-            }
-        }
-    };
+
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
-        scan();
-        wifiScanReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context c, Intent intent) {
-                boolean success = intent.getBooleanExtra(
-                        WifiManager.EXTRA_RESULTS_UPDATED, false);
-                if (success) {
-                    scanSuccess();
-                } else {
-                    // scan failure handling
-                    scanFailure();
-                }
-            }
-        };
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         connection.registerReceiver(wifiScanReceiver, intentFilter);
-        resetConfig();
+        macAdresses = new HashMap<>();
+        peers = new ArrayList<WifiP2pDevice>();
+        newList = new ArrayList<WifiP2pDevice>();
+        boolean DeviceFound=true;
+        SearchPeers();
+        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel,peerListListener,connectionInfoListener);
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+        //Discovery();
     }
 
     // this exist for the handshake when two group owner are meeting each other, THIS NEED TO BE FINISH BEFORE THE APP IS RELEASED -----------------------------------------------------------------------------------
@@ -102,31 +108,37 @@ public class ConnectionController {
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
     private void removeGroup() {
         mManager.removeGroup(mChannel, null);
-        resetConfig();
     }
 
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     public void createGroup() {
-        this.resetConfig();
-        mManager.createGroup(mChannel, config, null);
+        System.out.println("create group");
+        mManager.createGroup(mChannel,  null);
 
     }
 
     //Scan for the near group --------------------------------------------------------------------------------------------------------------------------------
     private void scan() {
         boolean success = wifiManager.startScan();
+
         if (!success) {
             scanFailure();
+
         }
         scanSuccess();
     }
 
     //The scan has found an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
     private void scanSuccess() {
+
         results = wifiManager.getScanResults();
-        if (getWifiDirectName().equals("")) createGroup();
+        String directName=getWifiDirectName();
+        System.out.println(directName);
+        if (directName.equals("")) {
+            createGroup();
+        }
         else {
-            setConfig();
+            setConfig(directName);
             connectionToGroup();
         }
     }
@@ -147,6 +159,12 @@ public class ConnectionController {
         mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
+                mManager.requestConnectionInfo(mChannel, new WifiP2pManager.ConnectionInfoListener() {
+                    @Override
+                    public void onConnectionInfoAvailable(WifiP2pInfo info) {
+                        System.out.println(info.groupFormed);
+                    }
+                });
                 ConnectionToDevice = "Connected to the group";
             }
 
@@ -189,20 +207,7 @@ public class ConnectionController {
     }
 
     //set the config to an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void setConfig() {
-        String networkName = getWifiDirectName();
-        if (!networkName.equals("")) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                config = new WifiP2pConfig.Builder()
-                        .setNetworkName(networkName)
-                        .setPassphrase("12345678")
-                        .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                        .enablePersistentMode(false)
-                        .build();
-            }
-        }
-    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public void setConfig(String networkName) {
@@ -211,7 +216,7 @@ public class ConnectionController {
                     .setNetworkName("DIRECT-"+networkName)
                     .setPassphrase("12345678")
                     .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                    .enablePersistentMode(false)
+                    .enablePersistentMode(true)
                     .build();
         }
     }
@@ -274,64 +279,33 @@ public class ConnectionController {
 
             return database.getAllUsers();
     }
-    /*macAdresses = new HashMap<>();
-        peers = new ArrayList<WifiP2pDevice>();
-        newList = new ArrayList<WifiP2pDevice>();
-        boolean DeviceFound=true;
-        SearchPeers();
-        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel,peerListListener,connectionInfoListener);
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);*/
 
-    /*Collection<WifiP2pDevice> peers;
-    List<WifiP2pDevice> newList;
-    HashMap<String, String> macAdresses;
-    WifiP2pDevice[] deviceArray;
-    InetAddress groupOwnerAddress;
-    WifiP2pManager.PeerListListener peerListListener;
-    String[] deviceNameArray;
-    boolean DeviceFound;
-    WifiManager wifiManager;
-    BroadcastReceiver mReceiver;
-    IntentFilter mIntentFilter;
-    WifiP2pManager.ConnectionInfoListener connectionInfoListener;*/
 
-    /*public String Discovery() {
+
+
+    public String Discovery() {
         //RICERCA DISPOSITIVI VICINI-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
+                System.out.println("discovery");
                 ConnectionStatus = "Discovery Started";
-                System.out.println("test");
+                SearchPeers();
             }
 
             @Override
             public void onFailure(int reason) {
                 System.out.println(reason);
-                ConnectionStatus = "Discovery Starting Failed";
             }
         });
         return ConnectionStatus;
-    }*/
+    }
 
-    /*private boolean SearchPeers() {
-
+    public boolean SearchPeers() {
         peerListListener = new WifiP2pManager.PeerListListener() {
             @Override
             public void onPeersAvailable(WifiP2pDeviceList peerList) {
-                WifiP2pDevice groupOwner = new WifiP2pDevice();
                 newList.addAll(peerList.getDeviceList());
-                System.out.println("ciao");
-                /*int i = 0;
-                while (i < newList.size()) {
-                    if (newList.get(i).isGroupOwner() == true) {
-                        groupOwner = newList.get(i);
-                    }
-                    i = i + 1;
-                }
                 if (!newList.equals(peers)) {
                     peers.clear();
                     peers.addAll(peerList.getDeviceList());
@@ -339,25 +313,19 @@ public class ConnectionController {
                     deviceArray = new WifiP2pDevice[peerList.getDeviceList().size()];
                     int index = 0;
                     for (WifiP2pDevice device : peerList.getDeviceList()) {
-                        if (peers.get(index).isGroupOwner() == true) {
-                            groupOwner = newList.get(index);
-                        }
+                        System.out.println(device.deviceName);
                         deviceNameArray[index] = device.deviceName;
                         deviceArray[index] = device;
                         index++;
                     }
                 }
-                if (peers.size() == 0) {
-                     DeviceFound=false;
-                }else{
-                    DeviceFound=true;
-                }
+
             }
         };
         return DeviceFound;
-    }*/
+    }
 
-    /*public String ConnectionListener(){
+    public String ConnectionListener(){
         //SERVE SOLO A CAPIRE CHI è HOST O CLIENT, DA RIMUOVERE PER CREARE UNA VERA E PROPRIA CHAT-------------------------------------------------------------------------------------------------------------------
         connectionInfoListener = new WifiP2pManager.ConnectionInfoListener() {
             @Override
@@ -379,5 +347,6 @@ public class ConnectionController {
 
     public IntentFilter getmIntentFilter() {
         return mIntentFilter;
-    }*/
+    }
+
 }

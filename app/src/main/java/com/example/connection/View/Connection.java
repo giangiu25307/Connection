@@ -1,52 +1,29 @@
 package com.example.connection.View;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.net.wifi.WifiManager;
-import android.net.wifi.p2p.WifiP2pConfig;
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pInfo;
-import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.example.connection.Adapter.ChatAdapter;
+import com.example.connection.Bluetooth.BluetoothAdvertiser;
+import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.TCP_Connection.TCP_Client;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class Connection extends AppCompatActivity {
     private Fragment fragment;
@@ -83,12 +60,13 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         connectionController=new ConnectionController(this,database,user);
+        BluetoothScanner bluetoothScanner=new BluetoothScanner();
         //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
        // database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.createChat("1", "Andrew");
-        database.addMsg("Ciao", "1", "prova","1");
-
-
+        //database.addMsg("Ciao", "1", "prova","1");
+        //connectionController.Discovery();
+        bluetoothScanner.startBLEScan();
     }
 
     private void loadTheme(){
@@ -164,13 +142,13 @@ public class Connection extends AppCompatActivity {
             createCountDowntimer();
             countDownTimer.start();
         }
-        //registerReceiver(connectionController.getmReceiver(), connectionController.getmIntentFilter());
+        registerReceiver(connectionController.getmReceiver(), connectionController.getmIntentFilter());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //unregisterReceiver(connectionController.getmReceiver());
+        unregisterReceiver(connectionController.getmReceiver());
     }
 
     @Override
