@@ -59,14 +59,16 @@ public class Connection extends AppCompatActivity {
         }
         createCountDowntimer();
         countDownTimer.start();
-        connectionController=new ConnectionController(this,database,user);
+        //connectionController=new ConnectionController(this,database,user);
         BluetoothScanner bluetoothScanner=new BluetoothScanner();
+        BluetoothAdvertiser bluetoothAdvertiser=new BluetoothAdvertiser();
         //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
        // database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.createChat("1", "Andrew");
         //database.addMsg("Ciao", "1", "prova","1");
         //connectionController.Discovery();
         bluetoothScanner.startBLEScan();
+       // bluetoothAdvertiser.startBLE();
     }
 
     private void loadTheme(){
@@ -142,13 +144,13 @@ public class Connection extends AppCompatActivity {
             createCountDowntimer();
             countDownTimer.start();
         }
-        registerReceiver(connectionController.getmReceiver(), connectionController.getmIntentFilter());
+//        registerReceiver(connectionController.getmReceiver(), connectionController.getmIntentFilter());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(connectionController.getmReceiver());
+      //  unregisterReceiver(connectionController.getmReceiver());
     }
 
     @Override
