@@ -18,10 +18,10 @@ public class BluetoothAdvertiser {
     AdvertiseSettings mAdvertiseSettings;
     AdvertiseCallback mAdvertiseCallback;
 
-    public BluetoothAdvertiser() {
+    public BluetoothAdvertiser(String nome) {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
-        setAdvertiseData();
+        setAdvertiseData(nome);
         setAdvertiseSettings();
         mAdvertiseCallback = new AdvertiseCallback() {
             @Override
@@ -37,11 +37,11 @@ public class BluetoothAdvertiser {
             }
         };
     }
-    protected void setAdvertiseData() {
+    protected void setAdvertiseData(String nome) {
         ParcelUuid pUuid = new ParcelUuid( UUID.fromString(( "CDB7950D-73F1-4D4D-8E47-C090502DBD63" ) ));
         mAdvertiseData = new AdvertiseData.Builder()
                 .setIncludeDeviceName( false )
-                .addServiceData( pUuid, "connectionxca".getBytes( Charset.forName( "UTF-8" ) ) )
+                .addServiceData( pUuid, nome.getBytes( Charset.forName( "UTF-8" ) ) )
                 .setIncludeTxPowerLevel(false)
                 .build();
     }

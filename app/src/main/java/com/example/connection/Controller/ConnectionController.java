@@ -2,13 +2,11 @@ package com.example.connection.Controller;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
@@ -20,6 +18,8 @@ import android.os.CountDownTimer;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.connection.Bluetooth.BluetoothAdvertiser;
+import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.MultiThreadedServer;
 import com.example.connection.TCP_Connection.TCP_Client;
@@ -65,7 +65,9 @@ public class ConnectionController {
     BroadcastReceiver mReceiver;
     IntentFilter mIntentFilter;
     WifiP2pManager.ConnectionInfoListener connectionInfoListener;
-
+    List<String> bluetoothDevices;
+    BluetoothScanner bleScanner;
+    BluetoothAdvertiser beacon;
 
     public ConnectionController(Connection connection, Database database,User user) {
         this.connection = connection;
@@ -75,7 +77,7 @@ public class ConnectionController {
         ConnectionStatus = "";
         this.database = database;
         this.user=user;
-
+        bluetoothDevices=new ArrayList<>();
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
@@ -114,11 +116,30 @@ public class ConnectionController {
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     public void createGroup() {
         System.out.println("create group");
-        mManager.createGroup(mChannel,  null);
+        mManager.createGroup(mChannel, new WifiP2pManager.ActionListener(){
+
+            @Override
+            public void onSuccess() {
+                mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+                    @Override
+                    public void onGroupInfoAvailable(WifiP2pGroup group) {
+                        System.out.println(group.getNetworkName());
+                        beacon=new BluetoothAdvertiser(group.getNetworkName());
+                        beacon.startBLE();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(int reason) {
+
+            }
+        });
 
     }
 
     //Scan for the near group --------------------------------------------------------------------------------------------------------------------------------
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     private void scan() {
         boolean success = wifiManager.startScan();
 
@@ -130,6 +151,7 @@ public class ConnectionController {
     }
 
     //The scan has found an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     private void scanSuccess() {
 
         results = wifiManager.getScanResults();
@@ -169,6 +191,7 @@ public class ConnectionController {
                 ConnectionToDevice = "Connected to the group";
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onFailure(int reason) {
                 if (count < 3) {
@@ -287,6 +310,9 @@ public class ConnectionController {
 
     public String Discovery() {
         //RICERCA DISPOSITIVI VICINI-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        bleScanner =new BluetoothScanner();
+        bleScanner.startBLEScan();
+        bluetoothDevices= bleScanner.getBleDevices();
         mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
