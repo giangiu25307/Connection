@@ -116,28 +116,31 @@ public class ConnectionController {
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     public void createGroup() {
         System.out.println("create group");
+        //mManager.removeGroup(mChannel,null);
         mManager.createGroup(mChannel, new WifiP2pManager.ActionListener(){
 
             @Override
             public void onSuccess() {
-                mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
-                    @Override
-                    public void onGroupInfoAvailable(WifiP2pGroup group) {
-                        System.out.println(group.getNetworkName());
-                        beacon=new BluetoothAdvertiser(group.getNetworkName());
-                        beacon.startBLE();
-                    }
-                });
             }
 
             @Override
             public void onFailure(int reason) {
-
+                System.out.println(reason);
             }
         });
 
     }
-
+public void GetDeviceName(){
+    mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+        @Override
+        public void onGroupInfoAvailable(WifiP2pGroup group) {
+           WifiP2pDevice device=group.getOwner();
+            System.out.println(device.deviceName);
+            // beacon=new BluetoothAdvertiser(group.getNetworkName());
+            //beacon.startBLE();
+        }
+    });
+}
     //Scan for the near group --------------------------------------------------------------------------------------------------------------------------------
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void scan() {
@@ -161,7 +164,7 @@ public class ConnectionController {
             createGroup();
         }
         else {
-            setConfig(directName);
+            //setConfig(directName);
             connectionToGroup();
         }
     }

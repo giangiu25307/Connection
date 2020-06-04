@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.widget.Toast;
 
@@ -42,7 +44,8 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             if (mManager == null) {
                 return;
             }
-            connectionController.clientList();
+
+            //connectionController.clientList();
             /*NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo.isConnected()) {
                 mManager.requestConnectionInfo(mChannel, connectionInfoListener);

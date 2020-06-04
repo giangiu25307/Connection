@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.wifi.p2p.WifiP2pGroup;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
@@ -62,11 +63,12 @@ public class Connection extends AppCompatActivity {
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
         //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
-        database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
-        database.createChat("1", "Andrew");
-        database.addMsg("Ciao", "1", "prova","1");
+        //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
+       // database.createChat("1", "Andrew");
+       // database.addMsg("Ciao", "1", "prova","1");
         //connectionController.Discovery();
         //bluetoothScanner.startBLEScan();
+
     }
 
     private void loadTheme(){
