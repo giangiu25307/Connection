@@ -68,7 +68,7 @@ public class Connection extends AppCompatActivity {
        // database.addMsg("Ciao", "1", "prova","1");
         //connectionController.Discovery();
         //bluetoothScanner.startBLEScan();
-
+        connectionController.Discovery();
     }
 
     private void loadTheme(){

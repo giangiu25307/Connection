@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
@@ -29,9 +30,11 @@ import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +71,7 @@ public class ConnectionController {
     List<String> bluetoothDevices;
     BluetoothScanner bleScanner;
     BluetoothAdvertiser beacon;
+    WifiP2pDevice GroupOwner;
 
     public ConnectionController(Connection connection, Database database,User user) {
         this.connection = connection;
@@ -86,7 +90,8 @@ public class ConnectionController {
         peers = new ArrayList<WifiP2pDevice>();
         newList = new ArrayList<WifiP2pDevice>();
         boolean DeviceFound=true;
-        SearchPeers();
+        GroupOwner=new WifiP2pDevice();
+        SearchPeers("f2:25:b7:d4:6e:f5");
         mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel,peerListListener,connectionInfoListener);
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -141,6 +146,32 @@ public void GetDeviceName(){
         }
     });
 }
+    public void getMacAddr() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("p2p0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                 return;
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(Integer.toHexString(b & 0xFF) + ":");
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                System.out.println( res1.toString());
+            }
+        } catch (Exception ex) {
+            //handle exception
+        }
+        return ;
+    }
     //Scan for the near group --------------------------------------------------------------------------------------------------------------------------------
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void scan() {
@@ -158,15 +189,8 @@ public void GetDeviceName(){
     private void scanSuccess() {
 
         results = wifiManager.getScanResults();
-        String directName=getWifiDirectName();
-        System.out.println(directName);
-        if (directName.equals("")) {
-            createGroup();
-        }
-        else {
-            //setConfig(directName);
-            connectionToGroup();
-        }
+
+
     }
 
     //The scan has not found an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
@@ -178,10 +202,8 @@ public void GetDeviceName(){
 
     //Connection to a group---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void connectionToGroup() {
-                /*final WifiP2pDevice device = deviceArray[i];
-        if (!macAdresses.containsValue(device.deviceAddress))
-            macAdresses.put(device.deviceName, device.deviceAddress);
-        config.deviceAddress = device.deviceAddress;*/
+        config.deviceAddress=GroupOwner.deviceAddress;
+        config.wps.setup = WpsInfo.PBC;
         mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -194,10 +216,10 @@ public void GetDeviceName(){
                 ConnectionToDevice = "Connected to the group";
             }
 
-            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onFailure(int reason) {
-                if (count < 3) {
+                System.out.println(reason);
+               /* if (count < 3) {
                     new CountDownTimer(3000, 1000) {
 
                         public void onTick(long millisUntilFinished) {
@@ -212,6 +234,8 @@ public void GetDeviceName(){
                 else{
                     scan();
                 }
+
+                */
             }
         });
 
@@ -236,37 +260,9 @@ public void GetDeviceName(){
     //set the config to an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
 
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void setConfig(String networkName) {
-        if (!networkName.equals("")) {
-            config = new WifiP2pConfig.Builder()
-                    .setNetworkName("DIRECT-"+networkName)
-                    .setPassphrase("12345678")
-                    .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                    .enablePersistentMode(true)
-                    .build();
-        }
-    }
 
-    //Retrieve the name of an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
-    private String getWifiDirectName() {
-        String networkName = "";
-        for (int i = 0; i < results.size(); i++) {
-            if (results.get(i).SSID.contains("DIRECT-")) networkName = results.get(i).SSID;
-        }
-        return networkName;
-    }
 
-    //Reset the config to the my configuration for the mine group--------------------------------------------------------------------------------------------------------------------------------
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    private void resetConfig() {
-        config = new WifiP2pConfig.Builder()
-                .setNetworkName("DIRECT-" + user.getIdUser())
-                .setPassphrase("12345678")
-                .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                .enablePersistentMode(false)
-                .build();
-    }
+
 
     //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
     public void clientList() {
@@ -313,15 +309,15 @@ public void GetDeviceName(){
 
     public String Discovery() {
         //RICERCA DISPOSITIVI VICINI-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        bleScanner =new BluetoothScanner();
-        bleScanner.startBLEScan();
-        bluetoothDevices= bleScanner.getBleDevices();
+        //bleScanner =new BluetoothScanner();
+        //bleScanner.startBLEScan();
+        //bluetoothDevices= bleScanner.getBleDevices();
         mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
                 System.out.println("discovery");
                 ConnectionStatus = "Discovery Started";
-                SearchPeers();
+                SearchPeers("f2:25:b7:d4:6e:f5");
             }
 
             @Override
@@ -332,7 +328,7 @@ public void GetDeviceName(){
         return ConnectionStatus;
     }
 
-    public boolean SearchPeers() {
+    public boolean SearchPeers( String MacAddress) {
         peerListListener = new WifiP2pManager.PeerListListener() {
             @Override
             public void onPeersAvailable(WifiP2pDeviceList peerList) {
@@ -345,8 +341,11 @@ public void GetDeviceName(){
                     int index = 0;
                     for (WifiP2pDevice device : peerList.getDeviceList()) {
                         System.out.println(device.deviceName);
-                        deviceNameArray[index] = device.deviceName;
-                        deviceArray[index] = device;
+                            GroupOwner=device;
+                            if(device.deviceName==" Android_5483" )
+                                System.out.printf("bella");
+                       // connectionToGroup();
+
                         index++;
                     }
                 }
