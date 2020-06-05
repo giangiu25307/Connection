@@ -60,10 +60,8 @@ public class ConnectionController {
     Collection<WifiP2pDevice> peers;
     List<WifiP2pDevice> newList;
     HashMap<String, String> macAdresses;
-    WifiP2pDevice[] deviceArray;
     InetAddress groupOwnerAddress;
     WifiP2pManager.PeerListListener peerListListener;
-    String[] deviceNameArray;
     boolean DeviceFound;
     BroadcastReceiver mReceiver;
     IntentFilter mIntentFilter;
@@ -91,7 +89,7 @@ public class ConnectionController {
         newList = new ArrayList<WifiP2pDevice>();
         boolean DeviceFound=true;
         GroupOwner=new WifiP2pDevice();
-        SearchPeers("f2:25:b7:d4:6e:f5");
+        SearchPeers();
         mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel,peerListListener,connectionInfoListener);
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -173,7 +171,6 @@ public void GetDeviceName(){
         return ;
     }
     //Scan for the near group --------------------------------------------------------------------------------------------------------------------------------
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     private void scan() {
         boolean success = wifiManager.startScan();
 
@@ -185,7 +182,6 @@ public void GetDeviceName(){
     }
 
     //The scan has found an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     private void scanSuccess() {
 
         results = wifiManager.getScanResults();
@@ -202,6 +198,7 @@ public void GetDeviceName(){
 
     //Connection to a group---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void connectionToGroup() {
+        config=new WifiP2pConfig();
         config.deviceAddress=GroupOwner.deviceAddress;
         config.wps.setup = WpsInfo.PBC;
         mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
@@ -317,7 +314,7 @@ public void GetDeviceName(){
             public void onSuccess() {
                 System.out.println("discovery");
                 ConnectionStatus = "Discovery Started";
-                SearchPeers("f2:25:b7:d4:6e:f5");
+                SearchPeers();
             }
 
             @Override
@@ -328,7 +325,7 @@ public void GetDeviceName(){
         return ConnectionStatus;
     }
 
-    public boolean SearchPeers( String MacAddress) {
+    public boolean SearchPeers() {
         peerListListener = new WifiP2pManager.PeerListListener() {
             @Override
             public void onPeersAvailable(WifiP2pDeviceList peerList) {
@@ -336,17 +333,12 @@ public void GetDeviceName(){
                 if (!newList.equals(peers)) {
                     peers.clear();
                     peers.addAll(peerList.getDeviceList());
-                    deviceNameArray = new String[peerList.getDeviceList().size()];
-                    deviceArray = new WifiP2pDevice[peerList.getDeviceList().size()];
-                    int index = 0;
                     for (WifiP2pDevice device : peerList.getDeviceList()) {
                         System.out.println(device.deviceName);
-                            GroupOwner=device;
-                            if(device.deviceName==" Android_5483" )
-                                System.out.printf("bella");
-                       // connectionToGroup();
-
-                        index++;
+                            if(device.deviceAddress.equals("f2:25:b7:d4:6e:f5")) {
+                                GroupOwner=device;
+                                connectionToGroup();
+                            }
                     }
                 }
 
