@@ -200,7 +200,6 @@ public void GetDeviceName(){
     public void connectionToGroup() {
         config=new WifiP2pConfig();
         config.deviceAddress=GroupOwner.deviceAddress;
-        config.wps.setup = WpsInfo.PBC;
         mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -334,8 +333,8 @@ public void GetDeviceName(){
                     peers.clear();
                     peers.addAll(peerList.getDeviceList());
                     for (WifiP2pDevice device : peerList.getDeviceList()) {
-                        System.out.println(device.deviceName);
-                            if(device.deviceAddress.equals("f2:25:b7:d4:6e:f5")) {
+                        System.out.println(device.deviceAddress);
+                            if(device.deviceAddress.equals("32:07:4d:89:4c:f3")) {
                                 GroupOwner=device;
                                 connectionToGroup();
                             }
