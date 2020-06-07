@@ -28,7 +28,9 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.security.NoSuchAlgorithmException;
@@ -115,11 +117,9 @@ public class ConnectionController {
     private void removeGroup() {
         mManager.removeGroup(mChannel, null);
     }
-
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     public void createGroup() {
         System.out.println("create group");
-        //mManager.removeGroup(mChannel,null);
         mManager.createGroup(mChannel, new WifiP2pManager.ActionListener(){
 
             @Override
@@ -333,6 +333,7 @@ public void GetDeviceName(){
                     peers.clear();
                     peers.addAll(peerList.getDeviceList());
                     for (WifiP2pDevice device : peerList.getDeviceList()) {
+                        System.out.printf(device.deviceName);
                         System.out.println(device.deviceAddress);
                             if(device.deviceAddress.equals("32:07:4d:89:4c:f3")) {
                                 GroupOwner=device;

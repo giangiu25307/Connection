@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.wifi.p2p.WifiP2pGroup;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
@@ -66,9 +67,11 @@ public class Connection extends AppCompatActivity {
         //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
        // database.createChat("1", "Andrew");
        // database.addMsg("Ciao", "1", "prova","1");
-        //connectionController.Discovery();
+        connectionController.createGroup();
+
         //bluetoothScanner.startBLEScan();
-        connectionController.Discovery();
+       // connectionController.createGroup();
+
     }
 
     private void loadTheme(){
