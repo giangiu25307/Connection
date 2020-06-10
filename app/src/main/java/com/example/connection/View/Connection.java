@@ -1,29 +1,26 @@
 package com.example.connection.View;
 
 import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.net.wifi.p2p.WifiP2pGroup;
-import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import com.example.connection.Bluetooth.BluetoothAdvertiser;
-import com.example.connection.Bluetooth.BluetoothScanner;
+
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 //D/SupplicantP2pIfaceCallbackExt: Provision discovery request for WPS Config method: 128
@@ -44,8 +41,13 @@ public class Connection extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        AutoClicker autoClicker=new AutoClicker();
+        autoClicker.setX(displayMetrics.widthPixels);
+        autoClicker.setY(displayMetrics.heightPixels);
         database = new Database(this);
-        connectionController=new ConnectionController(this,database,user);
+        connectionController=new ConnectionController(this,database,user,autoClicker);
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -67,11 +69,9 @@ public class Connection extends AppCompatActivity {
         //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
        // database.createChat("1", "Andrew");
        // database.addMsg("Ciao", "1", "prova","1");
-        connectionController.createGroup();
-
+      //  connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
-       // connectionController.createGroup();
-
+       connectionController.createGroup();
     }
 
     private void loadTheme(){

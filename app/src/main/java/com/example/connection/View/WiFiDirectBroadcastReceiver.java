@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 
+import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Controller.ConnectionController;
 
 public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
@@ -14,13 +15,15 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     WifiP2pInfo wifiP2PInfo = new WifiP2pInfo();
     WifiP2pManager.PeerListListener peerListListener;
     WifiP2pManager.ConnectionInfoListener connectionInfoListener;
+    AutoClicker autoClicker;
     ConnectionController connectionController;
 
-    public WiFiDirectBroadcastReceiver(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, WifiP2pManager.PeerListListener peerListListener, WifiP2pManager.ConnectionInfoListener connectionInfoListener) {
+    public WiFiDirectBroadcastReceiver(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, WifiP2pManager.PeerListListener peerListListener, WifiP2pManager.ConnectionInfoListener connectionInfoListener, AutoClicker autoClicker) {
         this.mManager = mManager;
         this.mChannel = mChannel;
         this.peerListListener = peerListListener;
         this.connectionInfoListener = connectionInfoListener;
+        this.autoClicker=autoClicker;
     }
 
     @Override
@@ -42,7 +45,9 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                                     WifiP2pInfo info) {
                                 if (info != null) {
                                     if (info.groupFormed && info.isGroupOwner) {
-                                        mManager.requestPeers(mChannel, peerListListener);
+                                        autoClicker.clicker();
+                                       // mManager.requestPeers(mChannel,peerListListener);
+
                                     }
                                 }
                             }
