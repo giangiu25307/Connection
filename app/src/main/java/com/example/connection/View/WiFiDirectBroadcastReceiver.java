@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.CountDownTimer;
 
 import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Controller.ConnectionController;
@@ -18,12 +19,11 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     AutoClicker autoClicker;
     ConnectionController connectionController;
 
-    public WiFiDirectBroadcastReceiver(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, WifiP2pManager.PeerListListener peerListListener, WifiP2pManager.ConnectionInfoListener connectionInfoListener, AutoClicker autoClicker) {
+    public WiFiDirectBroadcastReceiver(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, WifiP2pManager.PeerListListener peerListListener, WifiP2pManager.ConnectionInfoListener connectionInfoListener) {
         this.mManager = mManager;
         this.mChannel = mChannel;
         this.peerListListener = peerListListener;
         this.connectionInfoListener = connectionInfoListener;
-        this.autoClicker=autoClicker;
     }
 
     @Override
@@ -45,7 +45,19 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                                     WifiP2pInfo info) {
                                 if (info != null) {
                                     if (info.groupFormed && info.isGroupOwner) {
-                                        autoClicker.clicker();
+
+                                        new CountDownTimer(5000, 1000) {
+
+                                            public void onTick(long millisUntilFinished) {
+                                            }
+
+                                            public void onFinish() {
+                                                autoClicker=AutoClicker.getInstance();
+                                                autoClicker.clicker();
+                                            }
+                                        }.start();
+
+
                                        // mManager.requestPeers(mChannel,peerListListener);
 
                                     }
@@ -57,7 +69,6 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             if (mManager == null) {
                 return;
             }
-            System.out.println("prova");
             //connectionController.clientList();
             /*NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo.isConnected()) {

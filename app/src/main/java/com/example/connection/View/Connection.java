@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
@@ -34,7 +36,8 @@ public class Connection extends AppCompatActivity {
     User user;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
-
+    public static int touchX;
+    public static int touchY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +46,13 @@ public class Connection extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        AutoClicker autoClicker=new AutoClicker();
-        autoClicker.setX(displayMetrics.widthPixels);
-        autoClicker.setY(displayMetrics.heightPixels);
         database = new Database(this);
-        connectionController=new ConnectionController(this,database,user,autoClicker);
+        touchX=displayMetrics.widthPixels/100*74;
+        touchY=displayMetrics.heightPixels/100*92;
+        touchX=750;
+        touchY=1930;
+        AutoClicker autoClicker=new AutoClicker();
+        connectionController=new ConnectionController(this,database,user);
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -69,9 +74,9 @@ public class Connection extends AppCompatActivity {
         //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
        // database.createChat("1", "Andrew");
        // database.addMsg("Ciao", "1", "prova","1");
-      //  connectionController.createGroup();
+        connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
-       connectionController.createGroup();
+
     }
 
     private void loadTheme(){
@@ -161,5 +166,38 @@ public class Connection extends AppCompatActivity {
         super.onStop();
         countDownTimer.cancel();
         startTimer = true;
+    }
+    public boolean isAccessibilityEnabled() {
+        int accessibilityEnabled = 0;
+        boolean accessibilityFound = false;
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(this.getContentResolver(),android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+        } catch (Settings.SettingNotFoundException e) {
+        }
+
+        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+
+        if (accessibilityEnabled==1) {
+            System.out.println("***ACCESSIBILIY IS ENABLED***: ");
+
+            String settingValue = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                TextUtils.SimpleStringSplitter splitter = mStringColonSplitter;
+                splitter.setString(settingValue);
+                while (splitter.hasNext()) {
+                    String accessabilityService = splitter.next();
+                    if (accessabilityService.equalsIgnoreCase("ACCESSIBILITY_SERVICE_NAME")){
+                        return true;
+                    }
+                }
+            }
+
+        }
+        else {
+            System.out.println( "***ACCESSIBILIY IS DISABLED***");
+
+
+        }
+        return accessibilityFound;
     }
 }
