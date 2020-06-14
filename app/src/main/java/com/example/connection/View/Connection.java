@@ -76,6 +76,7 @@ public class Connection extends AppCompatActivity {
         //database.addMsg("Ciao", "1", "prova","1");
         connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
+        System.out.println("Activity creata");
 
     }
 
@@ -165,6 +166,13 @@ public class Connection extends AppCompatActivity {
         super.onStop();
         countDownTimer.cancel();
         startTimer = true;
+        System.out.println("Activity in stop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("Activity distrutta");
     }
 
     public boolean isAccessibilityEnabled() {

@@ -52,6 +52,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         View view = inflater.inflate(R.layout.chat_layout, parent, false);
         ViewHolder holder = new ViewHolder(view, new ViewHolder.OnChatClickListener(){
 
+
+
             @Override
             public void openChat(int p) {
                 chatCursor.moveToPosition(p);
@@ -146,6 +148,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             this.listener = listener;
 
             chatlayout = itemView.findViewById(R.id.chatLayout);
+            chatlayout.setOnClickListener(this);
             profilePic = itemView.findViewById(R.id.profilePhoto);
             name = itemView.findViewById(R.id.name);
             lastMessage = itemView.findViewById(R.id.lastMessage);
@@ -155,7 +158,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         @Override
         public void onClick(View view) {
-            listener.openChat(this.getLayoutPosition());
+
+            switch (view.getId()) {
+                case R.id.chatLayout:
+                    listener.openChat(this.getLayoutPosition());
+                    break;
+                default:
+                    break;
+            }
         }
 
         public interface OnChatClickListener {
