@@ -95,6 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
+                    android:clickable="true"
                     android:src="@drawable/ic_gps"
                     android:tint="?attr/iconTint" />
             </LinearLayout>

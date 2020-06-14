@@ -9,6 +9,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
+import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 //D/SupplicantP2pIfaceCallbackExt: Provision discovery request for WPS Config method: 128
@@ -32,14 +36,22 @@ public class Connection extends AppCompatActivity {
     User user;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
-
+    public static int touchX;
+    public static int touchY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
+        touchX=displayMetrics.widthPixels/100*74;
+        touchY=displayMetrics.heightPixels/100*92;
+        touchX=750;
+        touchY=1930;
+        AutoClicker autoClicker=new AutoClicker();
         connectionController=new ConnectionController(this,database,user);
         loadTheme();
         super.onCreate(savedInstanceState);
@@ -63,9 +75,7 @@ public class Connection extends AppCompatActivity {
        // database.createChat("1", "Andrew");
        // database.addMsg("Ciao", "1", "prova","1");
         connectionController.createGroup();
-
         //bluetoothScanner.startBLEScan();
-       // connectionController.createGroup();
 
     }
 
@@ -156,5 +166,38 @@ public class Connection extends AppCompatActivity {
         super.onStop();
         countDownTimer.cancel();
         startTimer = true;
+    }
+    public boolean isAccessibilityEnabled() {
+        int accessibilityEnabled = 0;
+        boolean accessibilityFound = false;
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(this.getContentResolver(),android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+        } catch (Settings.SettingNotFoundException e) {
+        }
+
+        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+
+        if (accessibilityEnabled==1) {
+            System.out.println("***ACCESSIBILIY IS ENABLED***: ");
+
+            String settingValue = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                TextUtils.SimpleStringSplitter splitter = mStringColonSplitter;
+                splitter.setString(settingValue);
+                while (splitter.hasNext()) {
+                    String accessabilityService = splitter.next();
+                    if (accessabilityService.equalsIgnoreCase("ACCESSIBILITY_SERVICE_NAME")){
+                        return true;
+                    }
+                }
+            }
+
+        }
+        else {
+            System.out.println( "***ACCESSIBILIY IS DISABLED***");
+
+
+        }
+        return accessibilityFound;
     }
 }

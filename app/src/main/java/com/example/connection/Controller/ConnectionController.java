@@ -1,23 +1,23 @@
 package com.example.connection.Controller;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Build;
 import android.os.CountDownTimer;
 
-import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
@@ -28,9 +28,7 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.security.NoSuchAlgorithmException;
@@ -58,7 +56,7 @@ public class ConnectionController {
     User user;
     MultiThreadedServer tcpServer;
     Database database;
-    int count=0;
+    int count = 0;
     Collection<WifiP2pDevice> peers;
     List<WifiP2pDevice> newList;
     HashMap<String, String> macAdresses;
@@ -73,15 +71,15 @@ public class ConnectionController {
     BluetoothAdvertiser beacon;
     WifiP2pDevice GroupOwner;
 
-    public ConnectionController(Connection connection, Database database,User user) {
+    public ConnectionController(Connection connection, Database database, User user) {
         this.connection = connection;
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         ConnectionToDevice = "";
         ConnectionStatus = "";
         this.database = database;
-        this.user=user;
-        bluetoothDevices=new ArrayList<>();
+        this.user = user;
+        bluetoothDevices = new ArrayList<>();
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
@@ -89,10 +87,10 @@ public class ConnectionController {
         macAdresses = new HashMap<>();
         peers = new ArrayList<WifiP2pDevice>();
         newList = new ArrayList<WifiP2pDevice>();
-        boolean DeviceFound=true;
-        GroupOwner=new WifiP2pDevice();
+        boolean DeviceFound = true;
+        GroupOwner = new WifiP2pDevice();
         SearchPeers();
-        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel,peerListListener,connectionInfoListener);
+        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, peerListListener, connectionInfoListener);
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -117,10 +115,12 @@ public class ConnectionController {
     private void removeGroup() {
         mManager.removeGroup(mChannel, null);
     }
+
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     public void createGroup() {
         System.out.println("create group");
-        mManager.createGroup(mChannel, new WifiP2pManager.ActionListener(){
+
+        mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
 
             @Override
             public void onSuccess() {
