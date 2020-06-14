@@ -70,11 +70,11 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
-        //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
-        //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
-       // database.createChat("1", "Andrew");
-       // database.addMsg("Ciao", "1", "prova","1");
-        connectionController.createGroup();
+        //database.addUser("prova","192.168.49.20","giangiu","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
+        database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
+        database.createChat("1", "Andrew");
+        database.addMsg("Ciao", "1", "prova","1");
+        //connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
 
     }
