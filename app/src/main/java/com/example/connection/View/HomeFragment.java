@@ -25,6 +25,7 @@ public class HomeFragment extends Fragment {
     Database database;
 
     public HomeFragment() {
+
     }
 
     public HomeFragment newInstance(ConnectionController connectionController, Database database) {
@@ -70,6 +71,7 @@ public class HomeFragment extends Fragment {
         });
 
         return view;
+
     }
 
     private void loadFragment(){
