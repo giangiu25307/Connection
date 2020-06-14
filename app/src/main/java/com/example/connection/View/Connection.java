@@ -72,8 +72,8 @@ public class Connection extends AppCompatActivity {
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
         //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
         //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
-       // database.createChat("1", "Andrew");
-       // database.addMsg("Ciao", "1", "prova","1");
+        //database.createChat("1", "Andrew");
+        //database.addMsg("Ciao", "1", "prova","1");
         connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
 
@@ -95,7 +95,6 @@ public class Connection extends AppCompatActivity {
                     setTheme(R.style.AppTheme);
                     setStatusAndNavbarColor(true);
                     break;
-
                 case Configuration.UI_MODE_NIGHT_YES:
                     setTheme(R.style.DarkTheme);
                     setStatusAndNavbarColor(false);
@@ -115,7 +114,7 @@ public class Connection extends AppCompatActivity {
             window.setNavigationBarColor(Color.WHITE);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }else{
-            int color = getColor(R.color.regularBlack);
+            int color = getColor(R.color.lightBlack);
             window.setNavigationBarColor(color);
             window.setStatusBarColor(color);
         }
@@ -167,6 +166,7 @@ public class Connection extends AppCompatActivity {
         countDownTimer.cancel();
         startTimer = true;
     }
+
     public boolean isAccessibilityEnabled() {
         int accessibilityEnabled = 0;
         boolean accessibilityFound = false;

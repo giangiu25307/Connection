@@ -54,6 +54,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             public void openChat(int p) {
                 chatCursor.moveToPosition(p);
                 final long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+
             }
         });
 
