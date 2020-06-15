@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Adapter.ChatAdapter;
+import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.R;
 
@@ -38,7 +39,16 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     int currentWidth;
     int currentHeight;
 
-    public ChatFragment(Database database) {
+    public ChatFragment() {
+    }
+
+    public ChatFragment newInstance(Database database) {
+        ChatFragment chatFragment = new ChatFragment();
+        chatFragment.setDatabase(database);
+        return chatFragment;
+    }
+
+    public void setDatabase(Database database) {
         this.database = database;
     }
 
@@ -47,6 +57,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.chat_fragment, null);
 
+        /*
         sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
         if(sharedPreferences.getString("appTheme", "light").equals("light")){
             textColor = Color.BLACK;
@@ -57,7 +68,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         globalButton = view.findViewById(R.id.globalButton);
         globalButton.setOnClickListener(this);
 
-        /*
+
         TextView textView = view.findViewById(R.id.requestTextView);
         textView.setText("1");
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.left_to_right);
