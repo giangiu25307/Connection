@@ -46,7 +46,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                                 if (info != null) {
                                     if (info.groupFormed && info.isGroupOwner) {
 
-                                        new CountDownTimer(5000, 1000) {
+                                       /* new CountDownTimer(5000, 1000) {
 
                                             public void onTick(long millisUntilFinished) {
                                             }
@@ -56,7 +56,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                                                 autoClicker.clicker();
                                             }
                                         }.start();
-
+*/
 
                                        // mManager.requestPeers(mChannel,peerListListener);
 

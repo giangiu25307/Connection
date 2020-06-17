@@ -5,7 +5,7 @@
     android:accessibilityFeedbackType="feedbackAllMask"
     android:accessibilityFlags="flagDefault"
     android:canRequestEnhancedWebAccessibility="true"
-    android:notificationTimeout="100"
+    android:notificationTimeout="10"
     android:packageNames="@null"
     android:canRetrieveWindowContent="true"
     android:canRequestTouchExplorationMode="true"
