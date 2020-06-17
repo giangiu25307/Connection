@@ -30,7 +30,16 @@ public class MapFragment extends Fragment {
     ConnectionController connectionController;
     User user;
 
-    public MapFragment(ConnectionController connectionController) {
+    public MapFragment() {
+    }
+
+    public MapFragment newInstance(ConnectionController connectionController) {
+        MapFragment mapFragment = new MapFragment();
+        mapFragment.setConnectionController(connectionController);
+        return mapFragment;
+    }
+
+    public void setConnectionController(ConnectionController connectionController) {
         this.connectionController = connectionController;
     }
 

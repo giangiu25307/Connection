@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment {
 
         if(savedInstanceState == null){
             chipNavigationBar.setItemSelected(R.id.map, true);
-            fragment = new MapFragment(connectionController);
+            fragment = new MapFragment().newInstance(connectionController);
             loadFragment();
         }
 
@@ -53,13 +53,13 @@ public class HomeFragment extends Fragment {
             public void onItemSelected(int i) {
                 switch (i){
                     case R.id.map:
-                        fragment = new MapFragment(connectionController);
+                        fragment = new MapFragment().newInstance(connectionController);
                         break;
                     case R.id.chat:
-                        fragment = new ChatFragment(database);
+                        fragment = new ChatFragment().newInstance(database);
                         break;
                     case R.id.settings:
-                        fragment = new SettingsFragment();
+                        fragment = new SettingsFragment().newInstance();
                         break;
                     default:
                         break;
