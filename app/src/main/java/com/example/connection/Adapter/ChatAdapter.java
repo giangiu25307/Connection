@@ -23,6 +23,7 @@ import com.example.connection.Controller.Task;
 import com.example.connection.R;
 
 import java.io.File;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -52,13 +53,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         View view = inflater.inflate(R.layout.chat_layout, parent, false);
         ViewHolder holder = new ViewHolder(view, new ViewHolder.OnChatClickListener(){
 
-
-
             @Override
             public void openChat(int p) {
                 chatCursor.moveToPosition(p);
-                final long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+                final String id = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
                 Intent myIntent = new Intent(context, ChatActivity.class);
+                myIntent.putExtra("idChat", id);
+                //myIntent.putExtra("database", (Serializable) database);
                 //myIntent.putExtra("key", database); //Optional parameters
                 context.startActivity(myIntent);
             }

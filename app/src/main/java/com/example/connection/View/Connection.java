@@ -56,7 +56,7 @@ public class Connection extends AppCompatActivity {
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        user=new User("aaaaa","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
+        user = new User("aaaaa","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
         fragment = new SplashScreenFragment();
         loadFragment(false);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -70,10 +70,11 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
-        //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
+        //database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.createChat("1", "Andrew");
-        //database.addMsg("Ciao", "1", "prova","1");
+        database.addMsg("Ciao", "prova", "1");
+        //database.addMsg("We", "aaaaa", "1");
         connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
         System.out.println("Activity creata");

@@ -122,11 +122,11 @@ public class Database extends SQLiteOpenHelper {
         db.close();
     }
     //CHAT-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    public void addMsg(String msg, String idReceiver, String idSender,String idChat) {
+    public void addMsg(String msg, String idSender, String idChat) {
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
-        msgValues.put(Task.TaskEntry.ID_CHAT,idChat);
-        msgValues.put(Task.TaskEntry.ID_SENDER,idSender);
+        msgValues.put(Task.TaskEntry.ID_CHAT, idChat);
+        msgValues.put(Task.TaskEntry.ID_SENDER, idSender);
         msgValues.put(Task.TaskEntry.MSG, msg);
         msgValues.put(Task.TaskEntry.DATETIME, String.valueOf(LocalDateTime.now()));
         db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
@@ -196,7 +196,7 @@ public class Database extends SQLiteOpenHelper {
         String query = " SELECT id_sender,msg,path,datetime " +
                 " FROM MESSAGE " +
                 " WHERE id_chat = " + idChat +
-                " ORDER BY DESC ";
+                " ORDER BY " +  Task.TaskEntry.DATETIME + " ASC ";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();

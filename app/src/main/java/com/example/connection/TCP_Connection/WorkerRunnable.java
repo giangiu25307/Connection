@@ -52,7 +52,7 @@ class WorkerRunnable implements Runnable {
                     fos.write(message);
                     fos.close();
                     idChat=database.findId_user(ip);
-                    database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", database.getMyInformation()[0], idChat,idChat);
+                    database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", idChat, idChat);
                 } else {
                     byte[] message = new byte[length];
                     dIn.readFully(message, 0, message.length); // read the message
@@ -73,7 +73,7 @@ class WorkerRunnable implements Runnable {
                     }else if(splittedR[0].equals("message")){
                         //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                         idChat=database.findId_user(ip);
-                        database.addMsg(msg, database.getMyInformation()[0], idChat, idChat);
+                        database.addMsg(msg, idChat, idChat);
                     }else if(splittedR[0].equals("REQUEST-MEET")){
                         //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
                         //database.setAccept(valore ritornato da bergo);

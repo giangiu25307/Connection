@@ -6,11 +6,14 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,17 +33,19 @@ import java.util.Date;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
     private Context context;
-    private Cursor chatCursor, userCursor;
+    private Cursor messageCursor, userCursor;
     private Database database;
+    private String idChat;
     private Bitmap bitmap;
     SimpleDateFormat format = new SimpleDateFormat();
     Date date=new Date();
 
-    public MessageAdapter(Context context, Cursor chatCursor, Database database) {
+    public MessageAdapter(Context context, Database database, String id) {
         this.context = context;
-        this.chatCursor = chatCursor;
         this.database = database;
-        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
+        this.idChat = id;
+        this.messageCursor = database.getAllMsg(id);
+        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(messageCursor));
     }
 
     @NonNull
@@ -48,85 +53,68 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.chat_layout, parent, false);
+        View view = inflater.inflate(R.layout.message_layout, parent, false);
         ViewHolder holder = new ViewHolder(view, new ViewHolder.OnChatClickListener(){
 
 
 
             @Override
             public void openChat(int p) {
-                chatCursor.moveToPosition(p);
-                final long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-                Intent myIntent = new Intent(context, ConnectioActivity.class);
-                //myIntent.putExtra("key", database); //Optional parameters
-                context.startActivity(myIntent);
+                messageCursor.moveToPosition(p);
+                //final long id = messageCursor.getLong(messageCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
             }
         });
 
         return holder;
+        
     }
 
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
-        if(!chatCursor.moveToPosition(position)){
+        if(!messageCursor.moveToPosition(position)){
             return;
         }
 
-        String nameUser = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-        userCursor = database.getUSer(nameUser);
-        userCursor.moveToFirst();
-        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(userCursor));
-        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
+        TextView message = holder.message;
+        message.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG)));
+        LinearLayout messageLayout = holder.messageLayout;
 
-        long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-        System.out.println(id);
-        String userName = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.USERNAME));
-        String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
-        String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
-        String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
-        File profilePic = new  File(profilePicPosition);
+        System.out.println("Id sender: " + messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)) + " idChat: " + database.getMyInformation()[0]);
 
-        if(profilePic.exists()){
-
-            bitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
-            ImageView profilePicImageView = holder.profilePic;
-            profilePicImageView.setImageBitmap(bitmap);
+        if(!messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)).equals(database.getMyInformation()[0])){
+            message.setBackgroundColor(Color.BLACK);
+            message.setTextColor(Color.WHITE);
+        }else{
+            messageLayout.setGravity(Gravity.RIGHT);
         }
 
-        userCursor = database.getLastMessageChat(Task.TaskEntry.ID_CHAT);
-        //String timeLastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATE));
+        holder.itemView.setTag(idChat);
 
 
-        holder.itemView.setTag(id);
 
-        TextView userNameTextView = holder.name;
-        TextView lastMessageTextView = holder.lastMessage;
-        TextView lastMessageTimeTextView = holder.name;
-        TextView timeLastMessageTextView = holder.timeLastMessage;
-        userNameTextView.setText(userName);
-        lastMessageTextView.setText(lastMessage);
+        /*
         try {
             date=format.parse(datetime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         datetime= date.getHours()+":"+date.getMinutes();
-        timeLastMessageTextView.setText(datetime);
-        //lastMessageTimeTextView.setText(timeLastMessage);
+        lastMessageTimeTextView.setText(timeLastMessage);
+        */
 
     }
 
     @Override
     public int getItemCount(){
-        return chatCursor.getCount();
+        return messageCursor.getCount();
     }
 
     public void swapCursor(Cursor newCursor){
-        if(chatCursor != null){
-            chatCursor.close();
+        if(messageCursor != null){
+            messageCursor.close();
         }
 
-        chatCursor = newCursor;
+        messageCursor = newCursor;
 
         if (newCursor != null){
             notifyDataSetChanged();
@@ -138,28 +126,25 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         OnChatClickListener listener;
 
-        private ConstraintLayout chatlayout;
-        private ImageView profilePic;
-        private TextView name, lastMessage, timeLastMessage;
+        private LinearLayout messageLayout;
+        private TextView message;
 
         private ViewHolder(View itemView, OnChatClickListener listener){
             super(itemView);
             this.listener = listener;
 
-            chatlayout = itemView.findViewById(R.id.chatLayout);
-            chatlayout.setOnClickListener(this);
-            profilePic = itemView.findViewById(R.id.profilePhoto);
-            name = itemView.findViewById(R.id.name);
-            lastMessage = itemView.findViewById(R.id.lastMessage);
-            timeLastMessage = itemView.findViewById(R.id.timeLastMessage);
+            messageLayout = itemView.findViewById(R.id.messageLayout);
+            messageLayout.setOnClickListener(this);
+            message = itemView.findViewById(R.id.message);
 
+            System.out.println("khsaivcviwv");
         }
 
         @Override
         public void onClick(View view) {
 
             switch (view.getId()) {
-                case R.id.chatLayout:
+                case R.id.messageLayout:
                     listener.openChat(this.getLayoutPosition());
                     break;
                 default:
