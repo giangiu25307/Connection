@@ -4,10 +4,14 @@ import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.accessibilityservice.GestureDescription;
 import android.graphics.Path;
+import android.text.TextUtils;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.example.connection.View.Connection;
+
+import java.util.Collections;
+import java.util.List;
 
 
 public class AutoClicker extends AccessibilityService {
@@ -52,7 +56,7 @@ public class AutoClicker extends AccessibilityService {
 
     }
 
-    @Override
+    /*@Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         AccessibilityNodeInfo nodes = getRootInActiveWindow();
 
@@ -71,11 +75,33 @@ public class AutoClicker extends AccessibilityService {
                 condition = false;
             }
         } while (condition);
+    }*/
+
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+
+        AccessibilityNodeInfo source = event.getSource();
+        /* if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !event.getClassName().equals("android.app.AlertDialog")) { // android.app.AlertDialog is the standard but not for all phones  */
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !String.valueOf(event.getClassName()).contains("AlertDialog")) return;
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && (source == null || !source.getClassName().equals("android.widget.TextView"))) return;
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && TextUtils.isEmpty(source.getText())) return;
+        List<CharSequence> eventText;
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) eventText = event.getText();
+        else eventText = Collections.singletonList(source.getText());
+        if(processUSSDText(eventText))source.performAction(source.ACTION_CLICK);
+
     }
 
-
-
-
+    private boolean processUSSDText(List<CharSequence> eventText) {
+        for (CharSequence s : eventText) {
+            String text = String.valueOf(s);
+            // Return text if text is the expected ussd response
+            if (text.equals("")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     @Override
