@@ -79,7 +79,6 @@ public class AutoClicker extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-
         AccessibilityNodeInfo source = event.getSource();
         /* if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !event.getClassName().equals("android.app.AlertDialog")) { // android.app.AlertDialog is the standard but not for all phones  */
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !String.valueOf(event.getClassName()).contains("AlertDialog")) return;
@@ -87,9 +86,15 @@ public class AutoClicker extends AccessibilityService {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && TextUtils.isEmpty(source.getText())) return;
         List<CharSequence> eventText;
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) eventText = event.getText();
-        else eventText = Collections.singletonList(source.getText());
-        if(processUSSDText(eventText))source.performAction(source.ACTION_CLICK);
-
+        else{
+            try {
+                eventText = Collections.singletonList(source.getText());
+            }catch (Exception e){
+                eventText = null;
+            }
+        }
+        if(eventText!=null)
+       if(processUSSDText(eventText))source.getChild(3).performAction(source.ACTION_CLICK);
     }
 
     private boolean processUSSDText(List<CharSequence> eventText) {

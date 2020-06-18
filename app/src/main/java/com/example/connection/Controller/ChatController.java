@@ -30,8 +30,8 @@ public class ChatController {
         istance=new ChatController();
         setConnectionController(connectionController);
         istance.setDatabase(new Database(connection.getApplicationContext()));
-        String userInfo[]=database.getMyInformation();
-        user=new User(userInfo[0],userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],userInfo[9],userInfo[10]);
+        //String userInfo[]=database.getMyInformation();
+        //user=new User(userInfo[0],userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],userInfo[9],userInfo[10]);
         istance.setUser(user);
         istance.setTcp(new TCP_Client());
         istance.setUdp(new Multicast(user,database,connectionController));

@@ -49,7 +49,8 @@ public class Connection extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
         connectionController=new ConnectionController(this,database,user);
-        chatController=new ChatController(this,connectionController);
+        chatController=new ChatController();
+        chatController=chatController.newIstance(this,connectionController);
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -67,14 +68,14 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
-        database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
-        database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
-        database.createChat("1", "Andrew");
-        database.addMsg("Ciao", "1", "prova","1");
+        //database.addUser("prova","192.168.49.20","giangiugay","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
+        //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
+        //database.createChat("1", "Andrew");
+        //database.addMsg("Ciao", "1", "prova","1");
        // connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
        // System.out.println("Activity creata");
-
+        AutoClicker autoClicker=new AutoClicker();
 
     }
 
