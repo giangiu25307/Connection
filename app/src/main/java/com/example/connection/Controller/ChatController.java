@@ -20,14 +20,51 @@ public class ChatController {
     Database database;
     User user;
     ConnectionController connectionController;
-    public ChatController(Connection connection,ConnectionController connectionController) {
-        tcp = new TCP_Client();
-        udp = new Multicast(user,database,connectionController);
-        database=new Database(connection.getApplicationContext());
+    public static ChatController istance=null;
+
+    public static ChatController getInstance(){
+        return istance;
+    }
+
+    public ChatController newIstance(Connection connection, ConnectionController connectionController){
+        istance=new ChatController();
+        setConnectionController(connectionController);
+        istance.setDatabase(new Database(connection.getApplicationContext()));
         String userInfo[]=database.getMyInformation();
         user=new User(userInfo[0],userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],userInfo[9],userInfo[10]);
+        istance.setUser(user);
+        istance.setTcp(new TCP_Client());
+        istance.setUdp(new Multicast(user,database,connectionController));
+        return istance;
+    }
+
+    public void setTcp(TCP_Client tcp) {
+        this.tcp = tcp;
+    }
+
+    public void setUdp(Multicast udp) {
+        this.udp = udp;
+    }
+
+    public void setTcpServer(MultiThreadedServer tcpServer) {
+        this.tcpServer = tcpServer;
+    }
+
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setConnectionController(ConnectionController connectionController) {
         this.connectionController = connectionController;
     }
+
+    public ChatController() {    }
+
+
 
     //Send a global message -------------------------------------------------------------------------------------------------------------------------------
     public void sendGlobalMsg(String msg) {

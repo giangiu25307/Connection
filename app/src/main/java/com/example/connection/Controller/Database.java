@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -132,7 +135,6 @@ public class Database extends SQLiteOpenHelper {
         db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
         lastMessageChat(msg,idChat);
     }
-
     public void addMsg(Paths paths, String idReceiver, String idSender,String idChat) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ID_CHAT,idChat);
