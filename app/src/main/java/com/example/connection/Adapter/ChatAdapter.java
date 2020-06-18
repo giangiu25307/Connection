@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.ChatActivity;
+import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Controller.Task;
 import com.example.connection.R;
@@ -28,7 +31,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
+public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
 
     private Context context;
     private Cursor chatCursor, userCursor;
@@ -36,11 +39,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private Bitmap bitmap;
     SimpleDateFormat format = new SimpleDateFormat();
     Date date=new Date();
+    ChatController chatController;
 
-    public ChatAdapter(Context context, Cursor chatCursor, Database database) {
+
+    public ChatAdapter(Context context, Cursor chatCursor, Database database,ChatController chatController) {
         this.context = context;
         this.chatCursor = chatCursor;
         this.database = database;
+        this.chatController=chatController;
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
     }
 
@@ -59,7 +65,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 chatCursor.moveToPosition(p);
                 final long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
                 Intent myIntent = new Intent(context, ChatActivity.class);
-                //myIntent.putExtra("key", database); //Optional parameters
+                myIntent.putExtra("chatController", chatController); //Optional parameters
                 context.startActivity(myIntent);
             }
         });
@@ -135,6 +141,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     }
 
+
+
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         OnChatClickListener listener;
@@ -173,5 +181,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }
 
     }
+
+
 
 }

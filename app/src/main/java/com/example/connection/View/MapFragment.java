@@ -61,14 +61,6 @@ public class MapFragment extends Fragment {
                 c.moveToNext();
 
             }
-            ImageView gpsbutton=view.findViewById(R.id.gpsButton);
-            gpsbutton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AutoClicker autoClicker=AutoClicker.getInstance();
-                    autoClicker.clicker();
-                }
-            });
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
             listView.setAdapter(arrayAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

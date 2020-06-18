@@ -1,18 +1,21 @@
 package com.example.connection.Controller;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.MultiThreadedServer;
 import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 
-public class ChatController {
+public class ChatController  {
 
     TCP_Client tcp;
     Multicast udp;
@@ -20,12 +23,13 @@ public class ChatController {
     Database database;
     User user;
     ConnectionController connectionController;
-    public ChatController(Connection connection,ConnectionController connectionController) {
+
+    public ChatController(Connection connection, ConnectionController connectionController) {
         tcp = new TCP_Client();
-        udp = new Multicast(user,database,connectionController);
-        database=new Database(connection.getApplicationContext());
-        String userInfo[]=database.getMyInformation();
-        user=new User(userInfo[0],userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],userInfo[9],userInfo[10]);
+        udp = new Multicast(user, database, connectionController);
+        database = new Database(connection.getApplicationContext());
+        //String userInfo[]=database.getMyInformation();
+        //  user=new User(userInfo[0],userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],userInfo[9],userInfo[10]);
         this.connectionController = connectionController;
     }
 
@@ -35,7 +39,7 @@ public class ChatController {
     }
 
     //send a direct message -------------------------------------------------------------------------------------------------------------------------------
-    public void sendTCPMsg(String msg,String idReceiver) {
+    public void sendTCPMsg(String msg, String idReceiver) {
         try {
             String ip = database.findIp(idReceiver);
             try {
@@ -44,7 +48,7 @@ public class ChatController {
                 e.printStackTrace();
             }
             tcp.sendMessage(msg);
-            database.addMsg(msg,idReceiver,user.getIdUser(),idReceiver);
+            database.addMsg(msg, idReceiver, user.getIdUser(), idReceiver);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,9 +64,10 @@ public class ChatController {
                 e.printStackTrace();
             }
             tcp.sendMessage(path.toString());//encoding to byte DA FARE
-            database.addMsg(path.toString(),idReceiver,user.getIdUser(),idReceiver);
+            database.addMsg(path.toString(), idReceiver, user.getIdUser(), idReceiver);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

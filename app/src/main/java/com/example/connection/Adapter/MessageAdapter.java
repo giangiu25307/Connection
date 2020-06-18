@@ -57,9 +57,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             public void openChat(int p) {
                 chatCursor.moveToPosition(p);
                 final long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-                Intent myIntent = new Intent(context, ConnectioActivity.class);
+              //  Intent myIntent = new Intent(context, ConnectioActivity.class);
                 //myIntent.putExtra("key", database); //Optional parameters
-                context.startActivity(myIntent);
+              //  context.startActivity(myIntent);
             }
         });
 

@@ -61,7 +61,7 @@ public class AutoClicker extends AccessibilityService {
         do {
             try {
                 if (condition) {
-
+                    System.out.println(nodes.getText());
                     System.out.println(nodes.getChild(count).getText());
                     if (nodes.getChild(count).getText().equals("Accetta"))
                         System.out.println(nodes.getChild(count).performAction(nodes.getChild(count).ACTION_CLICK));
@@ -84,7 +84,7 @@ public class AutoClicker extends AccessibilityService {
     }
 
 
-    private GestureDescription createClick() {
+  /*  private GestureDescription createClick() {
         Path clickPath = new Path();
         clickPath.moveTo(Connection.touchX, Connection.touchY);
         GestureDescription.StrokeDescription clickStroke =
@@ -102,7 +102,7 @@ public class AutoClicker extends AccessibilityService {
 
     public static AutoClicker getInstance() {
         return mAutoClicker;
-    }
+    }*/
 }
 
 
