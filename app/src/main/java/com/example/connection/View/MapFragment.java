@@ -18,11 +18,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MapFragment extends Fragment {

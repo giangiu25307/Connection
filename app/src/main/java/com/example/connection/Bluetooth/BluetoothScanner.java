@@ -4,27 +4,13 @@ import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
-import android.os.Handler;
-import android.os.ParcelUuid;
-import android.text.TextUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-
-import static java.nio.charset.StandardCharsets.*;
 
 
 public class BluetoothScanner extends ListActivity {
@@ -57,7 +43,7 @@ public class BluetoothScanner extends ListActivity {
             for (Iterator i = keys.iterator(); i.hasNext();) {
                 byte[] array=  result.getScanRecord().getServiceData().get(i.next());
                 StringBuilder sb = new StringBuilder();
-                StringBuilder output = new StringBuilder("");
+                StringBuilder output = new StringBuilder();
                 for (byte b : array) {
                     output.append((char) Integer.parseInt(String.format("%02X", b), 16));
                 }

@@ -1,7 +1,5 @@
 package com.example.connection.View;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;

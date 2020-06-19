@@ -57,12 +57,12 @@ class WorkerRunnable implements Runnable {
                     byte[] message = new byte[length];
                     dIn.readFully(message, 0, message.length); // read the message
                     String msg=message.toString();
-                    String splittedR[]=msg.split("£€");
+                    String[] splittedR =msg.split("£€");
                     if (splittedR[0].equals("sendInfo")){
                         //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
-                        String splitted[]=splittedR[1].split(",;");
+                        String[] splitted =splittedR[1].split(",;");
                         for (int i=0;i<splitted.length;i++){
-                            String user[]=splitted[i].split(",");
+                            String[] user =splitted[i].split(",");
                             database.addUser(user[0],user[1],user[2],user[3],user[4],user[5],user[6],user[7],user[8],user[9],user[10]);
                         }
                     }else if(splittedR[0].equals("GO_LEAVES_BY")) {

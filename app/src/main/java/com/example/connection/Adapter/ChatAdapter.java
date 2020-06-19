@@ -27,7 +27,6 @@ import com.example.connection.R;
 
 import java.io.File;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

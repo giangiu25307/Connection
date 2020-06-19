@@ -11,7 +11,6 @@ import androidx.annotation.RequiresApi;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Database extends SQLiteOpenHelper {
 
@@ -187,11 +186,7 @@ public class Database extends SQLiteOpenHelper {
                 " FROM CHAT" +
                 " WHERE id_chat='" + idChat + "'";
         Cursor c = db.rawQuery(query, null);
-        if (c == null) {
-            return false;
-        }else{
-            return true;
-        }
+        return c != null;
     }
 
     public Cursor getAllMsg(String idChat) {
@@ -245,7 +240,7 @@ public class Database extends SQLiteOpenHelper {
 
     //USER
     public String[] getMyInformation(){
-        String user[]=new String[11];
+        String[] user =new String[11];
         String query = "SELECT *"+
                 " FROM "+ Task.TaskEntry.USER;
         Cursor c = db.rawQuery(query, null);

@@ -72,7 +72,7 @@ public class Connection extends AppCompatActivity {
         //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.createChat("1", "Andrew");
         //database.addMsg("Ciao", "1", "prova","1");
-       // connectionController.createGroup();
+        connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
        // System.out.println("Activity creata");
         AutoClicker autoClicker=new AutoClicker();

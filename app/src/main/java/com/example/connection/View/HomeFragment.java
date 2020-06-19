@@ -2,7 +2,6 @@ package com.example.connection.View;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +60,7 @@ public class HomeFragment extends Fragment {
                         fragment = new ChatFragment().newInstance(database,chatController);
                         break;
                     case R.id.settings:
-                        fragment = new SettingsFragment().newInstance();
+                     //   fragment = new SettingsFragment().newInstance();
                         break;
                     default:
                         break;

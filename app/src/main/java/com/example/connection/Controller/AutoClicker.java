@@ -48,6 +48,7 @@ public class AutoClicker extends AccessibilityService {
         info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
         info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
+        info.flags=AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
         info.notificationTimeout = 100;
         info.packageNames = null;
 
@@ -81,31 +82,20 @@ public class AutoClicker extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         AccessibilityNodeInfo source = event.getSource();
         /* if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !event.getClassName().equals("android.app.AlertDialog")) { // android.app.AlertDialog is the standard but not for all phones  */
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !String.valueOf(event.getClassName()).contains("AlertDialog")) return;
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && (source == null || !source.getClassName().equals("android.widget.TextView"))) return;
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && TextUtils.isEmpty(source.getText())) return;
-        List<CharSequence> eventText;
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) eventText = event.getText();
-        else{
-            try {
-                eventText = Collections.singletonList(source.getText());
-            }catch (Exception e){
-                eventText = null;
-            }
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && String.valueOf(event.getClassName()).contains("AlertDialog"))
+            return;
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && (source == null || !source.getClassName().equals("android.widget.TextView" ) || TextUtils.isEmpty(source.getText())))
+            return;
+        try{
+        if(source.getViewIdResourceName().equals("android:id/value")){
+            //source.getChild(3).performAction(source.ACTION_CLICK);
+            source=getRootInActiveWindow();
+            System.out.println(source.getChild(3).getText());
+           // source.getChild(3).performAction(source.ACTION_CLICK);
         }
-        if(eventText!=null)
-       if(processUSSDText(eventText))source.getChild(3).performAction(source.ACTION_CLICK);
-    }
+        }
+        catch (Exception e){return;}
 
-    private boolean processUSSDText(List<CharSequence> eventText) {
-        for (CharSequence s : eventText) {
-            String text = String.valueOf(s);
-            // Return text if text is the expected ussd response
-            if (text.equals("")) {
-                return true;
-            }
-        }
-        return false;
     }
 
 
