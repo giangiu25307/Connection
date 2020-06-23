@@ -20,21 +20,21 @@ public class ChatController {
     Database database;
     User user;
     ConnectionController connectionController;
-    public static ChatController istance=null;
+    public static ChatController istance = null;
 
-    public static ChatController getInstance(){
+    public static ChatController getInstance() {
         return istance;
     }
 
-    public ChatController newIstance(Connection connection, ConnectionController connectionController){
-        istance=new ChatController();
+    public ChatController newIstance(Connection connection, ConnectionController connectionController) {
+        istance = new ChatController();
         setConnectionController(connectionController);
         istance.setDatabase(new Database(connection.getApplicationContext()));
         //String userInfo[]=database.getMyInformation();
         //user=new User(userInfo[0],userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],userInfo[9],userInfo[10]);
         istance.setUser(user);
         istance.setTcp(new TCP_Client());
-        istance.setUdp(new Multicast(user,database,connectionController));
+        istance.setUdp(new Multicast(user, database, connectionController));
         return istance;
     }
 
@@ -62,8 +62,8 @@ public class ChatController {
         this.connectionController = connectionController;
     }
 
-    public ChatController() {    }
-
+    public ChatController() {
+    }
 
 
     //Send a global message -------------------------------------------------------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ public class ChatController {
     }
 
     //send a direct message -------------------------------------------------------------------------------------------------------------------------------
-    public void sendTCPMsg(String msg,String idReceiver) {
+    public void sendTCPMsg(String msg, String idReceiver) {
         try {
             String ip = database.findIp(idReceiver);
             try {
@@ -81,7 +81,7 @@ public class ChatController {
                 e.printStackTrace();
             }
             tcp.sendMessage(msg);
-            database.addMsg(msg,idReceiver,user.getIdUser(),idReceiver);
+            database.addMsg(msg, user.getIdUser(), idReceiver);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,7 +97,7 @@ public class ChatController {
                 e.printStackTrace();
             }
             tcp.sendMessage(path.toString());//encoding to byte DA FARE
-            database.addMsg(path.toString(),idReceiver,user.getIdUser(),idReceiver);
+            database.addMsg(path, idReceiver, user.getIdUser(), idReceiver);
         } catch (IOException e) {
             e.printStackTrace();
         }

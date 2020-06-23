@@ -7,41 +7,42 @@ import java.util.Map;
 public class Chats {
 
     private Map<String, Chat> chats;//id,(idSender, msg,data);
-    private Map<Integer,GlobalMessage> globals;
+    private Map<Integer, GlobalMessage> globals;
     private int count;
 
-    public Chats(){
-        chats=new HashMap<>();
-        globals=new HashMap<>();
-        count=0;
+    public Chats() {
+        chats = new HashMap<>();
+        globals = new HashMap<>();
+        count = 0;
     }
 
     public Map<String, Chat> getChats() {
         return chats;
     }
 
-    public void setChats(String id,String name) {
-        chats.put(id, new Chat(id,name));
+    public void setChats(String id, String name) {
+        chats.put(id, new Chat(id, name));
     }
 
-    public void deleteChat(String id){
+    public void deleteChat(String id) {
         chats.remove(id);
     }
 
-    public Map<Integer,GlobalMessage> getAllGlobalMessages(){
+    public Map<Integer, GlobalMessage> getAllGlobalMessages() {
         return globals;
     }
 
-    public void deleteAllGlobalMessages(){
-        globals.clear();count=0;
+    public void deleteAllGlobalMessages() {
+        globals.clear();
+        count = 0;
     }
 
-    public void deleteGlobalMessage(int number){
+    public void deleteGlobalMessage(int number) {
         globals.remove(number);
     }
 
-    public void addGlobalMessage(String id,String message,String data,String name){
-        globals.put(count,new GlobalMessage(id,message,data,name));
+    public void addGlobalMessage(String id, String message, String data, String name) {
+        globals.put(count, new GlobalMessage(id, message, data, name));
         count++;
     }
 

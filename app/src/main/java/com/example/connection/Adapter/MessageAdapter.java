@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private Bitmap bitmap;
     SimpleDateFormat format = new SimpleDateFormat();
     Date date=new Date();
+    int counter;
 
     public MessageAdapter(Context context, Database database, String id) {
         this.context = context;
@@ -79,18 +81,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         message.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG)));
         LinearLayout messageLayout = holder.messageLayout;
 
-        System.out.println("Id sender: " + messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)) + " idChat: " + database.getMyInformation()[0]);
-
         if(!messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)).equals(database.getMyInformation()[0])){
-            message.setBackgroundColor(Color.BLACK);
+            message.setBackgroundResource(R.drawable.message_rounded_black_background);
             message.setTextColor(Color.WHITE);
+            messageLayout.setGravity(Gravity.LEFT);
         }else{
+            message.setBackgroundResource(R.drawable.message_rounded_white_background);
+            message.setTextColor(Color.BLACK);
             messageLayout.setGravity(Gravity.RIGHT);
         }
 
         holder.itemView.setTag(idChat);
-
-
 
         /*
         try {
@@ -137,7 +138,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             messageLayout.setOnClickListener(this);
             message = itemView.findViewById(R.id.message);
 
-            System.out.println("khsaivcviwv");
         }
 
         @Override

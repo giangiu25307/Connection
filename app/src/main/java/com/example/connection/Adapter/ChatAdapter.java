@@ -62,10 +62,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
             @Override
             public void openChat(int p) {
                 chatCursor.moveToPosition(p);
-                final long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+                final String id = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
                 Intent myIntent = new Intent(context, ChatActivity.class);
-               // myIntent.putExtra("chatController", chatController); //Optional parameters
+               // myIntent.putExtra("chatController", chatController); //Optional parameters\
+                myIntent.putExtra("idChat", id);
+                myIntent.putExtra("name", chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.NAME)));
                 context.startActivity(myIntent);
+
             }
         });
 

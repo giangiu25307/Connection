@@ -31,6 +31,7 @@ public class Connection extends AppCompatActivity {
     private Fragment fragment;
     private CountDownTimer countDownTimer;
     private Boolean startTimer = false;
+    private Boolean startTimer2 = true;
     private long secondsRemaining = 1500;
     private SharedPreferences sharedPreferences;
     Database database;
@@ -71,7 +72,7 @@ public class Connection extends AppCompatActivity {
         //database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.createChat("1", "Andrew");
-        database.addMsg("Ciao", "prova", "1");
+        //database.addMsg("Ciao", "prova", "1");
         //database.addMsg("We", "aaaaa", "1");
         connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
@@ -141,6 +142,7 @@ public class Connection extends AppCompatActivity {
             public void onFinish() {
                 fragment = new HomeFragment().newInstance(connectionController, database,chatController);
                 loadFragment(true);
+                startTimer2 = false;
             }
         };
     }
@@ -148,7 +150,7 @@ public class Connection extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(startTimer){
+        if(startTimer && startTimer2){
             createCountDowntimer();
             countDownTimer.start();
         }

@@ -5,28 +5,28 @@ import java.util.Map;
 
 public class Chat {
 
-    private String name,id;
+    private String name, id;
     private int numberMsg;
-    private Map<Integer,Message> message;
+    private Map<Integer, Message> message;
 
     public Chat(String id, String name) {
-        numberMsg=0;
+        numberMsg = 0;
         this.name = name;
         this.id = id;
-        message=new HashMap<>();
+        message = new HashMap<>();
     }
 
-    public void addMsg(String id,String idSender,String msg, String data){
-        message.put(numberMsg,new Message(idSender,msg,data));
+    public void addMsg(String id, String idSender, String msg, String data) {
+        message.put(numberMsg, new Message(idSender, msg, data));
         numberMsg++;
     }
 
-    public Map<Integer,Message> getAllMessage(){
+    public Map<Integer, Message> getAllMessage() {
         return message;
     }
 
-    public String[] getLastMessage(){
-        String[] array= {message.get(message.size()-1).getMessage(),message.get(message.size()-1).getDate()};
+    public String[] getLastMessage() {
+        String[] array = {message.get(message.size() - 1).getMessage(), message.get(message.size() - 1).getDate()};
         return array;
     }
 
@@ -38,12 +38,12 @@ public class Chat {
         return id;
     }
 
-    public void deleteAllMsg(){
+    public void deleteAllMsg() {
         message.clear();
-        numberMsg=0;
+        numberMsg = 0;
     }
 
-    public void deleteMsg(int number){
+    public void deleteMsg(int number) {
         message.remove(number);
     }
 
