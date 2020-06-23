@@ -18,11 +18,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MapFragment extends Fragment {
@@ -61,14 +59,6 @@ public class MapFragment extends Fragment {
                 c.moveToNext();
 
             }
-            ImageView gpsbutton=view.findViewById(R.id.gpsButton);
-            gpsbutton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AutoClicker autoClicker=AutoClicker.getInstance();
-                    autoClicker.clicker();
-                }
-            });
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
             listView.setAdapter(arrayAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

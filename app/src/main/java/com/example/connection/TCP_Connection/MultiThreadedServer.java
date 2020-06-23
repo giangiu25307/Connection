@@ -7,10 +7,7 @@ import com.example.connection.Controller.Database;
 import com.example.connection.View.Connection;
 import com.example.connection.localization.localizationController;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;

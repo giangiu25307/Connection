@@ -2,7 +2,6 @@ package com.example.connection.localization;
 
 
 import android.location.Location;
-import android.os.AsyncTask;
 
 import com.example.connection.Controller.Database;
 import com.example.connection.TCP_Connection.TCP_Client;

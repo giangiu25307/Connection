@@ -55,7 +55,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             while (true) {
                 s.receive(recv);
                 String received = new String(recv.getData(), 0, recv.getLength());
-                String splittedR[] = received.split("£€");
+                String[] splittedR = received.split("£€");
                 if (splittedR[0].equals("info")) {
                     //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
                     if (user.getInetAddress().equals("192.168.49.1")) {

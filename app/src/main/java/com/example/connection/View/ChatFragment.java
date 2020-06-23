@@ -1,7 +1,5 @@
 package com.example.connection.View;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Adapter.ChatAdapter;
+import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.R;
@@ -38,14 +37,19 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     TextView requestTextView;
     int currentWidth;
     int currentHeight;
-
+    ChatController chatController;
     public ChatFragment() {
     }
 
-    public ChatFragment newInstance(Database database) {
+    public ChatFragment newInstance(Database database,ChatController chatController) {
         ChatFragment chatFragment = new ChatFragment();
         chatFragment.setDatabase(database);
+        chatFragment.setChatController(chatController);
         return chatFragment;
+    }
+
+    public void setChatController(ChatController chatController) {
+        this.chatController = chatController;
     }
 
     public void setDatabase(Database database) {
@@ -97,7 +101,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
     private void setupRecyclerView(View view){
         RecyclerView recyclerView = view.findViewById(R.id.chatRecyclerView);
-        ChatAdapter chatAdapter = new ChatAdapter(getContext(), database.getAllChat(), database);
+        ChatAdapter chatAdapter = new ChatAdapter(getContext(), database.getAllChat(), database,chatController);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }

@@ -7,8 +7,7 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.os.ParcelUuid;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class BluetoothAdvertiser {
@@ -41,7 +40,7 @@ public class BluetoothAdvertiser {
         ParcelUuid pUuid = new ParcelUuid( UUID.fromString(( "CDB7950D-73F1-4D4D-8E47-C090502DBD63" ) ));
         mAdvertiseData = new AdvertiseData.Builder()
                 .setIncludeDeviceName( false )
-                .addServiceData( pUuid, nome.getBytes( Charset.forName( "UTF-8" ) ) )
+                .addServiceData( pUuid, nome.getBytes(StandardCharsets.UTF_8) )
                 .setIncludeTxPowerLevel(false)
                 .build();
     }

@@ -3,7 +3,14 @@ package com.example.connection.TCP_Connection;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.ImageView;
+
+import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.Database;
+import com.example.connection.Model.User;
+import com.example.connection.UDP_Connection.Multicast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -17,7 +24,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 
-public class TCP_Client {
+public class TCP_Client{
     SSLContext sslContext=null;
     private SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
     private SSLSocket sslsocket;
@@ -60,4 +67,6 @@ public class TCP_Client {
         dos.close();
         clientSocket.close();
     }
+
+
 }

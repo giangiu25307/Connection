@@ -1,7 +1,5 @@
 package com.example.connection.Model;
 
-import androidx.annotation.NonNull;
-
 import java.net.InetAddress;
 
 public class User {

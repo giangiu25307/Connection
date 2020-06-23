@@ -1,10 +1,8 @@
 package com.example.connection.Controller;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
@@ -16,8 +14,6 @@ import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.CountDownTimer;
-
-import androidx.core.app.ActivityCompat;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;

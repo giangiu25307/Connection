@@ -2,7 +2,6 @@ package com.example.connection.View;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.R;
@@ -23,14 +23,15 @@ public class HomeFragment extends Fragment {
     Fragment fragment;
     ConnectionController connectionController;
     Database database;
-
+    ChatController chatController;
     public HomeFragment() {
 
     }
 
-    public HomeFragment newInstance(ConnectionController connectionController, Database database) {
+    public HomeFragment newInstance(ConnectionController connectionController, Database database,ChatController chatController) {
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.setConnectionController(connectionController);
+        homeFragment.setChatController(chatController);
         homeFragment.setDatabase(database);
         return homeFragment;
     }
@@ -56,10 +57,10 @@ public class HomeFragment extends Fragment {
                         fragment = new MapFragment().newInstance(connectionController);
                         break;
                     case R.id.chat:
-                        fragment = new ChatFragment().newInstance(database);
+                        fragment = new ChatFragment().newInstance(database,chatController);
                         break;
                     case R.id.settings:
-                        fragment = new SettingsFragment().newInstance();
+                     //   fragment = new SettingsFragment().newInstance();
                         break;
                     default:
                         break;
@@ -81,6 +82,10 @@ public class HomeFragment extends Fragment {
 
     public void setConnectionController(ConnectionController connectionController) {
         this.connectionController = connectionController;
+    }
+
+    public void setChatController(ChatController chatController) {
+        this.chatController = chatController;
     }
 
     public void setDatabase(Database database) {

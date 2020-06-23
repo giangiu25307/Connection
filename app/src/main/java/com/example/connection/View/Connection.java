@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Controller.AutoClicker;
@@ -34,10 +35,10 @@ public class Connection extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     Database database;
     User user;
+    ChatController chatController;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
-    public static int touchX;
-    public static int touchY;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +48,9 @@ public class Connection extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
-        touchX=displayMetrics.widthPixels/100*74;
-        touchY=displayMetrics.heightPixels/100*92;
-        touchX=750;
-        touchY=1930;
-        AutoClicker autoClicker=new AutoClicker();
         connectionController=new ConnectionController(this,database,user);
+        chatController=new ChatController();
+        chatController=chatController.newIstance(this,connectionController);
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -77,7 +75,8 @@ public class Connection extends AppCompatActivity {
         //database.addMsg("We", "aaaaa", "1");
         connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
-        System.out.println("Activity creata");
+       // System.out.println("Activity creata");
+        AutoClicker autoClicker=new AutoClicker();
 
     }
 
@@ -140,7 +139,7 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                fragment = new HomeFragment().newInstance(connectionController, database);
+                fragment = new HomeFragment().newInstance(connectionController, database,chatController);
                 loadFragment(true);
             }
         };
