@@ -20,12 +20,13 @@ public class ChatController {
     Database database;
     User user;
     ConnectionController connectionController;
-    public ChatController(Connection connection,ConnectionController connectionController) {
+
+    public ChatController(Connection connection, ConnectionController connectionController) {
         tcp = new TCP_Client();
-        udp = new Multicast(user,database,connectionController);
-        database=new Database(connection.getApplicationContext());
-        String userInfo[]=database.getMyInformation();
-        user=new User(userInfo[0],userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],userInfo[9],userInfo[10]);
+        udp = new Multicast(user, database, connectionController);
+        database = new Database(connection.getApplicationContext());
+        String userInfo[] = database.getMyInformation();
+        user = new User(userInfo[0], userInfo[1], userInfo[2], userInfo[3], userInfo[4], userInfo[5], userInfo[6], userInfo[7], userInfo[8], userInfo[9], userInfo[10]);
         this.connectionController = connectionController;
     }
 
@@ -35,7 +36,7 @@ public class ChatController {
     }
 
     //send a direct message -------------------------------------------------------------------------------------------------------------------------------
-    public void sendTCPMsg(String msg,String idReceiver) {
+    public void sendTCPMsg(String msg, String idReceiver) {
         try {
             String ip = database.findIp(idReceiver);
             try {

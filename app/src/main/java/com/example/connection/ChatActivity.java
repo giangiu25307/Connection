@@ -4,15 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.View;
 
-import com.example.connection.Adapter.ChatAdapter;
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.Database;
-
-import java.io.Serializable;
 
 public class ChatActivity extends AppCompatActivity{
 
