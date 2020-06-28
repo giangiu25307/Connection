@@ -65,11 +65,6 @@ public class MapFragment extends Fragment {
             String[] arrayName = new String[c.getCount()];
             for (int i = 0; i < c.getCount(); i++) {
                 user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-                try {
-                    user.setInetAddress(c.getString(c.getColumnIndex(Task.TaskEntry.IP)));
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
                 userList.add(user);
                 arrayName[i] = c.getString(1);
                 c.moveToNext();
@@ -83,12 +78,10 @@ public class MapFragment extends Fragment {
 
                     user = userList.get(position);
                     Intent myIntent = new Intent(getActivity(), ChatActivity.class);
-                    myIntent.putExtra("idUser", user.getIdUser());
-                    myIntent.putExtra("userName", user.getName());
-                    myIntent.putExtra("userProfilePic", user.getProfilePic());
+                    myIntent.putExtra("idChat", user.getIdUser());
+                    myIntent.putExtra("name", user.getUsername());
                     getActivity().startActivity(myIntent);
                     String information = user.toString();
-
                     int duration = Toast.LENGTH_SHORT;
                     Toast toast = Toast.makeText(getContext(), information, duration);
                     toast.show();

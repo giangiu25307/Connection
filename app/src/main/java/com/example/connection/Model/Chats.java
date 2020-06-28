@@ -28,6 +28,7 @@ public class Chats {
         return chats.get(id);
     }
 
+
     public void deleteChat(String id) {
         chats.remove(id);
     }

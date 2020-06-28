@@ -39,13 +39,8 @@ public class localizationController  {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    try {
+
                         tcp_client.startConnection(localizationController.this.ip.toString(),50000);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
                     try {
                         tcp_client.sendMessage("RESULT-MEET£€"+database.getMyInformation()[0]+rtt.getRTT()+"£€"+gps.getLatitude()+"£€"+gps.getLongitude());
                     } catch (IOException e) {

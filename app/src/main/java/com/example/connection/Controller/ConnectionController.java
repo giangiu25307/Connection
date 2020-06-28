@@ -98,12 +98,7 @@ public class ConnectionController {
     // this exist for the handshake when two group owner are meeting each other, THIS NEED TO BE FINISH BEFORE THE APP IS RELEASED -----------------------------------------------------------------------------------
     private void checkDevices() {
         if (group.getClientList().size() == 1) {
-            try {
                 tcpClient.startConnection("192.168.49.1", 50000);
-
-            } catch (IOException | NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -283,7 +278,7 @@ public void GetDeviceName(){
                 }
             }.start();
             this.removeGroup();
-        } catch (IOException | NoSuchAlgorithmException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
