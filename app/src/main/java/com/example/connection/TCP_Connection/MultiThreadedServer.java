@@ -16,6 +16,7 @@ import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 
 public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     protected int serverPort = 50000;
@@ -27,12 +28,10 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     private Database database;
     private Connection connection;
     private ConnectionController connectionController;
-     SSLContext sslContext=null;
      localizationController localizationController;
+    SSLServerSocketFactory serverSocketFactory= (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 
     public MultiThreadedServer(int port,Database database, Connection connection,ConnectionController connectionController,localizationController localizationController) throws NoSuchAlgorithmException, KeyManagementException {
-        sslContext = SSLContext.getInstance("TLSv1.2");
-        sslContext.init(null, null, null);
         this.serverPort = port;
         this.database=database;
         receive="";
@@ -56,9 +55,9 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     }
 
     //open the server socket --------------------------------------------------------------------------------------------------------------------------------
-    private void openServerSocket() {
+        public  void openServerSocket() {
         try {
-            this.serverSocket =(SSLServerSocket) sslContext.getServerSocketFactory().createServerSocket(serverPort);
+            this.serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(serverPort);
         } catch (IOException e) {
             throw new RuntimeException("Cannot open port 443", e);
         }
@@ -86,5 +85,28 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         }
         System.out.println("Server Stopped.");
         return null;
+    }
+    public void test(){
+        try {
+            this.serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(serverPort);
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot open port 443", e);
+        }
+        while (!isStopped()) {
+            Socket clientSocket = null;
+            try {
+                clientSocket = this.serverSocket.accept();
+            } catch (IOException e) {
+                if (isStopped()) {
+                    System.out.println("Server Stopped.");
+                    return ;
+                }
+                throw new RuntimeException(
+                        "Error accepting client connection", e);
+            }
+            new Thread(new WorkerRunnable(clientSocket,database,connection,connectionController,localizationController)).start();
+        }
+        System.out.println("Server Stopped.");
+        return ;
     }
 }

@@ -26,7 +26,6 @@ import javax.net.ssl.SSLSocketFactory;
 
 
 public class TCP_Client{
-    SSLContext sslContext=null;
     private SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
     private SSLSocket sslsocket;
     private Socket clientSocket;
@@ -37,13 +36,12 @@ public class TCP_Client{
     //start a connection with another user -----------------------
     public void startConnection(String ip, int port)  {
         try {
-        sslContext = SSLContext.getInstance("TLSv1.2");
-            sslsocket=(SSLSocket) sslContext.getSocketFactory().createSocket(ip, port);
+            sslsocket=(SSLSocket) sslsocketfactory.createSocket("192.168.49.1", port);
             sslsocket.startHandshake();
-            out = clientSocket.getOutputStream();
+            out = sslsocket.getOutputStream();
             dos = new DataOutputStream(out);
-        } catch (IOException | NoSuchAlgorithmException e) {
-            System.out.println("ciao");
+        } catch (IOException e) {
+            System.out.println(e);
         }
 
     }
@@ -52,7 +50,7 @@ public class TCP_Client{
     public void sendMessage(String msg) throws IOException {
         this.msg+=msg;
         byte[] array = this.msg.getBytes();
-        dos.writeInt(array.length);
+       // dos.writeInt(array.length);
         dos.write(array, 0, array.length);
     }
 

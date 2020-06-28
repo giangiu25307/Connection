@@ -36,7 +36,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             tcp_client = new TCP_Client();
             this.database = database;
             this.user = user;
-            group = InetAddress.getByName("192.168.49.255");
+            group = InetAddress.getByName("234.0.0.0");
             s = new MulticastSocket(6789);
             s.joinGroup(group);
         } catch (UnknownHostException e) {

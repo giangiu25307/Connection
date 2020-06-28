@@ -75,7 +75,7 @@ public class ChatController {
     public void sendTCPMsg(String msg, String idReceiver) {
         try {
             String ip = database.findIp(idReceiver);
-                tcp.startConnection(ip, 50000);
+                tcp.startConnection("192.168.49.1", 50000);
             tcp.sendMessage(msg);
             database.addMsg(msg, user.getIdUser(), idReceiver);
         } catch (IOException e) {
