@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 
@@ -33,13 +34,18 @@ public class TCP_Client{
     private DataOutputStream dos;
     private String msg="message£€";
 
-    //start a connection with another user --------------------------------------------------------------------------------------------------------------------------------
-    public void startConnection(String ip, int port) throws IOException, NoSuchAlgorithmException {
+    //start a connection with another user -----------------------
+    public void startConnection(String ip, int port)  {
+        try {
         sslContext = SSLContext.getInstance("TLSv1.2");
-        sslsocket=(SSLSocket) sslContext.getSocketFactory().createSocket(ip, port);
-        sslsocket.startHandshake();
-        out = clientSocket.getOutputStream();
-        dos = new DataOutputStream(out);
+            sslsocket=(SSLSocket) sslContext.getSocketFactory().createSocket(ip, port);
+            sslsocket.startHandshake();
+            out = clientSocket.getOutputStream();
+            dos = new DataOutputStream(out);
+        } catch (IOException | NoSuchAlgorithmException e) {
+            System.out.println("ciao");
+        }
+
     }
 
     //send a message --------------------------------------------------------------------------------------------------------------------------------

@@ -75,11 +75,7 @@ public class ChatController {
     public void sendTCPMsg(String msg, String idReceiver) {
         try {
             String ip = database.findIp(idReceiver);
-            try {
                 tcp.startConnection(ip, 50000);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
             tcp.sendMessage(msg);
             database.addMsg(msg, user.getIdUser(), idReceiver);
         } catch (IOException e) {
@@ -91,11 +87,7 @@ public class ChatController {
     public void sendTCPPath(Paths path, String idReceiver) {
         try {
             String ip = database.findIp(idReceiver);
-            try {
                 tcp.startConnection(ip, 50000);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
             tcp.sendMessage(path.toString());//encoding to byte DA FARE
             database.addMsg(path, idReceiver, user.getIdUser(), idReceiver);
         } catch (IOException e) {
