@@ -1,6 +1,7 @@
 package com.example.connection.Model;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class User {
 
@@ -24,6 +25,10 @@ public class User {
 
     public InetAddress getInetAddress() {
         return inetAddress;
+    }
+
+    public void setInetAddress(String inetAddress) throws UnknownHostException {
+        this.inetAddress = InetAddress.getByName(inetAddress);
     }
 
     public String getAll(){

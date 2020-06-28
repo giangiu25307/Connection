@@ -1,6 +1,7 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,29 +17,39 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.connection.ChatActivity;
 import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.Database;
+import com.example.connection.Controller.Task;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class MapFragment extends Fragment {
 
     ConnectionController connectionController;
     User user;
+    Database database;
 
     public MapFragment() {
     }
 
-    public MapFragment newInstance(ConnectionController connectionController) {
+    public MapFragment newInstance(ConnectionController connectionController, Database database) {
         MapFragment mapFragment = new MapFragment();
         mapFragment.setConnectionController(connectionController);
+        mapFragment.setDatabase(database);
         return mapFragment;
     }
 
     public void setConnectionController(ConnectionController connectionController) {
         this.connectionController = connectionController;
+    }
+
+    public void setDatabase(Database database) {
+        this.database = database;
     }
 
     @Nullable
@@ -54,6 +65,11 @@ public class MapFragment extends Fragment {
             String[] arrayName = new String[c.getCount()];
             for (int i = 0; i < c.getCount(); i++) {
                 user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
+                try {
+                    user.setInetAddress(c.getString(c.getColumnIndex(Task.TaskEntry.IP)));
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
                 userList.add(user);
                 arrayName[i] = c.getString(1);
                 c.moveToNext();
@@ -66,7 +82,11 @@ public class MapFragment extends Fragment {
                 public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
 
                     user = userList.get(position);
-
+                    Intent myIntent = new Intent(getActivity(), ChatActivity.class);
+                    myIntent.putExtra("idUser", user.getIdUser());
+                    myIntent.putExtra("userName", user.getName());
+                    myIntent.putExtra("userProfilePic", user.getProfilePic());
+                    getActivity().startActivity(myIntent);
                     String information = user.toString();
 
                     int duration = Toast.LENGTH_SHORT;

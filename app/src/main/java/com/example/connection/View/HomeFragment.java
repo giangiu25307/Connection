@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Model.Chats;
 import com.example.connection.R;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
@@ -24,6 +25,7 @@ public class HomeFragment extends Fragment {
     ConnectionController connectionController;
     Database database;
     ChatController chatController;
+
     public HomeFragment() {
 
     }
@@ -45,7 +47,7 @@ public class HomeFragment extends Fragment {
 
         if(savedInstanceState == null){
             chipNavigationBar.setItemSelected(R.id.map, true);
-            fragment = new MapFragment().newInstance(connectionController);
+            fragment = new MapFragment().newInstance(connectionController, database);
             loadFragment();
         }
 
@@ -54,7 +56,7 @@ public class HomeFragment extends Fragment {
             public void onItemSelected(int i) {
                 switch (i){
                     case R.id.map:
-                        fragment = new MapFragment().newInstance(connectionController);
+                        fragment = new MapFragment().newInstance(connectionController, database);
                         break;
                     case R.id.chat:
                         fragment = new ChatFragment().newInstance(database,chatController);

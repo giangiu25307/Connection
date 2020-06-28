@@ -203,7 +203,7 @@ public class Database extends SQLiteOpenHelper {
 
     public Cursor getAllChat(){
         String query = "SELECT " +Task.TaskEntry.ID_CHAT+", "+ Task.TaskEntry.NAME+", "+ Task.TaskEntry.LAST_MESSAGE+", "+Task.TaskEntry.DATETIME+
-                " FROM "+ Task.TaskEntry.CHAT;
+                " FROM "+ Task.TaskEntry.CHAT + " ORDER BY " + Task.TaskEntry.DATETIME + " DESC ";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();

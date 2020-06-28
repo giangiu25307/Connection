@@ -20,8 +20,12 @@ public class Chats {
         return chats;
     }
 
-    public void setChats(String id, String name) {
-        chats.put(id, new Chat(id, name));
+    public void setChats(Chat chat) {
+        chats.put(chat.getId(), chat);
+    }
+
+    public Chat getChat(String id) {
+        return chats.get(id);
     }
 
     public void deleteChat(String id) {

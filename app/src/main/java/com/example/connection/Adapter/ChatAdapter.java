@@ -26,8 +26,10 @@ import com.example.connection.Controller.Task;
 import com.example.connection.R;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
@@ -36,7 +38,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
     private Cursor chatCursor, userCursor;
     private Database database;
     private Bitmap bitmap;
-    SimpleDateFormat format = new SimpleDateFormat();
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     Date date=new Date();
     ChatController chatController;
 
@@ -56,8 +58,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.chat_layout, parent, false);
         ViewHolder holder = new ViewHolder(view, new ViewHolder.OnChatClickListener(){
-
-
 
             @Override
             public void openChat(int p) {
@@ -115,11 +115,22 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
         userNameTextView.setText(userName);
         lastMessageTextView.setText(lastMessage);
         try {
-            date=format.parse(datetime);
+            date = format.parse(datetime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        datetime= date.getHours()+":"+date.getMinutes();
+        Date date2 = null;
+        try {
+            date2 = format.parse(String.valueOf(LocalDateTime.now()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(date.getDay() == date2.getDay() && date.getMonth() == date2.getMonth() && date.getYear() == date2.getYear()){
+            datetime = String.valueOf(date.getHours()<10?'0':"") + date.getHours() + ":" + (date.getMinutes()<10?'0':"") + date.getMinutes();
+        }else{
+            datetime = String.valueOf(date.getDay()<10?'0':"") + date.getDay() + "/" + (date.getMonth()<10?'0':"") + date.getMonth() + "/" + String.valueOf(date.getYear()).substring(String.valueOf(date.getYear()).length()-2, String.valueOf(date.getYear()).length());
+        }
+
         timeLastMessageTextView.setText(datetime);
         //lastMessageTimeTextView.setText(timeLastMessage);
 

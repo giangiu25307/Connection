@@ -77,16 +77,28 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             return;
         }
 
+        LinearLayout messageLayout = holder.messageLayout;
+        LinearLayout textLayout = holder.textLayout;
         TextView message = holder.message;
         message.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG)));
-        LinearLayout messageLayout = holder.messageLayout;
+        TextView messageTime = holder.messageTime;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        Date date = new Date();
+        String datetime = messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG));
+        try {
+            date = format.parse(datetime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        messageTime.setText(String.valueOf(date.getHours()<10?'0':"") + date.getHours() + ":" + (date.getMinutes()<10?'0':"") + date.getMinutes());
+
 
         if(!messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)).equals(database.getMyInformation()[0])){
-            message.setBackgroundResource(R.drawable.message_rounded_black_background);
+            textLayout.setBackgroundResource(R.drawable.message_rounded_black_background);
             message.setTextColor(Color.WHITE);
             messageLayout.setGravity(Gravity.LEFT);
         }else{
-            message.setBackgroundResource(R.drawable.message_rounded_white_background);
+            textLayout.setBackgroundResource(R.drawable.message_rounded_white_background);
             message.setTextColor(Color.BLACK);
             messageLayout.setGravity(Gravity.RIGHT);
         }
@@ -127,14 +139,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         OnChatClickListener listener;
 
-        private LinearLayout messageLayout;
-        private TextView message;
+        private LinearLayout messageLayout, textLayout;
+        private TextView message, messageTime;
 
         private ViewHolder(View itemView, OnChatClickListener listener){
             super(itemView);
             this.listener = listener;
 
             messageLayout = itemView.findViewById(R.id.messageLayout);
+            textLayout = itemView.findViewById(R.id.textLayout);
+            messageTime = itemView.findViewById(R.id.messageTime);
             messageLayout.setOnClickListener(this);
             message = itemView.findViewById(R.id.message);
 

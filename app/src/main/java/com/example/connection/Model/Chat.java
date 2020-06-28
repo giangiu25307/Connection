@@ -16,7 +16,7 @@ public class Chat {
         message = new HashMap<>();
     }
 
-    public void addMsg(String id, String idSender, String msg, String data) {
+    public void addMsg(String idSender, String msg, String data) {
         message.put(numberMsg, new Message(idSender, msg, data));
         numberMsg++;
     }

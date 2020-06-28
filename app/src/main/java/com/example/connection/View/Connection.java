@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -24,6 +25,9 @@ import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Controller.AutoClicker;
+import com.example.connection.Controller.Task;
+import com.example.connection.Model.Chat;
+import com.example.connection.Model.Chats;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 //D/SupplicantP2pIfaceCallbackExt: Provision discovery request for WPS Config method: 128
@@ -70,9 +74,9 @@ public class Connection extends AppCompatActivity {
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
         //database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
-        //database.addUser("1","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
-        //database.createChat("1", "Andrew");
-        //database.addMsg("Ciao", "prova", "1");
+        //database.addUser("2","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
+        //database.createChat("2", "Andrew2");
+        //database.addMsg("Ciao", "prova3", "3");
         //database.addMsg("We", "aaaaa", "1");
         connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
@@ -140,7 +144,7 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                fragment = new HomeFragment().newInstance(connectionController, database,chatController);
+                fragment = new HomeFragment().newInstance(connectionController, database, chatController);
                 loadFragment(true);
                 startTimer2 = false;
             }

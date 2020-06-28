@@ -25,6 +25,7 @@ import com.example.connection.Adapter.ChatAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Model.Chats;
 import com.example.connection.R;
 
 public class ChatFragment extends Fragment implements View.OnClickListener {
@@ -101,7 +102,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
     private void setupRecyclerView(View view){
         RecyclerView recyclerView = view.findViewById(R.id.chatRecyclerView);
-        ChatAdapter chatAdapter = new ChatAdapter(getContext(), database.getAllChat(), database,chatController);
+        ChatAdapter chatAdapter = new ChatAdapter(getContext(), database.getAllChat(), database, chatController);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
