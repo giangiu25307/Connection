@@ -55,15 +55,13 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             while (true) {
                 s.receive(recv);
                 String received = new String(recv.getData(), 0, recv.getLength());
-                String splittedR[] = received.split("£€");
+                String[] splittedR = received.split("£€");
                 if (splittedR[0].equals("info")) {
                     //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
                     if (user.getInetAddress().equals("192.168.49.1")) {
-                        try {
+
                             tcp_client.startConnection(splittedR[2], 50000);
-                        } catch (NoSuchAlgorithmException e) {
-                            e.printStackTrace();
-                        }
+
                         Cursor c = database.getAllUsers();
                         tcp_client.sendMessage(this.cursorToString(c));
                         database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);//check adduser
@@ -88,7 +86,6 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                 else if (splittedR[0].equals("GO_LEAVES_BYE£€")){
                     //the group owner is leaving the group -------------------------------------------------------------------------------------------------------------------------------
                     database.deleteAllUser();
-                    connectionController.setConfig(splittedR[1]);
                     connectionController.connectionToGroup();
 
                 }
@@ -162,6 +159,8 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         c.close();
         return msg;
     }
+
+    //MAYBE WE NEED TO ADD MULTICAST LOCK !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     /*public void sendGroupMsg(String idGroup, String msg) {
         try {

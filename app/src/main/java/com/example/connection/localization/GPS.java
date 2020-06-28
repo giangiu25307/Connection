@@ -18,6 +18,7 @@ public class GPS  implements LocationListener {
     protected double latitude, longitude;
     protected boolean gps_enabled, network_enabled;
     Connection connection;
+    Location location;
 
     public GPS(Connection connection) {
         this.connection = connection;
@@ -28,24 +29,23 @@ public class GPS  implements LocationListener {
 
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
-
     }
 
     public double getLatitude() {
-        return latitude;
+        return location.getLatitude();
     }
 
     public double getLongitude() {
-        return longitude;
+        return location.getLongitude();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        latitude=location.getLatitude();
-        longitude=location.getLongitude();
+        this.location=location;
     }
-
+    public Location getLocation(){
+        return location;
+    }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {

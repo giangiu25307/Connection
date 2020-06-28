@@ -3,7 +3,7 @@ package com.example.connection.TCP_Connection;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.View.Connection;
-import com.example.connection.localization.LocalizationController;
+import com.example.connection.localization.localizationController;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -23,9 +23,10 @@ class WorkerRunnable implements Runnable {
     Connection connection;
     ConnectionController connectionController;
     TCP_Client tcp_client;
-    LocalizationController localizationController;
+    localizationController localizationController;
+    String idChat=null;
 
-    public WorkerRunnable(Socket clientSocket, Database database, Connection connection, ConnectionController connectionController, LocalizationController localizationController) {
+    public WorkerRunnable(Socket clientSocket, Database database, Connection connection,ConnectionController connectionController,localizationController localizationController) {
         this.connection = connection;
         this.clientSocket = clientSocket;
         this.database = database;
@@ -50,17 +51,18 @@ class WorkerRunnable implements Runnable {
                     FileOutputStream fos = new FileOutputStream(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg");
                     fos.write(message);
                     fos.close();
-                    database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", database.getMyInformation()[0], database.findId_user(ip));
+                    idChat=database.findId_user(ip);
+                    database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", idChat, idChat);
                 } else {
                     byte[] message = new byte[length];
                     dIn.readFully(message, 0, message.length); // read the message
                     String msg=message.toString();
-                    String splittedR[]=msg.split("£€");
+                    String[] splittedR =msg.split("£€");
                     if (splittedR[0].equals("sendInfo")){
                         //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
-                        String splitted[]=splittedR[1].split(",;");
+                        String[] splitted =splittedR[1].split(",;");
                         for (int i=0;i<splitted.length;i++){
-                            String user[]=splitted[i].split(",");
+                            String[] user =splitted[i].split(",");
                             database.addUser(user[0],user[1],user[2],user[3],user[4],user[5],user[6],user[7],user[8],user[9],user[10]);
                         }
                     }else if(splittedR[0].equals("GO_LEAVES_BY")) {
@@ -70,7 +72,8 @@ class WorkerRunnable implements Runnable {
                         connectionController.createGroup();
                     }else if(splittedR[0].equals("message")){
                         //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
-                        database.addMsg(msg, database.getMyInformation()[0], database.findId_user(ip));
+                        idChat=database.findId_user(ip);
+                        database.addMsg(msg, idChat, idChat);
                     }else if(splittedR[0].equals("REQUEST-MEET")){
                         //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
                         //database.setAccept(valore ritornato da bergo);
@@ -82,13 +85,23 @@ class WorkerRunnable implements Runnable {
                         database.setAccept(splittedR[1],splittedR[2]);
                     }
                     else if(splittedR[0].equals("RESULT-MEET")){
-                       //modifica gui luca
+                        if(database.getAccept(splittedR[1]).equals("yes")){
+                            tcp_client.startConnection(clientSocket.getInetAddress().toString(),50000);
+                            tcp_client.sendMessage("RESULT-MEET£€"+database.getMyInformation()[0]+splittedR[2]+"£€"+localizationController.gpsDirection(Double.parseDouble(splittedR[3]),Double.parseDouble(splittedR[4])));
+                            //modifica gui luca
+
+                        }
+                       else{
+                            tcp_client.startConnection(clientSocket.getInetAddress().toString(),50000);
+                            tcp_client.sendMessage("RESPONSE-MEET£€"+database.getMyInformation()[0]+"£€"/*+valore di bergo*/);
+                        }
+
                         
                     }
                 }
             }
 
-        } catch (IOException | NoSuchAlgorithmException e) {
+        } catch (IOException e) {
             //report exception somewhere.
             e.printStackTrace();
         }

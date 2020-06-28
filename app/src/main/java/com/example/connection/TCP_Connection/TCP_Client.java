@@ -3,12 +3,20 @@ package com.example.connection.TCP_Connection;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.ImageView;
+
+import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.Database;
+import com.example.connection.Model.User;
+import com.example.connection.UDP_Connection.Multicast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 
@@ -17,7 +25,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 
-public class TCP_Client {
+public class TCP_Client{
     SSLContext sslContext=null;
     private SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
     private SSLSocket sslsocket;
@@ -26,13 +34,18 @@ public class TCP_Client {
     private DataOutputStream dos;
     private String msg="message£€";
 
-    //start a connection with another user --------------------------------------------------------------------------------------------------------------------------------
-    public void startConnection(String ip, int port) throws IOException, NoSuchAlgorithmException {
+    //start a connection with another user -----------------------
+    public void startConnection(String ip, int port)  {
+        try {
         sslContext = SSLContext.getInstance("TLSv1.2");
-        sslsocket=(SSLSocket) sslContext.getSocketFactory().createSocket(ip, port);
-        sslsocket.startHandshake();
-        out = clientSocket.getOutputStream();
-        dos = new DataOutputStream(out);
+            sslsocket=(SSLSocket) sslContext.getSocketFactory().createSocket(ip, port);
+            sslsocket.startHandshake();
+            out = clientSocket.getOutputStream();
+            dos = new DataOutputStream(out);
+        } catch (IOException | NoSuchAlgorithmException e) {
+            System.out.println("ciao");
+        }
+
     }
 
     //send a message --------------------------------------------------------------------------------------------------------------------------------
@@ -60,4 +73,6 @@ public class TCP_Client {
         dos.close();
         clientSocket.close();
     }
+
+
 }

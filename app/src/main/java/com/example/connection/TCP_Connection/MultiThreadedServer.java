@@ -5,12 +5,9 @@ import android.os.AsyncTask;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.View.Connection;
-import com.example.connection.localization.LocalizationController;
+import com.example.connection.localization.localizationController;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -30,10 +27,10 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     private Database database;
     private Connection connection;
     private ConnectionController connectionController;
-    private SSLContext sslContext=null;
-    private LocalizationController localizationController;
+     SSLContext sslContext=null;
+     localizationController localizationController;
 
-    public MultiThreadedServer(int port,Database database, Connection connection,ConnectionController connectionController) throws NoSuchAlgorithmException, KeyManagementException {
+    public MultiThreadedServer(int port,Database database, Connection connection,ConnectionController connectionController,localizationController localizationController) throws NoSuchAlgorithmException, KeyManagementException {
         sslContext = SSLContext.getInstance("TLSv1.2");
         sslContext.init(null, null, null);
         this.serverPort = port;
@@ -41,6 +38,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         receive="";
         this.connection=connection;
         this.connectionController = connectionController;
+        this.localizationController= localizationController;
     }
 
     private synchronized boolean isStopped() {
