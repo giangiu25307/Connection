@@ -95,7 +95,7 @@ public class ChatActivity extends AppCompatActivity{
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.scrollToPosition(35);
+        //recyclerView.scrollToPosition(35);
     }
 
 
