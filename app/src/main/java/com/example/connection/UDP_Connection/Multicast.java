@@ -36,7 +36,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             tcp_client = new TCP_Client();
             this.database = database;
             this.user = user;
-            group = InetAddress.getByName("192.168.49.255");
+            group = InetAddress.getByName("234.0.0.0");
             s = new MulticastSocket(6789);
             s.joinGroup(group);
         } catch (UnknownHostException e) {
@@ -59,11 +59,9 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                 if (splittedR[0].equals("info")) {
                     //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
                     if (user.getInetAddress().equals("192.168.49.1")) {
-                        try {
+
                             tcp_client.startConnection(splittedR[2], 50000);
-                        } catch (NoSuchAlgorithmException e) {
-                            e.printStackTrace();
-                        }
+
                         Cursor c = database.getAllUsers();
                         tcp_client.sendMessage(this.cursorToString(c));
                         database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);//check adduser

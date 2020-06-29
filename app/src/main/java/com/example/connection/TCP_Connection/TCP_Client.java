@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 
@@ -25,7 +26,6 @@ import javax.net.ssl.SSLSocketFactory;
 
 
 public class TCP_Client{
-    SSLContext sslContext=null;
     private SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
     private SSLSocket sslsocket;
     private Socket clientSocket;
@@ -33,20 +33,24 @@ public class TCP_Client{
     private DataOutputStream dos;
     private String msg="message£€";
 
-    //start a connection with another user --------------------------------------------------------------------------------------------------------------------------------
-    public void startConnection(String ip, int port) throws IOException, NoSuchAlgorithmException {
-        sslContext = SSLContext.getInstance("TLSv1.2");
-        sslsocket=(SSLSocket) sslContext.getSocketFactory().createSocket(ip, port);
-        sslsocket.startHandshake();
-        out = clientSocket.getOutputStream();
-        dos = new DataOutputStream(out);
+    //start a connection with another user -----------------------
+    public void startConnection(String ip, int port)  {
+        try {
+            sslsocket=(SSLSocket) sslsocketfactory.createSocket("192.168.49.1", port);
+            sslsocket.startHandshake();
+            out = sslsocket.getOutputStream();
+            dos = new DataOutputStream(out);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
     }
 
     //send a message --------------------------------------------------------------------------------------------------------------------------------
     public void sendMessage(String msg) throws IOException {
         this.msg+=msg;
         byte[] array = this.msg.getBytes();
-        dos.writeInt(array.length);
+       // dos.writeInt(array.length);
         dos.write(array, 0, array.length);
     }
 

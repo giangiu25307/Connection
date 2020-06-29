@@ -12,23 +12,28 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.connection.Adapter.MessageAdapter;
+import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.Database;
 
 public class ChatActivity extends AppCompatActivity{
 
     SharedPreferences sharedPreferences;
+    ChatController chatController=ChatController.getInstance();
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        String id = getIntent().getStringExtra("idChat");
+        id = getIntent().getStringExtra("idChat");
         String name = getIntent().getStringExtra("name");
+        Database database = new Database(this);
         TextView nameTextView = findViewById(R.id.nameUser);
         nameTextView.setText(name);
         ImageView imageView = findViewById(R.id.backImageView);
@@ -38,8 +43,16 @@ public class ChatActivity extends AppCompatActivity{
                 finish();
             }
         });
+        final EditText message_input=findViewById(R.id.message_input);
+        ImageView sendView = findViewById(R.id.sendView);
+        sendView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            chatController.sendTCPMsg(message_input.getText().toString(),id);
+
+            }
+        });
         //Database database = (Database) getIntent().getParcelableExtra("database");
-        Database database = new Database(this);
         loadTheme();
         setupRecyclerView(database, id);
 

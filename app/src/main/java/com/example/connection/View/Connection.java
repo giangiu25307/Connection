@@ -73,15 +73,15 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
-        //database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
-        //database.addUser("2","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
-        //database.createChat("2", "Andrew2");
-        //database.addMsg("Ciao", "prova3", "3");
+       // database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
+        //database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
+      //  database.createChat("2", "Andrew2");
+        //database.addMsg("Ciao", "2", "2");
         //database.addMsg("We", "aaaaa", "1");
-        connectionController.createGroup();
+        //connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
        // System.out.println("Activity creata");
-        AutoClicker autoClicker=new AutoClicker();
+       // AutoClicker autoClicker=new AutoClicker();
 
     }
 

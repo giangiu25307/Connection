@@ -101,7 +101,7 @@ class WorkerRunnable implements Runnable {
                 }
             }
 
-        } catch (IOException | NoSuchAlgorithmException e) {
+        } catch (IOException e) {
             //report exception somewhere.
             e.printStackTrace();
         }
