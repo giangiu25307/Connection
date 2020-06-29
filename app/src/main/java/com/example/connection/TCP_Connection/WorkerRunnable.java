@@ -3,7 +3,7 @@ package com.example.connection.TCP_Connection;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.View.Connection;
-import com.example.connection.localization.localizationController;
+import com.example.connection.localization.LocalizationController;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,10 +22,10 @@ class WorkerRunnable implements Runnable {
     Connection connection;
     ConnectionController connectionController;
     TCP_Client tcp_client;
-    localizationController localizationController;
+    LocalizationController localizationController;
     String idChat=null;
 
-    public WorkerRunnable(Socket clientSocket, Database database, Connection connection,ConnectionController connectionController,localizationController localizationController) {
+    public WorkerRunnable(Socket clientSocket, Database database, Connection connection, ConnectionController connectionController, LocalizationController localizationController) {
         this.connection = connection;
         this.clientSocket = clientSocket;
         this.database = database;

@@ -19,14 +19,18 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 
 public class TCP_Client{
-    private SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+    private SSLSocketFactory sslsocketfactory;
     private SSLSocket sslsocket;
     private Socket clientSocket;
     private   OutputStream out;
@@ -71,6 +75,71 @@ public class TCP_Client{
         dos.close();
         clientSocket.close();
     }
+public void test()  {
+    Socket socket = null;
 
 
+        //SSL Socket
+    SSLContext sslContext = null;
+    try {
+        sslContext = getSSLContext();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    try {
+       socket = sslContext.getSocketFactory().createSocket("192.168.1.7", 50000);
+
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    ((SSLSocket)socket).setEnabledCipherSuites(((SSLSocket)socket).getSupportedCipherSuites());
+    if(socket == null)
+    {
+        throw new IllegalArgumentException("Socket cannot be null!!!");
+    }
+    try {
+        ((SSLSocket)socket).startHandshake();
+        System.out.println("handshake");
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    try {
+        socket.getOutputStream().write(100010);
+        socket.getOutputStream().flush();
+        socket.getOutputStream().close();
+
+        socket.close();
+
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    }
+   // String[] array=sslContext.getSocketFactory().getDefaultCipherSuites();
+
+
+    private SSLContext getSSLContext() throws Exception
+    {
+        SSLContext sslContext = null;
+
+        TrustManager[] trustManager = new TrustManager[] { new X509TrustManager() {
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new java.security.cert.X509Certificate[] {};
+            }
+
+            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            }
+
+            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            }
+        } };
+
+
+        //Create an SSLContext
+        sslContext = SSLContext.getInstance("TLSv1.2");
+        sslContext.init(null, trustManager, null);
+
+        return sslContext;
+    }
 }

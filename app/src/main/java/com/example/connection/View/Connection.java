@@ -30,6 +30,14 @@ import com.example.connection.Model.Chat;
 import com.example.connection.Model.Chats;
 import com.example.connection.Model.User;
 import com.example.connection.R;
+import com.example.connection.TCP_Connection.MultiThreadedServer;
+import com.example.connection.TCP_Connection.TCP_Client;
+import com.example.connection.localization.LocalizationController;
+
+import java.net.SocketException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 //D/SupplicantP2pIfaceCallbackExt: Provision discovery request for WPS Config method: 128
 public class Connection extends AppCompatActivity {
     private Fragment fragment;
@@ -56,6 +64,12 @@ public class Connection extends AppCompatActivity {
         connectionController=new ConnectionController(this,database,user);
         chatController=new ChatController();
         chatController=chatController.newIstance(this,connectionController);
+        LocalizationController localizationController=null;
+        try {
+         localizationController=new LocalizationController(database,this);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -82,7 +96,17 @@ public class Connection extends AppCompatActivity {
         //bluetoothScanner.startBLEScan();
        // System.out.println("Activity creata");
        // AutoClicker autoClicker=new AutoClicker();
-
+        TCP_Client tcp_client=new TCP_Client();
+        tcp_client.test();
+        /*try {
+            MultiThreadedServer multiThreadedServer=new MultiThreadedServer(50000,database,this,connectionController,localizationController);
+            multiThreadedServer.test();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+*/
     }
 
     private void loadTheme(){
