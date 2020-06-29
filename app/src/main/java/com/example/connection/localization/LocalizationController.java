@@ -13,7 +13,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.security.NoSuchAlgorithmException;
 
-public class localizationController  {
+public class LocalizationController {
 
     RTTSocket rtt;
     Database database;
@@ -23,7 +23,7 @@ public class localizationController  {
     InetAddress ip;
 
 
-    public localizationController(Database database,Connection connection)  throws SocketException {
+    public LocalizationController(Database database, Connection connection)  throws SocketException {
         rtt = new RTTSocket();
         this.database = database;
         gps=new GPS(connection);
@@ -35,12 +35,12 @@ public class localizationController  {
                 public void run() {
                     try {
                         //fare while fino alla chiusura della finestra
-                        rtt.socketSender(localizationController.this.ip);
+                        rtt.socketSender(LocalizationController.this.ip);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-                        tcp_client.startConnection(localizationController.this.ip.toString(),50000);
+                        tcp_client.startConnection(LocalizationController.this.ip.toString(),50000);
                     try {
                         tcp_client.sendMessage("RESULT-MEET£€"+database.getMyInformation()[0]+rtt.getRTT()+"£€"+gps.getLatitude()+"£€"+gps.getLongitude());
                     } catch (IOException e) {
