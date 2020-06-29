@@ -30,13 +30,6 @@ import com.example.connection.Model.Chat;
 import com.example.connection.Model.Chats;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.TCP_Connection.MultiThreadedServer;
-import com.example.connection.TCP_Connection.TCP_Client;
-import com.example.connection.localization.LocalizationController;
-
-import java.net.SocketException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 //D/SupplicantP2pIfaceCallbackExt: Provision discovery request for WPS Config method: 128
 public class Connection extends AppCompatActivity {
@@ -61,63 +54,47 @@ public class Connection extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
-        connectionController=new ConnectionController(this,database,user);
-        chatController=new ChatController();
-        chatController=chatController.newIstance(this,connectionController);
-        LocalizationController localizationController=null;
-        try {
-         localizationController=new LocalizationController(database,this);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+        connectionController = new ConnectionController(this, database, user);
+        chatController = new ChatController();
+        chatController = chatController.newIstance(this, connectionController);
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        user = new User("aaaaa","ciao","ciaoc","ciao","ciao","ciao","cioa","ciao","ciao","ciao","ciao");
+        user = new User("aaaaa", "ciao", "ciaoc", "ciao", "ciao", "ciao", "cioa", "ciao", "ciao", "ciao", "ciao");
         fragment = new SplashScreenFragment();
         loadFragment(false);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
-        }else {
+        } else {
 
 
         }
         createCountDowntimer();
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
-       // database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
+        //database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
         //database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
-      //  database.createChat("2", "Andrew2");
+        //database.createChat("2", "Andrew2");
         //database.addMsg("Ciao", "2", "2");
         //database.addMsg("We", "aaaaa", "1");
         //connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
-       // System.out.println("Activity creata");
-       // AutoClicker autoClicker=new AutoClicker();
-        TCP_Client tcp_client=new TCP_Client();
-        tcp_client.test();
-        /*try {
-            MultiThreadedServer multiThreadedServer=new MultiThreadedServer(50000,database,this,connectionController,localizationController);
-            multiThreadedServer.test();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        }
-*/
+        //System.out.println("Activity creata");
+        //AutoClicker autoClicker=new AutoClicker();
+
     }
 
-    private void loadTheme(){
+    private void loadTheme() {
         String theme = sharedPreferences.getString("appTheme", "light");
-        if(theme.equals("light")){
+        if (theme.equals("light")) {
             setTheme(R.style.AppTheme);
             setStatusAndNavbarColor(true);
-        }else if(theme.equals("dark")){
+        } else if (theme.equals("dark")) {
             setTheme(R.style.DarkTheme);
             setStatusAndNavbarColor(false);
-        }else{
+        } else {
             int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
             switch (nightModeFlags) {
                 case Configuration.UI_MODE_NIGHT_NO:
@@ -136,30 +113,30 @@ public class Connection extends AppCompatActivity {
 
     }
 
-    private void setStatusAndNavbarColor(boolean light){
+    private void setStatusAndNavbarColor(boolean light) {
         Window window = getWindow();
-        if(light){
+        if (light) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.WHITE);
             window.setNavigationBarColor(Color.WHITE);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        }else{
+        } else {
             int color = getColor(R.color.lightBlack);
             window.setNavigationBarColor(color);
             window.setStatusBarColor(color);
         }
     }
 
-    private void loadFragment(boolean transition){
+    private void loadFragment(boolean transition) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(transition){
+        if (transition) {
             transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         }
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();
     }
 
-    private void createCountDowntimer(){
+    private void createCountDowntimer() {
         countDownTimer = new CountDownTimer(secondsRemaining, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -178,7 +155,7 @@ public class Connection extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(startTimer && startTimer2){
+        if (startTimer && startTimer2) {
             createCountDowntimer();
             countDownTimer.start();
         }
@@ -209,13 +186,13 @@ public class Connection extends AppCompatActivity {
         int accessibilityEnabled = 0;
         boolean accessibilityFound = false;
         try {
-            accessibilityEnabled = Settings.Secure.getInt(this.getContentResolver(),android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+            accessibilityEnabled = Settings.Secure.getInt(this.getContentResolver(), android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
         } catch (Settings.SettingNotFoundException e) {
         }
 
         TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
 
-        if (accessibilityEnabled==1) {
+        if (accessibilityEnabled == 1) {
             System.out.println("***ACCESSIBILIY IS ENABLED***: ");
 
             String settingValue = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
@@ -224,15 +201,14 @@ public class Connection extends AppCompatActivity {
                 splitter.setString(settingValue);
                 while (splitter.hasNext()) {
                     String accessabilityService = splitter.next();
-                    if (accessabilityService.equalsIgnoreCase("ACCESSIBILITY_SERVICE_NAME")){
+                    if (accessabilityService.equalsIgnoreCase("ACCESSIBILITY_SERVICE_NAME")) {
                         return true;
                     }
                 }
             }
 
-        }
-        else {
-            System.out.println( "***ACCESSIBILIY IS DISABLED***");
+        } else {
+            System.out.println("***ACCESSIBILIY IS DISABLED***");
 
 
         }

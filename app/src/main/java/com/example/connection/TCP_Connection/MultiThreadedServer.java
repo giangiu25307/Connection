@@ -7,27 +7,19 @@ import com.example.connection.Controller.Database;
 import com.example.connection.View.Connection;
 import com.example.connection.localization.LocalizationController;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 import javax.net.ServerSocketFactory;
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     protected int serverPort = 50000;
-    protected ServerSocket serverSocket = null;
+    protected SSLServerSocket serverSocket = null;
+    ServerSocketFactory f = SSLServerSocketFactory.getDefault();
     protected boolean isStopped = false;
     protected Thread runningThread = null;
     private String receive;
@@ -35,6 +27,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     private Connection connection;
     private ConnectionController connectionController;
      LocalizationController localizationController;
+    SSLServerSocketFactory serverSocketFactory= (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 
     public MultiThreadedServer(int port, Database database, Connection connection, ConnectionController connectionController, LocalizationController localizationController) throws NoSuchAlgorithmException, KeyManagementException {
         this.serverPort = port;
@@ -59,14 +52,21 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         }
     }
 
-
+    //open the server socket --------------------------------------------------------------------------------------------------------------------------------
+        public  void openServerSocket() {
+        try {
+            this.serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(serverPort);
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot open port 443", e);
+        }
+    }
 
     @Override
     protected Void doInBackground(Void... voids) {
         synchronized (this) {
             this.runningThread = Thread.currentThread();
         }
-
+        openServerSocket();
         while (!isStopped()) {
             Socket clientSocket = null;
             try {
@@ -86,58 +86,25 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     }
     public void test(){
         try {
-            SSLContext sslContext = null;
-            try {
-                sslContext = getSSLContext();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            this.serverSocket = sslContext.getServerSocketFactory().createServerSocket(serverPort);
-            while (true) {
-                try {
-                    SSLSocket c = (SSLSocket) this.serverSocket.accept();
-                InputStream input = c.getInputStream();
-                    DataInputStream dIn = new DataInputStream(c.getInputStream());
-                    int length = dIn.readInt();                    // read length of incoming message
-                    if (length > 0) {
-                        byte[] message = new byte[length];
-                        dIn.readFully(message, 0, message.length);
-                        System.out.println( message);
-                    }
-                    //new Thread(new WorkerRunnable(clientSocket,database,connection,connectionController,localizationController)).start();
-                } catch (IOException e) {
-
-                    throw new RuntimeException(
-                            "Error accepting client connection", e);
-                }
-
-            }
+            this.serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(serverPort);
         } catch (IOException e) {
             throw new RuntimeException("Cannot open port 443", e);
         }
-
-    }
-    private SSLContext getSSLContext() throws Exception
-    {
-        SSLContext sslContext = null;
-
-        TrustManager[] trustManager = new TrustManager[] { new X509TrustManager() {
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return new java.security.cert.X509Certificate[] {};
+        while (!isStopped()) {
+            Socket clientSocket = null;
+            try {
+                clientSocket = this.serverSocket.accept();
+            } catch (IOException e) {
+                if (isStopped()) {
+                    System.out.println("Server Stopped.");
+                    return ;
+                }
+                throw new RuntimeException(
+                        "Error accepting client connection", e);
             }
-
-            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-            }
-
-            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-            }
-        } };
-
-
-        //Create an SSLContext
-        sslContext = SSLContext.getInstance("TLSv1.2");
-        sslContext.init(null, trustManager, null);
-
-        return sslContext;
+            new Thread(new WorkerRunnable(clientSocket,database,connection,connectionController,localizationController)).start();
+        }
+        System.out.println("Server Stopped.");
+        return ;
     }
 }
