@@ -30,6 +30,7 @@ import com.example.connection.Model.Chat;
 import com.example.connection.Model.Chats;
 import com.example.connection.Model.User;
 import com.example.connection.R;
+import com.example.connection.TCP_Connection.Encryption;
 
 //D/SupplicantP2pIfaceCallbackExt: Provision discovery request for WPS Config method: 128
 public class Connection extends AppCompatActivity {
@@ -83,6 +84,11 @@ public class Connection extends AppCompatActivity {
         //bluetoothScanner.startBLEScan();
         //System.out.println("Activity creata");
         //AutoClicker autoClicker=new AutoClicker();
+        Encryption encryption=new Encryption();
+        String enc=encryption.encrypt("ciao");
+        System.out.println("Criptazione ciao: "+enc);
+        enc=encryption.decrypt(enc);
+        System.out.println("decriptzione: "+enc);
 
     }
 
