@@ -41,7 +41,7 @@ public class TCP_Client {
     public void sendMessage(String msg,String publicKey) {
         this.msg += msg;
         try {
-            this.msg=encryption.encrypt(this.msg,encryption.loadPublicKey(publicKey));
+            this.msg=encryption.encrypt(this.msg,encryption.convertStringToPublicKey(publicKey));
         byte[] array = this.msg.getBytes();
         dos.write(array, 0, array.length);
         dos.flush();
