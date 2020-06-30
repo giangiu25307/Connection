@@ -84,8 +84,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
         String nameUser = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
         userCursor = database.getUSer(nameUser);
         userCursor.moveToFirst();
-        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(userCursor));
-        Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
+        //Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(userCursor));
+        //Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
 
         long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
         System.out.println(id);
@@ -125,12 +125,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         if(date.getDay() == date2.getDay() && date.getMonth() == date2.getMonth() && date.getYear() == date2.getYear()){
             datetime = String.valueOf(date.getHours()<10?'0':"") + date.getHours() + ":" + (date.getMinutes()<10?'0':"") + date.getMinutes();
         }else{
             datetime = String.valueOf(date.getDay()<10?'0':"") + date.getDay() + "/" + (date.getMonth()<10?'0':"") + date.getMonth() + "/" + String.valueOf(date.getYear()).substring(String.valueOf(date.getYear()).length()-2, String.valueOf(date.getYear()).length());
         }
 
+        System.out.println("Orario chat: " + datetime);
         timeLastMessageTextView.setText(datetime);
         //lastMessageTimeTextView.setText(timeLastMessage);
 
