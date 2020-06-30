@@ -8,18 +8,17 @@ import com.example.connection.View.Connection;
 import com.example.connection.localization.LocalizationController;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.net.ServerSocketFactory;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
 
 public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     protected int serverPort = 50000;
-    protected SSLServerSocket serverSocket = null;
-    ServerSocketFactory f = SSLServerSocketFactory.getDefault();
+    protected ServerSocket serverSocket = null;
+    //ServerSocketFactory f = ServerSocketFactory.getDefault();
     protected boolean isStopped = false;
     protected Thread runningThread = null;
     private String receive;
@@ -27,7 +26,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     private Connection connection;
     private ConnectionController connectionController;
      LocalizationController localizationController;
-    SSLServerSocketFactory serverSocketFactory= (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+    ServerSocketFactory serverSocketFactory= ServerSocketFactory.getDefault();
 
     public MultiThreadedServer(int port, Database database, Connection connection, ConnectionController connectionController, LocalizationController localizationController) throws NoSuchAlgorithmException, KeyManagementException {
         this.serverPort = port;
@@ -55,7 +54,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     //open the server socket --------------------------------------------------------------------------------------------------------------------------------
         public  void openServerSocket() {
         try {
-            this.serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(serverPort);
+            this.serverSocket= serverSocketFactory.createServerSocket(serverPort);
         } catch (IOException e) {
             throw new RuntimeException("Cannot open port 443", e);
         }
@@ -84,7 +83,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         System.out.println("Server Stopped.");
         return null;
     }
-    public void test(){
+    /*public void test(){
         try {
             this.serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(serverPort);
         } catch (IOException e) {
@@ -106,5 +105,5 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         }
         System.out.println("Server Stopped.");
         return ;
-    }
+    }*/
 }

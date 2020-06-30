@@ -22,6 +22,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -29,20 +30,19 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 
-public class TCP_Client{
-    private SSLSocketFactory sslsocketfactory;
-    private SSLSocket sslsocket;
-    private Socket clientSocket;
-    private   OutputStream out;
+public class TCP_Client {
+    private SocketFactory socketfactory;
+    private Socket socket;
+    //private Socket clientSocket;
+    private OutputStream out;
     private DataOutputStream dos;
-    private String msg="message£€";
+    private String msg = "message£€";
 
     //start a connection with another user -----------------------
-    public void startConnection(String ip, int port)  {
+    public void startConnection(String ip, int port) {
         try {
-            sslsocket=(SSLSocket) sslsocketfactory.createSocket("192.168.49.1", port);
-            sslsocket.startHandshake();
-            out = sslsocket.getOutputStream();
+            socket = socketfactory.createSocket("192.168.49.1", port);
+            out = socket.getOutputStream();
             dos = new DataOutputStream(out);
         } catch (IOException e) {
             System.out.println(e);
@@ -52,15 +52,15 @@ public class TCP_Client{
 
     //send a message --------------------------------------------------------------------------------------------------------------------------------
     public void sendMessage(String msg) throws IOException {
-        this.msg+=msg;
+        this.msg += msg;
         byte[] array = this.msg.getBytes();
-       // dos.writeInt(array.length);
+        // dos.writeInt(array.length);
         dos.write(array, 0, array.length);
     }
 
     //send a image throw tcp --------------------------------------------------------------------------------------------------------------------------------
     public void sendImage(ImageView image) throws IOException {
-        Bitmap bmp=((BitmapDrawable)image.getDrawable()).getBitmap(); //String str = et.getText().toString();
+        Bitmap bmp = ((BitmapDrawable) image.getDrawable()).getBitmap(); //String str = et.getText().toString();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos);
         byte[] array = bos.toByteArray();
@@ -73,8 +73,9 @@ public class TCP_Client{
     private void stopConnection() throws IOException {
         out.close();
         dos.close();
-        clientSocket.close();
+        socket.close();
     }
+    /*
 public void test()  {
     Socket socket = null;
 
@@ -141,5 +142,5 @@ public void test()  {
         sslContext.init(null, trustManager, null);
 
         return sslContext;
-    }
+    }*/
 }
