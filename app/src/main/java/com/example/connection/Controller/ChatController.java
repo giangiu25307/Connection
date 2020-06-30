@@ -6,11 +6,7 @@ import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 
 public class ChatController {
 
@@ -73,25 +69,20 @@ public class ChatController {
 
     //send a direct message -------------------------------------------------------------------------------------------------------------------------------
     public void sendTCPMsg(String msg, String idReceiver) {
-        try {
+
             String ip = database.findIp(idReceiver);
                 tcp.startConnection("192.168.49.1", 50000);
-            tcp.sendMessage(msg);
+            tcp.sendMessage(msg,"");
             database.addMsg(msg, user.getIdUser(), idReceiver);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     //send a direct image -------------------------------------------------------------------------------------------------------------------------------
     public void sendTCPPath(Paths path, String idReceiver) {
-        try {
+
             String ip = database.findIp(idReceiver);
                 tcp.startConnection(ip, 50000);
-            tcp.sendMessage(path.toString());//encoding to byte DA FARE
+            tcp.sendMessage(path.toString(),"");//encoding to byte DA FARE
             database.addMsg(path, idReceiver, user.getIdUser(), idReceiver);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 }

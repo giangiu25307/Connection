@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -24,13 +23,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
-import com.example.connection.Controller.AutoClicker;
-import com.example.connection.Controller.Task;
-import com.example.connection.Model.Chat;
-import com.example.connection.Model.Chats;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.TCP_Connection.Encryption;
+import com.example.connection.localization.LocalizationController;
+
+import java.net.SocketException;
 
 //D/SupplicantP2pIfaceCallbackExt: Provision discovery request for WPS Config method: 128
 public class Connection extends AppCompatActivity {
@@ -58,6 +55,12 @@ public class Connection extends AppCompatActivity {
         connectionController = new ConnectionController(this, database, user);
         chatController = new ChatController();
         chatController = chatController.newIstance(this, connectionController);
+        LocalizationController localizationController=null;
+        try {
+            localizationController=new LocalizationController(database,this);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -84,7 +87,21 @@ public class Connection extends AppCompatActivity {
         //bluetoothScanner.startBLEScan();
         //System.out.println("Activity creata");
         //AutoClicker autoClicker=new AutoClicker();
+
     }
+        //tcp_client.startConnection("192.168.1.8",50000);
+            //tcp_client.sendMessage("ciao",);
+
+     /*  try {
+            MultiThreadedServer multiThreadedServer=new MultiThreadedServer(50000,database,this,connectionController,localizationController);
+            multiThreadedServer.test();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+*/
+
 
     private void loadTheme() {
         String theme = sharedPreferences.getString("appTheme", "light");

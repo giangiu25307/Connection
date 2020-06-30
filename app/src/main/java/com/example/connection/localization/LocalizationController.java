@@ -39,13 +39,8 @@ public class LocalizationController {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                         tcp_client.startConnection(LocalizationController.this.ip.toString(),50000);
-                    try {
-                        tcp_client.sendMessage("RESULT-MEET£€"+database.getMyInformation()[0]+rtt.getRTT()+"£€"+gps.getLatitude()+"£€"+gps.getLongitude());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                        tcp_client.sendMessage("RESULT-MEET£€"+database.getMyInformation()[0]+rtt.getRTT()+"£€"+gps.getLatitude()+"£€"+gps.getLongitude(),"");
                 }
             }).start();
 
@@ -64,7 +59,7 @@ public class LocalizationController {
 
     public void acceptMeet() throws IOException, NoSuchAlgorithmException {
         tcp_client.startConnection(ip.toString(),50000);
-        tcp_client.sendMessage("REQUEST-MEET£€"+database.getMyInformation()[0]);
+        tcp_client.sendMessage("REQUEST-MEET£€"+database.getMyInformation()[0],"");
         RTTDistance();
     }
 

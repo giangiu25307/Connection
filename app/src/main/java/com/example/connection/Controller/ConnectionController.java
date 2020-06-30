@@ -24,10 +24,8 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -265,9 +263,9 @@ public void GetDeviceName(){
     //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
     public void GOLeaves(){
         final String maxId = database.getMaxId();
-        try {
+
             tcpClient.startConnection(database.findIp(maxId),50000);
-            tcpClient.sendMessage("GO_LEAVES_BY£€");
+            tcpClient.sendMessage("GO_LEAVES_BY£€","");
             new CountDownTimer(3000, 1000) {
 
                 public void onTick(long millisUntilFinished) {
@@ -278,9 +276,6 @@ public void GetDeviceName(){
                 }
             }.start();
             this.removeGroup();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
 

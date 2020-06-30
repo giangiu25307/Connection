@@ -15,7 +15,6 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 
 public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
 
@@ -63,7 +62,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                             tcp_client.startConnection(splittedR[2], 50000);
 
                         Cursor c = database.getAllUsers();
-                        tcp_client.sendMessage(this.cursorToString(c));
+                        tcp_client.sendMessage(this.cursorToString(c),"");
                         database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);//check adduser
                     } else {
                         database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);

@@ -56,7 +56,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         try {
             this.serverSocket= serverSocketFactory.createServerSocket(serverPort);
         } catch (IOException e) {
-            throw new RuntimeException("Cannot open port 443", e);
+            throw new RuntimeException("Cannot open port", e);
         }
     }
 
@@ -82,13 +82,8 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         }
         System.out.println("Server Stopped.");
         return null;
-    }
-    /*public void test(){
-        try {
-            this.serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(serverPort);
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot open port 443", e);
-        }
+    }public void test(){
+        openServerSocket();
         while (!isStopped()) {
             Socket clientSocket = null;
             try {
@@ -105,5 +100,5 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
         }
         System.out.println("Server Stopped.");
         return ;
-    }*/
+    }
 }
