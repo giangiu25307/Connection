@@ -2,6 +2,7 @@ package com.example.connection.TCP_Connection;
 
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
+import android.util.Base64;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -49,22 +50,19 @@ public class Encryption {
             KeyPair keyPair = keyPairGen.generateKeyPair();
             privateKey = keyPair.getPrivate();
             publicKey = keyPair.getPublic();
-            Signature signature = Signature.getInstance("SHA256withRSA");
-            signature.initSign(keyPair.getPrivate());
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            /*Signature signature = Signature.getInstance("SHA256withRSA");
+            signature.initSign(keyPair.getPrivate());*/
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
 
-    public String encrypt(String msg) {
+    public String encrypt(String msg,PublicKey publicKey) {
         String result = "";
         try {
             cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            byte[] input =msg.getBytes();
-            cipher.update(input);
-            byte[] cipherText = cipher.doFinal();
-            result = new String(cipherText, "UTF8");
+            result = Base64.encodeToString(cipher.doFinal(msg.getBytes("UTF-8")), Base64.DEFAULT);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -76,13 +74,14 @@ public class Encryption {
         try {
             cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            byte[] input = msg.getBytes();
-            cipher.update(input);
-            byte[] cipherText = cipher.doFinal();
-            result = new String(cipherText, "UTF8");
+            result = new String(cipher.doFinal(Base64.decode(msg,Base64.DEFAULT)), "UTF8");
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public PublicKey getPublicKey(){
+        return publicKey;
     }
 }

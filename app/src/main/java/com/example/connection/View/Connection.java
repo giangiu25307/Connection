@@ -84,12 +84,6 @@ public class Connection extends AppCompatActivity {
         //bluetoothScanner.startBLEScan();
         //System.out.println("Activity creata");
         //AutoClicker autoClicker=new AutoClicker();
-        Encryption encryption=new Encryption();
-        String enc=encryption.encrypt("ciao");
-        System.out.println("Criptazione ciao: "+enc);
-        enc=encryption.decrypt(enc);
-        System.out.println("decriptzione: "+enc);
-
     }
 
     private void loadTheme() {
