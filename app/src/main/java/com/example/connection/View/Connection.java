@@ -25,6 +25,7 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
+import com.example.connection.TCP_Connection.Encryption;
 import com.example.connection.localization.LocalizationController;
 
 import java.net.SocketException;

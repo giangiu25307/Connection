@@ -100,8 +100,7 @@ public class Encryption {
         try {
             cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-
-            result = new String(cipher.doFinal(Base64.decode(msg.replace("/n", ""), Base64.DEFAULT)), "UTF8");
+            result = new String(cipher.doFinal(Base64.decode(msg.replace("/n", ""), Base64.DEFAULT)), "UTF-8");
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -155,28 +154,26 @@ public class Encryption {
         }
     }
 
-    public byte[] encrypt(byte[] plaintext, SecretKey key, byte[] IV) {
+    public byte[] encryptAES(String plaintext) {
         try {
             cipher = Cipher.getInstance("AES");
-            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
+            SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
             IvParameterSpec ivSpec = new IvParameterSpec(IV);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
-            byte[] cipherText = cipher.doFinal(plaintext);
-            return cipherText;
+            return cipher.doFinal(plaintext.getBytes());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public String decrypt(byte[] cipherText, SecretKey key, byte[] IV)  {
+    public String decryptAES(byte[] cipherText)  {
         try {
             cipher = Cipher.getInstance("AES");
-            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
+            SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
             IvParameterSpec ivSpec = new IvParameterSpec(IV);
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-            byte[] decryptedText = cipher.doFinal(cipherText);
-            return new String(decryptedText);
+            return new String(cipher.doFinal(cipherText));
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
             return null;
