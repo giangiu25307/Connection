@@ -18,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 import java.security.spec.X509EncodedKeySpec;
@@ -26,7 +27,11 @@ import java.util.Enumeration;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import static java.security.KeyFactory.getInstance;
 
@@ -34,13 +39,18 @@ public class Encryption {
 
     private PrivateKey privateKey;
     private PublicKey publicKey;
+    private SecretKey secretKey;
+    byte[] IV;
     private Cipher cipher;
-    private KeyStore ks = null;
-public Encryption(){
-    init();//  System.out.println(encryption.decrypt(encryption.encrypt("ciao",encryption.convertStringToPublicKey(encryption.getStringPublicKey())))); SCRIVERE MESSAGGI AD UN ALTRA PERSONA ATTRAVERSO IL METODO convert
-}
+    private KeyStore ks;
+
+    public Encryption() {
+        init();//  System.out.println(encryption.decrypt(encryption.encrypt("ciao",encryption.convertStringToPublicKey(encryption.getStringPublicKey())))); SCRIVERE MESSAGGI AD UN ALTRA PERSONA ATTRAVERSO IL METODO convert
+    }
+
     public void init() {
         try {
+            //Generate asymmetric keys
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
             keyPairGenerator.initialize(new KeyGenParameterSpec.Builder("key1", KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                     .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA384, KeyProperties.DIGEST_SHA512)
@@ -52,17 +62,32 @@ public Encryption(){
             privateKey = keyPair.getPrivate();
             publicKey = keyPair.getPublic();
 
+            generateAES();
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }
     }
 
+    public void generateAES() {
+        //Generate symmetric key
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(256);
+            secretKey = keyGenerator.generateKey();
+            IV = new byte[16];
+            SecureRandom random;
+            random = new SecureRandom();
+            random.nextBytes(IV);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
 
     public String encrypt(String msg, PublicKey publicKey) {
         String result = "";
         try {
             cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            cipher.init(Cipher.ENCRYPT_MODE,publicKey);
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             result = Base64.encodeToString(cipher.doFinal(msg.getBytes("UTF-8")), Base64.DEFAULT);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -76,7 +101,7 @@ public Encryption(){
             cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
-            result = new String(cipher.doFinal(Base64.decode(msg.replace("/n",""), Base64.DEFAULT)), "UTF8");
+            result = new String(cipher.doFinal(Base64.decode(msg.replace("/n", ""), Base64.DEFAULT)), "UTF8");
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -95,12 +120,21 @@ public Encryption(){
             return null;
         }
     }
+
     public PublicKey convertStringToPublicKey(String key) throws GeneralSecurityException, IOException {
         byte[] data = Base64.decode(key.getBytes(), Base64.DEFAULT);
         X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
         KeyFactory fact = getInstance("RSA");
         return fact.generatePublic(spec);
+    }
 
+    public SecretKey convertStringToSecretKey(String key) throws GeneralSecurityException, IOException {
+        byte[] decodedKey = Base64.decode(key.getBytes(), Base64.DEFAULT);
+        return new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+    }
+
+    public String convertSecretKeyToString(SecretKey secretKey) throws GeneralSecurityException, IOException {
+        return Base64.encodeToString(secretKey.getEncoded(),Base64.DEFAULT);
     }
 
     public void setPublic_PrivateKey() {
@@ -119,5 +153,37 @@ public Encryption(){
             e.printStackTrace();
             return;
         }
+    }
+
+    public byte[] encrypt(byte[] plaintext, SecretKey key, byte[] IV) {
+        try {
+            cipher = Cipher.getInstance("AES");
+            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
+            IvParameterSpec ivSpec = new IvParameterSpec(IV);
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+            byte[] cipherText = cipher.doFinal(plaintext);
+            return cipherText;
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String decrypt(byte[] cipherText, SecretKey key, byte[] IV)  {
+        try {
+            cipher = Cipher.getInstance("AES");
+            SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
+            IvParameterSpec ivSpec = new IvParameterSpec(IV);
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+            byte[] decryptedText = cipher.doFinal(cipherText);
+            return new String(decryptedText);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void setSecretKey(SecretKey secretKey){
+        this.secretKey=secretKey;
     }
 }
