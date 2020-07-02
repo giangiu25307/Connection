@@ -4,11 +4,11 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-public class socketciao extends java.net.SocketAddress {
+public class MyNetworkInterface extends java.net.SocketAddress {
 
 
 
-public static NetworkInterface prova(){
+public static NetworkInterface getMyP2pNetworkInterface(){
     Enumeration<NetworkInterface> enumeration = null;
     try {
         enumeration = NetworkInterface.getNetworkInterfaces();

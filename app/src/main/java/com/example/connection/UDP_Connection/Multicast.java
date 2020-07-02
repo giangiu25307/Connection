@@ -33,14 +33,13 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     public Multicast(User user, Database database,ConnectionController connectionController) {
         this.connectionController=connectionController;
         try {
-            s=new MulticastSocket();
             tcp_client = new TCP_Client();
             this.database = database;
             this.user = user;
             group = InetAddress.getByName("234.0.0.0");
             SocketAddress sa=new InetSocketAddress(group,6789);
             s = new MulticastSocket(6789);
-            s.joinGroup(sa , socketciao.prova());
+            s.joinGroup(sa , MyNetworkInterface.getMyP2pNetworkInterface());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -106,10 +105,9 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             msg = "globalmessage£€" + user.getIdUser() + "£€" + user.getUsername() + "£€" + msg;
             byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
-            s.setNetworkInterface(socketciao.prova());
+            s.setNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface());
             s.setTimeToLive(255);
             s.send(message);
-            System.out.println("ci sono");
            // database.addGlobalMsg(msg, user.getIdUser());
         } catch (IOException e) {
             e.printStackTrace();

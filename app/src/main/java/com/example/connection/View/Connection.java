@@ -91,7 +91,6 @@ public class Connection extends AppCompatActivity {
        Multicast multicast=new Multicast(user,database,connectionController);
     //  multicast.run();
         multicast.sendGlobalMsg("ciao");
-        //socketciao address=new socketciao();
     }
         //tcp_client.startConnection("192.168.1.8",50000);
             //tcp_client.sendMessage("ciao",);
