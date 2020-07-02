@@ -25,7 +25,7 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.TCP_Connection.Encryption;
+import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.localization.LocalizationController;
 
 import java.net.SocketException;
@@ -88,7 +88,10 @@ public class Connection extends AppCompatActivity {
         //bluetoothScanner.startBLEScan();
         //System.out.println("Activity creata");
         //AutoClicker autoClicker=new AutoClicker();
-
+       Multicast multicast=new Multicast(user,database,connectionController);
+    //  multicast.run();
+        multicast.sendGlobalMsg("ciao");
+        //socketciao address=new socketciao();
     }
         //tcp_client.startConnection("192.168.1.8",50000);
             //tcp_client.sendMessage("ciao",);

@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
@@ -36,8 +38,9 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             this.database = database;
             this.user = user;
             group = InetAddress.getByName("234.0.0.0");
+            SocketAddress sa=new InetSocketAddress(group,6789);
             s = new MulticastSocket(6789);
-            s.joinGroup(group);
+            s.joinGroup(sa , socketciao.prova());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -54,6 +57,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             while (true) {
                 s.receive(recv);
                 String received = new String(recv.getData(), 0, recv.getLength());
+                System.out.println(received);
                 String[] splittedR = received.split("£€");
                 if (splittedR[0].equals("info")) {
                     //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
@@ -102,9 +106,11 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             msg = "globalmessage£€" + user.getIdUser() + "£€" + user.getUsername() + "£€" + msg;
             byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
+            s.setNetworkInterface(socketciao.prova());
             s.setTimeToLive(255);
             s.send(message);
-            database.addGlobalMsg(msg, user.getIdUser());
+            System.out.println("ci sono");
+           // database.addGlobalMsg(msg, user.getIdUser());
         } catch (IOException e) {
             e.printStackTrace();
         }
