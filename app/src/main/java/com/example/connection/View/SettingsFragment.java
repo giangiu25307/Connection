@@ -15,6 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+
+import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.Database;
 import com.example.connection.R;
 
 public class SettingsFragment extends Fragment{
@@ -22,6 +25,15 @@ public class SettingsFragment extends Fragment{
     private ConstraintLayout themeLayout;
     private SharedPreferences sharedPreferences;
     private String newTheme;
+
+    public SettingsFragment (){
+
+    }
+
+    public SettingsFragment newInstance() {
+        SettingsFragment settingsFragment = new SettingsFragment();
+        return settingsFragment;
+    }
 
     @Nullable
     @Override

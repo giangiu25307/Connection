@@ -35,6 +35,7 @@ public class MapFragment extends Fragment {
     Database database;
 
     public MapFragment() {
+
     }
 
     public MapFragment newInstance(ConnectionController connectionController, Database database) {

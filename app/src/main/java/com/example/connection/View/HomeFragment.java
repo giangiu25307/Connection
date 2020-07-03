@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment {
                         fragment = new ChatFragment().newInstance(database,chatController);
                         break;
                     case R.id.settings:
-                     //   fragment = new SettingsFragment().newInstance();
+                        fragment = new SettingsFragment().newInstance();
                         break;
                     default:
                         break;
