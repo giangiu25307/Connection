@@ -7,6 +7,7 @@
         <item name="splashScreenLayoutBackground">@android:color/white</item>
         <!-- <item name="layoutBackground">@color/lightGray</item> -->
         <item name="layoutBackground">@android:color/white</item>
+        <item name="sectionSettingsBackground">@color/lightWhite</item>
         <item name="barBackground">@android:color/white</item>
         <item name="chatSelectorBackground">@color/regularGray</item>
         <item name="textColor">@android:color/black</item>
@@ -20,6 +21,7 @@
         <item name="splashScreenLayoutBackground">@color/lightBlack</item>
         <!-- <item name="layoutBackground">@color/lightBlack</item> -->
         <item name="layoutBackground">@color/lightBlack</item>
+        <item name="sectionSettingsBackground">@color/lightLightBlack</item>
         <item name="barBackground">@color/lightBlack</item>
         <item name="chatSelectorBackground">@color/mediumBlack</item>
         <item name="textColor">@android:color/white</item>

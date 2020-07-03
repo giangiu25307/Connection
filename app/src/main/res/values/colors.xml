@@ -14,6 +14,9 @@
     <color name="lightGray">#F7F7F7</color>
     <color name="regularGray">#EFEFEF</color>
 
+    <color name="lightWhite">#F9F9F9</color>
+
+    <color name="lightLightBlack">#282828</color>
     <color name="lightBlack">#282828</color>
     <color name="mediumBlack">#212121</color>
     <color name="regularBlack">#191919</color>

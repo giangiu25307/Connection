@@ -5,6 +5,7 @@
         <attr name="splashScreenLayoutBackground" format="color"/>
         <attr name="layoutBackground" format="color"/>
         <attr name="whiteLayoutBackground" format="color"/>
+        <attr name="sectionSettingsBackground" format="color"/>
         <attr name="barBackground" format="color"/>
         <attr name="chatSelectorBackground" format="color"/>
         <attr name="textColor" format="color"/>
