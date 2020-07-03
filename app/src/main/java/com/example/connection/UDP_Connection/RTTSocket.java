@@ -39,7 +39,6 @@ public class RTTSocket extends Thread {
             packet = new DatagramPacket(buf, buf.length, address, port);
 
             try {
-
                     socket.send(packet);
                     socket.close();
                 }

@@ -43,7 +43,7 @@ public class Connection extends AppCompatActivity {
     ChatController chatController;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
-
+    public static String fragmentName="MAP";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
