@@ -80,6 +80,7 @@ public class SettingsFragment extends Fragment{
                 darkButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        getActivity().setTheme(R.style.DarkTheme);
                         newTheme = "dark";
                     }
                 });
@@ -137,7 +138,7 @@ public class SettingsFragment extends Fragment{
 
         sharedPreferences.edit().putString("appTheme", theme).apply();
         alertDialog.dismiss();
-        getActivity().recreate();
+        //getActivity().recreate();
 
     }
 

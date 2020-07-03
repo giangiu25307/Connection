@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,6 +27,8 @@ public class ChatActivity extends AppCompatActivity{
     SharedPreferences sharedPreferences;
     ChatController chatController=ChatController.getInstance();
     String id;
+    EditText message_input;
+    ImageView sendView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +47,35 @@ public class ChatActivity extends AppCompatActivity{
                 finish();
             }
         });
-        final EditText message_input=findViewById(R.id.message_input);
-        ImageView sendView = findViewById(R.id.sendView);
+        message_input =findViewById(R.id.message_input);
+        sendView= findViewById(R.id.sendView);
+        message_input.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(message_input.getText().toString().replace(" ","").isEmpty()){
+                    sendView.setAlpha(0.5f);
+                    sendView.setClickable(false);
+                }else{
+                    sendView.setAlpha(1f);
+                    sendView.setClickable(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         sendView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
             chatController.sendTCPMsg(message_input.getText().toString(),id);
 
             }
