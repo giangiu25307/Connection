@@ -25,8 +25,7 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.UDP_Connection.Multicast;
-import com.example.connection.localization.LocalizationController;
+import com.example.connection.UDP_Connection.RTTSocket;
 
 import java.net.SocketException;
 
@@ -43,7 +42,7 @@ public class Connection extends AppCompatActivity {
     ChatController chatController;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
-
+    public static String fragmentName="MAP";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +55,10 @@ public class Connection extends AppCompatActivity {
         connectionController = new ConnectionController(this, database, user);
         chatController = new ChatController();
         chatController = chatController.newIstance(this, connectionController);
-        LocalizationController localizationController=null;
-        try {
-            localizationController=new LocalizationController(database,this);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+       // LocalizationController localizationController=null;
+
+           // localizationController=new LocalizationController(database,this);
+
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -86,11 +83,16 @@ public class Connection extends AppCompatActivity {
         //database.addMsg("We", "aaaaa", "1");
         //connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
-        //System.out.println("Activity creata");
-        //AutoClicker autoClicker=new AutoClicker();
-      // Multicast multicast=new Multicast(user,database,connectionController);
-    //  multicast.run();
-        //multicast.sendGlobalMsg("ciao");
+
+
+        try {
+            RTTSocket rttSocket=new RTTSocket();
+            rttSocket.test();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+
     }
         //tcp_client.startConnection("192.168.1.8",50000);
             //tcp_client.sendMessage("ciao",);

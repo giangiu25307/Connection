@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
@@ -30,7 +31,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public HomeFragment newInstance(ConnectionController connectionController, Database database,ChatController chatController) {
+    public HomeFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController) {
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.setConnectionController(connectionController);
         homeFragment.setChatController(chatController);
@@ -45,24 +46,33 @@ public class HomeFragment extends Fragment {
 
         chipNavigationBar = view.findViewById(R.id.chip_navigation_bar);
 
-        if(savedInstanceState == null){
+        if (Connection.fragmentName.equals("MAP")) {
             chipNavigationBar.setItemSelected(R.id.map, true);
             fragment = new MapFragment().newInstance(connectionController, database);
-            loadFragment();
+        } else if (Connection.fragmentName.equals("CHAT")) {
+            chipNavigationBar.setItemSelected(R.id.chat, true);
+            fragment = new ChatFragment().newInstance(database, chatController);
+        } else if (Connection.fragmentName.equals("SETTINGS")) {
+            chipNavigationBar.setItemSelected(R.id.settings, true);
+            fragment = new SettingsFragment().newInstance(connectionController, database, chatController);
         }
+        loadFragment();
 
         chipNavigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int i) {
-                switch (i){
+                switch (i) {
                     case R.id.map:
                         fragment = new MapFragment().newInstance(connectionController, database);
+                        Connection.fragmentName = "MAP";
                         break;
                     case R.id.chat:
-                        fragment = new ChatFragment().newInstance(database,chatController);
+                        fragment = new ChatFragment().newInstance(database, chatController);
+                        Connection.fragmentName = "CHAT";
                         break;
                     case R.id.settings:
-                        fragment = new SettingsFragment().newInstance();
+                        fragment = new SettingsFragment().newInstance(connectionController, database, chatController);
+                        Connection.fragmentName = "SETTINGS";
                         break;
                     default:
                         break;
@@ -77,7 +87,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void loadFragment(){
+    private void loadFragment() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
     }

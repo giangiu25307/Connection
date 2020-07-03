@@ -61,9 +61,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                 if (splittedR[0].equals("info")) {
                     //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
                     if (user.getInetAddress().equals("192.168.49.1")) {
-
-                            tcp_client.startConnection(splittedR[2], 50000);
-
+                        tcp_client.startConnection(splittedR[2], 50000);
                         Cursor c = database.getAllUsers();
                         tcp_client.sendMessage(this.cursorToString(c),"");
                         database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);//check adduser
@@ -89,7 +87,6 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                     //the group owner is leaving the group -------------------------------------------------------------------------------------------------------------------------------
                     database.deleteAllUser();
                     connectionController.connectionToGroup();
-
                 }
             }
         } catch (IOException e) {

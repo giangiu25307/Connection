@@ -3,6 +3,7 @@ package com.example.connection.View;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,23 +16,43 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.R;
 
-public class SettingsFragment extends Fragment{
+public class SettingsFragment extends Fragment {
 
     private ConstraintLayout themeLayout;
     private SharedPreferences sharedPreferences;
     private String newTheme;
-
-    public SettingsFragment (){
+    private ConnectionController connectionController;
+    private Database database;
+    private ChatController chatController;
+    private int theme=R.style.AppTheme;
+    public SettingsFragment() {
 
     }
 
-    public SettingsFragment newInstance() {
+    public void setConnectionController(ConnectionController connectionController) {
+        this.connectionController = connectionController;
+    }
+
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
+
+    public void setChatController(ChatController chatController) {
+        this.chatController = chatController;
+    }
+
+    public SettingsFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController) {
         SettingsFragment settingsFragment = new SettingsFragment();
+        settingsFragment.setChatController(chatController);
+        settingsFragment.setConnectionController(connectionController);
+        settingsFragment.setDatabase(database);
         return settingsFragment;
     }
 
@@ -62,17 +83,18 @@ public class SettingsFragment extends Fragment{
 
                 String currentTheme = sharedPreferences.getString("appTheme", "light");
 
-                if(currentTheme.equals("light")){
+                if (currentTheme.equals("light")) {
                     lightButton.setChecked(true);
-                }else if(currentTheme.equals("dark")){
+                } else if (currentTheme.equals("dark")) {
                     darkButton.setChecked(true);
-                }else{
+                } else {
                     followSystemButton.setChecked(true);
                 }
 
                 lightButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        theme=R.style.AppTheme;
                         newTheme = "light";
                     }
                 });
@@ -80,7 +102,7 @@ public class SettingsFragment extends Fragment{
                 darkButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getActivity().setTheme(R.style.DarkTheme);
+                        theme=R.style.DarkTheme;
                         newTheme = "dark";
                     }
                 });
@@ -88,6 +110,18 @@ public class SettingsFragment extends Fragment{
                 followSystemButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                        switch (nightModeFlags) {
+                            case Configuration.UI_MODE_NIGHT_NO:
+                            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                                theme=R.style.AppTheme;
+                                break;
+                            case Configuration.UI_MODE_NIGHT_YES:
+                                theme=R.style.DarkTheme;
+                                break;
+                            default:
+                                break;
+                        }
                         newTheme = "auto";
                     }
                 });
@@ -134,12 +168,17 @@ public class SettingsFragment extends Fragment{
     }
     */
 
-    private void changetheme(String theme, AlertDialog alertDialog){
+    private void changetheme(String theme, AlertDialog alertDialog) {
 
         sharedPreferences.edit().putString("appTheme", theme).apply();
         alertDialog.dismiss();
         //getActivity().recreate();
-
+        getActivity().setTheme(this.theme);
+        HomeFragment homeFragment = new HomeFragment();
+        Fragment fragment = homeFragment.newInstance(connectionController, database, chatController);
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, fragment);
+        transaction.commit();
     }
 
 }
