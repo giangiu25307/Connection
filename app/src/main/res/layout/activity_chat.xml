@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="false"
     tools:context=".ChatActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -130,7 +131,9 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_weight="1"
+                    android:alpha="0.5"
                     android:background="@drawable/send_button_background"
+                    android:clickable="false"
                     android:padding="5dp"
                     android:paddingStart="7.5dp"
                     android:paddingBottom="7.5dp"
