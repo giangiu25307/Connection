@@ -84,7 +84,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         TextView messageTime = holder.messageTime;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         Date date = new Date();
-        String datetime = messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG));
+        String datetime = messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.DATETIME));
         try {
             date = format.parse(datetime);
         } catch (ParseException e) {
