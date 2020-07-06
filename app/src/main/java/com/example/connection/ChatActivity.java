@@ -34,8 +34,9 @@ public class ChatActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        loadTheme();
+        setContentView(R.layout.activity_chat);
         id = getIntent().getStringExtra("idChat");
         String name = getIntent().getStringExtra("name");
         Database database = new Database(this);
@@ -82,7 +83,6 @@ public class ChatActivity extends AppCompatActivity{
             }
         });
         //Database database = (Database) getIntent().getParcelableExtra("database");
-        loadTheme();
         setupRecyclerView(database, id);
 
     }
@@ -97,6 +97,7 @@ public class ChatActivity extends AppCompatActivity{
         }else if(theme.equals("dark")){
             setTheme(R.style.DarkTheme);
             setStatusAndNavbarColor(false);
+            System.out.println("Dark");
         }else{
             int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
             switch (nightModeFlags) {
