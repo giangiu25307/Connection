@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="10"
-        android:background="?attr/barBackground"
+        android:background="?attr/bottomMenuBackground"
         app:cnb_menuResource="@menu/bottom_menu" />
 
 </LinearLayout>

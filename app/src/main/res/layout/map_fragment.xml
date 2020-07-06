@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     tools:context=".MapFragment">
 
     <LinearLayout
@@ -17,7 +16,8 @@
             android:id="@+id/mapToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="10">
+            android:layout_weight="10"
+            android:background="?attr/toolbarBackground">
 
             <TextView
                 android:id="@+id/personFinded"

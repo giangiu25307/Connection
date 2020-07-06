@@ -3,11 +3,19 @@
 
     <declare-styleable name="themeAttrs">
         <attr name="splashScreenLayoutBackground" format="color"/>
+
+        <attr name="toolbarBackground" format="color"/>
+        <attr name="bottomMenuBackground" format="color"/>
+
         <attr name="layoutBackground" format="color"/>
-        <attr name="whiteLayoutBackground" format="color"/>
-        <attr name="sectionSettingsBackground" format="color"/>
-        <attr name="barBackground" format="color"/>
+        <!-- <attr name="whiteLayoutBackground" format="color"/> -->
+
+        <attr name="groupSettingsBackground" format="color"/>
+        <attr name="groupOptionSettingsBackground" format="color"/>
+
+
         <attr name="chatSelectorBackground" format="color"/>
+
         <attr name="textColor" format="color"/>
         <attr name="iconTint" format="color"/>
     </declare-styleable>

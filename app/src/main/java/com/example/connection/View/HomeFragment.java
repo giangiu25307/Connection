@@ -45,18 +45,21 @@ public class HomeFragment extends Fragment {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.home_fragment, null);
 
         chipNavigationBar = view.findViewById(R.id.chip_navigation_bar);
+        System.out.println("Fragment creato");
 
-        if (Connection.fragmentName.equals("MAP")) {
+        if (savedInstanceState == null && Connection.fragmentName.equals("MAP")) {
             chipNavigationBar.setItemSelected(R.id.map, true);
             fragment = new MapFragment().newInstance(connectionController, database);
-        } else if (Connection.fragmentName.equals("CHAT")) {
+            loadFragment();
+        } else if (savedInstanceState == null && Connection.fragmentName.equals("CHAT")) {
             chipNavigationBar.setItemSelected(R.id.chat, true);
             fragment = new ChatFragment().newInstance(database, chatController);
-        } else if (Connection.fragmentName.equals("SETTINGS")) {
+            loadFragment();
+        } else if (savedInstanceState == null && Connection.fragmentName.equals("SETTINGS")) {
             chipNavigationBar.setItemSelected(R.id.settings, true);
             fragment = new SettingsFragment().newInstance(connectionController, database, chatController);
+            loadFragment();
         }
-        loadFragment();
 
         chipNavigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
             @Override
@@ -103,4 +106,9 @@ public class HomeFragment extends Fragment {
     public void setDatabase(Database database) {
         this.database = database;
     }
+
+
+
 }
+
+

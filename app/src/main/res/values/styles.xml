@@ -4,11 +4,17 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
         <item name="splashScreenLayoutBackground">@android:color/white</item>
-        <!-- <item name="layoutBackground">@color/lightGray</item> -->
-        <item name="layoutBackground">@android:color/white</item>
-        <item name="sectionSettingsBackground">@color/lightWhite</item>
-        <item name="barBackground">@android:color/white</item>
+
+        <item name="toolbarBackground">@android:color/white</item>
+        <item name="bottomMenuBackground">@android:color/white</item>
+
+        <item name="layoutBackground">@color/lightWhite</item>
+
+        <item name="groupSettingsBackground">@android:color/white</item>
+        <item name="groupOptionSettingsBackground">@color/mediumWhite</item>
+
         <item name="chatSelectorBackground">@color/regularGray</item>
         <item name="textColor">@android:color/black</item>
         <item name="iconTint">@android:color/black</item>
@@ -18,11 +24,16 @@
         <item name="colorPrimary">@color/reversedColorPrimary</item>
         <item name="colorPrimaryDark">@color/reversedColorPrimaryDark</item>
         <item name="colorAccent">@color/reversedColorAccent</item>
-        <item name="splashScreenLayoutBackground">@color/lightBlack</item>
-        <!-- <item name="layoutBackground">@color/lightBlack</item> -->
+
+        <item name="splashScreenLayoutBackground">@color/mediumBlack</item>
+        <item name="toolbarBackground">@color/mediumBlack</item>
+        <item name="bottomMenuBackground">@color/mediumBlack</item>
+
         <item name="layoutBackground">@color/lightBlack</item>
-        <item name="sectionSettingsBackground">@color/lightLightBlack</item>
-        <item name="barBackground">@color/lightBlack</item>
+
+        <item name="groupSettingsBackground">@color/mediumBlack</item>
+        <item name="groupOptionSettingsBackground">@color/lightLightBlack</item>
+
         <item name="chatSelectorBackground">@color/mediumBlack</item>
         <item name="textColor">@android:color/white</item>
         <item name="iconTint">@android:color/white</item>

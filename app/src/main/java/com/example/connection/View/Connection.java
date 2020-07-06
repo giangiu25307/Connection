@@ -55,9 +55,9 @@ public class Connection extends AppCompatActivity {
         connectionController = new ConnectionController(this, database, user);
         chatController = new ChatController();
         chatController = chatController.newIstance(this, connectionController);
-       // LocalizationController localizationController=null;
+        //LocalizationController localizationController=null;
 
-           // localizationController=new LocalizationController(database,this);
+        // localizationController=new LocalizationController(database,this);
 
         loadTheme();
         super.onCreate(savedInstanceState);
@@ -136,17 +136,19 @@ public class Connection extends AppCompatActivity {
     }
 
     private void setStatusAndNavbarColor(boolean light) {
+
         Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         if (light) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.WHITE);
             window.setNavigationBarColor(Color.WHITE);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
             int color = getColor(R.color.lightBlack);
             window.setNavigationBarColor(color);
             window.setStatusBarColor(color);
         }
+        window.setNavigationBarColor(Color.BLACK);
     }
 
     private void loadFragment(boolean transition) {

@@ -4,10 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -32,6 +35,7 @@ public class SettingsFragment extends Fragment {
     private Database database;
     private ChatController chatController;
     private int theme=R.style.AppTheme;
+
     public SettingsFragment() {
 
     }
@@ -110,18 +114,7 @@ public class SettingsFragment extends Fragment {
                 followSystemButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                        switch (nightModeFlags) {
-                            case Configuration.UI_MODE_NIGHT_NO:
-                            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                                theme=R.style.AppTheme;
-                                break;
-                            case Configuration.UI_MODE_NIGHT_YES:
-                                theme=R.style.DarkTheme;
-                                break;
-                            default:
-                                break;
-                        }
+                        getCurrentSystemTheme();
                         newTheme = "auto";
                     }
                 });
@@ -136,7 +129,7 @@ public class SettingsFragment extends Fragment {
                 applyTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        changetheme(newTheme, alertDialog);
+                        changeTheme(newTheme, alertDialog);
                     }
                 });
 
@@ -168,12 +161,38 @@ public class SettingsFragment extends Fragment {
     }
     */
 
-    private void changetheme(String theme, AlertDialog alertDialog) {
+    private void getCurrentSystemTheme(){
+        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_NO:
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                theme = R.style.AppTheme;
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                theme = R.style.DarkTheme;
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void changeTheme(String theme, AlertDialog alertDialog) {
 
         sharedPreferences.edit().putString("appTheme", theme).apply();
         alertDialog.dismiss();
         //getActivity().recreate();
         getActivity().setTheme(this.theme);
+        Window window = getActivity().getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if(this.theme == R.style.AppTheme){
+
+            window.setStatusBarColor(getContext().getColor(R.color.mediumWhite));
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }else{
+            window.getDecorView().setSystemUiVisibility(0);
+            //window.clearFlags(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            window.setStatusBarColor(getContext().getColor(R.color.mediumBlack));
+        }
         HomeFragment homeFragment = new HomeFragment();
         Fragment fragment = homeFragment.newInstance(connectionController, database, chatController);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
