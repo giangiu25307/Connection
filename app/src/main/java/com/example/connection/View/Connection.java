@@ -43,6 +43,7 @@ public class Connection extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
     public static String fragmentName="MAP";
+    public static String lightOrDark="light";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +112,11 @@ public class Connection extends AppCompatActivity {
     private void loadTheme() {
         String theme = sharedPreferences.getString("appTheme", "light");
         if (theme.equals("light")) {
+            lightOrDark="Light";
             setTheme(R.style.AppTheme);
             setStatusAndNavbarColor(true);
         } else if (theme.equals("dark")) {
+            lightOrDark="Dark";
             setTheme(R.style.DarkTheme);
             setStatusAndNavbarColor(false);
         } else {
@@ -121,10 +124,12 @@ public class Connection extends AppCompatActivity {
             switch (nightModeFlags) {
                 case Configuration.UI_MODE_NIGHT_NO:
                 case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                    lightOrDark="Follow System";
                     setTheme(R.style.AppTheme);
                     setStatusAndNavbarColor(true);
                     break;
                 case Configuration.UI_MODE_NIGHT_YES:
+                    lightOrDark="Follow System";
                     setTheme(R.style.DarkTheme);
                     setStatusAndNavbarColor(false);
                     break;

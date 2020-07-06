@@ -39,6 +39,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     int currentWidth;
     int currentHeight;
     ChatController chatController;
+    TextView totalChat;
     public ChatFragment() {
     }
 
@@ -82,6 +83,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         linearLayout = view.findViewById(R.id.requestLinearLayout);
         requestTextView = view.findViewById(R.id.requestTextView2);
 
+        totalChat=totalChat.findViewById(R.id.totalChat);
+        totalChat.setText(database.getAllChat().getCount());
         final ViewTreeObserver viewTreeObserver = requestTextView.getViewTreeObserver();
         if (viewTreeObserver.isAlive()) {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

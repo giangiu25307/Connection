@@ -42,11 +42,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     Date date=new Date();
     int counter;
 
-    public MessageAdapter(Context context, Database database, String id) {
+    public MessageAdapter(Context context, Database database, String id,Cursor messageCursor) {
         this.context = context;
         this.database = database;
         this.idChat = id;
-        this.messageCursor = database.getAllMsg(id);
+        this.messageCursor = messageCursor;
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(messageCursor));
     }
 

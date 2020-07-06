@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -130,13 +131,14 @@ public class ChatActivity extends AppCompatActivity{
     }
 
     private void setupRecyclerView(Database database, String id){
+        Cursor messageCursor=database.getAllMsg(id);
         RecyclerView recyclerView = findViewById(R.id.messageRecyclerView);
-        MessageAdapter chatAdapter = new MessageAdapter(this, database, id);
+        MessageAdapter chatAdapter = new MessageAdapter(this, database, id,messageCursor);
         recyclerView.setAdapter(chatAdapter);
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        //recyclerView.scrollToPosition(35);
+        recyclerView.scrollToPosition(messageCursor.getCount());
     }
 
 

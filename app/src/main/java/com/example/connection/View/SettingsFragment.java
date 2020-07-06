@@ -35,6 +35,7 @@ public class SettingsFragment extends Fragment {
     private Database database;
     private ChatController chatController;
     private int theme=R.style.AppTheme;
+    private TextView themeOptionDescription;
 
     public SettingsFragment() {
 
@@ -84,6 +85,7 @@ public class SettingsFragment extends Fragment {
                 followSystemButton = alertDialog.findViewById(R.id.followSystemRadioButton);
                 cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
+                themeOptionDescription= themeOptionDescription.findViewById(R.id.themeOptionDescription);
 
                 String currentTheme = sharedPreferences.getString("appTheme", "light");
 
@@ -100,6 +102,7 @@ public class SettingsFragment extends Fragment {
                     public void onClick(View v) {
                         theme=R.style.AppTheme;
                         newTheme = "light";
+                        Connection.lightOrDark="Light";
                     }
                 });
 
@@ -108,6 +111,7 @@ public class SettingsFragment extends Fragment {
                     public void onClick(View v) {
                         theme=R.style.DarkTheme;
                         newTheme = "dark";
+                        Connection.lightOrDark="Dark";
                     }
                 });
 
@@ -116,6 +120,7 @@ public class SettingsFragment extends Fragment {
                     public void onClick(View v) {
                         getCurrentSystemTheme();
                         newTheme = "auto";
+                        Connection.lightOrDark="Follow System";
                     }
                 });
 
@@ -184,6 +189,7 @@ public class SettingsFragment extends Fragment {
         getActivity().setTheme(this.theme);
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        themeOptionDescription.setText(Connection.lightOrDark);
         if(this.theme == R.style.AppTheme){
 
             window.setStatusBarColor(getContext().getColor(R.color.mediumWhite));
