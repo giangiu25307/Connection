@@ -7,9 +7,14 @@
 
         <item name="splashScreenLayoutBackground">@android:color/white</item>
 
+        <item name="inputData">@color/lightWhite</item>
+        <item name="inputDataHintColor">@color/darkHintcolor</item>
+        <item name="nextButton">@color/mediumBlack</item>
+
         <item name="toolbarBackground">@android:color/white</item>
         <item name="bottomMenuBackground">@android:color/white</item>
 
+        <item name="whiteLayoutBackground">@android:color/white</item>
         <item name="layoutBackground">@color/lightWhite</item>
 
         <item name="groupSettingsBackground">@android:color/white</item>
@@ -17,6 +22,7 @@
 
         <item name="chatSelectorBackground">@color/regularGray</item>
         <item name="textColor">@android:color/black</item>
+        <item name="invertedTextColor">@android:color/white</item>
         <item name="iconTint">@android:color/black</item>
     </style>
 
@@ -26,9 +32,15 @@
         <item name="colorAccent">@color/reversedColorAccent</item>
 
         <item name="splashScreenLayoutBackground">@color/mediumBlack</item>
+
+        <item name="inputData">@color/lightBlack</item>
+        <item name="inputDataHintColor">@color/lightHintColor</item>
+        <item name="nextButton">@android:color/white</item>
+
         <item name="toolbarBackground">@color/mediumBlack</item>
         <item name="bottomMenuBackground">@color/mediumBlack</item>
 
+        <item name="whiteLayoutBackground">@color/mediumBlack</item>
         <item name="layoutBackground">@color/lightBlack</item>
 
         <item name="groupSettingsBackground">@color/mediumBlack</item>
@@ -36,7 +48,37 @@
 
         <item name="chatSelectorBackground">@color/mediumBlack</item>
         <item name="textColor">@android:color/white</item>
+        <item name="invertedTextColor">@android:color/black</item>
         <item name="iconTint">@android:color/white</item>
+    </style>
+
+    <style name="inputDataStyle" parent="Widget.Design.TextInputLayout">
+        <item name="android:background">@drawable/input_data_background</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textColorHint">?attr/inputDataHintColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/opensans_light</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="showHidepasswordImageStyle">
+        <item name="android:background">@drawable/show_hide_password_background</item>
+        <item name="android:tint">?attr/inputDataHintColor</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="nextButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/next_button_background</item>
+        <item name="android:textColor">?attr/invertedTextColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/opensans_regular</item>
+    </style>
+
+    <style name="signupButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/signup_button_background</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/opensans_regular</item>
     </style>
 
     <style name="selectedChatSelectorButton" parent="Widget.AppCompat.Button.Borderless">

@@ -4,9 +4,14 @@
     <declare-styleable name="themeAttrs">
         <attr name="splashScreenLayoutBackground" format="color"/>
 
+        <attr name="inputData" format="color"/>
+        <attr name="inputDataHintColor" format="color"/>
+        <attr name="nextButton" format="color"/>
+
         <attr name="toolbarBackground" format="color"/>
         <attr name="bottomMenuBackground" format="color"/>
 
+        <attr name="whiteLayoutBackground" format="color"/>
         <attr name="layoutBackground" format="color"/>
         <!-- <attr name="whiteLayoutBackground" format="color"/> -->
 
@@ -17,6 +22,7 @@
         <attr name="chatSelectorBackground" format="color"/>
 
         <attr name="textColor" format="color"/>
+        <attr name="invertedTextColor" format="color"/>
         <attr name="iconTint" format="color"/>
     </declare-styleable>
 

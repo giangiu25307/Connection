@@ -132,9 +132,9 @@ public class ChatActivity extends AppCompatActivity{
     }
 
     private void setupRecyclerView(Database database, String id){
-        Cursor messageCursor=database.getAllMsg(id);
+        Cursor messageCursor = database.getAllMsg(id);
         RecyclerView recyclerView = findViewById(R.id.messageRecyclerView);
-        MessageAdapter chatAdapter = new MessageAdapter(this, database, id,messageCursor);
+        MessageAdapter chatAdapter = new MessageAdapter(this, database, id, messageCursor);
         recyclerView.setAdapter(chatAdapter);
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);

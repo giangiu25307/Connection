@@ -83,8 +83,9 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         linearLayout = view.findViewById(R.id.requestLinearLayout);
         requestTextView = view.findViewById(R.id.requestTextView2);
 
-        totalChat=totalChat.findViewById(R.id.totalChat);
-        totalChat.setText(database.getAllChat().getCount());
+        totalChat = view.findViewById(R.id.totalChat);
+        int totalChatNumber = database.getAllChat().getCount();
+        totalChat.setText(totalChatNumber == 0 ? "Chat" : "Chat (" + totalChatNumber + ")");
         final ViewTreeObserver viewTreeObserver = requestTextView.getViewTreeObserver();
         if (viewTreeObserver.isAlive()) {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -142,20 +143,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             }
         });
         anim.setDuration(1750);
-
-
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1f, 0f);
-        valueAnimator.setDuration(1750);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float alpha = (float) animation.getAnimatedValue();
-                requestTextView.setAlpha(alpha);
-            }
-        });
-
         anim.start();
-        valueAnimator.start();
 
     }
 
