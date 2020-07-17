@@ -17,6 +17,8 @@
         <item name="whiteLayoutBackground">@android:color/white</item>
         <item name="layoutBackground">@color/lightWhite</item>
 
+        <item name="dateMessageLayoutBackgroundColor">@android:color/white</item>
+
         <item name="groupSettingsBackground">@android:color/white</item>
         <item name="groupOptionSettingsBackground">@color/mediumWhite</item>
 
@@ -42,6 +44,8 @@
 
         <item name="whiteLayoutBackground">@color/mediumBlack</item>
         <item name="layoutBackground">@color/lightBlack</item>
+
+        <item name="dateMessageLayoutBackgroundColor">@color/lightBlack</item>
 
         <item name="groupSettingsBackground">@color/mediumBlack</item>
         <item name="groupOptionSettingsBackground">@color/lightLightBlack</item>
