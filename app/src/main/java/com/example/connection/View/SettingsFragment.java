@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -64,7 +65,7 @@ public class SettingsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.settings_fragment, null);
+        @SuppressLint("inflateParams") final View view = inflater.inflate(R.layout.settings_fragment, null);
 
         sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
 
@@ -79,17 +80,18 @@ public class SettingsFragment extends Fragment {
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
 
-                final RadioButton lightButton, darkButton, followSystemButton;
+                final CardView lightButton, darkButton, followSystemButton;
                 final TextView cancelTextView, applyTextView;
 
-                lightButton = alertDialog.findViewById(R.id.lightRadioButton);
-                darkButton = alertDialog.findViewById(R.id.darkRadioButton);
-                followSystemButton = alertDialog.findViewById(R.id.followSystemRadioButton);
+                lightButton = alertDialog.findViewById(R.id.lightButton);
+                darkButton = alertDialog.findViewById(R.id.darkButton);
+                followSystemButton = alertDialog.findViewById(R.id.followSystemButton);
                 cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
 
                 String currentTheme = sharedPreferences.getString("appTheme", "light");
 
+                /*
                 if (currentTheme.equals("light")) {
                     lightButton.setChecked(true);
                 } else if (currentTheme.equals("dark")) {
@@ -97,6 +99,7 @@ public class SettingsFragment extends Fragment {
                 } else {
                     followSystemButton.setChecked(true);
                 }
+                */
 
                 lightButton.setOnClickListener(new View.OnClickListener() {
                     @Override
