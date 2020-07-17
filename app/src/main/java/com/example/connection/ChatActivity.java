@@ -1,5 +1,6 @@
 package com.example.connection;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,10 +25,10 @@ import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.Database;
 
-public class ChatActivity extends AppCompatActivity{
+public class ChatActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
-    ChatController chatController=ChatController.getInstance();
+    ChatController chatController = ChatController.getInstance();
     String id;
     EditText message_input;
     ImageView sendView;
@@ -49,8 +51,8 @@ public class ChatActivity extends AppCompatActivity{
                 finish();
             }
         });
-        message_input =findViewById(R.id.message_input);
-        sendView= findViewById(R.id.sendView);
+        message_input = findViewById(R.id.message_input);
+        sendView = findViewById(R.id.sendView);
         message_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -59,10 +61,10 @@ public class ChatActivity extends AppCompatActivity{
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(message_input.getText().toString().replace(" ","").isEmpty()){
+                if (message_input.getText().toString().replace(" ", "").isEmpty()) {
                     sendView.setAlpha(0.5f);
                     sendView.setClickable(false);
-                }else{
+                } else {
                     sendView.setAlpha(1f);
                     sendView.setClickable(true);
                 }
@@ -78,7 +80,7 @@ public class ChatActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
-            chatController.sendTCPMsg(message_input.getText().toString(),id);
+                chatController.sendTCPMsg(message_input.getText().toString(), id);
 
             }
         });
@@ -88,17 +90,16 @@ public class ChatActivity extends AppCompatActivity{
     }
 
 
-
-    private void loadTheme(){
+    private void loadTheme() {
         String theme = sharedPreferences.getString("appTheme", "light");
-        if(theme.equals("light")){
+        if (theme.equals("light")) {
             setTheme(R.style.AppTheme);
             setStatusAndNavbarColor(true);
-        }else if(theme.equals("dark")){
+        } else if (theme.equals("dark")) {
             setTheme(R.style.DarkTheme);
             setStatusAndNavbarColor(false);
             System.out.println("Dark");
-        }else{
+        } else {
             int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
             switch (nightModeFlags) {
                 case Configuration.UI_MODE_NIGHT_NO:
@@ -117,21 +118,21 @@ public class ChatActivity extends AppCompatActivity{
 
     }
 
-    private void setStatusAndNavbarColor(boolean light){
+    private void setStatusAndNavbarColor(boolean light) {
         Window window = getWindow();
-        if(light){
+        if (light) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.WHITE);
             window.setNavigationBarColor(Color.WHITE);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        }else{
+        } else {
             int color = getColor(R.color.lightBlack);
             window.setNavigationBarColor(color);
             window.setStatusBarColor(color);
         }
     }
 
-    private void setupRecyclerView(Database database, String id){
+    private void setupRecyclerView(Database database, String id) {
         Cursor messageCursor = database.getAllMsg(id);
         RecyclerView recyclerView = findViewById(R.id.messageRecyclerView);
         MessageAdapter chatAdapter = new MessageAdapter(this, database, id, messageCursor);
@@ -141,7 +142,5 @@ public class ChatActivity extends AppCompatActivity{
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.scrollToPosition(messageCursor.getCount());
     }
-
-
 
 }

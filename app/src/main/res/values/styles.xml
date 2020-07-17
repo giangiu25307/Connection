@@ -95,4 +95,11 @@
         <item name="android:windowBackground">@drawable/rounded_20dp_background</item>
     </style>
 
+    <style name="dateMessageStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@drawable/date_message_layout_background</item>
+        <item name="android:paddingHorizontal">10dp</item>
+        <item name="android:paddingVertical">2.5dp</item>
+        <item name="android:textColor">?attr/textColor</item>
+    </style>
+
 </resources>

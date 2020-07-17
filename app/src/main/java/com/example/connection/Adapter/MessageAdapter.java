@@ -81,6 +81,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         LinearLayout textLayout = holder.textLayout;
         TextView message = holder.message;
         message.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG)));
+
         TextView messageTime = holder.messageTime;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         Date date = new Date();
@@ -105,15 +106,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         holder.itemView.setTag(idChat);
 
-        /*
-        try {
-            date=format.parse(datetime);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        datetime= date.getHours()+":"+date.getMinutes();
-        lastMessageTimeTextView.setText(timeLastMessage);
-        */
 
     }
 

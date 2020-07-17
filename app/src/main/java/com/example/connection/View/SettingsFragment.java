@@ -69,6 +69,8 @@ public class SettingsFragment extends Fragment {
         sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         themeLayout = view.findViewById(R.id.themeLayout);
+        themeOptionDescription= view.findViewById(R.id.themeOptionDescription);
+        themeOptionDescription.setText(Connection.lightOrDark);
         themeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +87,6 @@ public class SettingsFragment extends Fragment {
                 followSystemButton = alertDialog.findViewById(R.id.followSystemRadioButton);
                 cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
-                themeOptionDescription= themeOptionDescription.findViewById(R.id.themeOptionDescription);
 
                 String currentTheme = sharedPreferences.getString("appTheme", "light");
 
@@ -189,7 +190,7 @@ public class SettingsFragment extends Fragment {
         getActivity().setTheme(this.theme);
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        themeOptionDescription.setText(Connection.lightOrDark);
+
         if(this.theme == R.style.AppTheme){
 
             window.setStatusBarColor(getContext().getColor(R.color.mediumWhite));

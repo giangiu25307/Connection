@@ -72,6 +72,7 @@ class WorkerRunnable implements Runnable {
                     connectionController.createGroup();
                 } else if (splittedR[0].equals("message")) {
                     //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
+                    msg=splittedR[1];
                     idChat = database.findId_user(ip);
                     database.addMsg(msg, idChat, idChat);
                 } else if (splittedR[0].equals("REQUEST-MEET")) {
