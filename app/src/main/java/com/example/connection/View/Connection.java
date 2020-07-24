@@ -149,9 +149,7 @@ public class Connection extends AppCompatActivity {
             window.setNavigationBarColor(Color.WHITE);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
-            int color = getColor(R.color.lightBlack);
-            window.setNavigationBarColor(color);
-            window.setStatusBarColor(color);
+            window.setStatusBarColor(getColor(R.color.mediumBlack));
         }
         window.setNavigationBarColor(Color.BLACK);
     }
