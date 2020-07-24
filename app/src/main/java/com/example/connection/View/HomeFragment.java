@@ -55,15 +55,15 @@ public class HomeFragment extends Fragment {
         bottomNavigationMenu.setOnNavigationItemSelectedListener(bottomNavigationMenuListener);
 
         if (savedInstanceState == null && Connection.fragmentName.equals("MAP")) {
-            bottomNavigationMenu.getMenu().getItem(1).setChecked(true);
+            bottomNavigationMenu.getMenu().getItem(0).setChecked(true);
             fragment = new MapFragment().newInstance(connectionController, database);
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("CHAT")) {
-            bottomNavigationMenu.getMenu().getItem(2).setChecked(true);
+            bottomNavigationMenu.getMenu().getItem(1).setChecked(true);
             fragment = new ChatFragment().newInstance(database, chatController);
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("SETTINGS")) {
-            bottomNavigationMenu.getMenu().getItem(3).setChecked(true);
+            bottomNavigationMenu.getMenu().getItem(2).setChecked(true);
             fragment = new SettingsFragment().newInstance(connectionController, database, chatController);
             loadFragment();
         }
