@@ -90,7 +90,33 @@ public class SettingsFragment extends Fragment {
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
 
                 String currentTheme = sharedPreferences.getString("appTheme", "light");
-
+                if(currentTheme.equals("dark")){
+                    theme=R.style.DarkTheme;
+                    newTheme = "dark";
+                    Connection.lightOrDark="Dark";
+                    lightButton.setCardBackgroundColor(getContext().getColor(R.color.lightLightBlack));
+                    darkButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
+                    followSystemButton.setCardBackgroundColor(getContext().getColor(R.color.lightLightBlack));
+                }else if(currentTheme.equals("auto")){
+                    getCurrentSystemTheme();
+                    newTheme = "auto";
+                    Connection.lightOrDark="Follow System";
+                    if(theme==R.style.DarkTheme){
+                        lightButton.setCardBackgroundColor(getContext().getColor(R.color.lightLightBlack));
+                        darkButton.setCardBackgroundColor(getContext().getColor(R.color.lightLightBlack));
+                    }else{
+                        lightButton.setCardBackgroundColor(getContext().getColor(R.color.mediumWhite));
+                        darkButton.setCardBackgroundColor(getContext().getColor(R.color.mediumWhite));
+                    }
+                    followSystemButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
+                }else{
+                    theme=R.style.AppTheme;
+                    newTheme = "light";
+                    Connection.lightOrDark="Light";
+                    lightButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
+                    darkButton.setCardBackgroundColor(getContext().getColor(R.color.mediumWhite));
+                    followSystemButton.setCardBackgroundColor(getContext().getColor(R.color.mediumWhite));
+                }
                 /*
                 if (currentTheme.equals("light")) {
                     lightButton.setChecked(true);
