@@ -112,7 +112,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     }
 
     private void createCountDowntimer() {
-        countDownTimer = new CountDownTimer(secondsRemaining, 1000) {
+        countDownTimer = new CountDownTimer(secondsRemaining, 1500) {
             @Override
             public void onTick(long millisUntilFinished) {
                 secondsRemaining = millisUntilFinished;
@@ -176,7 +176,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                 currentWidth=val;
             }
         });
-        anim.setDuration(1750);
+        anim.setDuration(2000);
         anim.start();
 
     }

@@ -124,12 +124,11 @@ public class ChatActivity extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.WHITE);
             window.setNavigationBarColor(Color.WHITE);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
-            int color = getColor(R.color.lightBlack);
-            window.setNavigationBarColor(color);
-            window.setStatusBarColor(color);
+            window.setStatusBarColor(getColor(R.color.mediumBlack));
         }
+        window.setNavigationBarColor(Color.BLACK);
     }
 
     private void setupRecyclerView(Database database, String id) {
