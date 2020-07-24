@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ public class SettingsFragment extends Fragment {
     private ChatController chatController;
     private int theme = R.style.AppTheme;
     private TextView themeOptionDescription;
+    private int bgColor=R.color.mediumWhite;
 
     public SettingsFragment() {
 
@@ -94,28 +96,23 @@ public class SettingsFragment extends Fragment {
                     theme=R.style.DarkTheme;
                     newTheme = "dark";
                     Connection.lightOrDark="Dark";
-                    lightButton.setCardBackgroundColor(getContext().getColor(R.color.lightLightBlack));
-                    darkButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
-                    followSystemButton.setCardBackgroundColor(getContext().getColor(R.color.lightLightBlack));
+                    bgColor=R.color.lightLightBlack;
+                    darkButton.setBackgroundResource(R.drawable.set_current_theme_background);
                 }else if(currentTheme.equals("auto")){
                     getCurrentSystemTheme();
                     newTheme = "auto";
                     Connection.lightOrDark="Follow System";
                     if(theme==R.style.DarkTheme){
-                        lightButton.setCardBackgroundColor(getContext().getColor(R.color.lightLightBlack));
-                        darkButton.setCardBackgroundColor(getContext().getColor(R.color.lightLightBlack));
+                        bgColor=R.color.lightLightBlack;
                     }else{
-                        lightButton.setCardBackgroundColor(getContext().getColor(R.color.mediumWhite));
-                        darkButton.setCardBackgroundColor(getContext().getColor(R.color.mediumWhite));
+                        bgColor=R.color.mediumWhite;
                     }
-                    followSystemButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
+                    followSystemButton.setCardBackgroundColor(R.drawable.set_current_theme_background);
                 }else{
                     theme=R.style.AppTheme;
                     newTheme = "light";
                     Connection.lightOrDark="Light";
-                    lightButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
-                    darkButton.setCardBackgroundColor(getContext().getColor(R.color.mediumWhite));
-                    followSystemButton.setCardBackgroundColor(getContext().getColor(R.color.mediumWhite));
+                    lightButton.setBackgroundResource(R.drawable.set_current_theme_background);
                 }
                 /*
                 if (currentTheme.equals("light")) {
@@ -133,6 +130,12 @@ public class SettingsFragment extends Fragment {
                         theme=R.style.AppTheme;
                         newTheme = "light";
                         Connection.lightOrDark="Light";
+                        lightButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
+                        lightButton.setBackgroundResource(R.drawable.set_current_theme_background);
+                        darkButton.setCardBackgroundColor(getContext().getColor(bgColor));
+                        darkButton.setBackgroundResource(0);
+                        followSystemButton.setCardBackgroundColor(getContext().getColor(bgColor));
+                        followSystemButton.setBackgroundResource(0);
                     }
                 });
 
@@ -142,6 +145,12 @@ public class SettingsFragment extends Fragment {
                         theme=R.style.DarkTheme;
                         newTheme = "dark";
                         Connection.lightOrDark="Dark";
+                        lightButton.setCardBackgroundColor(getContext().getColor(bgColor));
+                        lightButton.setBackgroundResource(0);
+                        darkButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
+                        darkButton.setBackgroundResource(R.drawable.set_current_theme_background);
+                        followSystemButton.setCardBackgroundColor(getContext().getColor(bgColor));
+                        followSystemButton.setBackgroundResource(0);
                     }
                 });
 
@@ -151,6 +160,12 @@ public class SettingsFragment extends Fragment {
                         getCurrentSystemTheme();
                         newTheme = "auto";
                         Connection.lightOrDark="Follow System";
+                        lightButton.setCardBackgroundColor(getContext().getColor(bgColor));
+                        lightButton.setBackgroundResource(0);
+                        darkButton.setCardBackgroundColor(getContext().getColor(bgColor));
+                        darkButton.setBackgroundResource(0);
+                        followSystemButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
+                        followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background);
                     }
                 });
 
