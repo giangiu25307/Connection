@@ -15,9 +15,10 @@
         <attr name="layoutBackground" format="color"/>
         <!-- <attr name="whiteLayoutBackground" format="color"/> -->
 
+        <attr name="dateMessageLayoutBackgroundColor" format="color"></attr>
+
         <attr name="groupSettingsBackground" format="color"/>
         <attr name="groupOptionSettingsBackground" format="color"/>
-
 
         <attr name="chatSelectorBackground" format="color"/>
 
