@@ -14,12 +14,14 @@
         android:layout_height="match_parent"
         android:layout_weight="1"/>
 
-    <com.ismaeldivita.chipnavigation.ChipNavigationBar
-        android:id="@+id/chip_navigation_bar"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationMenu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="10"
         android:background="?attr/bottomMenuBackground"
-        app:cnb_menuResource="@menu/bottom_menu" />
+        app:itemIconTint="@color/darkHintcolor"
+        app:itemTextColor="@color/darkHintcolor"
+        app:menu="@menu/bottom_menu_2" />
 
 </LinearLayout>
