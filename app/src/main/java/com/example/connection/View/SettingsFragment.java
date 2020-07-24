@@ -35,7 +35,7 @@ public class SettingsFragment extends Fragment {
     private ConnectionController connectionController;
     private Database database;
     private ChatController chatController;
-    private int theme=R.style.AppTheme;
+    private int theme = R.style.AppTheme;
     private TextView themeOptionDescription;
 
     public SettingsFragment() {
