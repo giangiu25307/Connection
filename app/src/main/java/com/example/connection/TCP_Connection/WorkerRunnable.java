@@ -1,7 +1,10 @@
 package com.example.connection.TCP_Connection;
 
+import android.database.Cursor;
+
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Controller.Task;
 import com.example.connection.View.Connection;
 import com.example.connection.localization.LocalizationController;
 
@@ -13,7 +16,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 class WorkerRunnable implements Runnable {
@@ -73,6 +78,18 @@ class WorkerRunnable implements Runnable {
                 } else if (splittedR[0].equals("message")) {
                     //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                     msg=splittedR[1];
+                    Date date = new Date();
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                    Cursor dateDB=database.getLastMessageChat(idChat);
+                    String datetime = dateDB.getString(dateDB.getColumnIndex(Task.TaskEntry.DATETIME));
+                    try {
+                        date = format.parse(datetime);
+                        if(date.compareTo(format.parse(String.valueOf(LocalDateTime.now())))<0){
+                            database.addMsg("date£€"+date,idChat,idChat);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     idChat = database.findId_user(ip);
                     database.addMsg(msg, idChat, idChat);
                 } else if (splittedR[0].equals("REQUEST-MEET")) {

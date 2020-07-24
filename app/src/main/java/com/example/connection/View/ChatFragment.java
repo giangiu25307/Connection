@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +42,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     int currentHeight;
     ChatController chatController;
     TextView totalChat;
+    private long secondsRemaining = 1500;
+    private CountDownTimer countDownTimer;
+    private Boolean startTimer = false,startTimer2 = true;
+
     public ChatFragment() {
     }
 
@@ -94,7 +100,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                     currentWidth = requestTextView.getWidth();
                     currentHeight = requestTextView.getHeight();
                     if (currentWidth != 0 && currentHeight != 0) {
-                        animRequestButton(currentWidth, currentHeight);
+                        createCountDowntimer();
+                        countDownTimer.start();
                         requestTextView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 }
@@ -102,6 +109,21 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         }
         setupRecyclerView(view);
         return view;
+    }
+
+    private void createCountDowntimer() {
+        countDownTimer = new CountDownTimer(secondsRemaining, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                secondsRemaining = millisUntilFinished;
+            }
+
+            @Override
+            public void onFinish() {
+                animRequestButton(currentWidth, currentHeight);
+                startTimer = false;
+            }
+        };
     }
 
     private void setupRecyclerView(View view){
@@ -112,9 +134,20 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
-    private Cursor getAllChat(){
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (startTimer&&startTimer2) {
+            createCountDowntimer();
+            countDownTimer.start();
+        }
+    }
 
-        return null;
+    @Override
+    public void onStop() {
+        super.onStop();
+        countDownTimer.cancel();
+        startTimer2 = false;
     }
 
     private void animRequestButton(int startWidth, final int currentHeight){
@@ -140,6 +173,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                 layoutParams.width = val;
                 requestTextView.setLayoutParams(layoutParams);
                 requestTextView.setHeight(currentHeight);
+                currentWidth=val;
             }
         });
         anim.setDuration(1750);
