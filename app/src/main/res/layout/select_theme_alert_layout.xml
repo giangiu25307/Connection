@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/layoutBackground"
+    android:background="?attr/whiteLayoutBackground"
     android:orientation="vertical"
     android:paddingVertical="20dp">
 
@@ -24,115 +24,92 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:id="@+id/lightButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="?attr/groupOptionSettingsBackground"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:cardMaxElevation="0dp">
+            android:background="@drawable/set_current_theme_background_borderless"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingVertical="10dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingVertical="10dp">
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="5dp"
+                android:tint="?attr/iconTint"
+                app:srcCompat="@drawable/ic_day" />
 
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="5dp"
-                    android:tint="?attr/iconTint"
-                    app:srcCompat="@drawable/ic_day" />
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Light"
+                android:textColor="?attr/textColor" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Light"
-                    android:textColor="?attr/textColor" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:id="@+id/darkButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="10dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="?attr/groupOptionSettingsBackground"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:cardMaxElevation="0dp">
+            android:background="@drawable/set_current_theme_background_borderless"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingVertical="10dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingVertical="10dp">
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="5dp"
+                android:tint="?attr/iconTint"
+                app:srcCompat="@drawable/ic_dark" />
 
-                <ImageView
-                    android:id="@+id/imageView6"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="5dp"
-                    android:tint="?attr/iconTint"
-                    app:srcCompat="@drawable/ic_dark" />
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Dark"
+                android:textColor="?attr/textColor" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textView11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Dark"
-                    android:textColor="?attr/textColor" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:id="@+id/followSystemButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="?attr/groupOptionSettingsBackground"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:cardMaxElevation="0dp">
+            android:background="@drawable/set_current_theme_background_borderless"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingVertical="10dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:paddingVertical="10dp">
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="5dp"
+                android:tint="?attr/iconTint"
+                app:srcCompat="@drawable/ic_follow_system" />
 
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="5dp"
-                    android:tint="?attr/iconTint"
-                    app:srcCompat="@drawable/ic_follow_system" />
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Follow system"
+                android:textColor="?attr/textColor" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/textView12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Follow system"
-                    android:textColor="?attr/textColor" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -4,15 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RadioButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -82,7 +81,7 @@ public class SettingsFragment extends Fragment {
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
 
-                final CardView lightButton, darkButton, followSystemButton;
+                final LinearLayout lightButton, darkButton, followSystemButton;
                 final TextView cancelTextView, applyTextView;
 
                 lightButton = alertDialog.findViewById(R.id.lightButton);
@@ -91,13 +90,14 @@ public class SettingsFragment extends Fragment {
                 cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
 
+
                 String currentTheme = sharedPreferences.getString("appTheme", "light");
                 if(currentTheme.equals("dark")){
                     theme=R.style.DarkTheme;
                     newTheme = "dark";
                     Connection.lightOrDark="Dark";
                     bgColor=R.color.lightLightBlack;
-                    darkButton.setBackgroundResource(R.drawable.set_current_theme_background);
+                    darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
                 }else if(currentTheme.equals("auto")){
                     getCurrentSystemTheme();
                     newTheme = "auto";
@@ -107,12 +107,12 @@ public class SettingsFragment extends Fragment {
                     }else{
                         bgColor=R.color.mediumWhite;
                     }
-                    followSystemButton.setCardBackgroundColor(R.drawable.set_current_theme_background);
+                    followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
                 }else{
                     theme=R.style.AppTheme;
                     newTheme = "light";
                     Connection.lightOrDark="Light";
-                    lightButton.setBackgroundResource(R.drawable.set_current_theme_background);
+                    lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
                 }
                 /*
                 if (currentTheme.equals("light")) {
@@ -130,12 +130,9 @@ public class SettingsFragment extends Fragment {
                         theme=R.style.AppTheme;
                         newTheme = "light";
                         Connection.lightOrDark="Light";
-                        lightButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
-                        lightButton.setBackgroundResource(R.drawable.set_current_theme_background);
-                        darkButton.setCardBackgroundColor(getContext().getColor(bgColor));
-                        darkButton.setBackgroundResource(0);
-                        followSystemButton.setCardBackgroundColor(getContext().getColor(bgColor));
-                        followSystemButton.setBackgroundResource(0);
+                        lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
+                        darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
+                        followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
                     }
                 });
 
@@ -145,12 +142,9 @@ public class SettingsFragment extends Fragment {
                         theme=R.style.DarkTheme;
                         newTheme = "dark";
                         Connection.lightOrDark="Dark";
-                        lightButton.setCardBackgroundColor(getContext().getColor(bgColor));
-                        lightButton.setBackgroundResource(0);
-                        darkButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
-                        darkButton.setBackgroundResource(R.drawable.set_current_theme_background);
-                        followSystemButton.setCardBackgroundColor(getContext().getColor(bgColor));
-                        followSystemButton.setBackgroundResource(0);
+                        lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
+                        darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
+                        followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
                     }
                 });
 
@@ -160,12 +154,9 @@ public class SettingsFragment extends Fragment {
                         getCurrentSystemTheme();
                         newTheme = "auto";
                         Connection.lightOrDark="Follow System";
-                        lightButton.setCardBackgroundColor(getContext().getColor(bgColor));
-                        lightButton.setBackgroundResource(0);
-                        darkButton.setCardBackgroundColor(getContext().getColor(bgColor));
-                        darkButton.setBackgroundResource(0);
-                        followSystemButton.setCardBackgroundColor(getContext().getColor(R.color.transparent));
-                        followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background);
+                        lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
+                        darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
+                        followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
                     }
                 });
 
