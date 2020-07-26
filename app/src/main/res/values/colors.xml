@@ -22,8 +22,8 @@
     <color name="mediumBlack">#212121</color>
     <color name="regularBlack">#191919</color>
 
-    <color name="darkHintcolor">#848486</color>
     <color name="lightHintColor">#D2D2D2</color>
+    <color name="darkHintcolor">#848486</color>
 
     <color name="transparent">#00ffffff</color>
 </resources>
