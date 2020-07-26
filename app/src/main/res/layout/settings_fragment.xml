@@ -127,7 +127,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
-                        android:id="@+id/button"
+                        android:id="@+id/editProfileButton"
                         style="?android:attr/borderlessButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -270,7 +270,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/themeLayout"
+                        android:id="@+id/themeSettings"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -372,7 +372,7 @@
                         app:layout_constraintVertical_bias="0.0" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/securitySettings"
+                        android:id="@+id/changePasswordSettings"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -383,7 +383,8 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView9">
+                        app:layout_constraintTop_toBottomOf="@+id/textView9"
+                        app:layout_constraintVertical_bias="0.0">
 
                         <ImageView
                             android:id="@+id/passwordIcon"
@@ -421,7 +422,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="16dp"
                             android:fontFamily="@font/opensans_light"
-                            android:text="Last modify: 2 weeks ago"
+                            android:text="Last modify: 11/05/20"
                             android:textColor="?attr/textColor"
                             android:textSize="15sp"
                             app:layout_constraintBottom_toBottomOf="parent"
