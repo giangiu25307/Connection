@@ -81,9 +81,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         changePasswordSettings = view.findViewById(R.id.changePasswordSettings);
         changePasswordSettings.setOnClickListener(this);
 
-        forgottenPasswordSettings = view.findViewById(R.id.forgottenPasswordSettings);
-        forgottenPasswordSettings.setOnClickListener(this);
-
         return view;
     }
 
@@ -99,9 +96,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.changePasswordSettings:
                 changePassword(dialogBuilder);
-                break;
-            case R.id.forgottenPasswordSettings:
-                forgottenPassword(dialogBuilder);
                 break;
             default:
                 break;
@@ -155,34 +149,40 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
-        final TextView cancelTextView, confirmTextview;
+        final TextView forgotPasswordButton, cancelTextView, confirmTextview;
+        forgotPasswordButton = alertDialog.findViewById(R.id.forgotPasswordButton);
         cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
         confirmTextview = alertDialog.findViewById(R.id.confirmTextView);
 
-        cancelTextView.setOnClickListener(new View.OnClickListener() {
+        forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                dialogBuilder.setView(R.layout.forgotten_password_alert_dialog);
+                final AlertDialog alertDialog2 = dialogBuilder.create();
+                alertDialog2.show();
+
+                final TextView cancelTextView, confirmTextview;
+                cancelTextView = alertDialog2.findViewById(R.id.cancelTextView);
+                confirmTextview = alertDialog2.findViewById(R.id.confirmTextView);
+
+                cancelTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog2.dismiss();
+                    }
+                });
+
+                confirmTextview.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
             }
         });
-
-        confirmTextview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-    }
-
-    private void forgottenPassword(AlertDialog.Builder dialogBuilder){
-        //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-        dialogBuilder.setView(R.layout.forgotten_password_alert_dialog);
-        final AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
-
-        final TextView cancelTextView, confirmTextview;
-        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-        confirmTextview = alertDialog.findViewById(R.id.confirmTextView);
 
         cancelTextView.setOnClickListener(new View.OnClickListener() {
             @Override
