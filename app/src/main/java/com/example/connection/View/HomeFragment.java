@@ -1,6 +1,8 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,7 +27,6 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 public class HomeFragment extends Fragment {
 
-    ChipNavigationBar chipNavigationBar;
     Fragment fragment;
     ConnectionController connectionController;
     Database database;
