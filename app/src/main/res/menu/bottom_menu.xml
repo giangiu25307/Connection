@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cnb_unselectedColor="#D0D0D0">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item
+        android:id="@+id/map"
+        android:icon="@drawable/ic_explore_drawable"
+        android:title="Map" />
+
+    <item
+        android:id="@+id/chat"
+        android:icon="@drawable/ic_chat_drawable"
+        android:title="Chat"/>
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings_drawable"
+        android:title="Settings"/>
+
+    <!--
     <item
         android:id="@+id/map"
         android:title="Map"
@@ -26,5 +41,6 @@
         app:cnb_backgroundColor="@color/gray"
         app:cnb_iconColor="#fff"
         app:cnb_textColor="#fff"/>
+    -->
 
 </menu>
