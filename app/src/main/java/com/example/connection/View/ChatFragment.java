@@ -129,9 +129,14 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     private void setupRecyclerView(View view){
         RecyclerView recyclerView = view.findViewById(R.id.chatRecyclerView);
         System.out.println(database);
-        ChatAdapter chatAdapter = new ChatAdapter(getContext(), database.getAllChat(), database, chatController);
+        Cursor cursor = database.getAllChat();
+        ChatAdapter chatAdapter = new ChatAdapter(getContext(), cursor, database, chatController);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        if(cursor.getCount() == 0){
+            TextView textView = view.findViewById(R.id.textView0Chat);
+            textView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

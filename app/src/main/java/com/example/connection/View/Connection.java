@@ -35,7 +35,7 @@ public class Connection extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private Boolean startTimer = false;
     private Boolean startTimer2 = true;
-    private long secondsRemaining = 1500;
+    private long secondsRemaining = 1000;
     private SharedPreferences sharedPreferences;
     Database database;
     User user;
