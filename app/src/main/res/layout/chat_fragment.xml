@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:fontFamily="@font/opensans_regular"
+                android:fontFamily="sans-serif"
                 android:text="Chat (1)"
                 android:textColor="?attr/textColor"
                 android:textSize="21sp"
@@ -75,25 +75,6 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/totalChat"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/requestTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:background="@drawable/rounded_black_border"
-                android:paddingHorizontal="15dp"
-                android:paddingVertical="5dp"
-                android:text="1 request"
-                android:textColor="?attr/textColor"
-                android:textSize="12sp"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageView2"
-                app:layout_constraintHorizontal_bias="0.38"
-                app:layout_constraintStart_toEndOf="@+id/totalChat"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.529" />
 
             <LinearLayout
                 android:id="@+id/requestLinearLayout"

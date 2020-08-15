@@ -18,6 +18,9 @@
         <item name="layoutBackground">@color/lightWhite</item>
 
         <item name="dateMessageLayoutBackgroundColor">@android:color/white</item>
+        <item name="messageInputColor">@android:color/white</item>
+        <item name="messageInputBorder">@color/mediumBlack</item>
+        <item name="messageInputElevation">0dp</item>
 
         <item name="groupSettingsBackground">@android:color/white</item>
         <item name="groupOptionSettingsBackground">@color/mediumWhite</item>
@@ -46,6 +49,9 @@
         <item name="layoutBackground">@color/lightBlack</item>
 
         <item name="dateMessageLayoutBackgroundColor">@color/lightBlack</item>
+        <item name="messageInputColor">@color/mediumBlack</item>
+        <item name="messageInputBorder">@color/mediumBlack</item>
+        <item name="messageInputElevation">1dp</item>
 
         <item name="groupSettingsBackground">@color/mediumBlack</item>
         <item name="groupOptionSettingsBackground">@color/lightLightBlack</item>

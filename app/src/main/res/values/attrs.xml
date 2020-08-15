@@ -16,6 +16,9 @@
         <!-- <attr name="whiteLayoutBackground" format="color"/> -->
 
         <attr name="dateMessageLayoutBackgroundColor" format="color"/>
+        <attr name="messageInputColor" format="color"/>
+        <attr name="messageInputBorder" format="color"/>
+        <attr name="messageInputElevation" format="dimension"/>
 
         <attr name="groupSettingsBackground" format="color"/>
         <attr name="groupOptionSettingsBackground" format="color"/>
