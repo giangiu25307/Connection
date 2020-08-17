@@ -50,7 +50,7 @@ public class SignupFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
         SliderAdapter sliderAdapter = new SliderAdapter(this.getContext());
         viewPager.setAdapter(sliderAdapter);
-        Button next = view.findViewById(R.id.next);
+        Button next = view.findViewById(R.id.loginButton);
 
         ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {
             @Override
