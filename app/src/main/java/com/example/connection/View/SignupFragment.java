@@ -17,14 +17,14 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.R;
 
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class SignupFragment extends Fragment implements View.OnClickListener {
 
     Button loginButton, signupButton, skipButton;
     ConnectionController connectionController;
     Database database;
     ChatController chatController;
 
-    public LoginFragment() {
+    public SignupFragment() {
 
     }
 
