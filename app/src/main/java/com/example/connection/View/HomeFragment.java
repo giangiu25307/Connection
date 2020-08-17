@@ -107,14 +107,17 @@ public class HomeFragment extends Fragment {
 
             switch (item.getItemId()){
                 case R.id.map:
+                    if(Connection.fragmentName.equals("MAP"))break;
                     Connection.fragmentName = "MAP";
                     fragment = new MapFragment().newInstance(connectionController, database);
                     break;
                 case R.id.chat:
+                    if(Connection.fragmentName.equals("CHAT"))break;
                     Connection.fragmentName = "CHAT";
                     fragment = new ChatFragment().newInstance(database, chatController);
                     break;
                 case R.id.settings:
+                    if(Connection.fragmentName.equals("SETTINGS"))break;
                     Connection.fragmentName = "SETTINGS";
                     fragment = new SettingsFragment().newInstance(connectionController, database, chatController);
                     break;
