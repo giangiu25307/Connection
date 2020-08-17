@@ -36,7 +36,7 @@
         app:layout_constraintVertical_bias="0.19999999" />
 
     <Button
-        android:id="@+id/next"
+        android:id="@+id/loginButton"
         style="@style/nextButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -47,11 +47,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewPager"
+        app:layout_constraintTop_toBottomOf="@+id/viewPager2"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/signupButton"
         style="@style/signupButtonStyle"
         android:layout_width="77dp"
         android:layout_height="21dp"
@@ -73,11 +73,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/next"
+        app:layout_constraintTop_toBottomOf="@+id/button2"
         app:layout_constraintVertical_bias="0.941" />
 
-    <com.example.connection.View.MyViewPager
-        android:id="@+id/viewPager"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
         android:layout_width="0dp"
         android:layout_height="250dp"
         android:layout_marginTop="16dp"

@@ -35,7 +35,7 @@ public class Connection extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private Boolean startTimer = false;
     private Boolean startTimer2 = true;
-    private long secondsRemaining = 1500;
+    private long secondsRemaining = 1000;
     private SharedPreferences sharedPreferences;
     Database database;
     User user;
@@ -77,11 +77,15 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
-        //database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
-        //database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
-        //database.createChat("2", "Andrew2");
-        //database.addMsg("Ciao", "2", "2");
-        //database.addMsg("We", "aaaaa", "1");
+        boolean createSample = false;
+        if(createSample){
+            database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
+            database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
+            database.createChat("2", "Andrew2");
+            database.addMsg("Ciao", "2", "2");
+            database.addMsg("We", "aaaaa", "2");
+        }
+
         //connectionController.createGroup();
         //bluetoothScanner.startBLEScan();
 
@@ -172,8 +176,8 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                fragment = new LoginFragment().newInstance(connectionController, database, chatController);
                 //fragment = new HomeFragment().newInstance(connectionController, database, chatController);
-                fragment=new SignupFragment().newInstance();
                 loadFragment(true);
                 startTimer2 = false;
             }

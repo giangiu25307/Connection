@@ -9,6 +9,19 @@
         android:layout_height="match_parent"
         android:background="?attr/layoutBackground">
 
+        <TextView
+            android:id="@+id/textView0Chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="There is nothing here"
+            android:textColor="?attr/textColor"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/chatRecyclerView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chatToolbarLayout" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/chatToolbarLayout"
             android:layout_width="match_parent"
@@ -25,6 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:fontFamily="sans-serif"
                 android:text="Chat (1)"
                 android:textColor="?attr/textColor"
                 android:textSize="21sp"
@@ -62,25 +76,6 @@
                 app:layout_constraintStart_toEndOf="@+id/totalChat"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/requestTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:background="@drawable/rounded_black_border"
-                android:paddingHorizontal="15dp"
-                android:paddingVertical="5dp"
-                android:text="1 request"
-                android:textColor="?attr/textColor"
-                android:textSize="12sp"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageView2"
-                app:layout_constraintHorizontal_bias="0.38"
-                app:layout_constraintStart_toEndOf="@+id/totalChat"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.529" />
-
             <LinearLayout
                 android:id="@+id/requestLinearLayout"
                 android:layout_width="wrap_content"
@@ -101,6 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="sans-serif"
                     android:text="12"
                     android:textColor="?attr/textColor" />
 
@@ -109,6 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="sans-serif"
                     android:paddingStart="2.5dp"
                     android:text="request"
                     android:textColor="?attr/textColor" />

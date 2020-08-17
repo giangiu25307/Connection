@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,15 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.connection.ChatActivity;
-import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
-import com.example.connection.Controller.Task;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class MapFragment extends Fragment {

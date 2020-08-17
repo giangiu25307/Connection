@@ -1,6 +1,8 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -21,15 +23,14 @@ import com.example.connection.R;
 import com.google.android.material.bottomnavigation.BottomNavigationMenu;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 public class HomeFragment extends Fragment {
 
-    ChipNavigationBar chipNavigationBar;
     Fragment fragment;
     ConnectionController connectionController;
     Database database;
     ChatController chatController;
+    BottomNavigationView bottomNavigationMenu;
 
     public HomeFragment() {
 
@@ -51,8 +52,9 @@ public class HomeFragment extends Fragment {
         //chipNavigationBar = view.findViewById(R.id.chip_navigation_bar);
         System.out.println("Fragment creato");
 
-        BottomNavigationView bottomNavigationMenu = view.findViewById(R.id.bottomNavigationMenu);
+        bottomNavigationMenu = view.findViewById(R.id.bottomNavigationMenu);
         bottomNavigationMenu.setOnNavigationItemSelectedListener(bottomNavigationMenuListener);
+        bottomNavigationMenu.setItemIconTintList(null);
 
         if (savedInstanceState == null && Connection.fragmentName.equals("MAP")) {
             bottomNavigationMenu.getMenu().getItem(0).setChecked(true);
@@ -105,16 +107,16 @@ public class HomeFragment extends Fragment {
 
             switch (item.getItemId()){
                 case R.id.map:
-                    fragment = new MapFragment().newInstance(connectionController, database);
                     Connection.fragmentName = "MAP";
+                    fragment = new MapFragment().newInstance(connectionController, database);
                     break;
                 case R.id.chat:
-                    fragment = new ChatFragment().newInstance(database, chatController);
                     Connection.fragmentName = "CHAT";
+                    fragment = new ChatFragment().newInstance(database, chatController);
                     break;
                 case R.id.settings:
-                    fragment = new SettingsFragment().newInstance(connectionController, database, chatController);
                     Connection.fragmentName = "SETTINGS";
+                    fragment = new SettingsFragment().newInstance(connectionController, database, chatController);
                     break;
                 default:
                     break;

@@ -6,8 +6,9 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +20,13 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.connection.ChatActivity;
+import com.example.connection.View.ChatActivity;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Controller.Task;
 import com.example.connection.R;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -37,7 +37,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
     private Context context;
     private Cursor chatCursor, userCursor;
     private Database database;
-    private Bitmap bitmap;
+    private Bitmap bitmap, bitmap2;
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     Date date=new Date();
     ChatController chatController;
@@ -97,14 +97,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
 
         if(profilePic.exists()){
 
-            bitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circle);
+            bitmap2 = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
+            BitmapDrawable layer1 = new BitmapDrawable(context.getResources(), bitmap);
+            BitmapDrawable layer2 = new BitmapDrawable(context.getResources(), bitmap2);
+            Drawable[] layers = {layer1, layer2};
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
             ImageView profilePicImageView = holder.profilePic;
-            profilePicImageView.setImageBitmap(bitmap);
+            profilePicImageView.setImageDrawable(layerDrawable);
+            //bitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
+
         }
 
         userCursor = database.getLastMessageChat(Task.TaskEntry.ID_CHAT);
         //String timeLastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATE));
-
 
         holder.itemView.setTag(id);
 

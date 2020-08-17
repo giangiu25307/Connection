@@ -1,4 +1,4 @@
-package com.example.connection;
+package com.example.connection.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.Database;
+import com.example.connection.R;
 
 public class ChatActivity extends AppCompatActivity {
 
