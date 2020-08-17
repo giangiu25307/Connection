@@ -71,7 +71,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/next"
         style="@style/nextButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintTop_toBottomOf="@+id/next"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button

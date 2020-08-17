@@ -5,9 +5,21 @@ import java.net.UnknownHostException;
 
 public class User {
 
-
-    String  username, mail, gender, name, surname, country, city,profilePic,number, age,idUser;
+    String  username;
+    String mail;
+    String gender;
+    String name;
+    String surname;
+    String country;
+    String city;
+    String profilePic;
+    String number;
+    String age;
+    String idUser;
+    String password;
     InetAddress inetAddress;
+
+    public User(){}
 
     public User(String idUser, String username, String mail, String gender, String name, String surname, String country, String city, String number, String age, String profilePic) {
         this.idUser = idUser;
@@ -121,6 +133,14 @@ public class User {
 
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

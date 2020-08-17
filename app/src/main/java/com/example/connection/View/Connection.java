@@ -172,8 +172,8 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                fragment = new HomeFragment().newInstance(connectionController, database, chatController);
-                //fragment=new SignupFragment().newInstance();
+                //fragment = new HomeFragment().newInstance(connectionController, database, chatController);
+                fragment=new SignupFragment().newInstance();
                 loadFragment(true);
                 startTimer2 = false;
             }

@@ -1,30 +1,33 @@
 package com.example.connection.Adapter;
 
 import android.content.Context;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.example.connection.Model.User;
 import com.example.connection.R;
+
+import java.util.regex.Pattern;
 
 
 public class SliderAdapter extends PagerAdapter {
 
-    Context context;
-    ProgressBar progressBar;
-    int[] fragments = {
+
+    private Context context;
+    private int[] fragments = {
             R.layout.signup_slide_fragment1,
             R.layout.signup_slide_fragment2
     };
-    View view;
+    private View view;
 
-    public SliderAdapter(Context context,ProgressBar progressBar) { //progress bar passata per cambiare lo stato di essa, tuttavia magari non serve farlo così
+    public SliderAdapter(Context context) {
         this.context = context;
-        progressBar.setMax(fragments.length);
     }
 
     @Override
@@ -40,7 +43,6 @@ public class SliderAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        //progressBar.setProgress(position);
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         view = layoutInflater.inflate(fragments[position], container, false);
         container.addView(view);
