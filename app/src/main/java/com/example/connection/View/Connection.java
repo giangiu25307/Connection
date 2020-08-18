@@ -77,7 +77,7 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
-        boolean createSample = false;
+        boolean createSample = true;
         if(createSample){
             database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
             database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
@@ -183,6 +183,7 @@ public class Connection extends AppCompatActivity {
             }
         };
     }
+
 
     @Override
     protected void onResume() {

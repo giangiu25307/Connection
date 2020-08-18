@@ -261,6 +261,26 @@ public class Database extends SQLiteOpenHelper {
         return user;
     }
 
+    public Cursor getProfilePic(){
+        db=this.getWritableDatabase();
+        String query = "SELECT " + Task.TaskEntry.PROFILE_PIC +
+                " FROM "+ Task.TaskEntry.USER +
+                " WHERE "+ Task.TaskEntry.ID_USER + "= 2";
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }else{
+            return null;
+        }
+        return c;
+    }
+
+    public void setProfilePic(String profilePic){
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
+        db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER+" = "+"2",null);
+    }
+
     public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String profilePic){
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
