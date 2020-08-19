@@ -2,6 +2,7 @@ package com.example.connection.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +40,7 @@ public class ChatActivity extends AppCompatActivity {
     private ImageView sendView;
     private RecyclerView recyclerView;
     private Database database;
+    private ConstraintLayout chatBackground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         id = getIntent().getStringExtra("idChat");
         String name = getIntent().getStringExtra("name");
-        Database database = new Database(this);
+        database = new Database(this);
         TextView nameTextView = findViewById(R.id.nameUser);
         nameTextView.setText(name);
         ImageView imageView = findViewById(R.id.backImageView);
@@ -60,7 +62,7 @@ public class ChatActivity extends AppCompatActivity {
         });
         message_input = findViewById(R.id.message_input);
         sendView = findViewById(R.id.sendView);
-        database=new Database(this);
+        chatBackground = findViewById(R.id.chatBackground);
         message_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -154,10 +156,10 @@ public class ChatActivity extends AppCompatActivity {
     private void setBackgroundImage(){
         Cursor c=database.getBacgroundImage();
         if(c==null)return;
-        c.moveToFirst();
+        c.moveToLast();
         Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
         Drawable draw = new BitmapDrawable(getResources(), bitmap);
-        recyclerView.setBackground(draw);
+        chatBackground.setBackground(draw);
         c.close();
     }
 

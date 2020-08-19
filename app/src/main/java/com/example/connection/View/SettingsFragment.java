@@ -42,6 +42,7 @@ import com.example.connection.R;
 
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.StringTokenizer;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
@@ -52,7 +53,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private Database database;
     private ChatController chatController;
     private int theme = R.style.AppTheme;
-    private TextView themeOptionDescription;
+    private TextView themeOptionDescription,wallpaperOptionDescription;
     private Button editProfileButton;
     private int bgColor = R.color.mediumWhite;
     private int PICK_IMAGE = 1;
@@ -109,7 +110,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         profilePic = view.findViewById(R.id.profilePic);
 
+        wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
+
         setProfilePic();
+
+        Cursor c=database.getBacgroundImage();
+        if(c!=null||c.getCount()!=0) {
+            c.moveToLast();
+            String imagePath = c.getString(0);
+            String string[] = imagePath.split("/");
+            wallpaperOptionDescription.setText(string[string.length - 1]);
+        }
         return view;
     }
 
@@ -407,6 +418,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     profilePics.setImageDrawable(draw);
                 }else{
                     database.setBacgroundImage(imagePath);
+                    String string[] = imagePath.split("/");
+                    wallpaperOptionDescription.setText(string[string.length-1]);
                 }
                 cursor.close();
             }
