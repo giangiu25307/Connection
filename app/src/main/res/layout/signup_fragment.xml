@@ -36,7 +36,7 @@
         app:layout_constraintVertical_bias="0.19999999" />
 
     <Button
-        android:id="@+id/loginButton"
+        android:id="@+id/nextButton"
         style="@style/nextButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -70,13 +70,14 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="325dp"
         android:layout_height="22dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton"
-        app:layout_constraintVertical_bias="0.941" />
+        app:layout_constraintTop_toBottomOf="@+id/nextButton"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <androidx.viewpager.widget.ViewPager
+    <com.example.connection.View.MyViewPager
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="250dp"
