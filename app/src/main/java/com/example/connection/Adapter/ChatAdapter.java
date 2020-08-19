@@ -93,7 +93,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
         String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
         String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
         String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
-        File profilePic = new  File(profilePicPosition);
+        File profilePic = new File(profilePicPosition);
 
         if(profilePic.exists()){
 

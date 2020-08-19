@@ -81,13 +81,13 @@
                 app:layout_constraintVertical_bias="0.0">
 
                 <ImageView
-                    android:id="@+id/refreshButton"
+                    android:id="@+id/filterButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="5dp"
                     android:layout_weight="1"
                     android:src="@drawable/ic_filter"
-                    android:tint="?attr/iconTint" />
+                    app:tint="?attr/iconTint" />
 
                 <ImageView
                     android:id="@+id/gpsButton"
@@ -97,7 +97,7 @@
                     android:layout_weight="1"
                     android:clickable="true"
                     android:src="@drawable/ic_gps"
-                    android:tint="?attr/iconTint" />
+                    app:tint="?attr/iconTint" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

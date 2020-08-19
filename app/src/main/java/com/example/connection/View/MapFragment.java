@@ -5,15 +5,21 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.connection.Controller.ConnectionController;
@@ -23,11 +29,12 @@ import com.example.connection.R;
 
 import java.util.ArrayList;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements View.OnClickListener{
 
     ConnectionController connectionController;
     User user;
     Database database;
+    ImageView filterImage;
 
     public MapFragment() {
 
@@ -52,6 +59,9 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
           @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.map_fragment, null);
+
+            filterImage = view.findViewById(R.id.filterButton);
+            filterImage.setOnClickListener(this);
 
             Cursor c = connectionController.getAllClientList().get();
             c.moveToFirst();
@@ -87,5 +97,78 @@ public class MapFragment extends Fragment {
             });
         return view;
         }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.filterButton:
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                dialogBuilder.setView(R.layout.filter_alert_dialog);
+                final AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
+
+                final TextView genderTextView, ageTextView, cancelTextView, applyTextView;
+                genderTextView = alertDialog.findViewById(R.id.genderTextView);
+                ageTextView = alertDialog.findViewById(R.id.ageTextView);
+                cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
+                applyTextView = alertDialog.findViewById(R.id.applyTextView);
+
+                genderTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder dialogBuilder2 = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                        dialogBuilder2.setView(R.layout.gender_alert_dialog);
+                        final AlertDialog alertDialog = dialogBuilder2.create();
+                        alertDialog.show();
+                        final TextView cancelTextView, applyTextView;
+
+                        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
+                        applyTextView = alertDialog.findViewById(R.id.applyTextView);
+
+                        cancelTextView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.dismiss();
+                            }
+                        });
+
+                        applyTextView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        });
+                    }
+                });
+
+                ageTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+                cancelTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                applyTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                break;
+            case R.id.gpsButton:
+                break;
+            default:
+                break;
+        }
     }
+
+}
 
