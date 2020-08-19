@@ -104,6 +104,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
             Drawable[] layers = {layer1, layer2};
             LayerDrawable layerDrawable = new LayerDrawable(layers);
             ImageView profilePicImageView = holder.profilePic;
+            profilePicImageView.setImageTintList(null);
             profilePicImageView.setImageDrawable(layerDrawable);
             //bitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
 

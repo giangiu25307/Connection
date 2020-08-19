@@ -79,13 +79,13 @@
                         app:layout_constraintVertical_bias="0.0" />
 
                     <ImageView
-                        android:id="@+id/imageView"
+                        android:id="@+id/profilePic"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:tint="?attr/iconTint"
+                        app:tint="?attr/iconTint"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -106,7 +106,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toEndOf="@+id/imageView"
+                        app:layout_constraintStart_toEndOf="@+id/profilePic"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -143,7 +143,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toEndOf="@+id/imageView"
+                        app:layout_constraintStart_toEndOf="@+id/profilePic"
                         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
                     <Button
@@ -164,7 +164,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.449"
-                        app:layout_constraintStart_toEndOf="@+id/imageView"
+                        app:layout_constraintStart_toEndOf="@+id/profilePic"
                         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -215,6 +215,7 @@
                         android:layout_marginTop="12dp"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/gray_settings_background_layout"
+                        android:clickable="true"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -228,13 +229,13 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
                             android:layout_marginBottom="12dp"
-                            android:tint="?attr/iconTint"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_wallpaper" />
+                            app:srcCompat="@drawable/ic_wallpaper"
+                            app:tint="?attr/iconTint" />
 
                         <TextView
                             android:id="@+id/wallpaperOption"
@@ -289,7 +290,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
                             android:layout_marginBottom="12dp"
-                            android:tint="?attr/iconTint"
+                            app:tint="?attr/iconTint"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
@@ -392,7 +393,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
                             android:layout_marginBottom="12dp"
-                            android:tint="?attr/iconTint"
+                            app:tint="?attr/iconTint"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"

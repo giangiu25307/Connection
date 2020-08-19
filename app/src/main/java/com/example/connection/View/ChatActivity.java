@@ -2,6 +2,7 @@ package com.example.connection.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,7 +10,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,11 +33,14 @@ import com.example.connection.R;
 
 public class ChatActivity extends AppCompatActivity {
 
-    SharedPreferences sharedPreferences;
-    ChatController chatController = ChatController.getInstance();
-    String id;
-    EditText message_input;
-    ImageView sendView;
+    private SharedPreferences sharedPreferences;
+    private ChatController chatController = ChatController.getInstance();
+    private String id;
+    private EditText message_input;
+    private ImageView sendView;
+    private RecyclerView recyclerView;
+    private Database database;
+    private ConstraintLayout chatBackground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +50,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         id = getIntent().getStringExtra("idChat");
         String name = getIntent().getStringExtra("name");
-        Database database = new Database(this);
+        database = new Database(this);
         TextView nameTextView = findViewById(R.id.nameUser);
         nameTextView.setText(name);
         ImageView imageView = findViewById(R.id.backImageView);
@@ -54,6 +62,7 @@ public class ChatActivity extends AppCompatActivity {
         });
         message_input = findViewById(R.id.message_input);
         sendView = findViewById(R.id.sendView);
+        chatBackground = findViewById(R.id.chatBackground);
         message_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -134,13 +143,24 @@ public class ChatActivity extends AppCompatActivity {
 
     private void setupRecyclerView(Database database, String id) {
         Cursor messageCursor = database.getAllMsg(id);
-        RecyclerView recyclerView = findViewById(R.id.messageRecyclerView);
+        recyclerView = findViewById(R.id.messageRecyclerView);
+        setBackgroundImage();
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         MessageAdapter chatAdapter = new MessageAdapter(this, database, id, messageCursor,linearLayoutManager);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.scrollToPosition(messageCursor.getCount());
+    }
+
+    private void setBackgroundImage(){
+        Cursor c=database.getBacgroundImage();
+        if(c==null)return;
+        c.moveToLast();
+        Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
+        Drawable draw = new BitmapDrawable(getResources(), bitmap);
+        chatBackground.setBackground(draw);
+        c.close();
     }
 
 }

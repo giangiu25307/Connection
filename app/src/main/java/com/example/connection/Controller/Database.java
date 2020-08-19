@@ -67,10 +67,15 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER "
                 + ")";
 
+        String BACKGROUND_CHAT_IMAGES = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.BACKGROUND_CHAT_IMAGES + " ( "
+                + Task.TaskEntry.BACKGROUND_IMAGE + " TEXT NOT NULL "
+                + ")";
+
         database.execSQL(CREATE_USER_TABLE);
         database.execSQL(CREATE_MESSAGE_TABLE);
         database.execSQL(CREATE_CHAT_TABLE);
         database.execSQL(CREATE_GLOBAL_MESSAGE_TABLE);
+        database.execSQL(BACKGROUND_CHAT_IMAGES);
 
 
         /*String CREATE_GROUP_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GROUP_MESSAGE + " ( "
@@ -211,6 +216,25 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
+    public Cursor getBacgroundImage(){
+        db=this.getWritableDatabase();
+        String query = "SELECT " + Task.TaskEntry.BACKGROUND_IMAGE +
+                " FROM "+ Task.TaskEntry.BACKGROUND_CHAT_IMAGES ;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToLast();
+        }else{
+            return null;
+        }
+        return c;
+    }
+
+    public void setBacgroundImage(String bgImage){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.BACKGROUND_IMAGE,bgImage);
+        db.insert(Task.TaskEntry.BACKGROUND_CHAT_IMAGES,null, msgValues);
+    }
 
     //globale
     public void addGlobalMsg(String msg, String idSender) {
@@ -259,6 +283,26 @@ public class Database extends SQLiteOpenHelper {
         user[9]=c.getString(10);
         user[10]=c.getString(11);
         return user;
+    }
+
+    public Cursor getProfilePic(){
+        db=this.getWritableDatabase();
+        String query = "SELECT " + Task.TaskEntry.PROFILE_PIC +
+                " FROM "+ Task.TaskEntry.USER +
+                " WHERE "+ Task.TaskEntry.ID_USER + "= 2";
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }else{
+            return null;
+        }
+        return c;
+    }
+
+    public void setProfilePic(String profilePic){
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
+        db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER+" = "+"2",null);
     }
 
     public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String profilePic){

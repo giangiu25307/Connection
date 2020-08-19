@@ -1,16 +1,29 @@
 package com.example.connection.View;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -25,6 +39,10 @@ import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.R;
+
+import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.StringTokenizer;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
@@ -35,9 +53,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private Database database;
     private ChatController chatController;
     private int theme = R.style.AppTheme;
-    private TextView themeOptionDescription;
+    private TextView themeOptionDescription,wallpaperOptionDescription;
     private Button editProfileButton;
     private int bgColor = R.color.mediumWhite;
+    private int PICK_IMAGE = 1;
+    private ImageView profilePic,profilePics;
+    private String previousProfilePic="";
+    private boolean isBg=false;
+    private ConstraintLayout wallpaperSettings;
+
 
     public SettingsFragment() {
 
@@ -81,6 +105,22 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         changePasswordSettings = view.findViewById(R.id.changePasswordSettings);
         changePasswordSettings.setOnClickListener(this);
 
+        wallpaperSettings=view.findViewById(R.id.wallpaperSettings);
+        wallpaperSettings.setOnClickListener(this);
+
+        profilePic = view.findViewById(R.id.profilePic);
+
+        wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
+
+        setProfilePic();
+
+        Cursor c=database.getBacgroundImage();
+        if(c!=null||c.getCount()!=0) {
+            c.moveToLast();
+            String imagePath = c.getString(0);
+            String string[] = imagePath.split("/");
+            wallpaperOptionDescription.setText(string[string.length - 1]);
+        }
         return view;
     }
 
@@ -96,6 +136,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.changePasswordSettings:
                 changePassword(dialogBuilder);
+                break;
+            case R.id.wallpaperSettings:
+                System.out.println("si");
+                chooseBackgroundImage();
                 break;
             default:
                 break;
@@ -127,10 +171,25 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         final TextView cancelTextView, applyTextView;
         cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
         applyTextView = alertDialog.findViewById(R.id.applyTextView);
+        profilePics = alertDialog.findViewById(R.id.profilePic);
+        if(!previousProfilePic.equals("")){
+            Bitmap bitmap = BitmapFactory.decodeFile(previousProfilePic);
+            Drawable draw = new BitmapDrawable(getResources(), bitmap);
+            profilePics.setImageTintList(null);
+            profilePics.setImageDrawable(draw);
+        }
+        profilePics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestStoragePermission();
+                chooseImage();
+            }
+        });
 
         cancelTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                database.setProfilePic(previousProfilePic);
                 alertDialog.dismiss();
             }
         });
@@ -138,7 +197,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         applyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                setProfilePic();
+                alertDialog.dismiss();
             }
         });
     }
@@ -322,6 +382,71 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();
+    }
+
+    private void chooseImage(){
+        isBg=false;
+        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+    }
+
+    private void chooseBackgroundImage(){
+        isBg=true;
+        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE) {
+            if(resultCode == Activity.RESULT_OK){
+                // Let's read picked image data - its URI
+                Uri pickedImage = data.getData();
+                // Let's read picked image path using content resolver
+                String[] filePath = { MediaStore.MediaColumns.DATA };
+                Cursor cursor = getContext().getContentResolver().query(pickedImage, filePath, null, null, null);
+                if(cursor==null)return;
+                cursor.moveToFirst();
+                String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                if(!isBg) {
+                    database.setProfilePic(imagePath);
+                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                    Drawable draw = new BitmapDrawable(getResources(), bitmap);
+                    profilePics.setImageTintList(null);
+                    profilePics.setImageDrawable(draw);
+                }else{
+                    database.setBacgroundImage(imagePath);
+                    String string[] = imagePath.split("/");
+                    wallpaperOptionDescription.setText(string[string.length-1]);
+                }
+                cursor.close();
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }
+
+    private void setProfilePic(){
+        Cursor c=database.getProfilePic();
+        if(c==null||c.getCount()==0)return;
+        c.moveToFirst();
+        previousProfilePic=c.getString(0);
+        Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
+        Drawable draw = new BitmapDrawable(getResources(), bitmap);
+        profilePic.setImageTintList(null);
+        profilePic.setImageDrawable(draw);
+        c.close();
+    }
+
+    private void requestStoragePermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(Objects.requireNonNull(getActivity()), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_IMAGE);
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_IMAGE);
+        }
     }
 
 }
