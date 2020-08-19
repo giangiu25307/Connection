@@ -56,8 +56,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private Button editProfileButton;
     private int bgColor = R.color.mediumWhite;
     private int PICK_IMAGE = 1;
-    private ImageView profilePic;
-    private ConstraintLayout constraintLayout;
+    private ImageView profilePic,profilePics;
+    private String previousProfilePic="";
+    private boolean isBg=false;
+    private ConstraintLayout wallpaperSettings;
+
 
     public SettingsFragment() {
 
@@ -101,9 +104,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         changePasswordSettings = view.findViewById(R.id.changePasswordSettings);
         changePasswordSettings.setOnClickListener(this);
 
+        wallpaperSettings=view.findViewById(R.id.wallpaperSettings);
+        wallpaperSettings.setOnClickListener(this);
+
         profilePic = view.findViewById(R.id.profilePic);
-        constraintLayout=view.findViewById(R.id.constraintLayout);
-        //setProfilePic();
+
+        setProfilePic();
         return view;
     }
 
@@ -119,6 +125,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.changePasswordSettings:
                 changePassword(dialogBuilder);
+                break;
+            case R.id.wallpaperSettings:
+                System.out.println("si");
+                chooseBackgroundImage();
                 break;
             default:
                 break;
@@ -148,12 +158,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         alertDialog.show();
 
         final TextView cancelTextView, applyTextView;
-        final ImageView profilePic;
         cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
         applyTextView = alertDialog.findViewById(R.id.applyTextView);
-        profilePic = alertDialog.findViewById(R.id.profilePic);
-
-        profilePic.setOnClickListener(new View.OnClickListener() {
+        profilePics = alertDialog.findViewById(R.id.profilePic);
+        if(!previousProfilePic.equals("")){
+            Bitmap bitmap = BitmapFactory.decodeFile(previousProfilePic);
+            Drawable draw = new BitmapDrawable(getResources(), bitmap);
+            profilePics.setImageTintList(null);
+            profilePics.setImageDrawable(draw);
+        }
+        profilePics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestStoragePermission();
@@ -164,6 +178,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         cancelTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                database.setProfilePic(previousProfilePic);
                 alertDialog.dismiss();
             }
         });
@@ -171,7 +186,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         applyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                setProfilePic();
+                alertDialog.dismiss();
             }
         });
     }
@@ -358,6 +374,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void chooseImage(){
+        isBg=false;
+        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+    }
+
+    private void chooseBackgroundImage(){
+        isBg=true;
         Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
@@ -376,9 +399,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 if(cursor==null)return;
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-                database.setProfilePic(imagePath);
+                if(!isBg) {
+                    database.setProfilePic(imagePath);
+                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                    Drawable draw = new BitmapDrawable(getResources(), bitmap);
+                    profilePics.setImageTintList(null);
+                    profilePics.setImageDrawable(draw);
+                }else{
+                    database.setBacgroundImage(imagePath);
+                }
                 cursor.close();
-                setProfilePic();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
@@ -388,8 +418,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     private void setProfilePic(){
         Cursor c=database.getProfilePic();
-        if(c==null)return;
+        if(c==null||c.getCount()==0)return;
         c.moveToFirst();
+        previousProfilePic=c.getString(0);
         Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
         Drawable draw = new BitmapDrawable(getResources(), bitmap);
         profilePic.setImageTintList(null);

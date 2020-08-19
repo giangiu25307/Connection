@@ -67,10 +67,15 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER "
                 + ")";
 
+        String BACKGROUND_CHAT_IMAGES = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.BACKGROUND_CHAT_IMAGES + " ( "
+                + Task.TaskEntry.BACKGROUND_IMAGE + " TEXT NOT NULL "
+                + ")";
+
         database.execSQL(CREATE_USER_TABLE);
         database.execSQL(CREATE_MESSAGE_TABLE);
         database.execSQL(CREATE_CHAT_TABLE);
         database.execSQL(CREATE_GLOBAL_MESSAGE_TABLE);
+        database.execSQL(BACKGROUND_CHAT_IMAGES);
 
 
         /*String CREATE_GROUP_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GROUP_MESSAGE + " ( "
@@ -211,6 +216,25 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
+    public Cursor getBacgroundImage(){
+        db=this.getWritableDatabase();
+        String query = "SELECT " + Task.TaskEntry.BACKGROUND_IMAGE +
+                " FROM "+ Task.TaskEntry.BACKGROUND_CHAT_IMAGES ;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToLast();
+        }else{
+            return null;
+        }
+        return c;
+    }
+
+    public void setBacgroundImage(String bgImage){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.BACKGROUND_IMAGE,bgImage);
+        db.insert(Task.TaskEntry.BACKGROUND_CHAT_IMAGES,null, msgValues);
+    }
 
     //globale
     public void addGlobalMsg(String msg, String idSender) {
