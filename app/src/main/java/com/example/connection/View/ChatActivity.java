@@ -155,7 +155,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void setBackgroundImage(){
         Cursor c=database.getBacgroundImage();
-        if(c==null)return;
+        if(c==null||c.getCount()==0)return;
         c.moveToLast();
         Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
         Drawable draw = new BitmapDrawable(getResources(), bitmap);

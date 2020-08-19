@@ -113,9 +113,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
 
         setProfilePic();
+        
+        requestStoragePermission();
 
         Cursor c=database.getBacgroundImage();
-        if(c!=null||c.getCount()!=0) {
+        if(c!=null && c.getCount()>0) {
             c.moveToLast();
             String imagePath = c.getString(0);
             String string[] = imagePath.split("/");
@@ -181,7 +183,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         profilePics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestStoragePermission();
                 chooseImage();
             }
         });
