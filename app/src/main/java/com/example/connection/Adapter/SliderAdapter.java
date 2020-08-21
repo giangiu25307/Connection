@@ -22,7 +22,8 @@ public class SliderAdapter extends PagerAdapter {
     private Context context;
     private int[] fragments = {
             R.layout.signup_slide_fragment1,
-            R.layout.signup_slide_fragment2
+            R.layout.signup_slide_fragment2,
+            R.layout.signup_slide_fragment3
     };
     private View view;
 

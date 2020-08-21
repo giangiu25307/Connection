@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -42,7 +43,7 @@ public class SignupFragment extends Fragment {
 
     private int currentPage;
     private MyViewPager viewPager;
-    private User user=new User();
+    private User user = new User();
 
     public SignupFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController) {
         SignupFragment signupFragment = new SignupFragment();
@@ -82,53 +83,55 @@ public class SignupFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checker())viewPager.setCurrentItem(currentPage + 1);
+                if (checker()) viewPager.setCurrentItem(currentPage + 1);
                 else viewPager.setCurrentItem(currentPage);
             }
         });
         return view;
     }
 
-    private boolean checker(){
+    private boolean checker() {
         switch (currentPage) {
             default:
-                return false;
+                break;
             case 0:
+                boolean emailCheck = true, passwordCheck = true;
                 EditText email = viewPager.findViewById(R.id.email);
                 EditText password = viewPager.findViewById(R.id.password);
                 String mail = email.getText().toString().trim(), pass = password.getText().toString().trim();
-                System.out.println(pass);
-                if (Patterns.EMAIL_ADDRESS.matcher(mail).matches() && regexPassword.matcher(pass).matches()) {
-                    user.setMail(mail);
-                    user.setPassword(pass);
-                    email.setBackgroundColor(0);
-                    password.setBackgroundColor(0);
-                    viewPager.setPagingEnabled(true);
-                    return true;
-                } else {
-                    if (!Patterns.EMAIL_ADDRESS.matcher(mail).matches()){
-                        System.out.println("Inserire una Email valida");
-                        email.setBackground(getResources().getDrawable(R.drawable.input_data_background_wrong));
-                        //email.setBackgroundColor(getResources().getColor(R.color.red));
-                    }else{
-                        email.setBackgroundColor(0);
-                    }
-                    if (!regexPassword.matcher(pass).matches()) {
-                        System.out.println("Inserire una password valida,almeno un carattere numerico, lameno un carattere speciale fra !?&%$#, almeno una lettera maiuscola, almeno una lettera minuscola, almeno 8 caratteri");
-                        password.setBackground(getResources().getDrawable(R.drawable.input_data_background_wrong));
-                        //password.setBackgroundColor(getResources().getColor(R.color.red));
-                    }else{
-                        password.setBackgroundColor(0);
-                    }
+                System.out.println(mail + pass);
+                if (!Patterns.EMAIL_ADDRESS.matcher(mail).matches()) {
+                    System.out.println("Inserire una Email valida");
+                    //email.setBackground(getResources().getDrawable(R.drawable.input_data_background_wrong));
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    //email.setBackgroundColor(getResources().getColor(R.color.red));
                     viewPager.setPagingEnabled(false);
-                    return false;
+                    emailCheck = false;
+                } else {
+                    user.setMail(mail);
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    emailCheck = true;
                 }
+                if (!regexPassword.matcher(pass).matches()) {
+                    System.out.println("Inserire una password valida, almeno un carattere numerico, almeno un carattere speciale fra !?&%$#, almeno una lettera maiuscola, almeno una lettera minuscola, almeno 8 caratteri");
+                    //password.setBackground(getResources().getDrawable(R.drawable.input_data_background_wrong));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    //password.setBackgroundColor(getResources().getColor(R.color.red));
+                    viewPager.setPagingEnabled(false);
+                    passwordCheck = false;
+                } else {
+                    user.setPassword(pass);
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    passwordCheck = true;
+                }
+                viewPager.setPagingEnabled(true);
+                return emailCheck && passwordCheck;
+
             case 1:
-                //stesso procedimento
-                break;
-        }
-        return false;
+            return true;
     }
+        return false;
+}
 
     public void setConnectionController(ConnectionController connectionController) {
         this.connectionController = connectionController;

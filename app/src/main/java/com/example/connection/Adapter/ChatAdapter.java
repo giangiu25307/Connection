@@ -99,8 +99,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
 
             bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circle);
             bitmap2 = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
-            BitmapDrawable layer1 = new BitmapDrawable(context.getResources(), bitmap);
-            BitmapDrawable layer2 = new BitmapDrawable(context.getResources(), bitmap2);
+            BitmapDrawable layer1 = new BitmapDrawable(context.getResources(), bitmap2);
+            BitmapDrawable layer2 = new BitmapDrawable(context.getResources(), bitmap);
             Drawable[] layers = {layer1, layer2};
             LayerDrawable layerDrawable = new LayerDrawable(layers);
             ImageView profilePicImageView = holder.profilePic;
