@@ -31,6 +31,7 @@ public class Task {
         public static final String LAST_MESSAGE = "last_message";
         public static final String NOT_READ_MESSAGE = "not_read_message";
         public static final String ACCEPT = "accept";
+        public static final String MESSAGES_ACCEPTED = "message_accept";
         public static final String BACKGROUND_CHAT_IMAGES = "BACKGROUND_CHAT_IMAGES";
         public static final String BACKGROUND_IMAGE = "BACKGROUND_IMAGE";
         /*public static final String GROUPS = "GROUPS";

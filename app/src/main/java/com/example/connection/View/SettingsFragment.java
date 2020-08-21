@@ -432,7 +432,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private void setProfilePic(){
         Cursor c=database.getProfilePic();
         if(c==null||c.getCount()==0){
-            profilePics.setImageTintList(ColorStateList.valueOf(android.R.attr.iconTint));
+            profilePic.setImageTintList(ColorStateList.valueOf(android.R.attr.iconTint));
             return;
         }
         c.moveToFirst();

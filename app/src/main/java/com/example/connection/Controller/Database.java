@@ -39,7 +39,8 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.AGE + " TEXT NOT NULL, "
                 + Task.TaskEntry.PROFILE_PIC + " TEXT NOT NULL, "
                 + Task.TaskEntry.IP + " TEXT, "
-                + Task.TaskEntry.ACCEPT + " TEXT "
+                + Task.TaskEntry.ACCEPT + " TEXT, "
+                + Task.TaskEntry.MESSAGES_ACCEPTED + " TEXT "
                 + ")";
 
         String CREATE_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.MESSAGE + " ( "
@@ -236,6 +237,17 @@ public class Database extends SQLiteOpenHelper {
         db.insert(Task.TaskEntry.BACKGROUND_CHAT_IMAGES,null, msgValues);
     }
 
+    public boolean notOnlyOtherMessages(String id){
+        String query = "SELECT " + Task.TaskEntry.MSG +
+                " FROM "+ Task.TaskEntry.MESSAGE +
+                " WHERE " + Task.TaskEntry.ID_SENDER + "=" + 0 + " and " + Task.TaskEntry.ID_CHAT + " = " + id;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }else return false;
+        return c.getCount() > 0;
+    }
+
     //globale
     public void addGlobalMsg(String msg, String idSender) {
         ContentValues msgValues = new ContentValues();
@@ -319,6 +331,7 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.AGE,age);
         msgValues.put(Task.TaskEntry.IP,inetAddress);
         msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
+        msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED,"true");
         db.insert(Task.TaskEntry.USER, null, msgValues);
         ContentValues ipValues = new ContentValues();
     }
@@ -467,6 +480,23 @@ public class Database extends SQLiteOpenHelper {
         }
         String [] data ={c.getString(c.getColumnIndex((Task.TaskEntry.MAIL))),c.getString(c.getColumnIndex((Task.TaskEntry.PASSWORD)))};
         return data;
+    }
+
+    public void discard(String id){
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED, "false");
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public String getMessageAccepted(String id){
+        String query = "SELECT " + Task.TaskEntry.MESSAGES_ACCEPTED +
+                " FROM "+ Task.TaskEntry.USER+
+                " WHERE "+ Task.TaskEntry.ID_USER +"="+id;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c.getString(0);
     }
 
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
