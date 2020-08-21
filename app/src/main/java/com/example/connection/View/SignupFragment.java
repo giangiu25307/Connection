@@ -2,6 +2,7 @@ package com.example.connection.View;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -23,8 +24,10 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.connection.Adapter.SliderAdapter;
@@ -42,8 +45,9 @@ public class SignupFragment extends Fragment {
     private ConnectionController connectionController;
     private Database database;
     private ChatController chatController;
-    private static final int PICK_IMAGE = 1;
+    private static final int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic;
+    private Button next;
 
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
@@ -78,7 +82,7 @@ public class SignupFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
         SliderAdapter sliderAdapter = new SliderAdapter(this.getContext());
         viewPager.setAdapter(sliderAdapter);
-        Button next = view.findViewById(R.id.nextButton);
+        next = view.findViewById(R.id.nextButton);
 
         ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -100,11 +104,23 @@ public class SignupFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checker()) viewPager.setCurrentItem(currentPage + 1);
-                else viewPager.setCurrentItem(currentPage);
+                if(next.getText().equals("Next")) {
+                    if (checker()) viewPager.setCurrentItem(currentPage + 1);
+                    else viewPager.setCurrentItem(currentPage);
+                }else{
+                    //send user info to server
+                    Fragment fragment = new HomeFragment().newInstance(connectionController, database, chatController);
+                    loadFragment(fragment);
+                }
             }
         });
         return view;
+    }
+
+    public void loadFragment(Fragment newFragment){
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_fragment, newFragment);
+        transaction.commit();
     }
 
     private boolean checker() {
@@ -112,6 +128,7 @@ public class SignupFragment extends Fragment {
             default:
                 return false;
             case 0:
+                next.setText("Next");
                 boolean emailCheck = true, passwordCheck = true, usernameB = true;
                 EditText usernameLabel = viewPager.findViewById(R.id.username);
                 EditText email = viewPager.findViewById(R.id.email);
@@ -161,6 +178,7 @@ public class SignupFragment extends Fragment {
                     return true;
                 } else return false;
             case 1:
+                next.setText("Next");
                 EditText firstNameLabel = viewPager.findViewById(R.id.firstname);
                 EditText surnameLabel = viewPager.findViewById(R.id.surname);
                 if (!user.getName().equals("")) firstNameLabel.setText(user.getName());
@@ -197,24 +215,27 @@ public class SignupFragment extends Fragment {
                 } else return false;
             case 2:
                 profilePic = viewPager.findViewById(R.id.profilePic);
-                EditText gallery = viewPager.findViewById(R.id.gallery);
-                EditText photo = viewPager.findViewById(R.id.takePhoto);
-                final boolean[] galleryB = {false},photoB = {false};
+                AppCompatTextView gallery = viewPager.findViewById(R.id.gallery);
+                AppCompatTextView photo = viewPager.findViewById(R.id.takePhoto);
+
                 gallery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         chooseProfilePic();
-                        galleryB[0] = true;
+                        if(!user.getProfilePic().equals(""))next.setText("Confirm");
+                        else next.setText("Next");
                     }
                 });
                 photo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //manca come aprire la fotocamera
-                        photoB[0]=false;
+                        captureImage();
+                        if(!user.getProfilePic().equals(""))next.setText("Confirm");
+                        else next.setText("Next");
                     }
                 });
-                return galleryB[0]||photoB[0];
+                if(!user.getProfilePic().equals(""))return true;
+                else return false;
         }
     }
 
@@ -228,6 +249,11 @@ public class SignupFragment extends Fragment {
 
     public void setChatController(ChatController chatController) {
         this.chatController = chatController;
+    }
+
+    private void captureImage() {
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        startActivityForResult(intent, CAPTURE_IMAGE);
     }
 
     private void chooseProfilePic() {
@@ -249,7 +275,7 @@ public class SignupFragment extends Fragment {
                 if (cursor == null) return;
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-                database.setProfilePic(imagePath);
+                user.setProfilePic(imagePath);//database.setProfilePic(imagePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 Drawable draw = new BitmapDrawable(getResources(), bitmap);
                 profilePic.setImageTintList(null);
@@ -259,7 +285,46 @@ public class SignupFragment extends Fragment {
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
+        } else if (requestCode == CAPTURE_IMAGE) {
+            if (resultCode == Activity.RESULT_OK){
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+
+                // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+                Uri tempUri = getImageUri(getContext(), photo);
+
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                String imagePath = getRealPathFromURI(tempUri);
+
+                user.setProfilePic(imagePath);//database.setProfilePic(imagePath);
+                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                Drawable draw = new BitmapDrawable(getResources(), bitmap);
+                profilePic.setImageTintList(null);
+                profilePic.setImageDrawable(draw);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
         }
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        Bitmap OutImage = Bitmap.createScaledBitmap(inImage, 1000, 1000,true);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), OutImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        String path = "";
+        if (getContext().getContentResolver() != null) {
+            Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                path = cursor.getString(idx);
+                cursor.close();
+            }
+        }
+        return path;
     }
 
 }
