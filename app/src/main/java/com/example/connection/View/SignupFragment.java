@@ -21,9 +21,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -40,14 +42,14 @@ import com.example.connection.R;
 import java.util.regex.Pattern;
 
 
-public class SignupFragment extends Fragment {
+public class SignupFragment extends Fragment implements View.OnClickListener {
 
     private ConnectionController connectionController;
     private Database database;
     private ChatController chatController;
     private static final int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic;
-    private Button next;
+    private Button next, back;
 
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
@@ -83,6 +85,8 @@ public class SignupFragment extends Fragment {
         SliderAdapter sliderAdapter = new SliderAdapter(this.getContext());
         viewPager.setAdapter(sliderAdapter);
         next = view.findViewById(R.id.nextButton);
+        back = view.findViewById(R.id.backButton);
+
 
         ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -101,20 +105,51 @@ public class SignupFragment extends Fragment {
             }
         };
         viewPager.setOnPageChangeListener(viewListener);
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+        next.setOnClickListener(this);
+        back.setOnClickListener(this);
+
+        return view;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.nextButton:
                 if(next.getText().equals("Next")) {
-                    if (checker()) viewPager.setCurrentItem(currentPage + 1);
+                    if (checker()){
+                        viewPager.setCurrentItem(currentPage + 1);
+                        if(currentPage == 1){
+                            TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
+                            gender.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                                    dialogBuilder.setView(R.layout.gender_alert_dialog);
+                                    final AlertDialog alertDialog = dialogBuilder.create();
+                                    alertDialog.show();
+                                }
+                            });
+                        }
+                    }
                     else viewPager.setCurrentItem(currentPage);
                 }else{
                     //send user info to server
                     Fragment fragment = new HomeFragment().newInstance(connectionController, database, chatController);
                     loadFragment(fragment);
                 }
-            }
-        });
-        return view;
+                break;
+            case R.id.backButton:
+                break;
+            case R.id.genderTextView:
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                dialogBuilder.setView(R.layout.gender_alert_dialog);
+                final AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
+                break;
+            default:
+                break;
+        }
     }
 
     public void loadFragment(Fragment newFragment){
@@ -214,6 +249,8 @@ public class SignupFragment extends Fragment {
                     return true;
                 } else return false;
             case 2:
+                return true;
+            case 3:
                 profilePic = viewPager.findViewById(R.id.profilePic);
                 AppCompatTextView gallery = viewPager.findViewById(R.id.gallery);
                 AppCompatTextView photo = viewPager.findViewById(R.id.takePhoto);

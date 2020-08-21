@@ -5,15 +5,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,7 +115,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
                     @Override
                     public void onClick(View v) {
                         AlertDialog.Builder dialogBuilder2 = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                        dialogBuilder2.setView(R.layout.gender_alert_dialog);
+                        dialogBuilder2.setView(R.layout.gender_alert_dialog_with_checkbox);
                         final AlertDialog alertDialog = dialogBuilder2.create();
                         alertDialog.show();
                         final TextView cancelTextView, applyTextView;

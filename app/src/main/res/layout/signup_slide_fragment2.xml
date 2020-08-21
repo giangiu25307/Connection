@@ -50,8 +50,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/age"
+    <TextView
+        android:id="@+id/ageSignUpTextView"
+        style="@style/inputDataStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:text="Age"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surname"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/genderSignUpTextView"
         style="@style/inputDataStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -59,28 +74,10 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="60dp"
         android:ems="10"
-        android:hint="Gender"
-        android:inputType="textPassword"
+        android:text="Gender"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/surname"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <EditText
-        android:id="@+id/gender"
-        style="@style/inputDataStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
-        android:ems="10"
-        android:hint="Age"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/surname"
         app:layout_constraintVertical_bias="0.0" />
 

@@ -15,62 +15,40 @@
         android:textColor="?attr/textColor"
         android:textSize="18sp" />
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:buttonTint="?attr/iconTint"
-        android:text="Male"
-        android:textColor="?attr/textColor" />
-
-    <CheckBox
-        android:id="@+id/checkBox2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:buttonTint="?attr/iconTint"
-        android:text="Female"
-        android:textColor="?attr/textColor" />
-
-    <CheckBox
-        android:id="@+id/checkBox3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:buttonTint="?attr/iconTint"
-        android:text="Other"
-        android:textColor="?attr/textColor" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/textView26"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/input_data_background"
+        android:paddingVertical="10dp"
+        android:paddingStart="10dp"
+        android:text="Male"
+        android:textColor="?attr/textColor"
+        android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/cancelTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="CANCEL"
-            android:textColor="?attr/textColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/applyTextView"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/textView27"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/input_data_background"
+        android:paddingVertical="10dp"
+        android:paddingStart="10dp"
+        android:text="Female"
+        android:textColor="?attr/textColor"
+        android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/applyTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="APPLY"
-            android:textColor="?attr/textColor"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/cancelTextView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/textView30"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/input_data_background"
+        android:paddingVertical="10dp"
+        android:paddingStart="10dp"
+        android:text="Other"
+        android:textColor="?attr/textColor"
+        android:textSize="15sp" />
+
 </LinearLayout>
