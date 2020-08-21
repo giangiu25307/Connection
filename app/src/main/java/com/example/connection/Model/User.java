@@ -5,7 +5,7 @@ import java.net.UnknownHostException;
 
 public class User {
 
-    String  username;
+    String username;
     String mail;
     String gender;
     String name;
@@ -19,7 +19,20 @@ public class User {
     String password;
     InetAddress inetAddress;
 
-    public User(){}
+    public User() {
+        this.idUser = "";
+        this.username = "";
+        this.mail = "";
+        this.gender = "";
+        this.name = "";
+        this.surname = "";
+        this.country = "";
+        this.city = "";
+        this.number = "";
+        this.age = "";
+        this.profilePic = "";
+        this.password = "";
+    }
 
     public User(String idUser, String username, String mail, String gender, String name, String surname, String country, String city, String number, String age, String profilePic) {
         this.idUser = idUser;
@@ -32,7 +45,8 @@ public class User {
         this.city = city;
         this.number = number;
         this.age = age;
-        this.profilePic=profilePic;
+        this.profilePic = profilePic;
+        this.password = "";
     }
 
     public InetAddress getInetAddress() {
@@ -43,8 +57,8 @@ public class User {
         this.inetAddress = InetAddress.getByName(inetAddress);
     }
 
-    public String getAll(){
-        return idUser +"£€"+inetAddress+"£€"+username+"£€"+mail+"£€"+gender+"£€"+name+"£€"+surname+"£€"+country+"£€"+city+"£€"+age+"£€"+profilePic;
+    public String getAll() {
+        return idUser + "£€" + inetAddress + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + age + "£€" + profilePic;
     }
 
     public String getIdUser() {
@@ -60,7 +74,7 @@ public class User {
     }
 
     public void setUsername(String username) {
-        username = username;
+        this.username = username;
     }
 
     public String getMail() {

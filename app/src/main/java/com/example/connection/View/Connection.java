@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -28,6 +29,7 @@ import com.example.connection.R;
 import com.example.connection.UDP_Connection.RTTSocket;
 
 import java.net.SocketException;
+import java.util.Objects;
 
 //D/SupplicantP2pIfaceCallbackExt: Provision discovery request for WPS Config method: 128
 public class Connection extends AppCompatActivity {
@@ -61,6 +63,7 @@ public class Connection extends AppCompatActivity {
         // localizationController=new LocalizationController(database,this);
 
         loadTheme();
+        requestStoragePermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         user = new User("aaaaa", "ciao", "ciaoc", "ciao", "ciao", "ciao", "cioa", "ciao", "ciao", "ciao", "ciao");
@@ -77,7 +80,7 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
-        boolean createSample = true;
+        boolean createSample = false;
         if(createSample){
             database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
             database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
@@ -246,5 +249,13 @@ public class Connection extends AppCompatActivity {
 
         }
         return accessibilityFound;
+    }
+
+    private void requestStoragePermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(Objects.requireNonNull(this), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(Objects.requireNonNull(this), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
     }
 }

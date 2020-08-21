@@ -6,11 +6,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -113,8 +115,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
 
         setProfilePic();
-        
-        requestStoragePermission();
 
         Cursor c=database.getBacgroundImage();
         if(c!=null && c.getCount()>0) {
@@ -432,7 +432,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     private void setProfilePic(){
         Cursor c=database.getProfilePic();
-        if(c==null||c.getCount()==0)return;
+        if(c==null||c.getCount()==0){
+            profilePics.setImageTintList(ColorStateList.valueOf(android.R.attr.iconTint));
+            return;
+        }
         c.moveToFirst();
         previousProfilePic=c.getString(0);
         Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
@@ -440,14 +443,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         profilePic.setImageTintList(null);
         profilePic.setImageDrawable(draw);
         c.close();
-    }
-
-    private void requestStoragePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(Objects.requireNonNull(getActivity()), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_IMAGE);
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_IMAGE);
-        }
     }
 
 }
