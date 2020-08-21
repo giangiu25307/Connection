@@ -140,7 +140,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 changePassword(dialogBuilder);
                 break;
             case R.id.wallpaperSettings:
-                System.out.println("si");
                 chooseBackgroundImage();
                 break;
             default:
@@ -433,7 +432,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private void setProfilePic(){
         Cursor c=database.getProfilePic();
         if(c==null||c.getCount()==0){
-            profilePics.setImageTintList(ColorStateList.valueOf(android.R.attr.iconTint));
+            profilePic.setImageTintList(ColorStateList.valueOf(android.R.attr.iconTint));
             return;
         }
         c.moveToFirst();

@@ -80,13 +80,13 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
-        boolean createSample = false;
+        boolean createSample = true;
         if(createSample){
             database.addUser("0","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
             database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
             database.createChat("2", "Andrew2");
             database.addMsg("Ciao", "2", "2");
-            database.addMsg("We", "aaaaa", "2");
+            database.addMsg("We", "0", "2");
         }
 
         //connectionController.createGroup();

@@ -13,7 +13,7 @@
         android:id="@+id/profilePhoto"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:tint="?attr/iconTint"
+        app:tint="?attr/iconTint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

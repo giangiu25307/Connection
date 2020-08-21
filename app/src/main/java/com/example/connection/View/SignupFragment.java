@@ -135,6 +135,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     else viewPager.setCurrentItem(currentPage);
                 }else{
                     //send user info to server
+                    database.addUser("0",null,user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getAge(),user.getProfilePic());
+                    database.setNumber("0",user.getNumber());
                     Fragment fragment = new HomeFragment().newInstance(connectionController, database, chatController);
                     loadFragment(fragment);
                 }

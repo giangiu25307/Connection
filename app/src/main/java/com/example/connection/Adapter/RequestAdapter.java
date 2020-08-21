@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +21,11 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.connection.View.ChatActivity;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Controller.Task;
 import com.example.connection.R;
+import com.example.connection.View.ChatActivity;
 
 import java.io.File;
 import java.text.ParseException;
@@ -32,7 +33,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
+public class RequestAdapter  extends RecyclerView.Adapter<RequestAdapter.ViewHolder>  {
 
     private Context context;
     private Cursor chatCursor, userCursor;
@@ -43,7 +44,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
     ChatController chatController;
 
 
-    public ChatAdapter(Context context, Cursor chatCursor, Database database,ChatController chatController) {
+    public RequestAdapter(Context context, Cursor chatCursor, Database database,ChatController chatController) {
         this.context = context;
         this.chatCursor = chatCursor;
         this.database = database;
@@ -53,35 +54,35 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
 
     @NonNull
     @Override
-    public ChatAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RequestAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.chat_layout, parent, false);
-        ViewHolder holder = new ViewHolder(view, new ViewHolder.OnChatClickListener(){
+        View view = inflater.inflate(R.layout.request_layout, parent, false);
+        ViewHolder holder = new ViewHolder(view, new RequestAdapter.ViewHolder.OnChatClickListener(){
 
             @Override
             public void openChat(int p) {
                 chatCursor.moveToPosition(p);
                 final String id = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
                 Intent myIntent = new Intent(context, ChatActivity.class);
-               // myIntent.putExtra("chatController", chatController); //Optional parameters\
+                // myIntent.putExtra("chatController", chatController); //Optional parameters\
                 myIntent.putExtra("idChat", id);
                 myIntent.putExtra("name", chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.NAME)));
                 context.startActivity(myIntent);
 
             }
-        });
+        },context);
 
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChatAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RequestAdapter.ViewHolder holder, int position) {
         if(!chatCursor.moveToPosition(position)){
             return;
         }
         String nameUser = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-        if(database.notOnlyOtherMessages(nameUser)) {
+        if(!database.notOnlyOtherMessages(nameUser)) {
             userCursor = database.getUSer(nameUser);
             userCursor.moveToFirst();
             //Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(userCursor));
@@ -115,11 +116,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
 
             holder.itemView.setTag(id);
 
-            TextView userNameTextView = holder.name;
+            TextView informationTextView = holder.information;
             TextView lastMessageTextView = holder.lastMessage;
-            TextView lastMessageTimeTextView = holder.name;
             TextView timeLastMessageTextView = holder.timeLastMessage;
-            userNameTextView.setText(userName);
+            informationTextView.setText(userName);
             lastMessageTextView.setText(lastMessage);
             try {
                 date = format.parse(datetime);
@@ -168,31 +168,38 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        OnChatClickListener listener;
+        RequestAdapter.ViewHolder.OnChatClickListener listener;
 
-        private ConstraintLayout chatlayout;
-        private ImageView profilePic;
-        private TextView name, lastMessage, timeLastMessage;
+        private ConstraintLayout requestChatLayout;
+        private ImageView profilePic, answer, cancel;
+        private TextView information, lastMessage, timeLastMessage;
+        private Database database;
 
-        private ViewHolder(View itemView, OnChatClickListener listener){
+        private ViewHolder(View itemView, RequestAdapter.ViewHolder.OnChatClickListener listener,Context  context){
             super(itemView);
             this.listener = listener;
 
-            chatlayout = itemView.findViewById(R.id.chatLayout);
-            chatlayout.setOnClickListener(this);
+            database = new Database(context);
+            requestChatLayout = itemView.findViewById(R.id.requestChatLayout);
             profilePic = itemView.findViewById(R.id.profilePhoto);
-            name = itemView.findViewById(R.id.name);
+            information = itemView.findViewById(R.id.name);
             lastMessage = itemView.findViewById(R.id.lastMessage);
             timeLastMessage = itemView.findViewById(R.id.timeLastMessage);
-
+            answer = itemView.findViewById(R.id.answer);
+            answer.setOnClickListener(this);
+            cancel= itemView.findViewById(R.id.cancel);
+            cancel.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
 
             switch (view.getId()) {
-                case R.id.chatLayout:
+                case R.id.answer:
                     listener.openChat(this.getLayoutPosition());
+                    break;
+                case R.id.cancel:
+                    database.discard(String.valueOf(this.getLayoutPosition()));
                     break;
                 default:
                     break;
@@ -204,7 +211,5 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>  {
         }
 
     }
-
-
 
 }
