@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,10 +20,11 @@ import com.example.connection.R;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
-    Button loginButton, signupButton, skipButton;
-    ConnectionController connectionController;
-    Database database;
-    ChatController chatController;
+    private Button loginButton, signupButton, skipButton;
+    private ConnectionController connectionController;
+    private Database database;
+    private ChatController chatController;
+    private EditText email,password;
 
     public LoginFragment() {
 
@@ -45,6 +47,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         signupButton.setOnClickListener(this);
         skipButton = view.findViewById(R.id.skipButton);
         skipButton.setOnClickListener(this);
+        loginButton = view.findViewById(R.id.loginButton);
+        loginButton.setOnClickListener(this);
+        email=view.findViewById(R.id.editTextEmail);
+        password=view.findViewById(R.id.editTextNewPassword);
 
         return view;
     }
@@ -61,12 +67,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 fragment = new HomeFragment().newInstance(connectionController, database, chatController);
                 loadFragment(fragment);
                 break;
+            case R.id.loginButton:
+                if(checker()){
+                    fragment = new HomeFragment().newInstance(connectionController, database, chatController);
+                    loadFragment(fragment);
+                }
+                break;
             default:
                 break;
         }
     }
 
-    public void loadFragment(Fragment newFragment){
+    public void loadFragment(Fragment newFragment) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, newFragment);
         transaction.commit();
@@ -82,6 +94,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     public void setChatController(ChatController chatController) {
         this.chatController = chatController;
+    }
+
+    private boolean checker() {
+        String [] data = database.getMyEmailPassword();
+        if(data[0].equals(email.getText())&&data[1].equals(password.getText()))return true;
+        else return false;
     }
 
 }

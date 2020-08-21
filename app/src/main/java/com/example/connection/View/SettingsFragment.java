@@ -140,7 +140,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 changePassword(dialogBuilder);
                 break;
             case R.id.wallpaperSettings:
-                System.out.println("si");
                 chooseBackgroundImage();
                 break;
             default:

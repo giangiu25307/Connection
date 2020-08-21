@@ -457,6 +457,18 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+idUser,null);
     }
 
+    public String[] getMyEmailPassword(){
+        String query = "SELECT " + Task.TaskEntry.MAIL + "," + Task.TaskEntry.PASSWORD +
+                " FROM "+ Task.TaskEntry.USER+
+                " WHERE "+ Task.TaskEntry.ID_USER +"="+0;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        String [] data ={c.getString(c.getColumnIndex((Task.TaskEntry.MAIL))),c.getString(c.getColumnIndex((Task.TaskEntry.PASSWORD)))};
+        return data;
+    }
+
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //duplicare i metodi sopra
     public void addGroupMsg(String msg, int idSender,int idgroup) {
