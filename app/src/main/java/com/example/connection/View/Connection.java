@@ -82,7 +82,7 @@ public class Connection extends AppCompatActivity {
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
         boolean createSample = false;
         if(createSample){
-            database.addUser("aaaaa","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
+            database.addUser("0","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
             database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
             database.createChat("2", "Andrew2");
             database.addMsg("Ciao", "2", "2");
