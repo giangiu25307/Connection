@@ -88,6 +88,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
         long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
         String userName = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.USERNAME));
+        String gender = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.GENDER));
+        String age = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.AGE));
         String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
         String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
         String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
@@ -114,9 +116,12 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         holder.itemView.setTag(id);
 
         TextView informationTextView = holder.information;
+        TextView informationTextView2 = holder.information2;
         TextView lastMessageTextView = holder.lastMessage;
         TextView timeLastMessageTextView = holder.timeLastMessage;
         informationTextView.setText(userName);
+        String temp = age+","+gender;
+        informationTextView2.setText(temp);
         lastMessageTextView.setText(lastMessage);
         try {
             date = format.parse(datetime);
@@ -165,7 +170,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         RequestAdapter.ViewHolder.OnChatClickListener listener;
 
         private ImageView profilePic, answer, cancel;
-        private TextView information, lastMessage, timeLastMessage;
+        private TextView information, information2, lastMessage, timeLastMessage;
         private Database database;
         private Cursor chatCursor;
         private RequestAdapter requestAdapter;
@@ -179,6 +184,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             database = new Database(context);
             profilePic = itemView.findViewById(R.id.profilePic);
             information = itemView.findViewById(R.id.textViewInformation);
+            information2 = itemView.findViewById(R.id.textViewInformation2);
             lastMessage = itemView.findViewById(R.id.textViewMessage);
             timeLastMessage = itemView.findViewById(R.id.textViewDate);
             answer = itemView.findViewById(R.id.answer);

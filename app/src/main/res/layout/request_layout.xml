@@ -7,6 +7,22 @@
     android:layout_height="wrap_content"
     android:background="@drawable/gray_settings_background_layout">
 
+    <TextView
+        android:id="@+id/textViewInformation2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="sans-serif-light"
+        android:text="TextView"
+        android:textColor="?attr/textColor"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toEndOf="@+id/textViewInformation"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.02" />
+
     <ImageView
         android:id="@+id/profilePic"
         android:layout_width="75dp"

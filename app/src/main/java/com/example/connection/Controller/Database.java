@@ -221,7 +221,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public Cursor getAllRequestChat(){
-        String query= " SELECT c.id_chat, c.name, c.last_message, c.datetime" +
+        String query= " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.age, u.gender " +
                 " FROM CHAT c INNER JOIN USER u on c.id_chat = u.id_user" +
                 " WHERE c.request = 'true' AND u.message_accept = 'true'" +
                 " ORDER BY c.datetime DESC";
@@ -233,7 +233,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public Cursor getAllNoRequestChat(){
-        String query= " SELECT c.id_chat, c.name, c.last_message, c.datetime" +
+        String query= " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.age, u.gender" +
                 " FROM CHAT c INNER JOIN USER u on c.id_chat = u.id_user" +
                 " WHERE c.request = 'false' AND u.message_accept = 'true'" +
                 " ORDER BY c.datetime DESC";

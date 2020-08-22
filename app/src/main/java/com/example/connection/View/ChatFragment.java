@@ -87,7 +87,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         requestTextView2 = view.findViewById(R.id.requestTextView2);
         numberRequest = view.findViewById(R.id.numberRequest);
         int totalRequest = database.getAllRequestChat().getCount();
-        numberRequest.setText(totalRequest);//(totalRequest==0 ? "No" : ""+totalRequest);
+        numberRequest.setText(String.valueOf(totalRequest));//(totalRequest==0 ? "No" : ""+totalRequest);
         totalChat = view.findViewById(R.id.totalChat);
         int totalChatNumber = database.getAllNoRequestChat().getCount();
         totalChat.setText(totalChatNumber == 0 ? "Chat" : "Chat (" + totalChatNumber + ")");
