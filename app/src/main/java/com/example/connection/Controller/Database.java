@@ -57,7 +57,8 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.LAST_MESSAGE + " TEXT, "
                 + Task.TaskEntry.NAME + " TEXT, "
                 + Task.TaskEntry.DATETIME + " TEXT, "
-                + Task.TaskEntry.NOT_READ_MESSAGE + " INTEGER "
+                + Task.TaskEntry.NOT_READ_MESSAGE + " INTEGER, "
+                + Task.TaskEntry.REQUEST + " TEXT "
                 + ")";
 
         String CREATE_GLOBAL_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GLOBAL_MESSAGE + " ( "
@@ -131,6 +132,7 @@ public class Database extends SQLiteOpenHelper {
     }
     //CHAT-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void addMsg(String msg, String idSender, String idChat) {
+        if(idSender.equals("0"))setRequest(idChat,"false");
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ID_CHAT, idChat);
@@ -184,6 +186,7 @@ public class Database extends SQLiteOpenHelper {
         ContentValues chatValues = new ContentValues();
         chatValues.put(Task.TaskEntry.ID_CHAT, idChat);
         chatValues.put(Task.TaskEntry.NAME, name);
+        chatValues.put(Task.TaskEntry.REQUEST,"true");
         db.insert(Task.TaskEntry.CHAT, null, chatValues);
     }
 
@@ -217,6 +220,37 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
+    public Cursor getAllRequestChat(){
+        String query= " SELECT c.id_chat, c.name, c.last_message, c.datetime" +
+                " FROM CHAT c INNER JOIN USER u on c.id_chat = u.id_user" +
+                " WHERE c.request = 'true' AND u.message_accept = 'true'" +
+                " ORDER BY c.datetime DESC";
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c;
+    }
+
+    public Cursor getAllNoRequestChat(){
+        String query= " SELECT c.id_chat, c.name, c.last_message, c.datetime" +
+                " FROM CHAT c INNER JOIN USER u on c.id_chat = u.id_user" +
+                " WHERE c.request = 'false' AND u.message_accept = 'true'" +
+                " ORDER BY c.datetime DESC";
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c;
+    }
+
+    public void setRequest(String id, String value){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.REQUEST, value);
+        db.update(Task.TaskEntry.CHAT,msgValues,Task.TaskEntry.ID_CHAT+"="+id,null);
+    }
+
     public Cursor getBacgroundImage(){
         db=this.getWritableDatabase();
         String query = "SELECT " + Task.TaskEntry.BACKGROUND_IMAGE +
@@ -235,17 +269,6 @@ public class Database extends SQLiteOpenHelper {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.BACKGROUND_IMAGE,bgImage);
         db.insert(Task.TaskEntry.BACKGROUND_CHAT_IMAGES,null, msgValues);
-    }
-
-    public boolean notOnlyOtherMessages(String id){
-        String query = "SELECT " + Task.TaskEntry.MSG +
-                " FROM "+ Task.TaskEntry.MESSAGE +
-                " WHERE " + Task.TaskEntry.ID_SENDER + "=" + 0 + " and " + Task.TaskEntry.ID_CHAT + " = " + id;
-        Cursor c = db.rawQuery(query, null);
-        if (c != null) {
-            c.moveToFirst();
-        }else return false;
-        return c.getCount() > 0;
     }
 
     //globale
@@ -332,14 +355,15 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.IP,inetAddress);
         msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
         msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED,"true");
+        msgValues.put(Task.TaskEntry.ACCEPT,"false");
         db.insert(Task.TaskEntry.USER, null, msgValues);
         ContentValues ipValues = new ContentValues();
     }
 
-    public void SetMyInformation(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String number,String profilePic){
+    public void SetMyInformation(String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String number,String profilePic){
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
-        msgValues.put(Task.TaskEntry.ID_USER,idUser);
+        msgValues.put(Task.TaskEntry.ID_USER,0);
         msgValues.put(Task.TaskEntry.USERNAME,username);
         msgValues.put(Task.TaskEntry.MAIL,mail);
         msgValues.put(Task.TaskEntry.GENDER,gender);
@@ -398,7 +422,7 @@ public class Database extends SQLiteOpenHelper {
         return c.getString(1);
     }
 
-    public Cursor getUSer(String id){
+    public Cursor getUser(String id){
         String query = "SELECT * " +
                 " FROM " +Task.TaskEntry.USER+
                 " WHERE id_user ='" + id + "'" ;
@@ -483,6 +507,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void discard(String id){
+        System.out.println(id);
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED, "false");
         db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);

@@ -2,10 +2,8 @@ package com.example.connection.View;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -18,16 +16,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Adapter.ChatAdapter;
+import com.example.connection.Adapter.RequestAdapter;
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
-import com.example.connection.Model.Chats;
 import com.example.connection.R;
 
 public class ChatFragment extends Fragment implements View.OnClickListener {
@@ -35,13 +32,13 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     private ImageView globalButton;
     private int textColor;
     private SharedPreferences sharedPreferences;
-    Database database;
-    LinearLayout linearLayout;
-    TextView requestTextView;
-    int currentWidth;
-    int currentHeight;
-    ChatController chatController;
-    TextView totalChat;
+    private Database database;
+    private LinearLayout linearLayout;
+    private TextView requestTextView2,numberRequest;
+    private int currentWidth;
+    private int currentHeight;
+    private ChatController chatController;
+    private TextView totalChat;
     private long secondsRemaining = 1500;
     private CountDownTimer countDownTimer;
     private Boolean startTimer = false,startTimer2 = true;
@@ -87,26 +84,35 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         textView.startAnimation(animation);
         */
         linearLayout = view.findViewById(R.id.requestLinearLayout);
-        requestTextView = view.findViewById(R.id.requestTextView2);
-
+        requestTextView2 = view.findViewById(R.id.requestTextView2);
+        numberRequest = view.findViewById(R.id.numberRequest);
+        int totalRequest = database.getAllRequestChat().getCount();
+        numberRequest.setText(totalRequest);//(totalRequest==0 ? "No" : ""+totalRequest);
         totalChat = view.findViewById(R.id.totalChat);
-        int totalChatNumber = database.getAllChat().getCount();
+        int totalChatNumber = database.getAllNoRequestChat().getCount();
         totalChat.setText(totalChatNumber == 0 ? "Chat" : "Chat (" + totalChatNumber + ")");
-        final ViewTreeObserver viewTreeObserver = requestTextView.getViewTreeObserver();
+        final ViewTreeObserver viewTreeObserver = requestTextView2.getViewTreeObserver();
         if (viewTreeObserver.isAlive()) {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    currentWidth = requestTextView.getWidth();
-                    currentHeight = requestTextView.getHeight();
+                    currentWidth = requestTextView2.getWidth();
+                    currentHeight = requestTextView2.getHeight();
                     if (currentWidth != 0 && currentHeight != 0) {
                         createCountDowntimer();
                         countDownTimer.start();
-                        requestTextView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        requestTextView2.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 }
             });
         }
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                crossToRequestDialog(dialogBuilder);
+            }
+        });
         setupRecyclerView(view);
         return view;
     }
@@ -129,7 +135,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     private void setupRecyclerView(View view){
         RecyclerView recyclerView = view.findViewById(R.id.chatRecyclerView);
         System.out.println(database);
-        Cursor cursor = database.getAllChat();
+        Cursor cursor = database.getAllNoRequestChat();
         ChatAdapter chatAdapter = new ChatAdapter(getContext(), cursor, database, chatController);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -174,10 +180,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 int val = (Integer) valueAnimator.getAnimatedValue();
-                ViewGroup.LayoutParams layoutParams = requestTextView.getLayoutParams();
+                ViewGroup.LayoutParams layoutParams = requestTextView2.getLayoutParams();
                 layoutParams.width = val;
-                requestTextView.setLayoutParams(layoutParams);
-                requestTextView.setHeight(currentHeight);
+                requestTextView2.setLayoutParams(layoutParams);
+                requestTextView2.setHeight(currentHeight);
                 currentWidth=val;
             }
         });
@@ -196,5 +202,26 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    private void crossToRequestDialog(AlertDialog.Builder dialogBuilder){
+        dialogBuilder.setView(R.layout.request_alert_dialog);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+        setupRequestRecyclerView(alertDialog);
+
+    }
+
+    private void setupRequestRecyclerView(AlertDialog view){
+        RecyclerView recyclerView = view.findViewById(R.id.requestRecycleView);
+        //System.out.println(database);
+        Cursor cursor = database.getAllRequestChat();
+        RequestAdapter requestAdapter = new RequestAdapter(getContext(), cursor, database, chatController);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(requestAdapter);
+        /*if(cursor.getCount() == 0){                                    //THERE IS NOTHING HERE
+            TextView textView = view.findViewById(R.id.textView0Chat);
+            textView.setVisibility(View.VISIBLE);
+        }*/
     }
 }
