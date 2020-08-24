@@ -312,11 +312,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     System.out.println("Inserire una città valida");
                     cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                     viewPager.setPagingEnabled(false);
-                    numb = false;
+                    c = false;
                 } else {
                     cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
                     viewPager.setPagingEnabled(true);
-                    numb = true;
+                    c = true;
                     user.setCity(city);
                 }
                 return numb && c && count[0];
