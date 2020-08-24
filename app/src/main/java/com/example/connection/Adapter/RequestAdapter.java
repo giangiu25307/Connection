@@ -70,7 +70,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                 context.startActivity(myIntent);
 
             }
-        }, context, chatCursor, this);
+        }, context, chatCursor);
 
         return holder;
     }
@@ -173,13 +173,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         private TextView information, information2, lastMessage, timeLastMessage;
         private Database database;
         private Cursor chatCursor;
-        private RequestAdapter requestAdapter;
 
-        private ViewHolder(View itemView, RequestAdapter.ViewHolder.OnChatClickListener listener, Context context, Cursor chatCursor, RequestAdapter requestAdapter) {
+        private ViewHolder(View itemView, RequestAdapter.ViewHolder.OnChatClickListener listener, Context context, Cursor chatCursor) {
             super(itemView);
             this.listener = listener;
             this.chatCursor = chatCursor;
-            this.requestAdapter = requestAdapter;
 
             database = new Database(context);
             profilePic = itemView.findViewById(R.id.profilePic);
@@ -203,7 +201,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                 case R.id.cancel:
                     chatCursor.moveToPosition(this.getLayoutPosition());
                     database.discard(chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT)));
-                    requestAdapter.notifyDataSetChanged();
+                    chatCursor = database.getAllRequestChat();
                     break;
                 default:
                     break;

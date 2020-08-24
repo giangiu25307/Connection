@@ -13,14 +13,18 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,6 +43,8 @@ import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 
+import java.util.ArrayList;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 
@@ -51,6 +57,16 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private ImageView profilePic;
     private Button next, back;
 
+    private ArrayList<String> nations = new ArrayList<String>();
+
+    private void setNations() {
+        String[] locales = Locale.getISOCountries();
+        for (String countryCode : locales) {
+            Locale obj = new Locale("", countryCode);
+            nations.add(obj.getDisplayCountry());
+        }
+    }
+
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
             "(?=.*[a-z])" + //at least 1 lower case
@@ -61,7 +77,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             "$");
 
     private static final Pattern regexName = Pattern.compile("^" +
-            ".{2,26}" + //at least length of 8 character
+            ".{2,26}" +
+            "$");
+
+    private static final Pattern regexPhoneNumber = Pattern.compile("^" +
+            "[0-9]*" +
+            ".{9,11}" +
             "$");
 
     private int currentPage;
@@ -73,6 +94,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         signupFragment.setConnectionController(connectionController);
         signupFragment.setDatabase(database);
         signupFragment.setChatController(chatController);
+        signupFragment.setNations();
         return signupFragment;
     }
 
@@ -114,12 +136,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.nextButton:
-                if(next.getText().equals("Next")) {
-                    if (checker()){
+                if (next.getText().equals("Next")) {
+                    if (checker()) {
                         viewPager.setCurrentItem(currentPage + 1);
-                        if(currentPage == 1){
+                        if (currentPage == 1) {
                             TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
                             gender.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -131,12 +153,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                 }
                             });
                         }
-                    }
-                    else viewPager.setCurrentItem(currentPage);
-                }else{
+                    } else viewPager.setCurrentItem(currentPage);
+                } else {
                     //send user info to server
-                    database.addUser("0",null,user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getAge(),user.getProfilePic());
-                    database.setNumber("0",user.getNumber());
+                    database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getAge(), user.getProfilePic());
+                    database.setNumber("0", user.getNumber());
                     Fragment fragment = new HomeFragment().newInstance(connectionController, database, chatController);
                     loadFragment(fragment);
                 }
@@ -154,7 +175,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void loadFragment(Fragment newFragment){
+    public void loadFragment(Fragment newFragment) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, newFragment);
         transaction.commit();
@@ -251,7 +272,54 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     return true;
                 } else return false;
             case 2:
-                return true;
+                TextView telephone = viewPager.findViewById(R.id.telephone), cities = viewPager.findViewById(R.id.city);
+                Spinner country = viewPager.findViewById(R.id.country);
+                String number = telephone.getText().toString().trim();
+                String city = cities.getText().toString().trim();
+                boolean numb = false;
+                boolean c = false;
+                final boolean[] count = {false};
+                if (!regexPhoneNumber.matcher(number).matches()) {
+                    System.out.println("Inserire un numero di telefono valido");
+                    telephone.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    viewPager.setPagingEnabled(false);
+                    numb = false;
+                } else {
+                    telephone.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    viewPager.setPagingEnabled(true);
+                    numb = true;
+                    user.setNumber(number);
+                }
+                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_spinner_item, nations);
+                country.setAdapter(adapter);
+                country.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int position, long id) {
+                        user.setCountry(adapter.getItem(position));
+                        viewPager.setPagingEnabled(true);
+                        count[0] = true;
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        viewPager.setPagingEnabled(false);
+                        count[0] = false;
+                    }
+                });
+                if (!regexName.matcher(city).matches()) {
+                    System.out.println("Inserire una città valida");
+                    cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    viewPager.setPagingEnabled(false);
+                    numb = false;
+                } else {
+                    cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    viewPager.setPagingEnabled(true);
+                    numb = true;
+                    user.setCity(city);
+                }
+                return numb && c && count[0];
             case 3:
                 profilePic = viewPager.findViewById(R.id.profilePic);
                 AppCompatTextView gallery = viewPager.findViewById(R.id.gallery);
@@ -261,7 +329,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         chooseProfilePic();
-                        if(!user.getProfilePic().equals(""))next.setText("Confirm");
+                        if (!user.getProfilePic().equals("")) next.setText("Confirm");
                         else next.setText("Next");
                     }
                 });
@@ -269,11 +337,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         captureImage();
-                        if(!user.getProfilePic().equals(""))next.setText("Confirm");
+                        if (!user.getProfilePic().equals("")) next.setText("Confirm");
                         else next.setText("Next");
                     }
                 });
-                if(!user.getProfilePic().equals(""))return true;
+                if (!user.getProfilePic().equals("")) return true;
                 else return false;
         }
     }
@@ -325,7 +393,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 //Write your code if there's no result
             }
         } else if (requestCode == CAPTURE_IMAGE) {
-            if (resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
 
                 // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
@@ -347,7 +415,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
-        Bitmap OutImage = Bitmap.createScaledBitmap(inImage, 1000, 1000,true);
+        Bitmap OutImage = Bitmap.createScaledBitmap(inImage, 1000, 1000, true);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), OutImage, "Title", null);
         return Uri.parse(path);
     }
