@@ -88,7 +88,7 @@ public class DrawController extends View {
                     @Override
                     public void onClick(View v) {
                         Intent myIntent = new Intent(getContext(), ChatActivity.class);
-                        myIntent.putExtra("idChat", id);
+                        myIntent.putExtra("idChat", user.getIdUser());
                         myIntent.putExtra("name", user.getName());
                         getContext().startActivity(myIntent);
                     }
