@@ -2,6 +2,7 @@ package com.example.connection.Controller;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,8 +11,10 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -56,23 +59,34 @@ public class DrawController extends View {
             if (previousY.contains(tempY)) tempY = (int) (Math.random() * getWidth());
             else previousY.add(tempY);
             canvas.drawLine(x, y, tempX, tempY, paint);
+            createUserPoint(x, y, i);
             x = tempX;
             y = tempY;
-            createUserPoint(x, y, i);
         }
     }
 
     //create a clickable item who refers to a user at the coordinates x,y
     private void createUserPoint(int x, int y, final int id) {
-        ImageView image = new ImageView(mapLayout.getContext());
+        final ImageView image = new ImageView(mapLayout.getContext());
+        //image.requestLayout();
+        Bitmap bitmap = BitmapFactory.decodeFile(userList.get(id).getProfilePic());
+        if(bitmap != null){
+            image.setImageBitmap(bitmap);
+        }
+
         image.requestLayout();
-        //image.getLayoutParams().width = 50;
-        //image.getLayoutParams().height = 50;
-        //System.out.println(image.getLayoutParams().width + " - " + image.getLayoutParams().height);
-        image.setBackground(getResources().getDrawable(R.drawable.ic_user_map));
-        ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(5, 5);
-        image.setLayoutParams(params);
-        image.setId(id);
+        ViewTreeObserver vto = image.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                image.getViewTreeObserver().removeOnPreDrawListener(this);
+                ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(200, 200);
+                image.setLayoutParams(params);
+                int finalWidth = image.getLayoutParams().width;
+                int finalHeight = image.getLayoutParams().height;
+                System.out.println("Height: " + finalHeight + " Width: " + finalWidth);
+                return true;
+            }
+        });
         image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
