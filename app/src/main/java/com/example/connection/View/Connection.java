@@ -81,7 +81,7 @@ public class Connection extends AppCompatActivity {
         countDownTimer.start();
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
 
-        boolean createSample = false;
+        boolean createSample = true;
         if(createSample){
             database.addUser("0","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
             database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
@@ -93,31 +93,7 @@ public class Connection extends AppCompatActivity {
             database.addMsg("Ciao", "23", "23");
         }
 
-        //connectionController.createGroup();
-        //bluetoothScanner.startBLEScan();
-
-
-        try {
-            RTTSocket rttSocket=new RTTSocket();
-            rttSocket.test();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-
-
     }
-        //tcp_client.startConnection("192.168.1.8",50000);
-            //tcp_client.sendMessage("ciao",);
-
-     /*  try {
-            MultiThreadedServer multiThreadedServer=new MultiThreadedServer(50000,database,this,connectionController,localizationController);
-            multiThreadedServer.test();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        }
-*/
 
 
     private void loadTheme() {
