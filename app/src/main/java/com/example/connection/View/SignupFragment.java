@@ -136,18 +136,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 if (next.getText().equals("Next")) {
                     if (checker()) {
                         viewPager.setCurrentItem(currentPage + 1);
-                        if (currentPage == 1) {
-                            TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
-                            gender.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                                    dialogBuilder.setView(R.layout.gender_alert_dialog);
-                                    final AlertDialog alertDialog = dialogBuilder.create();
-                                    alertDialog.show();
-                                }
-                            });
-                        }
                     } else viewPager.setCurrentItem(currentPage);
                 } else {
                     //send user info to server
@@ -158,38 +146,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.backButton:
-                break;
-            case R.id.genderTextView:
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                dialogBuilder.setView(R.layout.gender_alert_dialog);
-                final AlertDialog alertDialog = dialogBuilder.create();
-                alertDialog.show();
-                TextView male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
-                final TextView gender = viewPager.findViewById(R.id.genderTextView);
-                male.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        gender.setText("Maschio");
-                        user.setGender("Maschio");
-                        alertDialog.dismiss();
-                    }
-                });
-                female.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        gender.setText("Femmina");
-                        user.setGender("Femmina");
-                        alertDialog.dismiss();
-                    }
-                });
-                other.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        gender.setText("Altro");
-                        user.setGender("Altro");
-                        alertDialog.dismiss();
-                    }
-                });
                 break;
             default:
                 break;
@@ -252,6 +208,43 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 next.setText("Next");
                 EditText firstNameLabel = viewPager.findViewById(R.id.firstname), surnameLabel = viewPager.findViewById(R.id.surname);
                 TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
+                gender.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                        dialogBuilder.setView(R.layout.gender_alert_dialog);
+                        final AlertDialog alertDialog = dialogBuilder.create();
+                        System.out.println("Show non fatto");
+                        alertDialog.show();
+                        System.out.println("Show fatto");
+                        TextView male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
+                        final TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
+                        male.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                gender.setText("Maschio");
+                                user.setGender("Maschio");
+                                alertDialog.dismiss();
+                            }
+                        });
+                        female.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                gender.setText("Femmina");
+                                user.setGender("Femmina");
+                                alertDialog.dismiss();
+                            }
+                        });
+                        other.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                gender.setText("Altro");
+                                user.setGender("Altro");
+                                alertDialog.dismiss();
+                            }
+                        });
+                    }
+                });
                 final AppCompatTextView dateOfBirth = viewPager.findViewById(R.id.dateOfBirthSignUpTextView);
                 if (!user.getName().equals("")) firstNameLabel.setText(user.getName());
                 if (!user.getSurname().equals("")) surnameLabel.setText(user.getSurname());

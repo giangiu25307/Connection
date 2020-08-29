@@ -41,16 +41,18 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     private Cursor chatCursor, userCursor;
     private Database database;
     private Bitmap bitmap, bitmap2;
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    Date date = new Date();
-    ChatController chatController;
+    private TextView textView;
+    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    private Date date = new Date();
+    private ChatController chatController;
 
 
-    public RequestAdapter(Context context, Cursor chatCursor, Database database, ChatController chatController) {
+    public RequestAdapter(Context context, Cursor chatCursor, Database database, ChatController chatController, TextView textView) {
         this.context = context;
         this.chatCursor = chatCursor;
         this.database = database;
         this.chatController = chatController;
+        this.textView = textView;
         Log.v("Request Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
     }
 
@@ -73,6 +75,14 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                 context.startActivity(myIntent);
 
             }
+
+            @Override
+            public void deleteRequest(int p) {
+                chatCursor.moveToPosition(p);
+                database.discard(chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT)));
+                swapCursor(database.getAllRequestChat());
+            }
+
         }, context, chatCursor);
 
         return holder;
@@ -163,7 +173,10 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         chatCursor = newCursor;
 
         if (newCursor != null) {
+            textView.setText(String.valueOf(chatCursor.getCount()));
             notifyDataSetChanged();
+        }else{
+            textView.setText(0);
         }
 
     }
@@ -203,9 +216,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                     listener.openChat(this.getLayoutPosition());
                     break;
                 case R.id.cancel:
-                    chatCursor.moveToPosition(this.getLayoutPosition());
-                    database.discard(chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT)));
-                    chatCursor = database.getAllRequestChat();
+                    listener.deleteRequest(this.getLayoutPosition());
                     break;
                 default:
                     break;
@@ -214,6 +225,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
         public interface OnChatClickListener {
             void openChat(int p);
+            void deleteRequest(int p);
         }
 
     }

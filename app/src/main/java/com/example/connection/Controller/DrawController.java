@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -63,8 +64,14 @@ public class DrawController extends View {
 
     //create a clickable item who refers to a user at the coordinates x,y
     private void createUserPoint(int x, int y, final int id) {
-        ImageView image = new ImageView(super.getContext());
+        ImageView image = new ImageView(mapLayout.getContext());
+        image.requestLayout();
+        //image.getLayoutParams().width = 50;
+        //image.getLayoutParams().height = 50;
+        //System.out.println(image.getLayoutParams().width + " - " + image.getLayoutParams().height);
         image.setBackground(getResources().getDrawable(R.drawable.ic_user_map));
+        ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(5, 5);
+        image.setLayoutParams(params);
         image.setId(id);
         image.setOnClickListener(new OnClickListener() {
             @Override

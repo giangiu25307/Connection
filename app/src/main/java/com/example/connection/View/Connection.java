@@ -91,6 +91,10 @@ public class Connection extends AppCompatActivity {
             database.addUser("23","192.168.49.20","Andrew123","andrew@12gmail.com","ma123le","Andr1ew2","Wa131nd","England","London","23","/photo");
             database.createChat("23", "Andrew123");
             database.addMsg("Ciao", "23", "23");
+
+            database.addUser("25","192.168.49.20","Andrew345","andrew@12gmail.com","ma123le","Andr1ew2","Wa131nd","England","London","23","/photo");
+            database.createChat("25", "Andrew345");
+            database.addMsg("Wee", "25", "25");
         }
 
     }

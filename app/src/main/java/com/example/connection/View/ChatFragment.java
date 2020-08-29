@@ -90,7 +90,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         numberRequest.setText(String.valueOf(totalRequest));//(totalRequest==0 ? "No" : ""+totalRequest);
         totalChat = view.findViewById(R.id.totalChat);
         int totalChatNumber = database.getAllNoRequestChat().getCount();
-        totalChat.setText(totalChatNumber == 0 ? "Chat" : "Chat (" + totalChatNumber + ")");
+        totalChat.setText(totalChatNumber == 0 ? "Chat (0)" : "Chat (" + totalChatNumber + ")");
         final ViewTreeObserver viewTreeObserver = requestTextView2.getViewTreeObserver();
         if (viewTreeObserver.isAlive()) {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -216,7 +216,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         RecyclerView recyclerView = view.findViewById(R.id.requestRecycleView);
         //System.out.println(database);
         Cursor cursor = database.getAllRequestChat();
-        RequestAdapter requestAdapter = new RequestAdapter(getContext(), cursor, database, chatController);
+        RequestAdapter requestAdapter = new RequestAdapter(getContext(), cursor, database, chatController, numberRequest);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(requestAdapter);
         /*if(cursor.getCount() == 0){                                    //THERE IS NOTHING HERE
