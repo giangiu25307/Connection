@@ -2,6 +2,7 @@ package com.example.connection.View;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -13,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -21,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -56,16 +59,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private static final int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic;
     private Button next, back;
-
     private ArrayList<String> nations = new ArrayList<String>();
-
-    private void setNations() {
-        String[] locales = Locale.getISOCountries();
-        for (String countryCode : locales) {
-            Locale obj = new Locale("", countryCode);
-            nations.add(obj.getDisplayCountry());
-        }
-    }
+    private int yearText = 0, monthText = 0, dayText = 0;
 
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
@@ -169,6 +164,32 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 dialogBuilder.setView(R.layout.gender_alert_dialog);
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
+                TextView male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
+                final TextView gender = viewPager.findViewById(R.id.genderTextView);
+                male.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        gender.setText("Maschio");
+                        user.setGender("Maschio");
+                        alertDialog.dismiss();
+                    }
+                });
+                female.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        gender.setText("Femmina");
+                        user.setGender("Femmina");
+                        alertDialog.dismiss();
+                    }
+                });
+                other.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        gender.setText("Altro");
+                        user.setGender("Altro");
+                        alertDialog.dismiss();
+                    }
+                });
                 break;
             default:
                 break;
@@ -196,10 +217,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 if (!user.getPassword().equals("")) password.setText(user.getPassword());
                 String mail = email.getText().toString().trim(), pass = password.getText().toString().trim(), username = usernameLabel.getText().toString().trim();
                 if (!regexName.matcher(username).matches()) {
-                    System.out.println("Inserire un username valido");
-                    //email.setBackground(getResources().getDrawable(R.drawable.input_data_background_wrong));
                     usernameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
-                    //email.setBackgroundColor(getResources().getColor(R.color.red));
                     viewPager.setPagingEnabled(false);
                     usernameB = false;
                 } else {
@@ -208,10 +226,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     usernameB = true;
                 }
                 if (!Patterns.EMAIL_ADDRESS.matcher(mail).matches()) {
-                    System.out.println("Inserire una Email valida");
-                    //email.setBackground(getResources().getDrawable(R.drawable.input_data_background_wrong));
                     email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
-                    //email.setBackgroundColor(getResources().getColor(R.color.red));
                     viewPager.setPagingEnabled(false);
                     emailCheck = false;
                 } else {
@@ -220,10 +235,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     emailCheck = true;
                 }
                 if (!regexPassword.matcher(pass).matches()) {
-                    System.out.println("Inserire una password valida, almeno un carattere numerico, almeno un carattere speciale fra !?&%$#, almeno una lettera maiuscola, almeno una lettera minuscola, almeno 8 caratteri");
-                    //password.setBackground(getResources().getDrawable(R.drawable.input_data_background_wrong));
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
-                    //password.setBackgroundColor(getResources().getColor(R.color.red));
                     viewPager.setPagingEnabled(false);
                     passwordCheck = false;
                 } else {
@@ -236,43 +248,74 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     return true;
                 } else return false;
             case 1:
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(getContext());
                 next.setText("Next");
-                EditText firstNameLabel = viewPager.findViewById(R.id.firstname);
-                EditText surnameLabel = viewPager.findViewById(R.id.surname);
+                EditText firstNameLabel = viewPager.findViewById(R.id.firstname), surnameLabel = viewPager.findViewById(R.id.surname);
+                TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
+                final AppCompatTextView dateOfBirth = viewPager.findViewById(R.id.dateOfBirthSignUpTextView);
                 if (!user.getName().equals("")) firstNameLabel.setText(user.getName());
                 if (!user.getSurname().equals("")) surnameLabel.setText(user.getSurname());
                 String firstname = firstNameLabel.getText().toString().trim(), surname = surnameLabel.getText().toString().trim();
                 boolean name = true, sur = true;
-                if (!regexName.matcher(firstname).matches()) {
-                    System.out.println("Inserire una nome valido");
-                    //email.setBackground(getResources().getDrawable(R.drawable.input_data_background_wrong));
-                    firstNameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
-                    //email.setBackgroundColor(getResources().getColor(R.color.red));
+                final boolean[] birthB = {false};
+                dateOfBirth.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        datePickerDialog.show();
+                        datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                yearText = year;
+                                monthText = month;
+                                dayText = dayOfMonth;
+                                birthB[0] = true;
+                                String birth = yearText != 0 ? (dayText < 10 ? "0" + dayText : dayText) + "-" + (monthText < 10 ? "0" + monthText : monthText) + "-" + yearText : "";
+                                dateOfBirth.setText(birth);
+                                if (birth.equals("")) {
+                                    dateOfBirth.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                                    viewPager.setPagingEnabled(false);
+                                } else {
+                                    user.setBirth(birth);
+                                    dateOfBirth.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                                    viewPager.setPagingEnabled(true);
+                                    System.out.println(user.getAge());
+                                }
+                            }
+                        });
+                    }
+                });
+                if(gender.getText().toString().trim().isEmpty()){
+                    gender.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                     viewPager.setPagingEnabled(false);
+                }else{
+                    gender.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    viewPager.setPagingEnabled(true);
+                }
+                if (!regexName.matcher(firstname).matches()) {
+                    firstNameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                     name = false;
+                    viewPager.setPagingEnabled(false);
                 } else {
                     user.setName(firstname);
                     firstNameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
                     name = true;
+                    viewPager.setPagingEnabled(true);
                 }
                 if (!regexName.matcher(surname).matches()) {
-                    System.out.println("Inserire un cognome valido");
-                    //password.setBackground(getResources().getDrawable(R.drawable.input_data_background_wrong));
                     surnameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
-                    //password.setBackgroundColor(getResources().getColor(R.color.red));
-                    viewPager.setPagingEnabled(false);
                     sur = false;
+                    viewPager.setPagingEnabled(false);
                 } else {
                     user.setSurname(surname);
                     surnameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
                     sur = true;
-                }
-                if (name && sur) {
                     viewPager.setPagingEnabled(true);
+                }
+                if (name && sur && birthB[0]) {
                     return true;
                 } else return false;
             case 2:
-                TextView telephone = viewPager.findViewById(R.id.telephone), cities = viewPager.findViewById(R.id.city);
+                final TextView telephone = viewPager.findViewById(R.id.telephone), cities = viewPager.findViewById(R.id.city), numberCode = viewPager.findViewById(R.id.numberCode);
                 Spinner country = viewPager.findViewById(R.id.country);
                 String number = telephone.getText().toString().trim();
                 String city = cities.getText().toString().trim();
@@ -300,6 +343,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         user.setCountry(adapter.getItem(position));
                         viewPager.setPagingEnabled(true);
                         count[0] = true;
+                        String codeNumber = "+" + GetCountryZipCode();
+                        numberCode.setText(codeNumber);
                     }
 
                     @Override
@@ -432,6 +477,32 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             }
         }
         return path;
+    }
+
+    public String GetCountryZipCode() {
+        String CountryID = "";
+        String CountryZipCode = "";
+
+        TelephonyManager manager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
+        //getNetworkCountryIso
+        CountryID = manager.getSimCountryIso().toUpperCase();
+        String[] rl = this.getResources().getStringArray(R.array.CountryCodes);
+        for (int i = 0; i < rl.length; i++) {
+            String[] g = rl[i].split(",");
+            if (g[1].trim().equals(CountryID.trim())) {
+                CountryZipCode = g[0];
+                break;
+            }
+        }
+        return CountryZipCode;
+    }
+
+    private void setNations() {
+        String[] locales = Locale.getISOCountries();
+        for (String countryCode : locales) {
+            Locale obj = new Locale("", countryCode);
+            nations.add(obj.getDisplayCountry());
+        }
     }
 
 }

@@ -29,7 +29,10 @@ import com.example.connection.View.ChatActivity;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> {
@@ -89,7 +92,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
         String userName = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.USERNAME));
         String gender = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.GENDER));
-        String age = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.AGE));
+        String birth = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.BIRTH));
+        //String age = getAge(birth);
         String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
         String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
         String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
@@ -120,8 +124,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         TextView lastMessageTextView = holder.lastMessage;
         TextView timeLastMessageTextView = holder.timeLastMessage;
         informationTextView.setText(userName);
-        String temp = age+","+gender;
-        informationTextView2.setText(temp);
+//        String temp = age+","+gender;
+        //informationTextView2.setText(temp);
         lastMessageTextView.setText(lastMessage);
         try {
             date = format.parse(datetime);

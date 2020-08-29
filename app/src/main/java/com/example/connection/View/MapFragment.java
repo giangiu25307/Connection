@@ -3,12 +3,16 @@ package com.example.connection.View;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,16 +21,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Controller.DrawController;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 
 import java.util.ArrayList;
 
-public class MapFragment extends Fragment implements View.OnClickListener{
+public class MapFragment extends Fragment implements View.OnClickListener {
 
     ConnectionController connectionController;
     User user;
@@ -55,45 +61,48 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-          @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.map_fragment, null);
+        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.map_fragment, null);
 
-            filterImage = view.findViewById(R.id.filterButton);
-            filterImage.setOnClickListener(this);
+        filterImage = view.findViewById(R.id.filterButton);
+        filterImage.setOnClickListener(this);
 
-            Cursor c = connectionController.getAllClientList().get();
-            c.moveToFirst();
-            ListView listView = view.findViewById(R.id.listView);
+        Cursor c = connectionController.getAllClientList().get();
+        c.moveToFirst();
+        ListView listView = view.findViewById(R.id.listView);
 
-            final ArrayList<User> userList = new ArrayList<>();
-            String[] arrayName = new String[c.getCount()];
-            for (int i = 0; i < c.getCount(); i++) {
-                user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-                userList.add(user);
-                arrayName[i] = c.getString(1);
-                c.moveToNext();
+        final ArrayList<User> userList = new ArrayList<>();
+        String[] arrayName = new String[c.getCount()];
+        for (int i = 0; i < c.getCount(); i++) {
+            user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
+            userList.add(user);
+            arrayName[i] = c.getString(1);
+            c.moveToNext();
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
+
+                user = userList.get(position);
+                Intent myIntent = new Intent(getActivity(), ChatActivity.class);
+                myIntent.putExtra("idChat", user.getIdUser());
+                myIntent.putExtra("name", user.getUsername());
+                getActivity().startActivity(myIntent);
+                String information = user.toString();
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(getContext(), information, duration);
+                toast.show();
 
             }
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
-            listView.setAdapter(arrayAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
 
-                    user = userList.get(position);
-                    Intent myIntent = new Intent(getActivity(), ChatActivity.class);
-                    myIntent.putExtra("idChat", user.getIdUser());
-                    myIntent.putExtra("name", user.getUsername());
-                    getActivity().startActivity(myIntent);
-                    String information = user.toString();
-                    int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(getContext(), information, duration);
-                    toast.show();
+        });
 
-                }
-
-            });
+        ConstraintLayout mapLayout = view.findViewById(R.id.mapLayout);
+        DrawController drawController = new DrawController(mapLayout.getContext(),userList);
+        mapLayout.addView(drawController);
         return view;
-        }
+    }
 
 
     @Override

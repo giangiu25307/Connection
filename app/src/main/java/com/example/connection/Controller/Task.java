@@ -10,7 +10,7 @@ public class Task {
         public static final String ID_USER = "id_user";
         public static final String NAME = "name";
         public static final String SURNAME = "surname";
-        public static final String AGE = "age";
+        public static final String BIRTH = "birth";
         public static final String GENDER = "gender";
         public static final String NUMBER = "number";
         public static final String MAIL = "mail";

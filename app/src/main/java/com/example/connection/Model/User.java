@@ -2,6 +2,13 @@ package com.example.connection.Model;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class User {
 
@@ -14,9 +21,9 @@ public class User {
     String city;
     String profilePic;
     String number;
-    String age;
     String idUser;
     String password;
+    String birth;
     InetAddress inetAddress;
 
     public User() {
@@ -29,12 +36,12 @@ public class User {
         this.country = "";
         this.city = "";
         this.number = "";
-        this.age = "";
         this.profilePic = "";
         this.password = "";
+        this.birth = "";
     }
 
-    public User(String idUser, String username, String mail, String gender, String name, String surname, String country, String city, String number, String age, String profilePic) {
+    public User(String idUser, String username, String mail, String gender, String name, String surname, String country, String city, String number, String birth, String profilePic) {
         this.idUser = idUser;
         this.username = username;
         this.mail = mail;
@@ -44,7 +51,7 @@ public class User {
         this.country = country;
         this.city = city;
         this.number = number;
-        this.age = age;
+        this.birth = birth;
         this.profilePic = profilePic;
         this.password = "";
     }
@@ -58,7 +65,7 @@ public class User {
     }
 
     public String getAll() {
-        return idUser + "£€" + inetAddress + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + age + "£€" + profilePic;
+        return idUser + "£€" + inetAddress + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic;
     }
 
     public String getIdUser() {
@@ -133,12 +140,32 @@ public class User {
         this.number = number;
     }
 
-    public String getAge() {
-        return age;
+    public String getBirth() {
+        return birth;
     }
 
-    public void setAge(String age) {
-        this.age = age;
+    public void setBirth(String birth) {
+        this.birth = birth;
+    }
+
+    public String getAge() {
+        if(birth.isEmpty())return "";
+        else{
+            String age="";
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            try {
+               age  = ""+Period.between(convertToLocalDateViaInstant(formatter.parse(birth)), LocalDateTime.now().toLocalDate()).getYears();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return age;
+        }
+    }
+
+    public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
 
     public String getProfilePic() {
@@ -163,7 +190,7 @@ public class User {
                 "username='" + username + '\'' +
                 ", name='" + name + '\'' +
                 ", profilePic='" + profilePic + '\'' +
-                ", age='" + age + '\'' +
+                ", age='" + getAge() + '\'' +
                 '}';
     }
 }

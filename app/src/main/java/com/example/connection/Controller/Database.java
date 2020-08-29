@@ -36,7 +36,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.COUNTRY + " TEXT NOT NULL, "
                 + Task.TaskEntry.CITY + " TEXT NOT NULL,"
                 + Task.TaskEntry.NUMBER + " TEXT  DEFAULT 0, "
-                + Task.TaskEntry.AGE + " TEXT NOT NULL, "
+                + Task.TaskEntry.BIRTH + " TEXT NOT NULL, "
                 + Task.TaskEntry.PROFILE_PIC + " TEXT NOT NULL, "
                 + Task.TaskEntry.IP + " TEXT, "
                 + Task.TaskEntry.ACCEPT + " TEXT, "
@@ -221,7 +221,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public Cursor getAllRequestChat(){
-        String query= " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.age, u.gender " +
+        String query= " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.birth, u.gender " +
                 " FROM CHAT c INNER JOIN USER u on c.id_chat = u.id_user" +
                 " WHERE c.request = 'true' AND u.message_accept = 'true'" +
                 " ORDER BY c.datetime DESC";
@@ -233,7 +233,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public Cursor getAllNoRequestChat(){
-        String query= " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.age, u.gender" +
+        String query= " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.birth, u.gender" +
                 " FROM CHAT c INNER JOIN USER u on c.id_chat = u.id_user" +
                 " WHERE c.request = 'false' AND u.message_accept = 'true'" +
                 " ORDER BY c.datetime DESC";
@@ -340,7 +340,7 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER+" = "+"0",null);
     }
 
-    public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String profilePic){
+    public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String profilePic){
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ID_USER,idUser);
@@ -351,7 +351,7 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.SURNAME,surname);
         msgValues.put(Task.TaskEntry.COUNTRY,country);
         msgValues.put(Task.TaskEntry.CITY,city);
-        msgValues.put(Task.TaskEntry.AGE,age);
+        msgValues.put(Task.TaskEntry.BIRTH,birth);
         msgValues.put(Task.TaskEntry.IP,inetAddress);
         msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
         msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED,"true");
@@ -360,7 +360,7 @@ public class Database extends SQLiteOpenHelper {
         ContentValues ipValues = new ContentValues();
     }
 
-    public void SetMyInformation(String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String age,String number,String profilePic){
+    public void SetMyInformation(String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number,String profilePic){
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ID_USER,0);
@@ -371,7 +371,7 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.SURNAME,surname);
         msgValues.put(Task.TaskEntry.COUNTRY,country);
         msgValues.put(Task.TaskEntry.CITY,city);
-        msgValues.put(Task.TaskEntry.AGE,age);
+        msgValues.put(Task.TaskEntry.BIRTH,birth);
         msgValues.put(Task.TaskEntry.NUMBER,number);
         msgValues.put(Task.TaskEntry.IP,inetAddress);
         msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);

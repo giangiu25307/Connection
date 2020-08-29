@@ -51,14 +51,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/ageSignUpTextView"
+        android:id="@+id/dateOfBirthSignUpTextView"
         style="@style/inputDataStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
-        android:text="Age"
+        android:hint="Date of birth"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
