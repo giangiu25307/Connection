@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="3 people finded"
+                android:text="3 people found"
                 android:textColor="?attr/textColor"
                 android:textSize="21sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -50,20 +50,16 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/mapLayout"
+            android:id="@+id/mapRealLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <ListView
-                android:id="@+id/listView"
+            <android.widget.AbsoluteLayout
+                android:id="@+id/mapLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="13dp" />
+                android:layout_weight="1"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"

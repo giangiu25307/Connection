@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsoluteLayout;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
@@ -68,7 +69,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
         Cursor c = connectionController.getAllClientList().get();
         c.moveToFirst();
-        ListView listView = view.findViewById(R.id.listView);
+        //ListView listView = view.findViewById(R.id.listView);
 
         final ArrayList<User> userList = new ArrayList<>();
         String[] arrayName = new String[c.getCount()];
@@ -79,7 +80,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             c.moveToNext();
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
-        listView.setAdapter(arrayAdapter);
+        /*listView.setAdapter(arrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
@@ -96,9 +97,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
             }
 
-        });
+        });*/
 
-        ConstraintLayout mapLayout = view.findViewById(R.id.mapLayout);
+        AbsoluteLayout mapLayout = view.findViewById(R.id.mapLayout);
         DrawController drawController = new DrawController(mapLayout.getContext(),userList,mapLayout);
         mapLayout.addView(drawController);
         return view;

@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -32,9 +33,9 @@ public class DrawController extends View {
     private ArrayList<User> userList;
     private int x, y;
     private ArrayList<Integer> previousX, previousY;
-    private ConstraintLayout mapLayout;
+    private AbsoluteLayout mapLayout;
 
-    public DrawController(Context context, ArrayList<User> userList, ConstraintLayout mapLayout) {
+    public DrawController(Context context, ArrayList<User> userList, AbsoluteLayout mapLayout) {
         super(context);
         paint = new Paint();
         this.userList = userList;
@@ -59,14 +60,15 @@ public class DrawController extends View {
             if (previousY.contains(tempY)) tempY = (int) (Math.random() * getWidth());
             else previousY.add(tempY);
             canvas.drawLine(x, y, tempX, tempY, paint);
-            createUserPoint(x, y, i);
             x = tempX;
             y = tempY;
+            if(i==0)createUserPoint(getWidth() / 2, getHeight() / 2, i);
+            else createUserPoint(x, y, i);
         }
     }
 
     //create a clickable item who refers to a user at the coordinates x,y
-    private void createUserPoint(int x, int y, final int id) {
+    private void createUserPoint(final int x, final int y, final int id) {
         final ImageView image = new ImageView(mapLayout.getContext());
         //image.requestLayout();
         Bitmap bitmap = BitmapFactory.decodeFile(userList.get(id).getProfilePic());
@@ -79,7 +81,7 @@ public class DrawController extends View {
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 image.getViewTreeObserver().removeOnPreDrawListener(this);
-                ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(200, 200);
+                AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(200, 200,x-100,y-100);
                 image.setLayoutParams(params);
                 int finalWidth = image.getLayoutParams().width;
                 int finalHeight = image.getLayoutParams().height;
@@ -116,7 +118,7 @@ public class DrawController extends View {
                 });
             }
         });
-        mapLayout.addView(image, x, y);
+        mapLayout.addView(image);
     }
 
 }
