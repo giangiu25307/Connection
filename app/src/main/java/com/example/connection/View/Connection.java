@@ -87,7 +87,7 @@ public class Connection extends AppCompatActivity {
             database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
             database.createChat("2", "Andrew2");
             database.addMsg("Ciao", "2", "2");
-            database.addMsg("We", "0", "2");
+            database.addMsg("Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "0", "2");
             database.addUser("23","192.168.49.20","Andrew123","andrew@12gmail.com","ma123le","Andr1ew2","Wa131nd","England","London","23","/photo");
             database.createChat("23", "Andrew123");
             database.addMsg("Ciao", "23", "23");

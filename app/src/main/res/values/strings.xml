@@ -209,4 +209,5 @@
         <item>260,ZM</item>
         <item>263,ZW</item>
     </string-array>
+    <string name="forgot_password"><u>Forgot password?</u></string>
 </resources>

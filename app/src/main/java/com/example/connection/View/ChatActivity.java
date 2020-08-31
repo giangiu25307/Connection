@@ -148,9 +148,9 @@ public class ChatActivity extends AppCompatActivity {
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        MessageAdapter chatAdapter = new MessageAdapter(this, database, id, messageCursor,linearLayoutManager);
+        MessageAdapter chatAdapter = new MessageAdapter(this, database, id, messageCursor, linearLayoutManager);
         recyclerView.setAdapter(chatAdapter);
-        recyclerView.scrollToPosition(messageCursor.getCount());
+        recyclerView.scrollToPosition(messageCursor.getCount() - 1);
     }
 
     private void setBackgroundImage(){

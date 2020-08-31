@@ -124,9 +124,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 genderTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder dialogBuilder2 = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                        dialogBuilder2.setView(R.layout.gender_alert_dialog_with_checkbox);
-                        final AlertDialog alertDialog = dialogBuilder2.create();
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                        dialogBuilder.setView(R.layout.gender_alert_dialog_with_checkbox);
+                        final AlertDialog alertDialog = dialogBuilder.create();
                         alertDialog.show();
                         final TextView cancelTextView, applyTextView;
 
@@ -152,7 +152,28 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 ageTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                        dialogBuilder.setView(R.layout.age_alert_dialog);
+                        final AlertDialog alertDialog = dialogBuilder.create();
+                        alertDialog.show();
+                        final TextView cancelTextView, applyTextView;
 
+                        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
+                        applyTextView = alertDialog.findViewById(R.id.applyTextView);
+
+                        cancelTextView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.dismiss();
+                            }
+                        });
+
+                        applyTextView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        });
                     }
                 });
 
