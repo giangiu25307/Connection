@@ -53,17 +53,19 @@ public class DrawController extends View {
         y = getHeight() / 2;
         int tempX = 0, tempY = 0;
         for (int i = 0; i < userList.size(); i++) {
-            tempX = (int) (Math.random() * getWidth());
-            tempY = (int) (Math.random() * getHeight());
-            if (previousX.contains(tempX)) tempX = (int) (Math.random() * getWidth());
-            else previousX.add(tempX);
-            if (previousY.contains(tempY)) tempY = (int) (Math.random() * getWidth());
-            else previousY.add(tempY);
-            canvas.drawLine(x, y, tempX, tempY, paint);
-            x = tempX;
-            y = tempY;
             if(i==0)createUserPoint(getWidth() / 2, getHeight() / 2, i);
-            else createUserPoint(x, y, i);
+            else {
+                tempX = (int) (Math.random() * getWidth());
+                tempY = (int) (Math.random() * getHeight());
+                if (previousX.contains(tempX)) tempX = (int) (Math.random() * getWidth());
+                else previousX.add(tempX);
+                if (previousY.contains(tempY)) tempY = (int) (Math.random() * getWidth());
+                else previousY.add(tempY);
+                canvas.drawLine(x, y, tempX, tempY, paint);
+                x = tempX;
+                y = tempY;
+                createUserPoint(x, y, i);
+            }
         }
     }
 
