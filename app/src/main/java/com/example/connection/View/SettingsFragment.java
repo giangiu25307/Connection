@@ -55,14 +55,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private Database database;
     private ChatController chatController;
     private int theme = R.style.AppTheme;
-    private TextView themeOptionDescription,wallpaperOptionDescription;
+    private TextView themeOptionDescription, wallpaperOptionDescription;
     private Button editProfileButton;
     private int bgColor = R.color.mediumWhite;
     private int PICK_IMAGE = 1;
-    private ImageView profilePic,profilePics;
-    private String previousProfilePic="";
-    private boolean isBg=false;
+    private ImageView profilePic, profilePics;
+    private String previousProfilePic = "";
+    private boolean isBg = false;
     private ConstraintLayout wallpaperSettings;
+    private Fragment map, chat;
+    private SettingsFragment settingsFragment;
 
 
     public SettingsFragment() {
@@ -77,15 +79,25 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         this.database = database;
     }
 
+    public void setMap(Fragment map) {
+        this.map = map;
+    }
+
+    public void setChat(Fragment chat) {
+        this.chat = chat;
+    }
+
     public void setChatController(ChatController chatController) {
         this.chatController = chatController;
     }
 
-    public SettingsFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController) {
-        SettingsFragment settingsFragment = new SettingsFragment();
+    public SettingsFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat) {
+        settingsFragment = new SettingsFragment();
         settingsFragment.setChatController(chatController);
         settingsFragment.setConnectionController(connectionController);
         settingsFragment.setDatabase(database);
+        settingsFragment.setMap(map);
+        settingsFragment.setChat(chat);
         return settingsFragment;
     }
 
@@ -107,7 +119,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         changePasswordSettings = view.findViewById(R.id.changePasswordSettings);
         changePasswordSettings.setOnClickListener(this);
 
-        wallpaperSettings=view.findViewById(R.id.wallpaperSettings);
+        wallpaperSettings = view.findViewById(R.id.wallpaperSettings);
         wallpaperSettings.setOnClickListener(this);
 
         profilePic = view.findViewById(R.id.profilePic);
@@ -116,8 +128,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         setProfilePic();
 
-        Cursor c=database.getBacgroundImage();
-        if(c!=null && c.getCount()>0) {
+        Cursor c = database.getBacgroundImage();
+        if (c != null && c.getCount() > 0) {
             c.moveToLast();
             String imagePath = c.getString(0);
             String string[] = imagePath.split("/");
@@ -163,7 +175,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void editProfile(AlertDialog.Builder dialogBuilder){
+    private void editProfile(AlertDialog.Builder dialogBuilder) {
         //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
         dialogBuilder.setView(R.layout.edit_profile_alert_dialog);
         final AlertDialog alertDialog = dialogBuilder.create();
@@ -173,7 +185,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
         applyTextView = alertDialog.findViewById(R.id.applyTextView);
         profilePics = alertDialog.findViewById(R.id.profilePic);
-        if(!previousProfilePic.equals("")){
+        if (!previousProfilePic.equals("")) {
             Bitmap bitmap = BitmapFactory.decodeFile(previousProfilePic);
             Drawable draw = new BitmapDrawable(getResources(), bitmap);
             profilePics.setImageTintList(null);
@@ -203,7 +215,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void changePassword(AlertDialog.Builder dialogBuilder){
+    private void changePassword(AlertDialog.Builder dialogBuilder) {
         //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
         dialogBuilder.setView(R.layout.change_password_alert_dialog);
         final AlertDialog alertDialog = dialogBuilder.create();
@@ -378,21 +390,21 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             window.setStatusBarColor(getContext().getColor(R.color.mediumBlack));
         }
         HomeFragment homeFragment = new HomeFragment();
-        Fragment fragment = homeFragment.newInstance(connectionController, database, chatController);
+        Fragment fragment = homeFragment.newInstance(connectionController, database, chatController, map, chat, this);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();
     }
 
-    private void chooseImage(){
-        isBg=false;
-        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+    private void chooseImage() {
+        isBg = false;
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
 
-    private void chooseBackgroundImage(){
-        isBg=true;
-        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+    private void chooseBackgroundImage() {
+        isBg = true;
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
 
@@ -401,25 +413,25 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 // Let's read picked image data - its URI
                 Uri pickedImage = data.getData();
                 // Let's read picked image path using content resolver
-                String[] filePath = { MediaStore.MediaColumns.DATA };
+                String[] filePath = {MediaStore.MediaColumns.DATA};
                 Cursor cursor = getContext().getContentResolver().query(pickedImage, filePath, null, null, null);
-                if(cursor==null)return;
+                if (cursor == null) return;
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-                if(!isBg) {
+                if (!isBg) {
                     database.setProfilePic(imagePath);
                     Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                     Drawable draw = new BitmapDrawable(getResources(), bitmap);
                     profilePics.setImageTintList(null);
                     profilePics.setImageDrawable(draw);
-                }else{
+                } else {
                     database.setBacgroundImage(imagePath);
                     String string[] = imagePath.split("/");
-                    wallpaperOptionDescription.setText(string[string.length-1]);
+                    wallpaperOptionDescription.setText(string[string.length - 1]);
                 }
                 cursor.close();
             }
@@ -429,14 +441,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void setProfilePic(){
-        Cursor c=database.getProfilePic();
-        if(c==null||c.getCount()==0){
+    private void setProfilePic() {
+        Cursor c = database.getProfilePic();
+        if (c == null || c.getCount() == 0) {
             profilePic.setImageTintList(ColorStateList.valueOf(android.R.attr.iconTint));
             return;
         }
         c.moveToFirst();
-        previousProfilePic=c.getString(0);
+        previousProfilePic = c.getString(0);
         Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
         Drawable draw = new BitmapDrawable(getResources(), bitmap);
         profilePic.setImageTintList(null);

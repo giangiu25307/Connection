@@ -26,21 +26,26 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeFragment extends Fragment {
 
-    Fragment fragment;
-    ConnectionController connectionController;
-    Database database;
-    ChatController chatController;
-    BottomNavigationView bottomNavigationMenu;
+    private Fragment fragment;
+    private ConnectionController connectionController;
+    private Database database;
+    private ChatController chatController;
+    private BottomNavigationView bottomNavigationMenu;
+    private HomeFragment homeFragment;
+    private Fragment map, chat, settings;
 
     public HomeFragment() {
 
     }
 
-    public HomeFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController) {
-        HomeFragment homeFragment = new HomeFragment();
+    public HomeFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat, Fragment settings) {
+        homeFragment = new HomeFragment();
         homeFragment.setConnectionController(connectionController);
         homeFragment.setChatController(chatController);
         homeFragment.setDatabase(database);
+        homeFragment.setChat(chat);
+        homeFragment.setMap(map);
+        homeFragment.setSettings(settings);
         return homeFragment;
     }
 
@@ -58,15 +63,15 @@ public class HomeFragment extends Fragment {
 
         if (savedInstanceState == null && Connection.fragmentName.equals("MAP")) {
             bottomNavigationMenu.getMenu().getItem(0).setChecked(true);
-            fragment = new MapFragment().newInstance(connectionController, database);
+            fragment = map;
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("CHAT")) {
             bottomNavigationMenu.getMenu().getItem(1).setChecked(true);
-            fragment = new ChatFragment().newInstance(database, chatController);
+            fragment = chat;
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("SETTINGS")) {
             bottomNavigationMenu.getMenu().getItem(2).setChecked(true);
-            fragment = new SettingsFragment().newInstance(connectionController, database, chatController);
+            fragment = settings;
             loadFragment();
         }
 
@@ -105,21 +110,21 @@ public class HomeFragment extends Fragment {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.map:
-                    if(Connection.fragmentName.equals("MAP"))break;
+                    if (Connection.fragmentName.equals("MAP")) break;
                     Connection.fragmentName = "MAP";
-                    fragment = new MapFragment().newInstance(connectionController, database);
+                    fragment = map;
                     break;
                 case R.id.chat:
-                    if(Connection.fragmentName.equals("CHAT"))break;
+                    if (Connection.fragmentName.equals("CHAT")) break;
                     Connection.fragmentName = "CHAT";
-                    fragment = new ChatFragment().newInstance(database, chatController);
+                    fragment = chat;
                     break;
                 case R.id.settings:
-                    if(Connection.fragmentName.equals("SETTINGS"))break;
+                    if (Connection.fragmentName.equals("SETTINGS")) break;
                     Connection.fragmentName = "SETTINGS";
-                    fragment = new SettingsFragment().newInstance(connectionController, database, chatController);
+                    fragment = settings;
                     break;
                 default:
                     break;
@@ -148,7 +153,29 @@ public class HomeFragment extends Fragment {
         this.database = database;
     }
 
+    public void setMap(Fragment map) {
+        this.map = map;
+    }
 
+    public void setChat(Fragment chat) {
+        this.chat = chat;
+    }
+
+    public Fragment getMap() {
+        return map;
+    }
+
+    public Fragment getChat() {
+        return chat;
+    }
+
+    public Fragment getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Fragment settings) {
+        this.settings = settings;
+    }
 
 }
 

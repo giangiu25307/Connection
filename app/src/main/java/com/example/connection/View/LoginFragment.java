@@ -25,16 +25,20 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Database database;
     private ChatController chatController;
     private EditText email,password;
+    private Fragment map, chat, settings;
 
     public LoginFragment() {
 
     }
 
-    public LoginFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController) {
+    public LoginFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat, Fragment settings) {
         LoginFragment loginFragment = new LoginFragment();
         loginFragment.setConnectionController(connectionController);
         loginFragment.setDatabase(database);
         loginFragment.setChatController(chatController);
+        loginFragment.setChat(chat);
+        loginFragment.setMap(map);
+        loginFragment.setSettings(settings);
         return loginFragment;
     }
 
@@ -60,16 +64,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Fragment fragment;
         switch (v.getId()) {
             case R.id.signupButton:
-                fragment = new SignupFragment().newInstance(connectionController, database, chatController);
+                fragment = new SignupFragment().newInstance(connectionController, database, chatController, map, chat, settings);
                 loadFragment(fragment);
                 break;
             case R.id.skipButton:
-                fragment = new HomeFragment().newInstance(connectionController, database, chatController);
+                fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat, settings);
                 loadFragment(fragment);
                 break;
             case R.id.loginButton:
                 if(checker()){
-                    fragment = new HomeFragment().newInstance(connectionController, database, chatController);
+                    fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat, settings);
                     loadFragment(fragment);
                 }
                 break;
@@ -100,6 +104,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         String [] data = database.getMyEmailPassword();
         if(data[0].equals(email.getText())&&data[1].equals(password.getText()))return true;
         else return false;
+    }
+
+    public void setMap(Fragment map) {
+        this.map = map;
+    }
+
+    public void setChat(Fragment chat) {
+        this.chat = chat;
+    }
+
+    public void setSettings(Fragment settings) {
+        this.settings = settings;
     }
 
 }

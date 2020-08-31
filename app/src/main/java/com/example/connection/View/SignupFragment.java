@@ -83,13 +83,17 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private int currentPage;
     private MyViewPager viewPager;
     private User user = new User();
+    private Fragment map, chat, settings;
 
-    public SignupFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController) {
+    public SignupFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat, Fragment settings) {
         SignupFragment signupFragment = new SignupFragment();
         signupFragment.setConnectionController(connectionController);
         signupFragment.setDatabase(database);
         signupFragment.setChatController(chatController);
         signupFragment.setNations();
+        signupFragment.setChat(chat);
+        signupFragment.setMap(map);
+        signupFragment.setSettings(settings);
         return signupFragment;
     }
 
@@ -141,7 +145,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     //send user info to server
                     database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getAge(), user.getProfilePic());
                     database.setNumber("0", user.getNumber());
-                    Fragment fragment = new HomeFragment().newInstance(connectionController, database, chatController);
+                    Fragment fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat, settings);
                     loadFragment(fragment);
                 }
                 break;
@@ -277,10 +281,10 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         });
                     }
                 });
-                if(gender.getText().toString().trim().isEmpty()){
+                if (gender.getText().toString().trim().isEmpty()) {
                     gender.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                     viewPager.setPagingEnabled(false);
-                }else{
+                } else {
                     gender.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
                     viewPager.setPagingEnabled(true);
                 }
@@ -496,6 +500,18 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             Locale obj = new Locale("", countryCode);
             nations.add(obj.getDisplayCountry());
         }
+    }
+
+    public void setMap(Fragment map) {
+        this.map = map;
+    }
+
+    public void setChat(Fragment chat) {
+        this.chat = chat;
+    }
+
+    public void setSettings(Fragment settings) {
+        this.settings = settings;
     }
 
 }

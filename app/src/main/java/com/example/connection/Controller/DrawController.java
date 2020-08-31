@@ -2,28 +2,28 @@ package com.example.connection.Controller;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.ChatActivity;
+import com.example.connection.View.Connection;
 
 import java.util.ArrayList;
 
@@ -34,14 +34,18 @@ public class DrawController extends View {
     private int x, y;
     private ArrayList<Integer> previousX, previousY;
     private AbsoluteLayout mapLayout;
+    private int widthHeight = 200;
+    private ArrayList<ImageView> images;
 
     public DrawController(Context context, ArrayList<User> userList, AbsoluteLayout mapLayout) {
         super(context);
-        paint = new Paint();
+        this.paint = new Paint();
         this.userList = userList;
-        previousX = new ArrayList<Integer>();
-        previousY = new ArrayList<Integer>();
+        this.previousX = new ArrayList<Integer>();
+        this.previousY = new ArrayList<Integer>();
         this.mapLayout = mapLayout;
+        this.postInvalidate();
+        this.images = new ArrayList<ImageView>();
     }
 
     @Override
@@ -49,19 +53,23 @@ public class DrawController extends View {
         super.onDraw(canvas);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5);
+        //canvas.drawLine(x, y, tempX, tempY, paint);
+        if(Connection.boot)createCoordinates();
+    }
+
+    private void createCoordinates(){
         x = getWidth() / 2;
         y = getHeight() / 2;
         int tempX = 0, tempY = 0;
         for (int i = 0; i < userList.size(); i++) {
-            if(i==0)createUserPoint(getWidth() / 2, getHeight() / 2, i);
+            if (i == 0) createUserPoint(getWidth() / 2, getHeight() / 2, i);
             else {
                 tempX = (int) (Math.random() * getWidth());
                 tempY = (int) (Math.random() * getHeight());
-                if (previousX.contains(tempX)) tempX = (int) (Math.random() * getWidth());
-                else previousX.add(tempX);
-                if (previousY.contains(tempY)) tempY = (int) (Math.random() * getWidth());
-                else previousY.add(tempY);
-                canvas.drawLine(x, y, tempX, tempY, paint);
+                while (check(previousX,tempX)) tempX = (int) (Math.random() * getWidth());
+                while (check(previousY,tempY)) tempY = (int) (Math.random() * getWidth());
+                previousX.add(tempX);
+                previousY.add(tempY);
                 x = tempX;
                 y = tempY;
                 createUserPoint(x, y, i);
@@ -74,7 +82,7 @@ public class DrawController extends View {
         final ImageView image = new ImageView(mapLayout.getContext());
         //image.requestLayout();
         Bitmap bitmap = BitmapFactory.decodeFile(userList.get(id).getProfilePic());
-        if(bitmap != null){
+        if (bitmap != null) {
             image.setImageBitmap(bitmap);
         }
 
@@ -83,7 +91,7 @@ public class DrawController extends View {
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 image.getViewTreeObserver().removeOnPreDrawListener(this);
-                AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(200, 200,x-100,y-100);
+                AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(widthHeight, widthHeight, x - 100, y - 100);
                 image.setLayoutParams(params);
                 int finalWidth = image.getLayoutParams().width;
                 int finalHeight = image.getLayoutParams().height;
@@ -120,7 +128,14 @@ public class DrawController extends View {
                 });
             }
         });
-        mapLayout.addView(image);
+        images.add(image);
+    }
+
+    private boolean check(ArrayList<Integer> previousCoordinates, int coordinates) {
+        for (int i = 0; i < previousCoordinates.size(); i++) {
+            if (previousCoordinates.get(i) - (widthHeight) < coordinates && coordinates< previousCoordinates.get(i)+ (widthHeight))return true;
+        }
+        return false;
     }
 
 }

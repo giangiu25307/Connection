@@ -39,13 +39,15 @@ public class Connection extends AppCompatActivity {
     private Boolean startTimer2 = true;
     private long secondsRemaining = 1000;
     private SharedPreferences sharedPreferences;
+    public static boolean boot = true;
     Database database;
     User user;
     ChatController chatController;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
-    public static String fragmentName="MAP";
-    public static String lightOrDark="light";
+    public static String fragmentName = "MAP";
+    public static String lightOrDark = "light";
+    private Fragment map, chat, settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,6 @@ public class Connection extends AppCompatActivity {
         //LocalizationController localizationController=null;
 
         // localizationController=new LocalizationController(database,this);
-
         loadTheme();
         requestStoragePermission();
         super.onCreate(savedInstanceState);
@@ -75,24 +76,26 @@ public class Connection extends AppCompatActivity {
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
 
-
         }
         createCountDowntimer();
         countDownTimer.start();
+        map = new MapFragment().newInstance(connectionController, database);
+        chat = new ChatFragment().newInstance(database, chatController);
+        settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
 
         boolean createSample = false;
-        if(createSample){
-            database.addUser("0","192.168.49.20","Andrew00","andrew@gmail.com","male","Andrew","Wand","England","London","23","/photo");
-            database.addUser("2","192.168.49.20","Andrew1","andrew@gmail.com","male","Andrew2","Wand","England","London","23","/photo");
+        if (createSample) {
+            database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23", "/photo");
+            database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23", "/photo");
             database.createChat("2", "Andrew2");
             database.addMsg("Ciao", "2", "2");
-            database.addMsg("Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "0", "2");
-            database.addUser("23","192.168.49.20","Andrew123","andrew@12gmail.com","ma123le","Andr1ew2","Wa131nd","England","London","23","/photo");
+            database.addMsg("We", "0", "2");
+            database.addUser("23", "192.168.49.20", "Andrew123", "andrew@12gmail.com", "ma123le", "Andr1ew2", "Wa131nd", "England", "London", "23", "/photo");
             database.createChat("23", "Andrew123");
             database.addMsg("Ciao", "23", "23");
 
-            database.addUser("25","192.168.49.20","Andrew345","andrew@12gmail.com","ma123le","Andr1ew2","Wa131nd","England","London","23","/photo");
+            database.addUser("25", "192.168.49.20", "Andrew345", "andrew@12gmail.com", "ma123le", "Andr1ew2", "Wa131nd", "England", "London", "23", "/photo");
             database.createChat("25", "Andrew345");
             database.addMsg("Wee", "25", "25");
         }
@@ -103,11 +106,11 @@ public class Connection extends AppCompatActivity {
     private void loadTheme() {
         String theme = sharedPreferences.getString("appTheme", "light");
         if (theme.equals("light")) {
-            lightOrDark="Light";
+            lightOrDark = "Light";
             setTheme(R.style.AppTheme);
             setStatusAndNavbarColor(true);
         } else if (theme.equals("dark")) {
-            lightOrDark="Dark";
+            lightOrDark = "Dark";
             setTheme(R.style.DarkTheme);
             setStatusAndNavbarColor(false);
         } else {
@@ -115,12 +118,12 @@ public class Connection extends AppCompatActivity {
             switch (nightModeFlags) {
                 case Configuration.UI_MODE_NIGHT_NO:
                 case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                    lightOrDark="Follow System";
+                    lightOrDark = "Follow System";
                     setTheme(R.style.AppTheme);
                     setStatusAndNavbarColor(true);
                     break;
                 case Configuration.UI_MODE_NIGHT_YES:
-                    lightOrDark="Follow System";
+                    lightOrDark = "Follow System";
                     setTheme(R.style.DarkTheme);
                     setStatusAndNavbarColor(false);
                     break;
@@ -163,7 +166,7 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                fragment = new LoginFragment().newInstance(connectionController, database, chatController);
+                fragment = new LoginFragment().newInstance(connectionController, database, chatController, map, chat, settings);
                 //fragment = new HomeFragment().newInstance(connectionController, database, chatController);
                 loadFragment(true);
                 startTimer2 = false;
@@ -237,9 +240,9 @@ public class Connection extends AppCompatActivity {
 
     private void requestStoragePermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(Objects.requireNonNull(this), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            ActivityCompat.requestPermissions(Objects.requireNonNull(this), new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            ActivityCompat.requestPermissions(Objects.requireNonNull(this), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         } else {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
     }
 }
