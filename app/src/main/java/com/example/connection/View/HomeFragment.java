@@ -32,20 +32,20 @@ public class HomeFragment extends Fragment {
     private ChatController chatController;
     private BottomNavigationView bottomNavigationMenu;
     private HomeFragment homeFragment;
-    private Fragment map, chat, settings;
+    private Fragment map, chat;
 
     public HomeFragment() {
 
     }
 
-    public HomeFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat, Fragment settings) {
+    public HomeFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat) {
         homeFragment = new HomeFragment();
         homeFragment.setConnectionController(connectionController);
         homeFragment.setChatController(chatController);
         homeFragment.setDatabase(database);
         homeFragment.setChat(chat);
         homeFragment.setMap(map);
-        homeFragment.setSettings(settings);
+
         return homeFragment;
     }
 
@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment {
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("SETTINGS")) {
             bottomNavigationMenu.getMenu().getItem(2).setChecked(true);
-            fragment = settings;
+            fragment = new SettingsFragment().newInstance(connectionController,database,chatController,map,chat);
             loadFragment();
         }
 
@@ -112,19 +112,19 @@ public class HomeFragment extends Fragment {
 
             switch (item.getItemId()) {
                 case R.id.map:
-                    if (Connection.fragmentName.equals("MAP")) break;
+                    //if (Connection.fragmentName.equals("MAP")) break;
                     Connection.fragmentName = "MAP";
                     fragment = map;
                     break;
                 case R.id.chat:
-                    if (Connection.fragmentName.equals("CHAT")) break;
+                    //if (Connection.fragmentName.equals("CHAT")) break;
                     Connection.fragmentName = "CHAT";
                     fragment = chat;
                     break;
                 case R.id.settings:
-                    if (Connection.fragmentName.equals("SETTINGS")) break;
+                    //if (Connection.fragmentName.equals("SETTINGS")) break;
                     Connection.fragmentName = "SETTINGS";
-                    fragment = settings;
+                    fragment = new SettingsFragment().newInstance(connectionController,database,chatController,map,chat);
                     break;
                 default:
                     break;
@@ -167,14 +167,6 @@ public class HomeFragment extends Fragment {
 
     public Fragment getChat() {
         return chat;
-    }
-
-    public Fragment getSettings() {
-        return settings;
-    }
-
-    public void setSettings(Fragment settings) {
-        this.settings = settings;
     }
 
 }

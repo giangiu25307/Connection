@@ -67,9 +67,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private SettingsFragment settingsFragment;
 
 
-    public SettingsFragment() {
-
-    }
+    public SettingsFragment() {}
 
     public void setConnectionController(ConnectionController connectionController) {
         this.connectionController = connectionController;
@@ -105,7 +103,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") final View view = inflater.inflate(R.layout.settings_fragment, null);
-
         sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         editProfileButton = view.findViewById(R.id.editProfileButton);
@@ -390,7 +387,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             window.setStatusBarColor(getContext().getColor(R.color.mediumBlack));
         }
         HomeFragment homeFragment = new HomeFragment();
-        Fragment fragment = homeFragment.newInstance(connectionController, database, chatController, map, chat, this);
+        settingsFragment=this;
+        Fragment fragment = homeFragment.newInstance(connectionController, database, chatController, map, chat);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();
