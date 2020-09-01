@@ -11,6 +11,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -36,6 +38,7 @@ public class DrawController extends View {
     private AbsoluteLayout mapLayout;
     private int widthHeight = 200;
     private ArrayList<ImageView> images;
+    private long secondsRemaining = 1000;
 
     public DrawController(Context context, ArrayList<User> userList, AbsoluteLayout mapLayout) {
         super(context);
@@ -49,15 +52,15 @@ public class DrawController extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5);
-        //canvas.drawLine(x, y, tempX, tempY, paint);
-        if(Connection.boot)createCoordinates();
+        //
+        if (Connection.boot) createCoordinates(canvas);
     }
 
-    private void createCoordinates(){
+    private void createCoordinates(Canvas canvas) {
         x = getWidth() / 2;
         y = getHeight() / 2;
         int tempX = 0, tempY = 0;
@@ -66,15 +69,17 @@ public class DrawController extends View {
             else {
                 tempX = (int) (Math.random() * getWidth());
                 tempY = (int) (Math.random() * getHeight());
-                while (check(previousX,tempX)) tempX = (int) (Math.random() * getWidth());
-                while (check(previousY,tempY)) tempY = (int) (Math.random() * getWidth());
+                while (check(previousX, tempX)) tempX = (int) (Math.random() * getWidth());
+                while (check(previousY, tempY)) tempY = (int) (Math.random() * getHeight());
                 previousX.add(tempX);
                 previousY.add(tempY);
+                canvas.drawLine(x, y, tempX, tempY, paint);
                 x = tempX;
                 y = tempY;
                 createUserPoint(x, y, i);
             }
         }
+        Connection.boot = false;
     }
 
     //create a clickable item who refers to a user at the coordinates x,y
@@ -128,12 +133,13 @@ public class DrawController extends View {
                 });
             }
         });
-        images.add(image);
+        mapLayout.addView(image);
     }
 
     private boolean check(ArrayList<Integer> previousCoordinates, int coordinates) {
         for (int i = 0; i < previousCoordinates.size(); i++) {
-            if (previousCoordinates.get(i) - (widthHeight) < coordinates && coordinates< previousCoordinates.get(i)+ (widthHeight))return true;
+            if (previousCoordinates.get(i) - (widthHeight) < coordinates && coordinates < previousCoordinates.get(i) + (widthHeight))
+                return true;
         }
         return false;
     }
