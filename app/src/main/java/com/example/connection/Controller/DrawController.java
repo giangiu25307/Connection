@@ -6,15 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.CountDownTimer;
-import android.os.Handler;
-import android.provider.ContactsContract;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
@@ -34,21 +30,15 @@ public class DrawController extends View {
     private Paint paint;
     private ArrayList<User> userList;
     private int x, y;
-    private ArrayList<Integer> previousX, previousY;
     private AbsoluteLayout mapLayout;
     private int widthHeight = 200;
-    private ArrayList<ImageView> images;
-    private long secondsRemaining = 1000;
 
     public DrawController(Context context, ArrayList<User> userList, AbsoluteLayout mapLayout) {
         super(context);
         this.paint = new Paint();
         this.userList = userList;
-        this.previousX = new ArrayList<Integer>();
-        this.previousY = new ArrayList<Integer>();
         this.mapLayout = mapLayout;
         this.postInvalidate();
-        this.images = new ArrayList<ImageView>();
     }
 
     @Override
@@ -58,6 +48,29 @@ public class DrawController extends View {
         paint.setStrokeWidth(5);
         //
         if (Connection.boot) createCoordinates(canvas);
+        else drawCoordinates(canvas);
+    }
+
+    private void drawCoordinates(Canvas canvas) {
+        for (int i = 0; i < Connection.previousX.size(); i++) {
+            if (i == 0) {
+                ((ViewGroup) Connection.images.get(i).getParent()).removeView(Connection.images.get(i));
+                mapLayout.addView(Connection.images.get(i));
+                x = getWidth() / 2;
+                y = getHeight() / 2;
+                canvas.drawLine(x, y, Connection.previousX.get(i), Connection.previousY.get(i), paint);
+                x = Connection.previousX.get(i);
+                y = Connection.previousY.get(i);
+            } else {
+                canvas.drawLine(x, y, Connection.previousX.get(i), Connection.previousY.get(i), paint);
+                ((ViewGroup) Connection.images.get(i).getParent()).removeView(Connection.images.get(i));
+                mapLayout.addView(Connection.images.get(i));
+                x = Connection.previousX.get(i);
+                y = Connection.previousY.get(i);
+            }
+        }
+        ((ViewGroup) Connection.images.get(Connection.previousX.size()).getParent()).removeView(Connection.images.get(Connection.previousX.size()));
+        mapLayout.addView(Connection.images.get(Connection.previousX.size()));
     }
 
     private void createCoordinates(Canvas canvas) {
@@ -69,10 +82,12 @@ public class DrawController extends View {
             else {
                 tempX = (int) (Math.random() * getWidth());
                 tempY = (int) (Math.random() * getHeight());
-                while (check(previousX, tempX)) tempX = (int) (Math.random() * getWidth());
-                while (check(previousY, tempY)) tempY = (int) (Math.random() * getHeight());
-                previousX.add(tempX);
-                previousY.add(tempY);
+                while (check(Connection.previousX, tempX))
+                    tempX = (int) (Math.random() * getWidth());
+                while (check(Connection.previousY, tempY))
+                    tempY = (int) (Math.random() * getHeight());
+                Connection.previousX.add(tempX);
+                Connection.previousY.add(tempY);
                 canvas.drawLine(x, y, tempX, tempY, paint);
                 x = tempX;
                 y = tempY;
@@ -133,6 +148,7 @@ public class DrawController extends View {
                 });
             }
         });
+        Connection.images.add(image);
         mapLayout.addView(image);
     }
 

@@ -15,6 +15,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -29,6 +30,7 @@ import com.example.connection.R;
 import com.example.connection.UDP_Connection.RTTSocket;
 
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 //D/SupplicantP2pIfaceCallbackExt: Provision discovery request for WPS Config method: 128
@@ -47,6 +49,8 @@ public class Connection extends AppCompatActivity {
     ConnectionController connectionController;
     public static String fragmentName = "MAP";
     public static String lightOrDark = "light";
+    public static ArrayList<Integer> previousX = new ArrayList<Integer>(), previousY= new ArrayList<Integer>();
+    public static ArrayList<ImageView> images = new ArrayList<ImageView>();
     private Fragment map, chat, settings;
 
     @Override
