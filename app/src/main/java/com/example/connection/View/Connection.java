@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Model.MapUsers;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.UDP_Connection.RTTSocket;
@@ -49,8 +50,7 @@ public class Connection extends AppCompatActivity {
     ConnectionController connectionController;
     public static String fragmentName = "MAP";
     public static String lightOrDark = "light";
-    public static ArrayList<Integer> previousX = new ArrayList<Integer>(), previousY= new ArrayList<Integer>();
-    public static ArrayList<ImageView> images = new ArrayList<ImageView>();
+    public static ArrayList<MapUsers> mapUsers = new ArrayList<MapUsers>();
     private Fragment map, chat, settings;
 
     @Override

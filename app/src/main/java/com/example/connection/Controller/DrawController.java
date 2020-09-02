@@ -1,5 +1,6 @@
 package com.example.connection.Controller;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.connection.Model.MapUsers;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.ChatActivity;
@@ -32,6 +34,8 @@ public class DrawController extends View {
     private int x, y;
     private AbsoluteLayout mapLayout;
     private int widthHeight = 200;
+    private ArrayList<Integer> previousX, previousY;
+    private ArrayList<ImageView> images;
 
     public DrawController(Context context, ArrayList<User> userList, AbsoluteLayout mapLayout) {
         super(context);
@@ -39,6 +43,8 @@ public class DrawController extends View {
         this.userList = userList;
         this.mapLayout = mapLayout;
         this.postInvalidate();
+        this.previousY = this.previousX = new ArrayList<Integer>();
+        this.images = new ArrayList<ImageView>();
     }
 
     @Override
@@ -48,29 +54,26 @@ public class DrawController extends View {
         paint.setStrokeWidth(5);
         //
         if (Connection.boot) createCoordinates(canvas);
-        else drawCoordinates(canvas);
+        else {
+            deleteFromMapUsers();
+            addToMap();
+            drawCoordinates(canvas);
+        }
     }
 
     private void drawCoordinates(Canvas canvas) {
-        for (int i = 0; i < Connection.previousX.size(); i++) {
+        for (int i = 0; i < Connection.mapUsers.size(); i++) {
             if (i == 0) {
-                ((ViewGroup) Connection.images.get(i).getParent()).removeView(Connection.images.get(i));
-                mapLayout.addView(Connection.images.get(i));
-                x = getWidth() / 2;
-                y = getHeight() / 2;
-                canvas.drawLine(x, y, Connection.previousX.get(i), Connection.previousY.get(i), paint);
-                x = Connection.previousX.get(i);
-                y = Connection.previousY.get(i);
+                ((ViewGroup) Connection.mapUsers.get(i).getImage().getParent()).removeView(Connection.mapUsers.get(i).getImage());
+                mapLayout.addView(Connection.mapUsers.get(i).getImage());
             } else {
-                canvas.drawLine(x, y, Connection.previousX.get(i), Connection.previousY.get(i), paint);
-                ((ViewGroup) Connection.images.get(i).getParent()).removeView(Connection.images.get(i));
-                mapLayout.addView(Connection.images.get(i));
-                x = Connection.previousX.get(i);
-                y = Connection.previousY.get(i);
+                canvas.drawLine(x, y, Connection.mapUsers.get(i).getX(), Connection.mapUsers.get(i).getY(), paint);
+                ((ViewGroup) Connection.mapUsers.get(i).getImage().getParent()).removeView(Connection.mapUsers.get(i).getImage());
+                mapLayout.addView(Connection.mapUsers.get(i).getImage());
             }
+            x = Connection.mapUsers.get(i).getX();
+            y = Connection.mapUsers.get(i).getY();
         }
-        ((ViewGroup) Connection.images.get(Connection.previousX.size()).getParent()).removeView(Connection.images.get(Connection.previousX.size()));
-        mapLayout.addView(Connection.images.get(Connection.previousX.size()));
     }
 
     private void createCoordinates(Canvas canvas) {
@@ -78,20 +81,23 @@ public class DrawController extends View {
         y = getHeight() / 2;
         int tempX = 0, tempY = 0;
         for (int i = 0; i < userList.size(); i++) {
-            if (i == 0) createUserPoint(getWidth() / 2, getHeight() / 2, i);
-            else {
+            if (i == 0) {
+                createUserPoint(getWidth() / 2, getHeight() / 2, i);
+                Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), getWidth() / 2, getHeight() / 2, images.get(i)));
+            } else {
                 tempX = (int) (Math.random() * getWidth());
                 tempY = (int) (Math.random() * getHeight());
-                while (check(Connection.previousX, tempX))
+                while (check(previousX, tempX))
                     tempX = (int) (Math.random() * getWidth());
-                while (check(Connection.previousY, tempY))
+                while (check(previousY, tempY))
                     tempY = (int) (Math.random() * getHeight());
-                Connection.previousX.add(tempX);
-                Connection.previousY.add(tempY);
+                previousX.add(tempX);
+                previousY.add(tempY);
                 canvas.drawLine(x, y, tempX, tempY, paint);
                 x = tempX;
                 y = tempY;
                 createUserPoint(x, y, i);
+                Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i)));
             }
         }
         Connection.boot = false;
@@ -136,7 +142,8 @@ public class DrawController extends View {
                 profilePic.setImageTintList(null);
                 profilePic.setImageDrawable(draw);
                 name.setText(user.getUsername());
-                information.setText(user.getGender());
+                String ageGender = user.getAge() + ", " + user.getGender();
+                information.setText(ageGender);
                 send.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -148,7 +155,7 @@ public class DrawController extends View {
                 });
             }
         });
-        Connection.images.add(image);
+        images.add(image);
         mapLayout.addView(image);
     }
 
@@ -158,6 +165,94 @@ public class DrawController extends View {
                 return true;
         }
         return false;
+    }
+
+    //AGGIUNTA UTENTI NELLA MAPPA
+
+    private ArrayList<String> getAllUserIds() {
+        ArrayList<String> ids = new ArrayList<String>();
+        for (int i = 0; i < userList.size(); i++) {
+            ids.add(userList.get(i).getIdUser());
+        }
+        return ids;
+    }
+
+    private boolean mapContainsId(String id) {
+        for (int i = 0; i < Connection.mapUsers.size(); i++) {
+            if (Connection.mapUsers.get(i).getId().equals(id)) return true;
+        }
+        return false;
+    }
+
+    private ArrayList<User> userToAdd() {
+        ArrayList<String> ids = getAllUserIds();
+        ArrayList<User> userList = new ArrayList<User>();
+        for (int i = 0; i < ids.size(); i++) {
+            if (!mapContainsId(ids.get(i))) {
+                for (int j = 0; j < userList.size(); j++) {
+                    if(userList.get(j).getIdUser().equals(ids.get(i)))userList.add(userList.get(j));
+                }
+            }
+        }
+        return userList;
+    }
+
+    private void addToMap() {
+        previousX = previousY = new ArrayList<Integer>();
+        images = new ArrayList<ImageView>();
+        for (int i = 0; i < Connection.mapUsers.size(); i++) {
+            previousX.add(Connection.mapUsers.get(i).getX());
+            previousY.add(Connection.mapUsers.get(i).getY());
+        }
+        ArrayList<User> userList = userToAdd();
+        for (int i = 0; i < userList.size(); i++) {
+            x = (int) (Math.random() * getWidth());
+            y = (int) (Math.random() * getHeight());
+            while (check(previousX, x))
+                x = (int) (Math.random() * getWidth());
+            while (check(previousY, y))
+                y = (int) (Math.random() * getHeight());
+            previousX.add(x);
+            previousY.add(y);
+            createUserPoint(x, y, i);
+            Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i)));
+        }
+
+    }
+
+    //ELIMINAZIONE VECCHI UTENTI
+    private ArrayList<String> getAllMapIds() {
+        ArrayList<String> ids = new ArrayList<String>();
+        for (int i = 0; i < Connection.mapUsers.size(); i++) {
+            ids.add(Connection.mapUsers.get(i).getId());
+        }
+        return ids;
+    }
+
+    private boolean userListContainsId(String id) {
+        for (int i = 0; i < userList.size(); i++) {
+            if (userList.get(i).getIdUser().equals(id)) return true;
+        }
+        return false;
+    }
+
+    private ArrayList<String> userToDelete() {
+        ArrayList<String> ids = getAllMapIds();
+        ArrayList<String> userIdList = new ArrayList<String>();
+        for (int i = 0; i < ids.size(); i++) {
+            if (!userListContainsId(ids.get(i))) userIdList.add(ids.get(i));
+        }
+        return userIdList;
+    }
+
+    private void deleteFromMapUsers() {
+        ArrayList<String> userIdList = userToDelete();
+        for (int i = 0; i < Connection.mapUsers.size(); i++) {
+            for (int j = 0; j < userIdList.size(); j++) {
+                if (Connection.mapUsers.get(i).getId().equals(userIdList.get(j)))
+                    Connection.mapUsers.remove(Connection.mapUsers.get(i));
+            }
+        }
     }
 
 }
