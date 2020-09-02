@@ -45,7 +45,6 @@ public class HomeFragment extends Fragment {
         homeFragment.setDatabase(database);
         homeFragment.setChat(chat);
         homeFragment.setMap(map);
-
         return homeFragment;
     }
 
