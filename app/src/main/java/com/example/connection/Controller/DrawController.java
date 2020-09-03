@@ -106,7 +106,6 @@ public class DrawController extends View {
     //create a clickable item who refers to a user at the coordinates x,y
     private void createUserPoint(final int x, final int y, final int id) {
         final ImageView image = new ImageView(mapLayout.getContext());
-        //image.requestLayout();
         Bitmap bitmap = BitmapFactory.decodeFile(userList.get(id).getProfilePic());
         if (bitmap != null) {
             image.setImageBitmap(bitmap);
@@ -159,6 +158,7 @@ public class DrawController extends View {
         mapLayout.addView(image);
     }
 
+    //check coordinates distances
     private boolean check(ArrayList<Integer> previousCoordinates, int coordinates) {
         for (int i = 0; i < previousCoordinates.size(); i++) {
             if (previousCoordinates.get(i) - (widthHeight) < coordinates && coordinates < previousCoordinates.get(i) + (widthHeight))
@@ -167,7 +167,7 @@ public class DrawController extends View {
         return false;
     }
 
-    //AGGIUNTA UTENTI NELLA MAPPA
+    //ADDING USER TO THE MAP
 
     private ArrayList<String> getAllUserIds() {
         ArrayList<String> ids = new ArrayList<String>();
@@ -220,7 +220,7 @@ public class DrawController extends View {
 
     }
 
-    //ELIMINAZIONE VECCHI UTENTI
+    //DELETE USER FROM THE MAP
     private ArrayList<String> getAllMapIds() {
         ArrayList<String> ids = new ArrayList<String>();
         for (int i = 0; i < Connection.mapUsers.size(); i++) {
