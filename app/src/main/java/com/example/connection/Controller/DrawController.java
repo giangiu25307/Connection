@@ -51,7 +51,6 @@ public class DrawController extends View {
         super.onDraw(canvas);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5);
-        //
         if (Connection.boot) createCoordinates(canvas);
         else {
             deleteFromMapUsers();
@@ -252,6 +251,10 @@ public class DrawController extends View {
                     Connection.mapUsers.remove(Connection.mapUsers.get(i));
             }
         }
+    }
+
+    public void applyFilters(String minAge, String maxAge, String[] genders){
+
     }
 
 }
