@@ -1,28 +1,21 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.HorizontalScrollView;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.connection.Controller.ConnectionController;
@@ -35,10 +28,11 @@ import java.util.ArrayList;
 
 public class MapFragment extends Fragment implements View.OnClickListener {
 
-    ConnectionController connectionController;
-    User user;
-    Database database;
-    ImageView filterImage;
+    private ConnectionController connectionController;
+    private User user;
+    private Database database;
+    private ImageView filterImage;
+    private DrawController drawController;
 
     public MapFragment() {
 
@@ -99,7 +93,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         });*/
 
         AbsoluteLayout mapLayout = view.findViewById(R.id.mapLayout);
-        DrawController drawController = new DrawController(mapLayout.getContext(),userList,mapLayout);
+        drawController = new DrawController(mapLayout.getContext(), userList, mapLayout);
         mapLayout.addView(drawController);
         return view;
     }
@@ -120,6 +114,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
 
+                //gender alert dialog
                 genderTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -128,9 +123,19 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         final AlertDialog alertDialog = dialogBuilder.create();
                         alertDialog.show();
                         final TextView cancelTextView, applyTextView;
+                        final CheckBox male, female, other;
 
                         cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                         applyTextView = alertDialog.findViewById(R.id.applyTextView);
+                        male = alertDialog.findViewById(R.id.checkBoxMale);
+                        female = alertDialog.findViewById(R.id.checkBoxFemale);
+                        other = alertDialog.findViewById(R.id.checkBoxOther);
+                        if (Connection.genders[0] != null && Connection.genders[0].equals("male"))
+                            male.setChecked(true);
+                        if (Connection.genders[0] != null && Connection.genders[1].equals("female"))
+                            female.setChecked(true);
+                        if (Connection.genders[0] != null && Connection.genders[2].equals("other"))
+                            other.setChecked(true);
 
                         cancelTextView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -142,12 +147,18 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         applyTextView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
+                                if (male != null && male.isChecked()) Connection.genders[0] = "male";
+                                if (female != null && female.isChecked())
+                                    Connection.genders[1] = "female";
+                                if (other != null && other.isChecked())
+                                    Connection.genders[2] = "other";
+                                alertDialog.dismiss();
                             }
                         });
                     }
                 });
 
+                //age alert dialog
                 ageTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -157,9 +168,13 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         alertDialog.show();
                         final TextView cancelTextView, applyTextView;
 
+                        final EditText editTextMinAge = alertDialog.findViewById(R.id.editTextMinAge);
+                        final EditText editTextMaxAge = alertDialog.findViewById(R.id.editTextMaxAge);
+
                         cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                         applyTextView = alertDialog.findViewById(R.id.applyTextView);
-
+                        if (!Connection.minAge.isEmpty()) editTextMinAge.setText(Connection.minAge);
+                        if (!Connection.maxAge.isEmpty()) editTextMinAge.setText(Connection.maxAge);
                         cancelTextView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -170,7 +185,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         applyTextView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
+                                Connection.minAge = editTextMinAge.getText().toString();
+                                Connection.maxAge = editTextMaxAge.getText().toString();
+                                alertDialog.dismiss();
                             }
                         });
                     }
@@ -186,7 +203,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 applyTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        drawController.applyFilters(Connection.minAge,Connection.maxAge,Connection.genders);
+                        alertDialog.dismiss();
                     }
                 });
                 break;

@@ -26,12 +26,12 @@
             android:text="from"
             android:textColor="?attr/textColor"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/editTextTextPersonName"
+            app:layout_constraintEnd_toStartOf="@+id/editTextMinAge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editTextTextPersonName"
+            android:id="@+id/editTextMinAge"
             style="@style/inputDataStyle"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editTextTextPersonName2"
+            android:id="@+id/editTextMaxAge"
             style="@style/inputDataStyle"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="APPLY"
+            android:text="CONFIRM"
             android:textColor="?attr/textColor"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
