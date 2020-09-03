@@ -26,7 +26,7 @@
         android:ems="10"
         android:gravity="top"
         android:hint="Write bug"
-        android:inputType="textPassword"
+        android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imageView4"
         app:layout_constraintHorizontal_bias="0.0"
