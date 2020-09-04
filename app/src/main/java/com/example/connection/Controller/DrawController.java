@@ -259,29 +259,29 @@ public class DrawController extends View {
     //APPLY FILTERS ON THE MAP
     public void applyFilters(String minAge, String maxAge, String[] genders) {
         if (minAge.equals("") && maxAge.equals("") && genders[0].equals("") && genders[1].equals("") && genders[2].equals("")) {
-            for (int i = 0; i < Connection.mapUsers.size(); i++)
+            for (int i = 1; i < Connection.mapUsers.size(); i++)
                 Connection.mapUsers.get(i).setVisibility(true);
         } else {
-            for (int i = 0; i < Connection.mapUsers.size(); i++)
+            for (int i = 1; i < Connection.mapUsers.size(); i++)
                 Connection.mapUsers.get(i).setVisibility(false);
             if (!minAge.equals("")) {
-                for (int i = 0; i < Connection.mapUsers.size(); i++)
+                for (int i = 1; i < Connection.mapUsers.size(); i++)
                     if (Integer.parseInt(Connection.mapUsers.get(i).getAge()) >= Integer.parseInt(minAge))
                         Connection.mapUsers.get(i).setVisibility(true);
             }
             if (!maxAge.equals("")) {
-                for (int i = 0; i < Connection.mapUsers.size(); i++)
+                for (int i = 1; i < Connection.mapUsers.size(); i++)
                     if (Integer.parseInt(Connection.mapUsers.get(i).getAge()) <= Integer.parseInt(maxAge))
                         Connection.mapUsers.get(i).setVisibility(true);
             }
             if (!genders[0].equals("")){
-                for (int i = 0; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[0]))Connection.mapUsers.get(i).setVisibility(true);
+                for (int i = 1; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[0]))Connection.mapUsers.get(i).setVisibility(true);
             }
             if (!genders[1].equals("")){
-                for (int i = 0; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[1]))Connection.mapUsers.get(i).setVisibility(true);
+                for (int i = 1; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[1]))Connection.mapUsers.get(i).setVisibility(true);
             }
             if (!genders[2].equals("")){
-                for (int i = 0; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[2]))Connection.mapUsers.get(i).setVisibility(true);
+                for (int i = 1; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[2]))Connection.mapUsers.get(i).setVisibility(true);
             }
 
         }

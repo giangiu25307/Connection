@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
@@ -208,6 +209,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     public void onClick(View v) {
                         drawController.applyFilters(Connection.minAge,Connection.maxAge,Connection.genders);
                         alertDialog.dismiss();
+                        Fragment fragment = new MapFragment().newInstance(connectionController,database);
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
                     }
                 });
                 break;
