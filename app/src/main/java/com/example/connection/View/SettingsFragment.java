@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ import com.example.connection.R;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
@@ -65,9 +67,18 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private ConstraintLayout wallpaperSettings;
     private Fragment map, chat;
     private SettingsFragment settingsFragment;
+    private static final Pattern regexPassword = Pattern.compile("^" +
+            "(?=.*[0-9])" + //at least 1 digit
+            "(?=.*[a-z])" + //at least 1 lower case
+            "(?=.*[A-Z])" + //at least 1 upper case
+            "(?=.*[!?&%$#])" + //at least 1 special character of !?&%$#
+            "(?=\\S+$)" + //no white spaces
+            ".{8,}" + //at least length of 8 character
+            "$");
 
 
-    public SettingsFragment() {}
+    public SettingsFragment() {
+    }
 
     public void setConnectionController(ConnectionController connectionController) {
         this.connectionController = connectionController;
@@ -218,6 +229,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
+        final EditText oldPassword, newPassword, newPassword2;
+        oldPassword = alertDialog.findViewById(R.id.editTextOldPassword);
+        newPassword = alertDialog.findViewById(R.id.editTextNewPassword);
+        newPassword2 = alertDialog.findViewById(R.id.editTextNewPassword2);
+
+
         final TextView forgotPasswordButton, cancelTextView, confirmTextview;
         forgotPasswordButton = alertDialog.findViewById(R.id.forgotPasswordButton);
         cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
@@ -233,8 +250,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 alertDialog2.show();
 
                 final TextView cancelTextView, confirmTextview;
+                final EditText emailEditText;
                 cancelTextView = alertDialog2.findViewById(R.id.cancelTextView);
                 confirmTextview = alertDialog2.findViewById(R.id.confirmTextView);
+                emailEditText = alertDialog2.findViewById(R.id.editTextEmail);
 
                 cancelTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -246,7 +265,18 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 confirmTextview.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        String data[]=database.getMyEmailPassword();
+                        if(emailEditText.getText().toString().equals(data[1])){
+                            emailEditText.setBackgroundResource(R.drawable.input_data_background);
+                            alertDialog2.dismiss();
+                            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                            //dialogBuilder.setView(R.layout.);
+                            final AlertDialog alertDialog3 = dialogBuilder.create();
+                            alertDialog3.show();
+                            //SEND REQUEST TO MAKE VERIFICATION FROM THE SERVER AND TAKE BACK THE CODE
+                        }else{
+                            emailEditText.setBackgroundResource(R.drawable.input_data_background_wrong);
+                        }
                     }
                 });
 
@@ -263,7 +293,30 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         confirmTextview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean oldPasswordBoolean = false, newPasswordBoolean = false;
+                String data[] = database.getMyEmailPassword();
+                if (data[1].equals(oldPassword.getText().toString())){
+                    oldPassword.setBackgroundResource(R.drawable.input_data_background);
+                    oldPasswordBoolean = true;
+                }else{
+                    oldPasswordBoolean = false;
+                    oldPassword.setBackgroundResource(R.drawable.input_data_background_wrong);
+                }
 
+                if(newPassword.getText().toString().equals(newPassword2.getText().toString()) && regexPassword.matcher(newPassword.getText().toString()).matches()) {
+                    newPasswordBoolean = true;
+                    newPassword.setBackgroundResource(R.drawable.input_data_background);
+                    newPassword2.setBackgroundResource(R.drawable.input_data_background);
+                }
+                else {
+                    newPasswordBoolean = false;
+                    newPassword.setBackgroundResource(R.drawable.input_data_background_wrong);
+                    newPassword2.setBackgroundResource(R.drawable.input_data_background_wrong);
+                }
+                if(oldPasswordBoolean && newPasswordBoolean){
+                    database.setMyPassword(newPassword.getText().toString());
+                    alertDialog.dismiss();
+                }
             }
         });
     }
@@ -387,7 +440,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             window.setStatusBarColor(getContext().getColor(R.color.mediumBlack));
         }
         HomeFragment homeFragment = new HomeFragment();
-        settingsFragment=this;
+        settingsFragment = this;
         Fragment fragment = homeFragment.newInstance(connectionController, database, chatController, map, chat);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, fragment);

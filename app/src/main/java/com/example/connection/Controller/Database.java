@@ -507,7 +507,6 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void discard(String id){
-        System.out.println(id);
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED, "false");
         db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
@@ -522,6 +521,13 @@ public class Database extends SQLiteOpenHelper {
             c.moveToFirst();
         }
         return c.getString(0);
+    }
+
+    public void setMyPassword(String password){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.PASSWORD, password);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+"0",null);
     }
 
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
