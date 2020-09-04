@@ -56,7 +56,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private ChatController chatController;
     private int theme = R.style.AppTheme;
     private TextView themeOptionDescription, wallpaperOptionDescription;
-    private Button editProfileButton;
+    private ImageView editProfileButton;
     private int bgColor = R.color.mediumWhite;
     private int PICK_IMAGE = 1;
     private ImageView profilePic, profilePics;
