@@ -132,9 +132,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         other = alertDialog.findViewById(R.id.checkBoxOther);
                         if (Connection.genders[0] != null && Connection.genders[0].equals("male"))
                             male.setChecked(true);
-                        if (Connection.genders[0] != null && Connection.genders[1].equals("female"))
+                        if (Connection.genders[1] != null && Connection.genders[1].equals("female"))
                             female.setChecked(true);
-                        if (Connection.genders[0] != null && Connection.genders[2].equals("other"))
+                        if (Connection.genders[2] != null && Connection.genders[2].equals("other"))
                             other.setChecked(true);
 
                         cancelTextView.setOnClickListener(new View.OnClickListener() {
@@ -148,10 +148,13 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(View v) {
                                 if (male != null && male.isChecked()) Connection.genders[0] = "male";
+                                else Connection.genders[0] = "";
                                 if (female != null && female.isChecked())
                                     Connection.genders[1] = "female";
+                                else Connection.genders[1] = "";
                                 if (other != null && other.isChecked())
                                     Connection.genders[2] = "other";
+                                else Connection.genders[2] = "";
                                 alertDialog.dismiss();
                             }
                         });

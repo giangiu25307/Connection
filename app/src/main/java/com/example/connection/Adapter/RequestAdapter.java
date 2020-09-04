@@ -103,7 +103,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         String userName = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.USERNAME));
         String gender = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.GENDER));
         String birth = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.BIRTH));
-        //String age = getAge(birth);
+        String age = getAge(birth);
         String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
         String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
         String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
@@ -134,8 +134,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         TextView lastMessageTextView = holder.lastMessage;
         TextView timeLastMessageTextView = holder.timeLastMessage;
         informationTextView.setText(userName);
-//        String temp = age+","+gender;
-        //informationTextView2.setText(temp);
+        String temp = age+","+gender;
+        informationTextView2.setText(temp);
         lastMessageTextView.setText(lastMessage);
         try {
             date = format.parse(datetime);
@@ -228,6 +228,26 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             void deleteRequest(int p);
         }
 
+    }
+
+    public String getAge(String birth) {
+        if(birth.isEmpty())return "";
+        else{
+            String age="";
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            try {
+                age  = ""+Period.between(convertToLocalDateViaInstant(formatter.parse(birth)), LocalDateTime.now().toLocalDate()).getYears();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return age;
+        }
+    }
+
+    public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
 
 }

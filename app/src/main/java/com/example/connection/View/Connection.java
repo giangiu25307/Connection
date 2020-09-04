@@ -52,7 +52,7 @@ public class Connection extends AppCompatActivity {
     public static String lightOrDark = "light";
     public static ArrayList<MapUsers> mapUsers = new ArrayList<MapUsers>();
     public static String minAge = "", maxAge = "";
-    public static String[] genders = new String[3];
+    public static String[] genders = {"","",""};
     private Fragment map, chat, settings;
 
     @Override

@@ -43,7 +43,7 @@ public class AccountController {
         return null;
     }
 
-    public String register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String age,String number) throws IOException {
+    public String register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number) throws IOException {
 
         RequestBody formBody = new FormBody.Builder()
                 .add("username", username)
@@ -54,7 +54,7 @@ public class AccountController {
                 .add("surname", surname)
                 .add("country", country)
                 .add("city", city)
-                .add("age", age)
+                .add("birth", birth)
                 .add("number", number)
                 .build();
 

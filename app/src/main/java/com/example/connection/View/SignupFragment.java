@@ -143,7 +143,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     } else viewPager.setCurrentItem(currentPage);
                 } else {
                     //send user info to server
-                    database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getAge(), user.getProfilePic());
+                    database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic());
                     database.setNumber("0", user.getNumber());
                     Fragment fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat);
                     loadFragment(fragment);
@@ -275,7 +275,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                     user.setBirth(birth);
                                     dateOfBirth.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
                                     viewPager.setPagingEnabled(true);
-                                    System.out.println(user.getAge());
                                 }
                             }
                         });

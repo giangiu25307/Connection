@@ -61,16 +61,18 @@ public class DrawController extends View {
 
     private void drawCoordinates(Canvas canvas) {
         for (int i = 0; i < Connection.mapUsers.size(); i++) {
-            if (i == 0) {
-                ((ViewGroup) Connection.mapUsers.get(i).getImage().getParent()).removeView(Connection.mapUsers.get(i).getImage());
-                mapLayout.addView(Connection.mapUsers.get(i).getImage());
-            } else {
-                canvas.drawLine(x, y, Connection.mapUsers.get(i).getX(), Connection.mapUsers.get(i).getY(), paint);
-                ((ViewGroup) Connection.mapUsers.get(i).getImage().getParent()).removeView(Connection.mapUsers.get(i).getImage());
-                mapLayout.addView(Connection.mapUsers.get(i).getImage());
+            if (Connection.mapUsers.get(i).isVisible()) {
+                if (i == 0) {
+                    ((ViewGroup) Connection.mapUsers.get(i).getImage().getParent()).removeView(Connection.mapUsers.get(i).getImage());
+                    mapLayout.addView(Connection.mapUsers.get(i).getImage());
+                } else {
+                    canvas.drawLine(x, y, Connection.mapUsers.get(i).getX(), Connection.mapUsers.get(i).getY(), paint);
+                    ((ViewGroup) Connection.mapUsers.get(i).getImage().getParent()).removeView(Connection.mapUsers.get(i).getImage());
+                    mapLayout.addView(Connection.mapUsers.get(i).getImage());
+                }
+                x = Connection.mapUsers.get(i).getX();
+                y = Connection.mapUsers.get(i).getY();
             }
-            x = Connection.mapUsers.get(i).getX();
-            y = Connection.mapUsers.get(i).getY();
         }
     }
 
@@ -81,7 +83,7 @@ public class DrawController extends View {
         for (int i = 0; i < userList.size(); i++) {
             if (i == 0) {
                 createUserPoint(getWidth() / 2, getHeight() / 2, i);
-                Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), getWidth() / 2, getHeight() / 2, images.get(i)));
+                Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), getWidth() / 2, getHeight() / 2, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
             } else {
                 tempX = (int) (Math.random() * getWidth());
                 tempY = (int) (Math.random() * getHeight());
@@ -95,7 +97,7 @@ public class DrawController extends View {
                 x = tempX;
                 y = tempY;
                 createUserPoint(x, y, i);
-                Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i)));
+                Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
             }
         }
         Connection.boot = false;
@@ -165,7 +167,7 @@ public class DrawController extends View {
         return false;
     }
 
-    //ADDING USER TO THE MAP
+    //ADDING NEW USERS TO THE MAP
 
     private ArrayList<String> getAllUserIds() {
         ArrayList<String> ids = new ArrayList<String>();
@@ -188,7 +190,8 @@ public class DrawController extends View {
         for (int i = 0; i < ids.size(); i++) {
             if (!mapContainsId(ids.get(i))) {
                 for (int j = 0; j < userList.size(); j++) {
-                    if(userList.get(j).getIdUser().equals(ids.get(i)))userList.add(userList.get(j));
+                    if (userList.get(j).getIdUser().equals(ids.get(i)))
+                        userList.add(userList.get(j));
                 }
             }
         }
@@ -213,12 +216,12 @@ public class DrawController extends View {
             previousX.add(x);
             previousY.add(y);
             createUserPoint(x, y, i);
-            Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i)));
+            Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
         }
 
     }
 
-    //DELETE USER FROM THE MAP
+    //DELETE OLD USERS FROM THE MAP
     private ArrayList<String> getAllMapIds() {
         ArrayList<String> ids = new ArrayList<String>();
         for (int i = 0; i < Connection.mapUsers.size(); i++) {
@@ -253,8 +256,35 @@ public class DrawController extends View {
         }
     }
 
-    public void applyFilters(String minAge, String maxAge, String[] genders){
+    //APPLY FILTERS ON THE MAP
+    public void applyFilters(String minAge, String maxAge, String[] genders) {
+        if (minAge.equals("") && maxAge.equals("") && genders[0].equals("") && genders[1].equals("") && genders[2].equals("")) {
+            for (int i = 0; i < Connection.mapUsers.size(); i++)
+                Connection.mapUsers.get(i).setVisibility(true);
+        } else {
+            for (int i = 0; i < Connection.mapUsers.size(); i++)
+                Connection.mapUsers.get(i).setVisibility(false);
+            if (!minAge.equals("")) {
+                for (int i = 0; i < Connection.mapUsers.size(); i++)
+                    if (Integer.parseInt(Connection.mapUsers.get(i).getAge()) >= Integer.parseInt(minAge))
+                        Connection.mapUsers.get(i).setVisibility(true);
+            }
+            if (!maxAge.equals("")) {
+                for (int i = 0; i < Connection.mapUsers.size(); i++)
+                    if (Integer.parseInt(Connection.mapUsers.get(i).getAge()) <= Integer.parseInt(maxAge))
+                        Connection.mapUsers.get(i).setVisibility(true);
+            }
+            if (!genders[0].equals("")){
+                for (int i = 0; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[0]))Connection.mapUsers.get(i).setVisibility(true);
+            }
+            if (!genders[1].equals("")){
+                for (int i = 0; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[1]))Connection.mapUsers.get(i).setVisibility(true);
+            }
+            if (!genders[2].equals("")){
+                for (int i = 0; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[2]))Connection.mapUsers.get(i).setVisibility(true);
+            }
 
+        }
     }
 
 }
