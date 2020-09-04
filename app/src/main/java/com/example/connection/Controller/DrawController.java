@@ -53,6 +53,7 @@ public class DrawController extends View {
         paint.setStrokeWidth(5);
         if (Connection.boot) createCoordinates(canvas);
         else {
+            applyFilters(Connection.minAge,Connection.maxAge,Connection.genders);
             deleteFromMapUsers();
             addToMap();
             drawCoordinates(canvas);
