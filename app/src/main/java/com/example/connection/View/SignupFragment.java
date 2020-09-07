@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -107,6 +108,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         viewPager.setAdapter(sliderAdapter);
         next = view.findViewById(R.id.nextButton);
         back = view.findViewById(R.id.backButton);
+        LinearLayout login = view.findViewById(R.id.linearLayoutLoginBackButton);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new LoginFragment().newInstance(connectionController,database,chatController,map,chat,settings);
+                loadFragment(fragment);
+            }
+        });
 
 
         ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {

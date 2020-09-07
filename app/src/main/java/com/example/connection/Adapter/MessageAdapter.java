@@ -5,6 +5,11 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -80,8 +85,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         LinearLayout messageLayout = holder.messageLayout;
         LinearLayout textLayout = holder.textLayout;
         TextView message = holder.message;
-        message.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG)));
 
+        message.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG)));
+        if (message.getText().toString().length() > 400)setMessageWithClickableLink(message);
         TextView messageTime = holder.messageTime;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         Date date = new Date();
@@ -199,6 +205,28 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
         previousCount = count;
         return false;
+    }
+
+    public void setMessageWithClickableLink(final TextView textViewOriginal) {
+        final String fullText = textViewOriginal.getText().toString();
+        String spannable = fullText.substring(0,400)+"... continue reading";
+        SpannableString ss = new SpannableString(spannable);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                textViewOriginal.setText(fullText);
+            }
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+            }
+        };
+        ss.setSpan(clickableSpan, 404, 420, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        textViewOriginal.setText(ss);
+        textViewOriginal.setMovementMethod(LinkMovementMethod.getInstance());
+        textViewOriginal.setHighlightColor(Color.TRANSPARENT);
     }
 
 }

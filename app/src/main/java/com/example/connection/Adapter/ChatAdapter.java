@@ -121,12 +121,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         TextView timeLastMessageTextView = holder.timeLastMessage;
         userNameTextView.setText(userName);
         lastMessageTextView.setText(lastMessage);
+        if(lastMessageTextView.getText().toString().length()>24){
+            String lastMsg =lastMessageTextView.getText().toString().substring(0,22)+"...";
+            lastMessageTextView.setText(lastMsg);
+        }
         try {
             date = format.parse(datetime);
-            System.out.println("Prova data: " + date);
-            System.out.println("Prova giorno: " + date.getDay());
-            System.out.println("Prova giorno 2: " + DateFormat.format("dd", date));
-            System.out.println("Prova giorno 3: " + DateFormat.format("MM", date));
         } catch (ParseException e) {
             e.printStackTrace();
         }
