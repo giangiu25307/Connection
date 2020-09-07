@@ -494,8 +494,20 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+idUser,null);
     }
 
-    public String[] getMyEmailPassword(){
-        String query = "SELECT " + Task.TaskEntry.MAIL + "," + Task.TaskEntry.PASSWORD +
+    public String getMyEmail(){
+        String query = "SELECT " + Task.TaskEntry.MAIL +
+                " FROM "+ Task.TaskEntry.USER+
+                " WHERE "+ Task.TaskEntry.ID_USER +"="+0;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        String data = c.getString(c.getColumnIndex((Task.TaskEntry.MAIL)));
+        return data;
+    }
+
+    public String[] getMyPassword(){
+        String query = "SELECT " + Task.TaskEntry.PASSWORD +
                 " FROM "+ Task.TaskEntry.USER+
                 " WHERE "+ Task.TaskEntry.ID_USER +"="+0;
         Cursor c = db.rawQuery(query, null);

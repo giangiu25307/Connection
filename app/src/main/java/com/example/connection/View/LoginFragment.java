@@ -101,8 +101,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private boolean checker() {
-        String [] data = database.getMyEmailPassword();
-        if(data[0].equals(email.getText())&&data[1].equals(password.getText()))return true;
+        String data = database.getMyEmail();
+        if(data.equals(email.getText())&&data.equals(password.getText()))return true;
         else return false;
     }
 

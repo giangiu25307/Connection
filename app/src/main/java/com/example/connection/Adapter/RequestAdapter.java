@@ -105,6 +105,9 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         String birth = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.BIRTH));
         String age = getAge(birth);
         String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
+        if(lastMessage.length() > 7){
+            lastMessage =lastMessage.substring(0, 5)+"...";
+        }
         String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
         String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
         File profilePic = new File(profilePicPosition);

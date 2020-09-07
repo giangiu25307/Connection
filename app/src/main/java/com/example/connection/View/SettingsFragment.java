@@ -1,6 +1,5 @@
 package com.example.connection.View;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -9,22 +8,18 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,7 +29,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -43,9 +37,6 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.R;
 
-import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
@@ -265,12 +256,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 confirmTextview.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String data[]=database.getMyEmailPassword();
-                        if(emailEditText.getText().toString().equals(data[1])){
+                        String data = database.getMyEmail();
+                        if(emailEditText.getText().toString().equals(data)){
                             emailEditText.setBackgroundResource(R.drawable.input_data_background);
                             alertDialog2.dismiss();
                             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                            //dialogBuilder.setView(R.layout.);
+                            dialogBuilder.setView(R.layout.verify_code_alert_dialog);
                             final AlertDialog alertDialog3 = dialogBuilder.create();
                             alertDialog3.show();
                             //SEND REQUEST TO MAKE VERIFICATION FROM THE SERVER AND TAKE BACK THE CODE
@@ -293,9 +284,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         confirmTextview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 boolean oldPasswordBoolean = false, newPasswordBoolean = false;
-                String data[] = database.getMyEmailPassword();
-                if (data[1].equals(oldPassword.getText().toString())){
+                String data = database.getMyEmail();
+                if (data.equals(oldPassword.getText().toString())){
                     oldPassword.setBackgroundResource(R.drawable.input_data_background);
                     oldPasswordBoolean = true;
                 }else{
@@ -317,6 +309,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     database.setMyPassword(newPassword.getText().toString());
                     alertDialog.dismiss();
                 }
+                */
             }
         });
     }

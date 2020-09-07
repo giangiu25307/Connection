@@ -121,8 +121,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         TextView timeLastMessageTextView = holder.timeLastMessage;
         userNameTextView.setText(userName);
         lastMessageTextView.setText(lastMessage);
-        if(lastMessageTextView.getText().toString().length()>24){
-            String lastMsg =lastMessageTextView.getText().toString().substring(0,22)+"...";
+        if(lastMessageTextView.getText().toString().length() > 34){
+            String lastMsg =lastMessageTextView.getText().toString().substring(0, 32)+"...";
             lastMessageTextView.setText(lastMsg);
         }
         try {

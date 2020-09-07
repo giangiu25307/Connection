@@ -5,11 +5,13 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -222,7 +224,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 ds.setUnderlineText(false);
             }
         };
-        ss.setSpan(clickableSpan, 404, 420, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        ss.setSpan(clickableSpan, 404, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.blue)), 404, spannable.length(), 0);
+
 
         textViewOriginal.setText(ss);
         textViewOriginal.setMovementMethod(LinkMovementMethod.getInstance());
