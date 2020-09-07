@@ -18,10 +18,10 @@
     <color name="lightWhite">#F7F7F7</color>
     <color name="mediumWhite">#F9F9F9</color>
 
-    <color name="lightLightBlack">#353535</color>
-    <color name="lightBlack">#282828</color>
-    <color name="mediumBlack">#212121</color>
-    <color name="regularBlack">#191919</color>
+    <color name="lightLightBlack">#272727</color>
+    <color name="lightBlack">#202020</color>
+    <color name="mediumBlack">#131313</color>
+    <color name="regularBlack">#111111</color>
 
     <color name="lightHintColor">#D2D2D2</color>
     <color name="darkHintcolor">#848486</color>

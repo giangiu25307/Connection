@@ -62,12 +62,21 @@
         <item name="iconTint">@android:color/white</item>
     </style>
 
+    <style name="confirmAlertButton" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@drawable/confirm_alert_button_background</item>
+        <item name="android:textColor">?attr/invertedTextColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:paddingVertical">5dp</item>
+        <item name="android:paddingHorizontal">10dp</item>
+    </style>
+
     <style name="inputDataStyle" parent="Widget.Design.TextInputLayout">
         <item name="android:background">@drawable/input_data_background</item>
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:textColorHint">?attr/inputDataHintColor</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:fontFamily">@font/opensans_light</item>
+        <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:padding">10dp</item>
     </style>
 
