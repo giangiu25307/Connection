@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -122,6 +123,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         lastMessageTextView.setText(lastMessage);
         try {
             date = format.parse(datetime);
+            System.out.println("Prova data: " + date);
+            System.out.println("Prova giorno: " + date.getDay());
+            System.out.println("Prova giorno 2: " + DateFormat.format("dd", date));
+            System.out.println("Prova giorno 3: " + DateFormat.format("MM", date));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -132,10 +137,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             e.printStackTrace();
         }
 
-        if (date.getDay() == date2.getDay() && date.getMonth() == date2.getMonth() && date.getYear() == date2.getYear()) {
-            datetime = String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes();
-        } else {
-            datetime = String.valueOf(date.getDay() < 10 ? '0' : "") + date.getDay() + "/" + (date.getMonth() < 10 ? '0' : "") + date.getMonth() + "/" + String.valueOf(date.getYear()).substring(String.valueOf(date.getYear()).length() - 2, String.valueOf(date.getYear()).length());
+        if (DateFormat.format("dd", date).equals(DateFormat.format("dd", date2)) && DateFormat.format("MM", date).equals(DateFormat.format("MM", date2)) && DateFormat.format("yyyy", date).equals(DateFormat.format("yyyy", date2))) {
+            datetime = String.valueOf(DateFormat.format("HH:mm", date));
+        }else{
+            String year = String.valueOf(DateFormat.format("yyyy", date));
+            datetime = DateFormat.format("dd/MM", date) + "/" + year.substring(year.length() - 2);
         }
 
         System.out.println("Orario chat: " + datetime);
