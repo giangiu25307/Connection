@@ -22,7 +22,7 @@ public static NetworkInterface getMyP2pNetworkInterface(){
 
         p2p = enumeration.nextElement();
         if (p2p.getName().equals("p2p-wlan0-0")) {
-            System.out.println(p2p.getDisplayName());
+            System.out.println(p2p.getName());
        return p2p;
         }
 
