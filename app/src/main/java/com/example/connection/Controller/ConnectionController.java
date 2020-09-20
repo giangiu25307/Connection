@@ -20,6 +20,9 @@ import android.net.wifi.p2p.nsd.WifiP2pServiceRequest;
 import android.net.wifi.p2p.nsd.WifiP2pUpnpServiceRequest;
 import android.os.CountDownTimer;
 import android.provider.Settings;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.MultiThreadedServer;
@@ -68,6 +71,10 @@ public class ConnectionController {
     WifiP2pDevice GroupOwner;
     private String serviceName = "connection";
     private static final String serviceType = "_presence._tcp";
+    private static final String TAG                 = "prova";
+    private TextView            logView             = null;
+    private static final int    logViewID           = View.generateViewId();
+    private String              backlog             = "";
 
     public ConnectionController(Connection connection, Database database, User user) {
         this.connection = connection;
@@ -375,8 +382,7 @@ public class ConnectionController {
         return mIntentFilter;
     }
 
-
-    private void registerService() {
+    public void registerService() {
 
         unregisterService();
 
@@ -399,37 +405,32 @@ public class ConnectionController {
         mManager.addLocalService(mChannel, serviceInfo, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                System.out.println(("addLocalService.onSuccess"));
+                logd("addLocalService.onSuccess");
             }
 
             @Override
             public void onFailure(int arg0) {
-                System.out.println(("addLocalService.onFailure: " + arg0));
+                logd("addLocalService.onFailure: " + arg0);
             }
         });
     }
 
-    /**
-     * Unregister this service.
-     */
+    /** Unregister this service. */
     private void unregisterService() {
-        mManager.clearLocalServices(mChannel, null);
+       mManager.clearLocalServices(mChannel, null);
     }
 
-    /**
-     * Start looking for peer services.
-     */
-    private void startServiceDiscovery() {
-
-        // stopServiceDiscovery();
+    /** Start looking for peer services. */
+    public void startServiceDiscovery() {
+         stopServiceDiscovery();
 
         /** Setup listeners for vendor-specific services. */
         mManager.setServiceResponseListener(mChannel, new WifiP2pManager.ServiceResponseListener() {
 
             @Override
             public void onServiceAvailable(int protocolType, byte[] responseData, WifiP2pDevice srcDevice) {
-                System.out.println(("onServiceAvailable: protocolType:" + protocolType + ", responseData: " + responseData.toString()
-                        + ", WifiP2pDevice: " + srcDevice.toString()));
+                logd("onServiceAvailable: protocolType:" + protocolType + ", responseData: " + responseData.toString()
+                        + ", WifiP2pDevice: " + srcDevice.toString());
             }
         });
 
@@ -438,8 +439,8 @@ public class ConnectionController {
             @Override
             public void onDnsSdServiceAvailable(String instanceName, String registrationType,
                                                 WifiP2pDevice wifiDirectDevice) {
-                System.out.println(("onDnsSdServiceAvailable: instanceName:" + instanceName + ", registrationType: " + registrationType
-                        + ", WifiP2pDevice: " + wifiDirectDevice.toString()));
+                logd("onDnsSdServiceAvailable: instanceName:" + instanceName + ", registrationType: " + registrationType
+                        + ", WifiP2pDevice: " + wifiDirectDevice.toString());
             }
         }, new WifiP2pManager.DnsSdTxtRecordListener() {
 
@@ -447,8 +448,8 @@ public class ConnectionController {
             @Override
             public void onDnsSdTxtRecordAvailable(String fullDomain, Map record, WifiP2pDevice device) {
                 System.out.println(device.isGroupOwner());
-                System.out.println(("onDnsSdTxtRecordAvailable: fullDomain: " + fullDomain + ", record: " + record.toString()
-                        + ", WifiP2pDevice: " + device.toString()));
+                logd("onDnsSdTxtRecordAvailable: fullDomain: " + fullDomain + ", record: " + record.toString()
+                        + ", WifiP2pDevice: " + device.toString());
             }
         });
 
@@ -457,8 +458,8 @@ public class ConnectionController {
 
             @Override
             public void onUpnpServiceAvailable(List<String> uniqueServiceNames, WifiP2pDevice srcDevice) {
-                System.out.println(("onUpnpServiceAvailable: uniqueServiceNames:" + uniqueServiceNames.toString() + ", WifiP2pDevice: "
-                        + srcDevice.toString()));
+                logd("onUpnpServiceAvailable: uniqueServiceNames:" + uniqueServiceNames.toString() + ", WifiP2pDevice: "
+                        + srcDevice.toString());
             }
         });
 
@@ -470,19 +471,17 @@ public class ConnectionController {
 
             @Override
             public void onSuccess() {
-                System.out.println(("discoverServices.onSuccess()"));
+                logd("discoverServices.onSuccess()");
             }
 
             @Override
             public void onFailure(int code) {
-                System.out.println(("discoverServices.onFailure: " + code));
+                logd("discoverServices.onFailure: " + code);
             }
         });
     }
 
-    /**
-     * Stop searching for peer services
-     */
+    /** Stop searching for peer services */
     private void stopServiceDiscovery() {
         mManager.clearServiceRequests(mChannel, null);
     }
@@ -492,18 +491,34 @@ public class ConnectionController {
      * the specified type.
      */
     private void addServiceRequest(final WifiP2pServiceRequest request) {
-        mManager.addServiceRequest(mChannel, request, new WifiP2pManager.ActionListener() {
+          mManager.addServiceRequest(mChannel, request, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                System.out.println(("addServiceRequest.onSuccess() for requests of type: " + request.getClass().getSimpleName()));
+                logd("addServiceRequest.onSuccess() for requests of type: " + request.getClass().getSimpleName());
             }
 
             @Override
             public void onFailure(int code) {
-                System.out.println(("addServiceRequest.onFailure: " + code + ", for requests of type: "
-                        + request.getClass().getSimpleName()));
+                logd("addServiceRequest.onFailure: " + code + ", for requests of type: "
+                        + request.getClass().getSimpleName());
             }
         });
     }
 
+    private void logd(String loggable) {
+        Log.d(TAG, loggable);
+        if (logView != null) {
+            if (!backlog.isEmpty()) {
+                loggable = append(backlog, loggable);
+                backlog = "";
+            }
+            final String toLog = loggable;
+        } else {
+            backlog = append(backlog, loggable);
+        }
+    }
+
+    private String append(String a, String b) {
+        return a + "\n\n" + b;
+    }
 }
