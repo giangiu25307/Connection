@@ -9,15 +9,12 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
-import android.net.wifi.p2p.nsd.WifiP2pServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pServiceRequest;
-import android.net.wifi.p2p.nsd.WifiP2pUpnpServiceRequest;
 import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
@@ -68,13 +65,12 @@ public class ConnectionController {
     BroadcastReceiver mReceiver;
     IntentFilter mIntentFilter;
     WifiP2pManager.ConnectionInfoListener connectionInfoListener;
-    WifiP2pDevice GroupOwner;
     private String serviceName = "connection";
-    private static final String serviceType = "_presence._tcp";
-    private static final String TAG                 = "prova";
-    private TextView            logView             = null;
-    private static final int    logViewID           = View.generateViewId();
-    private String              backlog             = "";
+    private static final String serviceType = "SERVICE_TYPE_BONJOUR";
+    private static final String TAG = "connection_GO";
+    private TextView logView = null;
+    private static final int logViewID = View.generateViewId();
+    private String backlog = "";
 
     public ConnectionController(Connection connection, Database database, User user) {
         this.connection = connection;
@@ -91,16 +87,12 @@ public class ConnectionController {
         macAdresses = new HashMap<>();
         peers = new ArrayList<WifiP2pDevice>();
         newList = new ArrayList<WifiP2pDevice>();
-        boolean DeviceFound = true;
-        GroupOwner = new WifiP2pDevice();
-        SearchPeers();
         mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, peerListListener, connectionInfoListener);
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        //Discovery();
     }
 
     // this exist for the handshake when two group owner are meeting each other, THIS NEED TO BE FINISH BEFORE THE APP IS RELEASED -----------------------------------------------------------------------------------
@@ -139,8 +131,6 @@ public class ConnectionController {
             public void onGroupInfoAvailable(WifiP2pGroup group) {
                 WifiP2pDevice device = group.getOwner();
                 System.out.println(device.deviceName);
-                // beacon=new BluetoothAdvertiser(group.getNetworkName());
-                //beacon.startBLE();
             }
         });
     }
@@ -172,36 +162,11 @@ public class ConnectionController {
         return;
     }
 
-    //Scan for the near group --------------------------------------------------------------------------------------------------------------------------------
-    private void scan() {
-        boolean success = wifiManager.startScan();
-
-        if (!success) {
-            scanFailure();
-
-        }
-        scanSuccess();
-    }
-
-    //The scan has found an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
-    private void scanSuccess() {
-
-        results = wifiManager.getScanResults();
-
-
-    }
-
-    //The scan has not found an our wifi p2p --------------------------------------------------------------------------------------------------------------------------------
-    private void scanFailure() {
-        // handle failure: new scan did NOT succeed
-        // consider using old scan results: these are the OLD results!
-        results = wifiManager.getScanResults();
-    }
 
     //Connection to a group---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    public void connectionToGroup() {
+    public void connectionToGroup(WifiP2pDevice GO) {
         config = new WifiP2pConfig();
-        config.deviceAddress = GroupOwner.deviceAddress;
+        config.deviceAddress = GO.deviceAddress;
         mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -217,23 +182,6 @@ public class ConnectionController {
             @Override
             public void onFailure(int reason) {
                 System.out.println(reason);
-               /* if (count < 3) {
-                    new CountDownTimer(3000, 1000) {
-
-                        public void onTick(long millisUntilFinished) {
-                        }
-
-                        public void onFinish() {
-                            count++;
-                            connectionToGroup();
-                        }
-                    }.start();
-                }
-                else{
-                    scan();
-                }
-
-                */
             }
         });
 
@@ -295,46 +243,23 @@ public class ConnectionController {
 
     }
 
+    /* public String Discovery() {
+         mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
+             @Override
+             public void onSuccess() {
+                 System.out.println("discovery");
+                 ConnectionStatus = "Discovery Started";
+                 SearchPeers();
+             }
 
-    public void ServiceGroupOwner() {
-        Map record = new HashMap();
-        record.put("listenport", String.valueOf(10000));
-        record.put("buddyname", "John Doe" + (int) (Math.random() * 1000));
-        record.put("available", "visible");
-
-        // Service information.  Pass it an instance name, service type
-        // _protocol._transportlayer , and the map containing
-        // information other devices will want once they connect to this one.
-        WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance("_test", "_presence._tcp", record);
-        mManager.addLocalService(mChannel, serviceInfo, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-            }
-
-            @Override
-            public void onFailure(int arg0) {
-                System.out.println(arg0);
-            }
-        });
-    }
-
-    public String Discovery() {
-        mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                System.out.println("discovery");
-                ConnectionStatus = "Discovery Started";
-                SearchPeers();
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                System.out.println(reason);
-            }
-        });
-        return ConnectionStatus;
-    }
-
+             @Override
+             public void onFailure(int reason) {
+                 System.out.println(reason);
+             }
+         });
+         return ConnectionStatus;
+     }*/
+/*
     public boolean SearchPeers() {
         peerListListener = new WifiP2pManager.PeerListListener() {
             @Override
@@ -357,7 +282,7 @@ public class ConnectionController {
         };
         return DeviceFound;
     }
-
+*/
     public String ConnectionListener() {
         //SERVE SOLO A CAPIRE CHI è HOST O CLIENT, DA RIMUOVERE PER CREARE UNA VERA E PROPRIA CHAT-------------------------------------------------------------------------------------------------------------------
         connectionInfoListener = new WifiP2pManager.ConnectionInfoListener() {
@@ -406,6 +331,7 @@ public class ConnectionController {
             @Override
             public void onSuccess() {
                 logd("addLocalService.onSuccess");
+                startServiceDiscovery();
             }
 
             @Override
@@ -415,25 +341,18 @@ public class ConnectionController {
         });
     }
 
-    /** Unregister this service. */
-    private void unregisterService() {
-       mManager.clearLocalServices(mChannel, null);
+    /**
+     * Unregister this service.
+     */
+    public void unregisterService() {
+        mManager.clearLocalServices(mChannel, null);
     }
 
-    /** Start looking for peer services. */
+    /**
+     * Start looking for peer services.
+     */
     public void startServiceDiscovery() {
-         stopServiceDiscovery();
-
-        /** Setup listeners for vendor-specific services. */
-        mManager.setServiceResponseListener(mChannel, new WifiP2pManager.ServiceResponseListener() {
-
-            @Override
-            public void onServiceAvailable(int protocolType, byte[] responseData, WifiP2pDevice srcDevice) {
-                logd("onServiceAvailable: protocolType:" + protocolType + ", responseData: " + responseData.toString()
-                        + ", WifiP2pDevice: " + srcDevice.toString());
-            }
-        });
-
+        stopServiceDiscovery();
         /** Setup listeners for the Bonjour services */
         mManager.setDnsSdResponseListeners(mChannel, new WifiP2pManager.DnsSdServiceResponseListener() {
             @Override
@@ -443,30 +362,16 @@ public class ConnectionController {
                         + ", WifiP2pDevice: " + wifiDirectDevice.toString());
             }
         }, new WifiP2pManager.DnsSdTxtRecordListener() {
-
-            @SuppressWarnings("rawtypes")
             @Override
             public void onDnsSdTxtRecordAvailable(String fullDomain, Map record, WifiP2pDevice device) {
                 System.out.println(device.isGroupOwner());
+                System.out.println(device.deviceAddress);
                 logd("onDnsSdTxtRecordAvailable: fullDomain: " + fullDomain + ", record: " + record.toString()
                         + ", WifiP2pDevice: " + device.toString());
+
             }
         });
-
-        /** Setup listeners for Upnp services */
-        mManager.setUpnpServiceResponseListener(mChannel, new WifiP2pManager.UpnpServiceResponseListener() {
-
-            @Override
-            public void onUpnpServiceAvailable(List<String> uniqueServiceNames, WifiP2pDevice srcDevice) {
-                logd("onUpnpServiceAvailable: uniqueServiceNames:" + uniqueServiceNames.toString() + ", WifiP2pDevice: "
-                        + srcDevice.toString());
-            }
-        });
-
-        /** Register to receive all possible types of service requests. */
-        addServiceRequest(WifiP2pServiceRequest.newInstance(WifiP2pServiceInfo.SERVICE_TYPE_ALL));
         addServiceRequest(WifiP2pDnsSdServiceRequest.newInstance());
-        addServiceRequest(WifiP2pUpnpServiceRequest.newInstance());
         mManager.discoverServices(mChannel, new WifiP2pManager.ActionListener() {
 
             @Override
@@ -481,17 +386,15 @@ public class ConnectionController {
         });
     }
 
-    /** Stop searching for peer services */
+    /**
+     * Stop searching for peer services
+     */
     private void stopServiceDiscovery() {
         mManager.clearServiceRequests(mChannel, null);
     }
 
-    /**
-     * Add the service discovery request for {@link WifiP2pServiceRequest}s of
-     * the specified type.
-     */
     private void addServiceRequest(final WifiP2pServiceRequest request) {
-          mManager.addServiceRequest(mChannel, request, new WifiP2pManager.ActionListener() {
+        mManager.addServiceRequest(mChannel, request, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
                 logd("addServiceRequest.onSuccess() for requests of type: " + request.getClass().getSimpleName());
