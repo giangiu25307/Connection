@@ -68,9 +68,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 loadFragment(fragment);
                 break;
             case R.id.skipButton:
-                connectionController.startServiceDiscovery();
-                //fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat);
-                //loadFragment(fragment);
+                //connectionController.startServiceDiscovery();
+                fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat);
+                loadFragment(fragment);
                 break;
             case R.id.loginButton:
                 if(checker()){

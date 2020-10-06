@@ -1,52 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/messageLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/messageLayout"
-        android:layout_width="0dp"
+        android:id="@+id/textLayout"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:background="@drawable/message_rounded_white_background"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_max="wrap"
-        app:layout_constraintWidth_percent="0.7">
+        android:paddingVertical="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="5dp">
 
-        <LinearLayout
-            android:id="@+id/textLayout"
+        <TextView
+            android:id="@+id/message"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:background="@drawable/message_rounded_white_background"
-            android:orientation="horizontal"
-            android:paddingEnd="5dp">
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingEnd="10dp"
+            android:text="TextView"
+            android:textColor="@android:color/black" />
 
-            <TextView
-                android:id="@+id/message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:paddingStart="10dp"
-                android:paddingTop="5dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="5dp"
-                android:text="TextView"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/messageTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textColor="#D5D5D5"
-                android:textSize="8sp" />
-        </LinearLayout>
-
+        <TextView
+            android:id="@+id/messageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textColor="#D5D5D5"
+            android:textSize="8sp" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
