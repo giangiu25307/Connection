@@ -1,5 +1,6 @@
 package com.example.connection.Controller;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -28,6 +29,7 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
@@ -71,6 +73,9 @@ public class ConnectionController {
     private TextView logView = null;
     private static final int logViewID = View.generateViewId();
     private String backlog = "";
+    final HashMap<String,WifiP2pDevice> devices = new HashMap<String,WifiP2pDevice>();
+
+
 
     public ConnectionController(Connection connection, Database database, User user) {
         this.connection = connection;
@@ -351,15 +356,14 @@ public class ConnectionController {
     /**
      * Start looking for peer services.
      */
-    public void startServiceDiscovery() {
-        stopServiceDiscovery();
+    public void setupServiceDiscovery() {
         /** Setup listeners for the Bonjour services */
         mManager.setDnsSdResponseListeners(mChannel, new WifiP2pManager.DnsSdServiceResponseListener() {
             @Override
-            public void onDnsSdServiceAvailable(String instanceName, String registrationType,
-                                                WifiP2pDevice wifiDirectDevice) {
+            public void onDnsSdServiceAvailable(String instanceName, String registrationType, WifiP2pDevice wifiDirectDevice) {
                 logd("onDnsSdServiceAvailable: instanceName:" + instanceName + ", registrationType: " + registrationType
                         + ", WifiP2pDevice: " + wifiDirectDevice.toString());
+
             }
         }, new WifiP2pManager.DnsSdTxtRecordListener() {
             @Override
@@ -368,15 +372,23 @@ public class ConnectionController {
                 System.out.println(device.deviceAddress);
                 logd("onDnsSdTxtRecordAvailable: fullDomain: " + fullDomain + ", record: " + record.toString()
                         + ", WifiP2pDevice: " + device.toString());
-
+                if(fullDomain.equals("connection"))
+                devices.put(fullDomain,device);
             }
-        });
+        });}
+        @SuppressLint("MissingPermission")
+        public void startServiceDiscovery(){
         addServiceRequest(WifiP2pDnsSdServiceRequest.newInstance());
         mManager.discoverServices(mChannel, new WifiP2pManager.ActionListener() {
 
             @Override
             public void onSuccess() {
                 logd("discoverServices.onSuccess()");
+                //verificare se in questo istante il dispositivo viene visto, controllare con un if se qualcuno della lista e GO
+                // senno connettersi al primo perche si presuppone che vada in base alla distanza
+                //se non trova nessuno allora crea il servizio e diventa GO
+                //se trovi un dispositivo non GO si valuta come sempre id del servizio
+
             }
 
             @Override
@@ -423,5 +435,24 @@ public class ConnectionController {
 
     private String append(String a, String b) {
         return a + "\n\n" + b;
+    }
+    public void initProcess(){
+        setupServiceDiscovery();
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while(true) {
+                        sleep(1000);
+                        startServiceDiscovery();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
+
     }
 }
