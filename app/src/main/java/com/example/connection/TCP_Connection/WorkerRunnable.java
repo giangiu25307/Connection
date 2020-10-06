@@ -73,6 +73,7 @@ class WorkerRunnable implements Runnable {
                 } else if (splittedR[0].equals("GO_LEAVES_BY")) {
                     //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
                     database.deleteUser(database.findId_user("192.168.49.1"));
+                    connectionController.MACSender();
                     connectionController.disconnectToGroup();
                     connectionController.createGroup();
                 } else if (splittedR[0].equals("message")) {

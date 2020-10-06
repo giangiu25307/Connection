@@ -18,7 +18,6 @@ import javax.net.ServerSocketFactory;
 public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     protected int serverPort = 50000;
     protected ServerSocket serverSocket = null;
-    //ServerSocketFactory f = ServerSocketFactory.getDefault();
     protected boolean isStopped = false;
     protected Thread runningThread = null;
     private String receive;

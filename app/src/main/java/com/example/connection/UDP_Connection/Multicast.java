@@ -86,7 +86,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                 else if (splittedR[0].equals("GO_LEAVES_BYE£€")){
                     //the group owner is leaving the group -------------------------------------------------------------------------------------------------------------------------------
                     database.deleteAllUser();
-                    //connectionController.connectionToGroup();
+                    connectionController.connectionToGroup(splittedR[1]);
                 }
             }
         } catch (IOException e) {
