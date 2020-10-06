@@ -28,109 +28,19 @@
         android:layout_weight="1"
         android:text="Code sent by email" />
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/editTextNumber7"
+        style="@style/inputDataStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="20dp"
         android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/editTextNumber3"
-            style="@style/inputDataStyle"
-            android:layout_width="10dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="5dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="0"
-            android:inputType="number"
-            tools:layout_editor_absoluteX="120dp"
-            tools:layout_editor_absoluteY="10dp" />
-
-        <EditText
-            android:id="@+id/editTextNumber6"
-            style="@style/inputDataStyle"
-            android:layout_width="10dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="5dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="0"
-            android:inputType="number"
-            tools:layout_editor_absoluteX="291dp"
-            tools:layout_editor_absoluteY="10dp" />
-
-        <EditText
-            android:id="@+id/editTextNumber4"
-            style="@style/inputDataStyle"
-            android:layout_width="10dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="5dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="0"
-            android:inputType="number"
-            tools:layout_editor_absoluteX="230dp"
-            tools:layout_editor_absoluteY="10dp" />
-
-        <TextView
-            android:id="@+id/textView38"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:text="-"
-            android:textColor="?attr/textColor"
-            android:textSize="36sp"
-            tools:layout_editor_absoluteX="181dp" />
-
-        <EditText
-            android:id="@+id/editTextNumber5"
-            style="@style/inputDataStyle"
-            android:layout_width="10dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="5dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="0"
-            android:inputType="number"
-            tools:layout_editor_absoluteX="351dp"
-            tools:layout_editor_absoluteY="10dp" />
-
-        <EditText
-            android:id="@+id/editTextNumber2"
-            style="@style/inputDataStyle"
-            android:layout_width="10dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="5dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="0"
-            android:inputType="number"
-            tools:layout_editor_absoluteX="60dp"
-            tools:layout_editor_absoluteY="10dp" />
-
-        <EditText
-            android:id="@+id/editTextNumber"
-            style="@style/inputDataStyle"
-            android:layout_width="10dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="5dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="0"
-            android:inputType="number"
-            tools:layout_editor_absoluteY="10dp" />
-
-    </LinearLayout>
+        android:ems="10"
+        android:gravity="center"
+        android:hint="0"
+        android:inputType="number"
+        tools:layout_editor_absoluteX="120dp"
+        tools:layout_editor_absoluteY="10dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
