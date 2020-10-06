@@ -5,9 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -460,10 +457,10 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER,msgValues, null,null);
 
     }
-
     public String getMaxId(){
         String query = " SELECT MAX("+ Task.TaskEntry.ID_USER+")"+
-                " FROM "+ Task.TaskEntry.USER;
+                " FROM "+ Task.TaskEntry.USER+
+                " WHERE "+ Task.TaskEntry.IP +" IS NOT NULL"  ;
         Cursor c = db.rawQuery(query,null);
         if (c != null) {
             c.moveToFirst();

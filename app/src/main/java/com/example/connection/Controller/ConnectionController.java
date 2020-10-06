@@ -1,6 +1,5 @@
 package com.example.connection.Controller;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -17,7 +16,6 @@ import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
 import android.net.wifi.p2p.nsd.WifiP2pServiceRequest;
 import android.os.CountDownTimer;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -29,7 +27,6 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
-import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
@@ -73,8 +70,7 @@ public class ConnectionController {
     private TextView logView = null;
     private static final int logViewID = View.generateViewId();
     private String backlog = "";
-    final HashMap<String,WifiP2pDevice> devices = new HashMap<String,WifiP2pDevice>();
-
+    HashMap<String, WifiP2pDevice> devices;
 
 
     public ConnectionController(Connection connection, Database database, User user) {
@@ -98,6 +94,7 @@ public class ConnectionController {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+        devices = new HashMap<String, WifiP2pDevice>();
     }
 
     // this exist for the handshake when two group owner are meeting each other, THIS NEED TO BE FINISH BEFORE THE APP IS RELEASED -----------------------------------------------------------------------------------
@@ -140,7 +137,7 @@ public class ConnectionController {
         });
     }
 
-    public void getMacAddr() {
+    public String getMacAddr() {
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
             for (NetworkInterface nif : all) {
@@ -148,7 +145,7 @@ public class ConnectionController {
 
                 byte[] macBytes = nif.getHardwareAddress();
                 if (macBytes == null) {
-                    return;
+                    return null;
                 }
 
                 StringBuilder res1 = new StringBuilder();
@@ -159,19 +156,41 @@ public class ConnectionController {
                 if (res1.length() > 0) {
                     res1.deleteCharAt(res1.length() - 1);
                 }
-                System.out.println(res1.toString());
+                return res1.toString();
             }
         } catch (Exception ex) {
             //handle exception
         }
-        return;
+        return null;
     }
 
 
     //Connection to a group---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    public void connectionToGroup(WifiP2pDevice GO) {
+    public void connectionToGroup(WifiP2pDevice device) {
         config = new WifiP2pConfig();
-        config.deviceAddress = GO.deviceAddress;
+        config.deviceAddress = device.deviceAddress;
+        mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                mManager.requestConnectionInfo(mChannel, new WifiP2pManager.ConnectionInfoListener() {
+                    @Override
+                    public void onConnectionInfoAvailable(WifiP2pInfo info) {
+                        System.out.println(info.groupFormed);
+                    }
+                });
+                ConnectionToDevice = "Connected to the group";
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                System.out.println(reason);
+            }
+        });
+
+    }
+    public void connectionToGroup(String MacAddress) {
+        config = new WifiP2pConfig();
+        config.deviceAddress = MacAddress;
         mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -228,19 +247,21 @@ public class ConnectionController {
 
         tcpClient.startConnection(database.findIp(maxId), 50000);
         tcpClient.sendMessage("GO_LEAVES_BY£€", "");
-        new CountDownTimer(3000, 1000) {
+        new CountDownTimer(10000, 1000) {
 
             public void onTick(long millisUntilFinished) {
             }
 
             public void onFinish() {
-                udpClient.sendGlobalMsg("GO_LEAVES_BYE£€" + maxId);
             }
         }.start();
         this.removeGroup();
 
     }
 
+    public void MACSender(){
+        udpClient.sendGlobalMsg("GO_LEAVES_BYE£€".concat(getMacAddr()));
+    }
     //return the all client list --------------------------------------------------------------------------------------------------------------------------------
     public Optional<Cursor> getAllClientList() {
 
@@ -318,7 +339,7 @@ public class ConnectionController {
 
         /** Create a string map containing information about your service. */
         Map<String, String> record = new HashMap<String, String>();
-        record.put("DeviceID", Settings.Secure.getString(connection.getContentResolver(), Settings.Secure.ANDROID_ID));
+        record.put("ConnectionID", database.getMyInformation()[0]);
 
         /**
          * Service information. Pass it an instance name, service type
@@ -372,12 +393,13 @@ public class ConnectionController {
                 System.out.println(device.deviceAddress);
                 logd("onDnsSdTxtRecordAvailable: fullDomain: " + fullDomain + ", record: " + record.toString()
                         + ", WifiP2pDevice: " + device.toString());
-                if(fullDomain.equals("connection"))
-                devices.put(fullDomain,device);
+                if (fullDomain.equals("connection"))
+                    devices.put(record.get("ConnectionID").toString(), device);
             }
-        });}
-        @SuppressLint("MissingPermission")
-        public void startServiceDiscovery(){
+        });
+    }
+
+    public void startServiceDiscovery() {
         addServiceRequest(WifiP2pDnsSdServiceRequest.newInstance());
         mManager.discoverServices(mChannel, new WifiP2pManager.ActionListener() {
 
@@ -436,15 +458,46 @@ public class ConnectionController {
     private String append(String a, String b) {
         return a + "\n\n" + b;
     }
-    public void initProcess(){
+
+    public void initProcess() {
         setupServiceDiscovery();
         Thread thread = new Thread() {
             @Override
             public void run() {
                 try {
-                    while(true) {
+                    boolean rs = false;
+                    boolean maxID = true;
+                    while (true) {
                         sleep(1000);
                         startServiceDiscovery();
+                        if (!devices.isEmpty()) {
+                            for (Map.Entry<String, WifiP2pDevice> entry : devices.entrySet()) {
+                                if (entry.getValue().isGroupOwner()) {
+                                    connectionToGroup(entry.getValue());
+                                    unregisterService();
+                                    break;
+                                }
+
+                                if (database.getMyInformation()[0].compareTo(entry.getKey())>0) {
+                                    maxID = false;
+                                }
+
+                            }
+                            if (maxID) {
+                                createGroup();
+                                if (rs == false) {
+                                    registerService();
+                                    rs = true;
+                                }
+                                break;
+                            }
+                        } else {
+                            if (rs == false) {
+                                registerService();
+                                rs = true;
+                            }
+                        }
+
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
