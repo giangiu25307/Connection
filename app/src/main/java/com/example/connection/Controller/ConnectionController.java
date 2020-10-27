@@ -356,8 +356,9 @@ public class ConnectionController {
         mManager.addLocalService(mChannel, serviceInfo, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
+                System.out.println("ciao");
                 logd("addLocalService.onSuccess");
-                startServiceDiscovery();
+                //startServiceDiscovery();
             }
 
             @Override
@@ -393,7 +394,8 @@ public class ConnectionController {
                 System.out.println(device.deviceAddress);
                 logd("onDnsSdTxtRecordAvailable: fullDomain: " + fullDomain + ", record: " + record.toString()
                         + ", WifiP2pDevice: " + device.toString());
-                if (fullDomain.equals("connection"))
+                System.out.println(fullDomain);
+                if (fullDomain.trim().equals("connection.service_type_bonjour.local."))
                     devices.put(record.get("ConnectionID").toString(), device);
             }
         });
@@ -467,10 +469,13 @@ public class ConnectionController {
                 try {
                     boolean rs = false;
                     boolean maxID = true;
+                    //registerService();
+
                     while (true) {
-                        sleep(1000);
+                        sleep(5000);
                         startServiceDiscovery();
                         if (!devices.isEmpty()) {
+                            System.out.println("prova");
                             for (Map.Entry<String, WifiP2pDevice> entry : devices.entrySet()) {
                                 if (entry.getValue().isGroupOwner()) {
                                     connectionToGroup(entry.getValue());
@@ -486,14 +491,15 @@ public class ConnectionController {
                             if (maxID) {
                                 createGroup();
                                 if (rs == false) {
-                                    registerService();
+                                    //registerService();
                                     rs = true;
+                                    System.out.println("cia");
                                 }
                                 break;
                             }
                         } else {
                             if (rs == false) {
-                                registerService();
+                               // registerService();
                                 rs = true;
                             }
                         }
