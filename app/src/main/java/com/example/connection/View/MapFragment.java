@@ -57,7 +57,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.map_fragment, null);
+        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         filterImage = view.findViewById(R.id.filterButton);
         filterImage.setOnClickListener(this);
 

@@ -1,8 +1,8 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,15 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
-import com.example.connection.Model.Chats;
 import com.example.connection.R;
-import com.google.android.material.bottomnavigation.BottomNavigationMenu;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeFragment extends Fragment {
@@ -33,6 +29,10 @@ public class HomeFragment extends Fragment {
     private BottomNavigationView bottomNavigationMenu;
     private HomeFragment homeFragment;
     private Fragment map, chat;
+    private int currentColor;
+    private int[][] states;
+    private int[] colors;
+    private ColorStateList navigationViewColorStateList;
 
     public HomeFragment() {
 
@@ -51,55 +51,31 @@ public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.home_fragment, null);
-
-        //chipNavigationBar = view.findViewById(R.id.chip_navigation_bar);
-        System.out.println("Fragment creato");
+        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_home, null);
 
         bottomNavigationMenu = view.findViewById(R.id.bottomNavigationMenu);
         bottomNavigationMenu.setOnNavigationItemSelectedListener(bottomNavigationMenuListener);
         bottomNavigationMenu.setItemIconTintList(null);
 
+        states = new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}, new int[]{}};
+        currentColor = getContext().getColor(R.color.pink);
+
         if (savedInstanceState == null && Connection.fragmentName.equals("MAP")) {
             bottomNavigationMenu.getMenu().getItem(0).setChecked(true);
             fragment = map;
+            currentColor = getContext().getColor(R.color.pink);
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("CHAT")) {
             bottomNavigationMenu.getMenu().getItem(1).setChecked(true);
             fragment = chat;
+            currentColor = getContext().getColor(R.color.green);
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("SETTINGS")) {
             bottomNavigationMenu.getMenu().getItem(2).setChecked(true);
             fragment = new SettingsFragment().newInstance(connectionController,database,chatController,map,chat);
+            currentColor = getContext().getColor(R.color.orange);
             loadFragment();
         }
-
-        /*
-        bottomNavigationMenu.OnNa (new ChipNavigationBar.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(int i) {
-                switch (i) {
-                    case R.id.map:
-                        fragment = new MapFragment().newInstance(connectionController, database);
-                        Connection.fragmentName = "MAP";
-                        break;
-                    case R.id.chat:
-                        fragment = new ChatFragment().newInstance(database, chatController);
-                        Connection.fragmentName = "CHAT";
-                        break;
-                    case R.id.settings:
-                        fragment = new SettingsFragment().newInstance(connectionController, database, chatController);
-                        Connection.fragmentName = "SETTINGS";
-                        break;
-                    default:
-                        break;
-                }
-
-                loadFragment();
-
-            }
-        });
-        */
 
         return view;
 
@@ -114,16 +90,19 @@ public class HomeFragment extends Fragment {
                     //if (Connection.fragmentName.equals("MAP")) break;
                     Connection.fragmentName = "MAP";
                     fragment = map;
+                    currentColor = getContext().getColor(R.color.pink);
                     break;
                 case R.id.chat:
                     //if (Connection.fragmentName.equals("CHAT")) break;
                     Connection.fragmentName = "CHAT";
                     fragment = chat;
+                    currentColor = getContext().getColor(R.color.green);
                     break;
                 case R.id.settings:
                     //if (Connection.fragmentName.equals("SETTINGS")) break;
                     Connection.fragmentName = "SETTINGS";
                     fragment = new SettingsFragment().newInstance(connectionController,database,chatController,map,chat);
+                    currentColor = getContext().getColor(R.color.orange);
                     break;
                 default:
                     break;
@@ -138,6 +117,9 @@ public class HomeFragment extends Fragment {
     private void loadFragment() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
+        colors = new int[]{getContext().getColor(R.color.darkHintcolor), currentColor, getContext().getColor(R.color.darkHintcolor)};
+        navigationViewColorStateList = new ColorStateList(states, colors);
+        bottomNavigationMenu.setItemTextColor(navigationViewColorStateList);
     }
 
     public void setConnectionController(ConnectionController connectionController) {

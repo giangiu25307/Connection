@@ -18,15 +18,9 @@
         android:id="@+id/bottomNavigationMenu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="10"
+        android:layout_weight="12"
         android:background="?attr/bottomMenuBackground"
         app:itemBackground="@color/transparent"
-        app:menu="@menu/bottom_menu"
-        app:itemTextColor="@color/icon_bottom_navigation_menu_color"/>
+        app:menu="@menu/bottom_menu" />
 
 </LinearLayout>
-
-    <!--
-            app:itemIconTint="@color/icon_bottom_navigation_menu_color"
-
-            -->
