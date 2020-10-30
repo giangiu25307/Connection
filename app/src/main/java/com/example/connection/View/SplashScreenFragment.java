@@ -22,7 +22,7 @@ public class SplashScreenFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.splash_screen_fragment, null);
+        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_splash_screen, null);
 
         /*
         lightType = Typeface.createFromAsset(getContext().getAssets(), "fonts/nunito_light.ttf");

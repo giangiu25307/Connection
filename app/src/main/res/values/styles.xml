@@ -5,29 +5,37 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+        <!-- SplashScreen -->
         <item name="splashScreenLayoutBackground">@android:color/white</item>
 
+        <!-- Login -->
         <item name="inputData">@color/lightWhite</item>
         <item name="inputDataHintColor">@color/darkHintcolor</item>
         <item name="nextButton">@color/mediumBlack</item>
 
+        <!-- Toolbar and bottomNavigation -->
         <item name="toolbarBackground">@android:color/white</item>
         <item name="bottomMenuBackground">@android:color/white</item>
 
+        <!-- General layout -->
         <item name="whiteLayoutBackground">@android:color/white</item>
         <item name="layoutBackground">@color/lightWhite</item>
 
+        <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@android:color/white</item>
         <item name="messageInputColor">@android:color/white</item>
         <item name="messageInputBorder">@color/mediumBlack</item>
         <item name="messageInputElevation">0dp</item>
 
+        <!-- Settings -->
         <item name="groupSettingsBackground">@android:color/white</item>
         <item name="groupOptionSettingsBackground">@color/mediumWhite</item>
 
-        <item name="chatSelectorBackground">@color/regularGray</item>
+        <!-- Text -->
         <item name="textColor">@android:color/black</item>
         <item name="invertedTextColor">@android:color/white</item>
+
+        <!-- Icon -->
         <item name="iconTint">@android:color/black</item>
     </style>
 
@@ -36,29 +44,37 @@
         <item name="colorPrimaryDark">@color/reversedColorPrimaryDark</item>
         <item name="colorAccent">@color/reversedColorAccent</item>
 
+        <!-- SplashScreen -->
         <item name="splashScreenLayoutBackground">@color/mediumBlack</item>
 
+        <!-- Login -->
         <item name="inputData">@color/lightBlack</item>
         <item name="inputDataHintColor">@color/lightHintColor</item>
         <item name="nextButton">@android:color/white</item>
 
+        <!-- Toolbar and bottomNavigation -->
         <item name="toolbarBackground">@color/mediumBlack</item>
         <item name="bottomMenuBackground">@color/mediumBlack</item>
 
+        <!-- General layout -->
         <item name="whiteLayoutBackground">@color/mediumBlack</item>
         <item name="layoutBackground">@color/lightBlack</item>
 
+        <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@color/lightBlack</item>
         <item name="messageInputColor">@color/mediumBlack</item>
         <item name="messageInputBorder">@color/mediumBlack</item>
         <item name="messageInputElevation">1dp</item>
 
+        <!-- Settings -->
         <item name="groupSettingsBackground">@color/mediumBlack</item>
         <item name="groupOptionSettingsBackground">@color/lightLightBlack</item>
 
-        <item name="chatSelectorBackground">@color/mediumBlack</item>
+        <!-- Text -->
         <item name="textColor">@android:color/white</item>
         <item name="invertedTextColor">@android:color/black</item>
+
+        <!-- Icon -->
         <item name="iconTint">@android:color/white</item>
     </style>
 

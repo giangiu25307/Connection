@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/map"
-        android:icon="@drawable/ic_explore_drawable"
+        android:icon="@drawable/ic_map_drawable"
         android:title="Map" />
 
     <item
