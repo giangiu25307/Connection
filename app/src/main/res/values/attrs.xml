@@ -35,6 +35,9 @@
 
         <!-- Icon -->
         <attr name="iconTint" format="color"/>
+
+        <!-- Dialog -->
+        <attr name="cancelDialogColor" format="color"/>
     </declare-styleable>
 
 </resources>

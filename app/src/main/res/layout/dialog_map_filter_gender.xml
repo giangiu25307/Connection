@@ -11,6 +11,7 @@
         android:id="@+id/textView23"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
         android:text="Select gender"
         android:textColor="?attr/textColor"
         android:textSize="18sp" />
@@ -19,8 +20,9 @@
         android:id="@+id/checkBoxMale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:buttonTint="?attr/iconTint"
+        android:fontFamily="sans-serif"
         android:text="Male"
         android:textColor="?attr/textColor" />
 
@@ -29,6 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:buttonTint="?attr/iconTint"
+        android:fontFamily="sans-serif"
         android:text="Female"
         android:textColor="?attr/textColor" />
 
@@ -37,13 +40,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:buttonTint="?attr/iconTint"
+        android:fontFamily="sans-serif"
         android:text="Other"
         android:textColor="?attr/textColor" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:layout_weight="1">
 
         <TextView
@@ -51,8 +55,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:fontFamily="sans-serif"
             android:text="CANCEL"
-            android:textColor="?attr/textColor"
+            android:textColor="?attr/cancelDialogColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/applyTextView"
             app:layout_constraintHorizontal_bias="1.0"
@@ -63,6 +68,7 @@
             android:id="@+id/applyTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
             android:text="CONFIRM"
             android:textColor="?attr/textColor"
             android:textSize="14sp"

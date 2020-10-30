@@ -37,6 +37,9 @@
 
         <!-- Icon -->
         <item name="iconTint">@android:color/black</item>
+
+        <!-- Dialog -->
+        <item name="cancelDialogColor">@color/cancelDialogColorLight</item>
     </style>
 
     <style name="DarkTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -76,6 +79,9 @@
 
         <!-- Icon -->
         <item name="iconTint">@android:color/white</item>
+
+        <!-- Dialog -->
+        <item name="cancelDialogColor">@color/cancelDialogColorDark</item>
     </style>
 
     <style name="confirmAlertButton" parent="Widget.AppCompat.TextView">
