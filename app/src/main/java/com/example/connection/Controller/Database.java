@@ -424,7 +424,9 @@ public class Database extends SQLiteOpenHelper {
                 " FROM " +Task.TaskEntry.USER+
                 " WHERE id_user ='" + id + "'" ;
         Cursor c = db.rawQuery(query, null);
-
+        if (c != null) {
+            c.moveToFirst();
+        }
         return c;
     }
 
@@ -499,11 +501,16 @@ public class Database extends SQLiteOpenHelper {
         if (c != null) {
             c.moveToFirst();
         }
-        String data = c.getString(c.getColumnIndex((Task.TaskEntry.MAIL)));
+        String data="";
+        try {
+            data = c.getString(c.getColumnIndex((Task.TaskEntry.MAIL)));
+        }catch(IndexOutOfBoundsException e){
+            System.out.println("Utente 0 non trovato");
+        }
         return data;
     }
 
-    public String[] getMyPassword(){
+    public String[] getMyEmailAndPassword(){
         String query = "SELECT " + Task.TaskEntry.PASSWORD +
                 " FROM "+ Task.TaskEntry.USER+
                 " WHERE "+ Task.TaskEntry.ID_USER +"="+0;
