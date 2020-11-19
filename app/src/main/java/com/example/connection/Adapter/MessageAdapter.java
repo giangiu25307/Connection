@@ -64,7 +64,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         dateMessageLayout = view.findViewById(R.id.dateMessageLayout);
         ViewHolder holder = new ViewHolder(view, new ViewHolder.OnChatClickListener() {
 
-
             @Override
             public void openChat(int p) {
                 messageCursor.moveToPosition(p);

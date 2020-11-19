@@ -32,6 +32,8 @@
     <color name="darkHintcolor">#848486</color>
 
     <!-- Utils color -->
+    <color name="cancelDialogColorLight">#5D5D5D</color>
+    <color name="cancelDialogColorDark">#8F8F8F</color>
     <color name="regularGray">#EFEFEF</color>
     <color name="blue">#1565C0</color>
     <color name="transparent">#00ffffff</color>

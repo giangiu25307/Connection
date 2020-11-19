@@ -78,6 +78,7 @@ public class AutoClicker extends AccessibilityService {
         } while (condition);
     }*/
 
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         AccessibilityNodeInfo source = event.getSource();
