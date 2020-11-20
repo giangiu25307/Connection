@@ -122,6 +122,15 @@
         <item name="android:fontFamily">@font/opensans_regular</item>
     </style>
 
+    <style name="permissionButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/bg_permission_button</item>
+        <item name="android:textColor">?attr/invertedTextColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/opensans_regular</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
+
     <style name="selectedChatSelectorButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:background">@drawable/chat_selector_btn_background</item>
         <item name="android:textColor">@android:color/white</item>
