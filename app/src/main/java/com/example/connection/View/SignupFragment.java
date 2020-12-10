@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,7 +14,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -59,7 +58,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private ChatController chatController;
     private static final int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic;
-    private Button next, back;
+    private RelativeLayout next, back;
     private ArrayList<String> nations = new ArrayList<String>();
     private int yearText = 0, monthText = 0, dayText = 0;
 
@@ -101,8 +100,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.signup_fragment, null);
-        ProgressBar progressBar = view.findViewById(R.id.progressBar);
+        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_signup, null);
         viewPager = view.findViewById(R.id.viewPager);
         SliderAdapter sliderAdapter = new SliderAdapter(this.getContext());
         viewPager.setAdapter(sliderAdapter);
@@ -146,7 +144,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.nextButton:
-                if (next.getText().equals("Next")) {
+                if (currentPage < 4) {
                     if (checker()) {
                         viewPager.setCurrentItem(currentPage + 1);
                     } else viewPager.setCurrentItem(currentPage);
@@ -176,7 +174,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             default:
                 return false;
             case 0:
-                next.setText("Next");
                 boolean emailCheck = true, passwordCheck = true, usernameB = true;
                 EditText usernameLabel = viewPager.findViewById(R.id.username);
                 EditText email = viewPager.findViewById(R.id.email);
@@ -218,7 +215,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 } else return false;
             case 1:
                 final DatePickerDialog datePickerDialog = new DatePickerDialog(getContext());
-                next.setText("Next");
                 EditText firstNameLabel = viewPager.findViewById(R.id.firstname), surnameLabel = viewPager.findViewById(R.id.surname);
                 TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
                 gender.setOnClickListener(new View.OnClickListener() {
@@ -379,16 +375,16 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         chooseProfilePic();
-                        if (!user.getProfilePic().equals("")) next.setText("Confirm");
-                        else next.setText("Next");
+                        //if (!user.getProfilePic().equals("")) next.setText("Confirm");
+                        //else next.setText("Next");
                     }
                 });
                 photo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         captureImage();
-                        if (!user.getProfilePic().equals("")) next.setText("Confirm");
-                        else next.setText("Next");
+                        //if (!user.getProfilePic().equals("")) next.setText("Confirm");
+                        //else next.setText("Next");
                     }
                 });
                 if (!user.getProfilePic().equals("")) return true;

@@ -9,9 +9,9 @@
         <item name="splashScreenLayoutBackground">@android:color/white</item>
 
         <!-- Login -->
-        <item name="inputData">@color/lightWhite</item>
+        <item name="inputData">@color/darkWhite</item>
         <item name="inputDataHintColor">@color/darkHintcolor</item>
-        <item name="nextButton">@color/mediumBlack</item>
+        <item name="nextButton">@color/black2</item>
 
         <!-- Toolbar and bottomNavigation -->
         <item name="toolbarBackground">@android:color/white</item>
@@ -24,7 +24,7 @@
         <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@android:color/white</item>
         <item name="messageInputColor">@android:color/white</item>
-        <item name="messageInputBorder">@color/mediumBlack</item>
+        <item name="messageInputBorder">@color/black2</item>
         <item name="messageInputElevation">0dp</item>
 
         <!-- Settings -->
@@ -37,6 +37,7 @@
 
         <!-- Icon -->
         <item name="iconTint">@android:color/black</item>
+        <item name="invertedIconTint">@android:color/white</item>
 
         <!-- Dialog -->
         <item name="cancelDialogColor">@color/cancelDialogColorLight</item>
@@ -48,30 +49,30 @@
         <item name="colorAccent">@color/reversedColorAccent</item>
 
         <!-- SplashScreen -->
-        <item name="splashScreenLayoutBackground">@color/mediumBlack</item>
+        <item name="splashScreenLayoutBackground">@color/black2</item>
 
         <!-- Login -->
-        <item name="inputData">@color/lightBlack</item>
+        <item name="inputData">@color/black3</item>
         <item name="inputDataHintColor">@color/lightHintColor</item>
         <item name="nextButton">@android:color/white</item>
 
         <!-- Toolbar and bottomNavigation -->
-        <item name="toolbarBackground">@color/mediumBlack</item>
-        <item name="bottomMenuBackground">@color/mediumBlack</item>
+        <item name="toolbarBackground">@color/black2</item>
+        <item name="bottomMenuBackground">@color/black2</item>
 
         <!-- General layout -->
-        <item name="whiteLayoutBackground">@color/mediumBlack</item>
-        <item name="layoutBackground">@color/lightBlack</item>
+        <item name="whiteLayoutBackground">@color/black2</item>
+        <item name="layoutBackground">@color/black3</item>
 
         <!-- Chat -->
-        <item name="dateMessageLayoutBackgroundColor">@color/lightBlack</item>
-        <item name="messageInputColor">@color/mediumBlack</item>
-        <item name="messageInputBorder">@color/mediumBlack</item>
+        <item name="dateMessageLayoutBackgroundColor">@color/black3</item>
+        <item name="messageInputColor">@color/black2</item>
+        <item name="messageInputBorder">@color/black2</item>
         <item name="messageInputElevation">1dp</item>
 
         <!-- Settings -->
-        <item name="groupSettingsBackground">@color/mediumBlack</item>
-        <item name="groupOptionSettingsBackground">@color/lightLightBlack</item>
+        <item name="groupSettingsBackground">@color/black2</item>
+        <item name="groupOptionSettingsBackground">@color/black4</item>
 
         <!-- Text -->
         <item name="textColor">@android:color/white</item>
@@ -79,6 +80,7 @@
 
         <!-- Icon -->
         <item name="iconTint">@android:color/white</item>
+        <item name="invertedIconTint">@android:color/black</item>
 
         <!-- Dialog -->
         <item name="cancelDialogColor">@color/cancelDialogColorDark</item>
@@ -99,7 +101,7 @@
         <item name="android:textColorHint">?attr/inputDataHintColor</item>
         <item name="android:textSize">15sp</item>
         <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:padding">10dp</item>
+        <item name="android:padding">12.5dp</item>
     </style>
 
     <style name="showHidepasswordImageStyle">

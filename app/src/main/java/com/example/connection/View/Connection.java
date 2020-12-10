@@ -15,7 +15,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -28,9 +27,7 @@ import com.example.connection.Controller.Database;
 import com.example.connection.Model.MapUsers;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.UDP_Connection.RTTSocket;
 
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -147,7 +144,7 @@ public class Connection extends AppCompatActivity {
             window.setNavigationBarColor(Color.WHITE);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
-            window.setStatusBarColor(getColor(R.color.mediumBlack));
+            window.setStatusBarColor(getColor(R.color.black2));
         }
         window.setNavigationBarColor(Color.BLACK);
     }

@@ -20,12 +20,13 @@
     <!-- Light color -->
     <color name="lightWhite">#F7F7F7</color>
     <color name="mediumWhite">#F9F9F9</color>
+    <color name="darkWhite">#F1F1F1</color>
 
     <!-- Black color -->
-    <color name="lightLightBlack">#272727</color>
-    <color name="lightBlack">#202020</color>
-    <color name="mediumBlack">#131313</color>
-    <color name="regularBlack">#111111</color>
+    <color name="black4">#272727</color>
+    <color name="black3">#202020</color>
+    <color name="black2">#131313</color>
+    <color name="black1">#111111</color>
 
     <!-- Hint color -->
     <color name="lightHintColor">#D2D2D2</color>

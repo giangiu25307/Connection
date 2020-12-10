@@ -335,14 +335,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             theme = R.style.DarkTheme;
             newTheme = "dark";
             Connection.lightOrDark = "Dark";
-            bgColor = R.color.lightLightBlack;
+            bgColor = R.color.black4;
             darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
         } else if (currentTheme.equals("auto")) {
             getCurrentSystemTheme();
             newTheme = "auto";
             Connection.lightOrDark = "Follow System";
             if (theme == R.style.DarkTheme) {
-                bgColor = R.color.lightLightBlack;
+                bgColor = R.color.black4;
             } else {
                 bgColor = R.color.mediumWhite;
             }
@@ -430,7 +430,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         } else {
             window.getDecorView().setSystemUiVisibility(0);
             //window.clearFlags(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-            window.setStatusBarColor(getContext().getColor(R.color.mediumBlack));
+            window.setStatusBarColor(getContext().getColor(R.color.black2));
         }
         HomeFragment homeFragment = new HomeFragment();
         settingsFragment = this;
