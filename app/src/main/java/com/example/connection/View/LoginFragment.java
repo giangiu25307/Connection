@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -68,14 +69,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 loadFragment(fragment);
                 break;
             case R.id.skipButton:
-                connectionController.startServiceDiscovery();
-                //fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat);
-                //loadFragment(fragment);
+                //connectionController.startServiceDiscovery();
+                fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat);
+                loadFragment(fragment);
                 break;
             case R.id.loginButton:
                 if(checker()){
                     fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat);
                     loadFragment(fragment);
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                }else{
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                 }
                 break;
             default:

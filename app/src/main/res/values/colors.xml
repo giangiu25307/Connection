@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Primary and reversed primary color -->
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#ffffff</color>
     <color name="colorAccent">#282828</color>
@@ -7,25 +8,33 @@
     <color name="reversedColorPrimaryDark">#282828</color>
     <color name="reversedColorAccent">#ffffff</color>
 
-    <color name="pink">#ED4A64</color>
-    <color name="green">#25D366</color>
+    <!-- Main color -->
+    <color name="pink">#E91E63</color>
+    <color name="green">#4CAF50</color>
+    <color name="orange">#FF9800</color>
+
+    <!-- Secondary main color -->
     <color name="gray">#D0D0D0</color>
     <color name="red">#C62828</color>
-    <color name="orange">#FB8C00</color>
-    <color name="blue">#1565C0</color>
 
-    <color name="regularGray">#EFEFEF</color>
-
+    <!-- Light color -->
     <color name="lightWhite">#F7F7F7</color>
     <color name="mediumWhite">#F9F9F9</color>
 
+    <!-- Black color -->
     <color name="lightLightBlack">#272727</color>
     <color name="lightBlack">#202020</color>
     <color name="mediumBlack">#131313</color>
     <color name="regularBlack">#111111</color>
 
+    <!-- Hint color -->
     <color name="lightHintColor">#D2D2D2</color>
     <color name="darkHintcolor">#848486</color>
 
+    <!-- Utils color -->
+    <color name="cancelDialogColorLight">#5D5D5D</color>
+    <color name="cancelDialogColorDark">#8F8F8F</color>
+    <color name="regularGray">#EFEFEF</color>
+    <color name="blue">#1565C0</color>
     <color name="transparent">#00ffffff</color>
 </resources>

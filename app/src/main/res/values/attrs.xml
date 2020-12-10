@@ -2,32 +2,42 @@
 <resources>
 
     <declare-styleable name="themeAttrs">
+        <!-- SplashScreen -->
         <attr name="splashScreenLayoutBackground" format="color"/>
 
+        <!-- Login -->
         <attr name="inputData" format="color"/>
         <attr name="inputDataHintColor" format="color"/>
         <attr name="nextButton" format="color"/>
 
+        <!-- Toolbar and bottomNavigation -->
         <attr name="toolbarBackground" format="color"/>
         <attr name="bottomMenuBackground" format="color"/>
 
+        <!-- General layout -->
         <attr name="whiteLayoutBackground" format="color"/>
         <attr name="layoutBackground" format="color"/>
         <!-- <attr name="whiteLayoutBackground" format="color"/> -->
 
+        <!-- Chat -->
         <attr name="dateMessageLayoutBackgroundColor" format="color"/>
         <attr name="messageInputColor" format="color"/>
         <attr name="messageInputBorder" format="color"/>
         <attr name="messageInputElevation" format="dimension"/>
 
+        <!-- Settings -->
         <attr name="groupSettingsBackground" format="color"/>
         <attr name="groupOptionSettingsBackground" format="color"/>
 
-        <attr name="chatSelectorBackground" format="color"/>
-
+        <!-- Text -->
         <attr name="textColor" format="color"/>
         <attr name="invertedTextColor" format="color"/>
+
+        <!-- Icon -->
         <attr name="iconTint" format="color"/>
+
+        <!-- Dialog -->
+        <attr name="cancelDialogColor" format="color"/>
     </declare-styleable>
 
 </resources>

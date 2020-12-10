@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -57,7 +58,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.map_fragment, null);
+        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         filterImage = view.findViewById(R.id.filterButton);
         filterImage.setOnClickListener(this);
 
@@ -85,22 +86,23 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.filterButton:
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                dialogBuilder.setView(R.layout.filter_alert_dialog);
+                dialogBuilder.setView(R.layout.dialog_map_filter);
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
 
-                final TextView genderTextView, ageTextView, cancelTextView, applyTextView;
-                genderTextView = alertDialog.findViewById(R.id.genderTextView);
-                ageTextView = alertDialog.findViewById(R.id.ageTextView);
+                final LinearLayout genderLayout, ageLayout;
+                final TextView cancelTextView, applyTextView;
+                genderLayout = alertDialog.findViewById(R.id.genderLayout);
+                ageLayout = alertDialog.findViewById(R.id.ageLayout);
                 cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
 
                 //gender alert dialog
-                genderTextView.setOnClickListener(new View.OnClickListener() {
+                genderLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                        dialogBuilder.setView(R.layout.gender_alert_dialog_with_checkbox);
+                        dialogBuilder.setView(R.layout.dialog_map_filter_gender);
                         final AlertDialog alertDialog = dialogBuilder.create();
                         alertDialog.show();
                         final TextView cancelTextView, applyTextView;
@@ -143,11 +145,11 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 });
 
                 //age alert dialog
-                ageTextView.setOnClickListener(new View.OnClickListener() {
+                ageLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                        dialogBuilder.setView(R.layout.age_alert_dialog);
+                        dialogBuilder.setView(R.layout.dialog_map_filter_age);
                         final AlertDialog alertDialog = dialogBuilder.create();
                         alertDialog.show();
                         final TextView cancelTextView, applyTextView;

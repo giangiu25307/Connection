@@ -16,7 +16,7 @@
             android:id="@+id/mapToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="10"
+            android:layout_weight="12"
             android:background="?attr/toolbarBackground">
 
             <TextView
@@ -24,6 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:fontFamily="sans-serif-medium"
                 android:text="3 people found"
                 android:textColor="?attr/textColor"
                 android:textSize="21sp"
@@ -38,6 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-light"
                 android:text="0 - 30m"
                 android:textColor="?attr/textColor"
                 android:textSize="21sp"

@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -65,7 +64,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         dateMessageLayout = view.findViewById(R.id.dateMessageLayout);
         ViewHolder holder = new ViewHolder(view, new ViewHolder.OnChatClickListener() {
 
-
             @Override
             public void openChat(int p) {
                 messageCursor.moveToPosition(p);
@@ -104,11 +102,26 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if (!messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)).equals(database.getMyInformation()[0])) {
             textLayout.setBackgroundResource(R.drawable.message_rounded_black_background);
             message.setTextColor(Color.WHITE);
-            messageLayout.setGravity(Gravity.LEFT);
+            messageLayout.setGravity(Gravity.START);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 150, 0);
+            messageLayout.setLayoutParams(params);
+
+
         } else {
             textLayout.setBackgroundResource(R.drawable.message_rounded_white_background);
             message.setTextColor(Color.BLACK);
-            messageLayout.setGravity(Gravity.RIGHT);
+            messageLayout.setGravity(Gravity.END);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(150, 0, 0, 0);
+            messageLayout.setLayoutParams(params);
+
         }
 
         holder.itemView.setTag(idChat);

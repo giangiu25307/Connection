@@ -166,8 +166,11 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                fragment = new LoginFragment().newInstance(connectionController, database, chatController, map, chat, settings);
-                //fragment = new HomeFragment().newInstance(connectionController, database, chatController);
+                if(firstLogin()) {
+                    fragment = new LoginFragment().newInstance(connectionController, database, chatController, map, chat, settings);
+                }else {
+                    fragment = new HomeFragment().newInstance(connectionController, database, chatController,map,chat);
+                }
                 loadFragment(true);
                 startTimer2 = false;
             }
@@ -244,5 +247,16 @@ public class Connection extends AppCompatActivity {
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
+    }
+
+    public boolean firstLogin(){
+        String myid="";
+        try {
+            myid = database.getUser("0").getString(0);
+        }catch(IndexOutOfBoundsException e){
+            System.out.println("Utente non trovato");
+            return true;
+        }
+        return false;
     }
 }
