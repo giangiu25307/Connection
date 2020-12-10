@@ -4,6 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -65,12 +69,12 @@ public class ConnectionController {
     IntentFilter mIntentFilter;
     WifiP2pManager.ConnectionInfoListener connectionInfoListener;
     private String serviceName = "connection";
-    private static final String serviceType = "SERVICE_TYPE_BONJOUR";
     private static final String TAG = "connection_GO";
     private TextView logView = null;
     private static final int logViewID = View.generateViewId();
     private String backlog = "";
     HashMap<String, WifiP2pDevice> devices;
+    public static Network mMobileNetwork;
 
 
     public ConnectionController(Connection connection, Database database, User user) {
@@ -333,13 +337,13 @@ public class ConnectionController {
         return mIntentFilter;
     }
 
-    public void registerService() {
+    public void registerService(String serviceType,String nearDeviceId) {
 
         unregisterService();
 
         /** Create a string map containing information about your service. */
         Map<String, String> record = new HashMap<String, String>();
-        record.put("ConnectionID", database.getMyInformation()[0]);
+        record.put("ConnectionID",nearDeviceId);
 
         /**
          * Service information. Pass it an instance name, service type
@@ -393,14 +397,16 @@ public class ConnectionController {
                 System.out.println(device.deviceAddress);
                 logd("onDnsSdTxtRecordAvailable: fullDomain: " + fullDomain + ", record: " + record.toString()
                         + ", WifiP2pDevice: " + device.toString());
-                if (fullDomain.equals("connection"))
+                System.out.println(fullDomain);
+                if (fullDomain.trim().equals("connection.service_type_bonjour.local."))
                     devices.put(record.get("ConnectionID").toString(), device);
+
             }
         });
+        addServiceRequest(WifiP2pDnsSdServiceRequest.newInstance());
     }
 
     public void startServiceDiscovery() {
-        addServiceRequest(WifiP2pDnsSdServiceRequest.newInstance());
         mManager.discoverServices(mChannel, new WifiP2pManager.ActionListener() {
 
             @Override
@@ -460,45 +466,17 @@ public class ConnectionController {
     }
 
     public void initProcess() {
+        active4G();
         setupServiceDiscovery();
         Thread thread = new Thread() {
             @Override
             public void run() {
                 try {
-                    boolean rs = false;
+                    int rs = 0;
                     boolean maxID = true;
-                    while (true) {
-                        sleep(1000);
-                        startServiceDiscovery();
-                        if (!devices.isEmpty()) {
-                            for (Map.Entry<String, WifiP2pDevice> entry : devices.entrySet()) {
-                                if (entry.getValue().isGroupOwner()) {
-                                    connectionToGroup(entry.getValue());
-                                    unregisterService();
-                                    break;
-                                }
+                    unregisterService();
+                    registerService();
 
-                                if (database.getMyInformation()[0].compareTo(entry.getKey())>0) {
-                                    maxID = false;
-                                }
-
-                            }
-                            if (maxID) {
-                                createGroup();
-                                if (rs == false) {
-                                    registerService();
-                                    rs = true;
-                                }
-                                break;
-                            }
-                        } else {
-                            if (rs == false) {
-                                registerService();
-                                rs = true;
-                            }
-                        }
-
-                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -508,4 +486,50 @@ public class ConnectionController {
         thread.start();
 
     }
+    public void createOwnerRequestThread(final String serviceType, final String nearDeviceId) {
+        registerService(serviceType,nearDeviceId);
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+    private void searchForIdNetwork(String id){
+        while(true){
+            startServiceDiscovery();
+            if (!devices.isEmpty()) {
+                for (Map.Entry<String, WifiP2pDevice> entry : devices.entrySet()) {
+                    entry.getValue().
+                }
+            }
+
+        }
+
+    }
+    public void active4G(){
+        final ConnectivityManager connectivityManager= (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkRequest.Builder req = new NetworkRequest.Builder();
+        req.addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR);
+        req.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        NetworkRequest networkRequest=req.build();
+        ConnectivityManager.NetworkCallback networkCallback = new
+                ConnectivityManager.NetworkCallback() {
+
+                    @Override
+                    public void onAvailable(Network network) {
+                        mMobileNetwork=network;
+                        connectivityManager.bindProcessToNetwork(network);
+                        connection.startVpn();
+                    }
+                };
+        connectivityManager.requestNetwork(networkRequest, networkCallback);
+    }
+
+
 }
