@@ -42,4 +42,12 @@ public class Task {
         public static final String GROUP_MESSAGE = "GROUP_MESSAGE";*/
     }
 
+    public class ServiceEntry implements BaseColumns{
+        public static final String serviceGroupOwner = "serviceGroupOwner";
+        public static final String serviceConnectToGroupOwner = "serviceConnectToGroupOwner";
+        public static final String serviceIdBecomeGroupOwner = "serviceIdBecomeGroupOwner";
+        public static final String serviceLookingForGroupOwner = "serviceLookingForGroupOwner";
+
+    }
+
 }
