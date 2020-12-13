@@ -43,9 +43,9 @@ public class Task {
     }
 
     public class ServiceEntry implements BaseColumns{
-        public static final String serviceGroupOwner = "serviceGroupOwner";
-        public static final String serviceConnectToGroupOwner = "serviceConnectToGroupOwner";
-        public static final String serviceIdBecomeGroupOwner = "serviceIdBecomeGroupOwner";
+        public static final String serviceGroupOwner = "serviceGroupOwner"; //fatto
+        public static final String serviceClientConnectedToGroupOwner = "serviceClientConnectedToGroupOwner";//fatto
+        public static final String serviceRequestClientBecomeGroupOwner = "serviceRequestClientBecomeGroupOwner";//fatto
         public static final String serviceLookingForGroupOwner = "serviceLookingForGroupOwner";
 
     }

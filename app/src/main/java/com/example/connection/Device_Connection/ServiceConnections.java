@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Controller.Task;
 import com.example.connection.Model.GroupOwner;
@@ -22,93 +21,23 @@ import java.util.Map;
 public class ServiceConnections {
 
     private ArrayList<GroupOwner> groupOwners;
-    //private HashMap<String, WifiP2pDevice> devices;
+    private ArrayList<String> clientConnectedToGO,idRequestedToBeGO;
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
-    private String serviceName = "connection",serviceType;
+    private String serviceName = "connection", serviceType;
     private static final String TAG = "connection_GO";
     private TextView logView = null;
     private static final int logViewID = View.generateViewId();
     private String backlog = "";
-    Database database;
+    private Database database;
+    private String myId = database.getMyInformation()[0];
 
-    public ServiceConnections(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, Database database){
-        this.mManager=mManager;
-        this.mChannel=mChannel;
+    public ServiceConnections(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, Database database) {
+        this.mManager = mManager;
+        this.mChannel = mChannel;
         this.database = database;
-        groupOwners = new ArrayList<>();
-        //devices = new HashMap<String, WifiP2pDevice>();
-    }
-
-    @SuppressLint("MissingPermission")
-    public void registerService(String serviceType, String myId, String SSID, String networkPassword) {
-
-        unregisterService();
-
-        /** Create a string map containing information about your service. */
-        Map<String, String> record = new HashMap<String, String>();
-        record.put("ConnectionID", myId);
-        record.put("SSID",SSID);
-        record.put("networkPassword", networkPassword);
-
-        /**
-         * Service information. Pass it an instance name, service type
-         * _protocol._transportlayer , and the map containing information other
-         * devices will want once they connect to this one.
-         */
-        WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(serviceName, serviceType, record);
-
-        /**
-         * Add the local service, sending the service info, network channel, and
-         * listener that will be used to indicate success or failure of the
-         * request.
-         */
-        mManager.addLocalService(mChannel, serviceInfo, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                logd("addLocalService.onSuccess");
-            }
-
-            @Override
-            public void onFailure(int arg0) {
-                logd("addLocalService.onFailure: " + arg0);
-            }
-        });
-    }
-
-    @SuppressLint("MissingPermission")
-    public void registerService(String serviceType, String nearDeviceId) {
-
-        unregisterService();
-
-        /** Create a string map containing information about your service. */
-        Map<String, String> record = new HashMap<String, String>();
-        record.put("ConnectionID",nearDeviceId);
-
-        /**
-         * Service information. Pass it an instance name, service type
-         * _protocol._transportlayer , and the map containing information other
-         * devices will want once they connect to this one.
-         */
-        WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(serviceName, serviceType, record);
-
-        /**
-         * Add the local service, sending the service info, network channel, and
-         * listener that will be used to indicate success or failure of the
-         * request.
-         */
-        mManager.addLocalService(mChannel, serviceInfo, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                logd("addLocalService.onSuccess");
-                startServiceDiscovery();
-            }
-
-            @Override
-            public void onFailure(int arg0) {
-                logd("addLocalService.onFailure: " + arg0);
-            }
-        });
+        groupOwners = new ArrayList<GroupOwner>();
+        clientConnectedToGO = new ArrayList<String>();
     }
 
     /**
@@ -126,18 +55,24 @@ public class ServiceConnections {
         mManager.setDnsSdResponseListeners(mChannel, new WifiP2pManager.DnsSdServiceResponseListener() {
             @Override
             public void onDnsSdServiceAvailable(String instanceName, String registrationType, WifiP2pDevice wifiDirectDevice) {
-                serviceType=registrationType;
+                serviceType = registrationType;
 
             }
         }, new WifiP2pManager.DnsSdTxtRecordListener() {
             @Override
             public void onDnsSdTxtRecordAvailable(String fullDomain, Map record, WifiP2pDevice device) {
-                if (fullDomain.trim().equals("connection.service_type_bonjour.local.")){
-                    //devices.put(record.get("ConnectionID").toString(), device);
-                    switch(serviceType){
-                        default: break;
-                        case Task.ServiceEntry.serviceGroupOwner:
-                            groupOwners.add(new GroupOwner(record.get("ConnectionID").toString(),record.get("SSID").toString(),record.get("networkPassword").toString()));
+                if (fullDomain.trim().equals("connection.service_type_bonjour.local.")) {
+                    switch (serviceType) {
+                        default:
+                            break;
+                        case Task.ServiceEntry.serviceGroupOwner: //FOR CREATE, CONNECT GO
+                            groupOwners.add(new GroupOwner(record.get("ConnectionID").toString(), record.get("SSID").toString(), record.get("networkPassword").toString()));
+                            break;
+                        case Task.ServiceEntry.serviceClientConnectedToGroupOwner: //CLIENTS CONNECTED TO A SPECIFIED GROUP OWNER
+                            clientConnectedToGO.add(record.get("ConnectionID").toString());
+                            break;
+                        case Task.ServiceEntry.serviceRequestClientBecomeGroupOwner: //REQUEST A CLIENT TO BECOME GO
+                            idRequestedToBeGO.add(record.get("ConnectionID").toString());
                             break;
                     }
                 }
@@ -209,7 +144,7 @@ public class ServiceConnections {
 
 
     public void createOwnerRequestThread(final String nearDeviceId) {
-        registerService(Task.ServiceEntry.serviceIdBecomeGroupOwner,nearDeviceId);
+        registerService(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner, nearDeviceId);
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -223,35 +158,56 @@ public class ServiceConnections {
         };
     }
 
-    private void searchForIdNetwork(String id){
-        /*while(true){
-            startServiceDiscovery();
-            if (!devices.isEmpty()) {
-                for (Map.Entry<String, WifiP2pDevice> entryDevice : devices.entrySet()) {
-                    for (Map.Entry<String, String> entryServices : services.entrySet()) {
-                        if(entryDevice.getKey().equals(entryServices.getKey())){
-                            //connectionToGroup(entryDevice.getValue().deviceAddress);
-                        }
-                    }
-                }
-            }
-        }*/
+    //PART GROUP OWNER -----------------------------------------------------------------------------------------------------------------
+    //Register a group owner
+    @SuppressLint("MissingPermission")
+    public void registerService(String serviceType, String myId, String SSID, String networkPassword) {
 
+        unregisterService();
+
+        /** Create a string map containing information about your service. */
+        Map<String, String> record = new HashMap<String, String>();
+        record.put("ConnectionID", myId);
+        record.put("SSID", SSID);
+        record.put("networkPassword", networkPassword);
+
+        /**
+         * Service information. Pass it an instance name, service type
+         * _protocol._transportlayer , and the map containing information other
+         * devices will want once they connect to this one.
+         */
+        WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(serviceName, serviceType, record);
+
+        /**
+         * Add the local service, sending the service info, network channel, and
+         * listener that will be used to indicate success or failure of the
+         * request.
+         */
+        mManager.addLocalService(mChannel, serviceInfo, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                logd("addLocalService.onSuccess");
+            }
+
+            @Override
+            public void onFailure(int arg0) {
+                logd("addLocalService.onFailure: " + arg0);
+            }
+        });
     }
 
     //RETURN THE NEAREST GROUPOWNER WITH A ID GREATEST THAN YOURS
-    public GroupOwner findOtherGroupOwner(){
+    public GroupOwner findOtherGroupOwner() {
         final GroupOwner[] groupOwner = new GroupOwner[1];
-        final Thread thread=new Thread(){
+        final Thread thread = new Thread() {
             @Override
             public void run() {
-                String myId= database.getMyInformation()[0];
-                while(true) {
+                while (true) {
                     try {
                         sleep(1000);
                         startServiceDiscovery();
-                        for (int i=0;i< groupOwners.size();i++){
-                            if(myId.compareTo(groupOwners.get(i).getId())<0){
+                        for (int i = 0; i < groupOwners.size(); i++) {
+                            if (myId.compareTo(groupOwners.get(i).getId()) < 0) {
                                 groupOwner[0] = groupOwners.get(i);
                                 interrupt();
                             }
@@ -264,5 +220,150 @@ public class ServiceConnections {
         };
         thread.start();
         return groupOwner[0];
+    }
+
+    //PART CLIENT ---------------------------------------------------------------------------------------------------
+    //Register a client connected to a group owner
+    @SuppressLint("MissingPermission")
+    public void registerService(String serviceType, String myId, String idGroupOwner) {
+
+        unregisterService();
+
+        /** Create a string map containing information about your service. */
+        Map<String, String> record = new HashMap<String, String>();
+        record.put("ConnectionID", myId);
+        record.put("IdGroupOwner", idGroupOwner);
+
+        /**
+         * Service information. Pass it an instance name, service type
+         * _protocol._transportlayer , and the map containing information other
+         * devices will want once they connect to this one.
+         */
+        WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(serviceName, serviceType, record);
+
+        /**
+         * Add the local service, sending the service info, network channel, and
+         * listener that will be used to indicate success or failure of the
+         * request.
+         */
+        mManager.addLocalService(mChannel, serviceInfo, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                logd("addLocalService.onSuccess");
+            }
+
+            @Override
+            public void onFailure(int arg0) {
+                logd("addLocalService.onFailure: " + arg0);
+            }
+        });
+    }
+
+    //RETURN THE NEAREST GROUPOWNER for new client
+    public GroupOwner clientRetrieveGroupOwner() {
+        final GroupOwner[] groupOwner = new GroupOwner[1];
+        final Thread thread = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        sleep(1000);
+                        startServiceDiscovery();
+                        if(!groupOwners.isEmpty()) {
+                            groupOwner[0] = groupOwners.get(0); //the first should be the nearest (if google make thinks good, in other case we should  use RSSI)
+                            interrupt();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.start();
+        return groupOwner[0];
+    }
+
+    //listening to the near client, if i find my id, i have to become a GO
+    public boolean clientListeningOtherClient() {
+        final Thread thread = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        sleep(1000);
+                        startServiceDiscovery();
+                        if(!idRequestedToBeGO.isEmpty()){
+                            for (int i=0; i<idRequestedToBeGO.size();i++){
+                                if(myId.equals(idRequestedToBeGO)){
+                                    interrupt();
+                                }
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.start();
+        return true;
+    }
+
+    //PART REQUEST A CLIENT TO BECOME GROUP-OWNER
+    @SuppressLint("MissingPermission")
+    public void registerService(String serviceType, String nearClientId) {
+
+        unregisterService();
+
+        /** Create a string map containing information about your service. */
+        Map<String, String> record = new HashMap<String, String>();
+        record.put("ConnectionID", nearClientId);
+
+        /**
+         * Service information. Pass it an instance name, service type
+         * _protocol._transportlayer , and the map containing information other
+         * devices will want once they connect to this one.
+         */
+        WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(serviceName, serviceType, record);
+
+        /**
+         * Add the local service, sending the service info, network channel, and
+         * listener that will be used to indicate success or failure of the
+         * request.
+         */
+        mManager.addLocalService(mChannel, serviceInfo, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                logd("addLocalService.onSuccess");
+                startServiceDiscovery();
+            }
+
+            @Override
+            public void onFailure(int arg0) {
+                logd("addLocalService.onFailure: " + arg0);
+            }
+        });
+    }
+
+    //FIND THE NEAREST DEVICE ID FROM A CLIENT WHICH IS CONNECTED TO A GROUP OWNER, AND ASK HIM TO BECOME GROUP OWNER
+    public void searchAndRequestForIdNetwork(String id) {
+        registerService(Task.ServiceEntry.serviceLookingForGroupOwner, myId, null);
+        Thread thread = new Thread(){
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        startServiceDiscovery();
+                    if (!clientConnectedToGO.isEmpty()) {
+                        registerService(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner, clientConnectedToGO.get(0));
+                        interrupt();
+                    }
+                }
+            }
+        };
     }
 }

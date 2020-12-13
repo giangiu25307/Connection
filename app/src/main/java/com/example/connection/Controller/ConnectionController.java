@@ -192,6 +192,7 @@ public class ConnectionController {
 
     public void initProcess() {
         active4G();
+
     }
 
     public void active4G(){
