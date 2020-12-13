@@ -17,7 +17,9 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.os.CountDownTimer;
 
 import com.example.connection.Device_Connection.ServiceConnections;
+import com.example.connection.Model.GroupOwner;
 import com.example.connection.Model.User;
+import com.example.connection.Model.WifiConnection;
 import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
@@ -92,6 +94,7 @@ public class ConnectionController {
                     }
                 });
                 serviceConnection.registerService(Task.ServiceEntry.serviceGroupOwner,database.getMyInformation()[0],SSID,networkPassword);
+                connectToGroup(serviceConnection.findOtherGroupOwner());
             }
             @Override
             public void onFailure(int reason) {
@@ -103,8 +106,8 @@ public class ConnectionController {
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
-    public void connectToGroup(){
-
+    public void connectToGroup(GroupOwner groupOwner){
+        new WifiConnection(groupOwner.getSSID(),groupOwner.getPassword(),wifiManager);
     }
 
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
@@ -115,7 +118,6 @@ public class ConnectionController {
 
     //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
     public void clientList() {
-        WifiManager wifiManager = (WifiManager) connection.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         int numberOfLevels = 5;
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), numberOfLevels);

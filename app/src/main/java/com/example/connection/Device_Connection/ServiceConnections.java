@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Controller.Task;
+import com.example.connection.Model.GroupOwner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,8 +21,7 @@ import java.util.Map;
 
 public class ServiceConnections {
 
-    private HashMap<String,String> services;
-    private ArrayList<HashMap<String,String>> records;
+    private ArrayList<GroupOwner> groupOwners;
     //private HashMap<String, WifiP2pDevice> devices;
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
@@ -31,11 +32,11 @@ public class ServiceConnections {
     private String backlog = "";
     Database database;
 
-    public ServiceConnections(WifiP2pManager mManager,WifiP2pManager.Channel mChannel, Database database){
+    public ServiceConnections(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, Database database){
         this.mManager=mManager;
         this.mChannel=mChannel;
-        services = new HashMap<String, String>();
         this.database = database;
+        groupOwners = new ArrayList<>();
         //devices = new HashMap<String, WifiP2pDevice>();
     }
 
@@ -66,7 +67,6 @@ public class ServiceConnections {
             @Override
             public void onSuccess() {
                 logd("addLocalService.onSuccess");
-                findOtherGroupOwner();
             }
 
             @Override
@@ -134,8 +134,12 @@ public class ServiceConnections {
             public void onDnsSdTxtRecordAvailable(String fullDomain, Map record, WifiP2pDevice device) {
                 if (fullDomain.trim().equals("connection.service_type_bonjour.local.")){
                     //devices.put(record.get("ConnectionID").toString(), device);
-                    records.add((HashMap) record);
-                    services.put(record.get("ConnectionID").toString(),serviceType);
+                    switch(serviceType){
+                        default: break;
+                        case Task.ServiceEntry.serviceGroupOwner:
+                            groupOwners.add(new GroupOwner(record.get("ConnectionID").toString(),record.get("SSID").toString(),record.get("networkPassword").toString()));
+                            break;
+                    }
                 }
 
             }
@@ -235,35 +239,21 @@ public class ServiceConnections {
 
     }
 
-    //DA MODIFICARE
-    private void findOtherGroupOwner(){
-        Thread thread=new Thread(){
+    //RETURN THE NEAREST GROUPOWNER WITH A ID GREATEST THAN YOURS
+    public GroupOwner findOtherGroupOwner(){
+        final GroupOwner[] groupOwner = new GroupOwner[1];
+        final Thread thread=new Thread(){
             @Override
             public void run() {
+                String myId= database.getMyInformation()[0];
                 while(true) {
                     try {
                         sleep(1000);
                         startServiceDiscovery();
-                        ArrayList<String> ids= new ArrayList<>();
-                        for (Map.Entry<String, String> entryServices : services.entrySet()) {
-                            if(entryServices.getValue().equals(Task.ServiceEntry.serviceGroupOwner)){
-                                ids.add(entryServices.getKey());
-                            }
-                        }
-                        for (int i=0;i<records.size();i++) {
-                            int counter = 0;
-                            boolean b=false;
-                            for (Map.Entry<String, String> entryRecords : records.get(i).entrySet()){
-                                if(counter==0) {
-                                    for (int j = 0; j < ids.size(); j++) {
-                                        if (entryRecords.getValue().equals(ids.get(j))) {
-                                            if(database.getMyInformation()[0].compareTo(ids.get(j))<0)b=true;
-                                        }
-                                    }
-                                }else{
-                                    if(b==true);//{connectToGroup;break;}
-                                }
-
+                        for (int i=0;i< groupOwners.size();i++){
+                            if(myId.compareTo(groupOwners.get(i).getId())<0){
+                                groupOwner[0] = groupOwners.get(i);
+                                interrupt();
                             }
                         }
                     } catch (InterruptedException e) {
@@ -273,5 +263,6 @@ public class ServiceConnections {
             }
         };
         thread.start();
+        return groupOwner[0];
     }
 }
