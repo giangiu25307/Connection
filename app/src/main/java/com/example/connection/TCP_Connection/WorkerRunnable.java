@@ -1,6 +1,7 @@
 package com.example.connection.TCP_Connection;
 
 import android.database.Cursor;
+import android.widget.Switch;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
@@ -50,72 +51,78 @@ class WorkerRunnable implements Runnable {
                 String msg = "";
                 msg = dIn.readLine();
                 String[] splittedR = msg.split("£€");
-                if (splittedR[0].equals("image")) {
-                    String message = dIn.readLine();
-                    sdf = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss");
-                    String currentDateandTime = sdf.format(new Date());
-                    File.createTempFile(currentDateandTime + ".jpeg", null, connection.getApplicationContext().getCacheDir());
-                    FileOutputStream fos = new FileOutputStream(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg");
-                    fos.write(message.getBytes());
-                    fos.close();
-                    idChat = database.findId_user(ip);
-                    database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", idChat, idChat);
-                }
+                switch (splittedR[0]) {
+                    case "image":
+                        String message = dIn.readLine();
+                        sdf = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss");
+                        String currentDateandTime = sdf.format(new Date());
+                        File.createTempFile(currentDateandTime + ".jpeg", null, connection.getApplicationContext().getCacheDir());
+                        FileOutputStream fos = new FileOutputStream(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg");
+                        fos.write(message.getBytes());
+                        fos.close();
+                        idChat = database.findId_user(ip);
+                        database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", idChat, idChat);
+                        break;
+                    case "sendInfo":
+                        //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
+                        String[] splitted = splittedR[1].split(",;");
 
-                if (splittedR[0].equals("sendInfo")) {
-                    //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
-                    String[] splitted = splittedR[1].split(",;");
-
-                        for (int i=0;i<splitted.length;i++){
-                            String[] user =splitted[i].split(",");
-                            database.addUser(user[0],user[1],user[2],user[3],user[4],user[5],user[6],user[7],user[8],user[9],user[10]);
+                        for (int i = 0; i < splitted.length; i++) {
+                            String[] user = splitted[i].split(",");
+                            database.addUser(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10]);
                         }
-                } else if (splittedR[0].equals("GO_LEAVES_BY")) {
-                    //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
-                    database.deleteUser(database.findId_user("192.168.49.1"));
-                    connectionController.MACSender();
-                    connectionController.disconnectToGroup();
-                    connectionController.createGroup();
-                } else if (splittedR[0].equals("message")) {
-                    //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
-                    msg=splittedR[1];
-                    Date date = new Date();
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-                    Cursor dateDB=database.getLastMessageChat(idChat);
-                    String datetime = dateDB.getString(dateDB.getColumnIndex(Task.TaskEntry.DATETIME));
-                    try {
-                        date = format.parse(datetime);
-                        if(date.compareTo(format.parse(String.valueOf(LocalDateTime.now())))<0){
-                            database.addMsg("date£€"+date,idChat,idChat);
+                        break;
+                    case "GO_LEAVES_BY":
+                        //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
+                        database.deleteUser(database.findId_user("192.168.49.1"));
+                        connectionController.MACSender();
+                        connectionController.disconnectToGroup();
+                        connectionController.createGroup();
+                        break;
+                    case "message":
+                        //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
+                        msg = splittedR[1];
+                        Date date = new Date();
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                        Cursor dateDB = database.getLastMessageChat(idChat);
+                        String datetime = dateDB.getString(dateDB.getColumnIndex(Task.TaskEntry.DATETIME));
+                        try {
+                            date = format.parse(datetime);
+                            if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
+                                database.addMsg("date£€" + date, idChat, idChat);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    idChat = database.findId_user(ip);
-                    database.addMsg(msg, idChat, idChat);
-                } else if (splittedR[0].equals("REQUEST-MEET")) {
-                    //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
-                    //database.setAccept(valore ritornato da bergo);
-                    tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
-                    tcp_client.sendMessage("RESPONSE-MEET£€" + database.getMyInformation()[0] + "£€"/*+valore di bergo*/,"");
-
-                } else if (splittedR[0].equals("RESPONSE-MEET")) {
-                    database.setAccept(splittedR[1], splittedR[2]);
-                } else if (splittedR[0].equals("RESULT-MEET")) {
-                    if (database.getAccept(splittedR[1]).equals("yes")) {
+                        idChat = database.findId_user(ip);
+                        database.addMsg(msg, idChat, idChat);
+                        break;
+                    case "REQUEST-MEET":
+                        //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
+                        //database.setAccept(valore ritornato da bergo);
                         tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
-                        tcp_client.sendMessage("RESULT-MEET£€" + database.getMyInformation()[0] + splittedR[2] + "£€" + localizationController.gpsDirection(Double.parseDouble(splittedR[3]), Double.parseDouble(splittedR[4])),"");
-                        //modifica gui luca
+                        tcp_client.sendMessage("RESPONSE-MEET£€" + database.getMyInformation()[0] + "£€"/*+valore di bergo*/, "");
+                        break;
+                    case "RESPONSE-MEET":
+                        database.setAccept(splittedR[1], splittedR[2]);
+                        break;
+                    case "RESULT-MEET":
+                        if (database.getAccept(splittedR[1]).equals("yes")) {
+                            tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
+                            tcp_client.sendMessage("RESULT-MEET£€" + database.getMyInformation()[0] + splittedR[2] + "£€" + localizationController.gpsDirection(Double.parseDouble(splittedR[3]), Double.parseDouble(splittedR[4])), "");
+                            //modifica gui luca
 
-                    } else {
-                        tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
-                        tcp_client.sendMessage("RESPONSE-MEET£€" + database.getMyInformation()[0] + "£€"/*+valore di bergo*/,"");
-                    }
-
-
+                        } else {
+                            tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
+                            tcp_client.sendMessage("RESPONSE-MEET£€" + database.getMyInformation()[0] + "£€"/*+valore di bergo*/, "");
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             //report exception somewhere.
             e.printStackTrace();
         }
