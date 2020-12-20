@@ -74,7 +74,6 @@ public class Connection extends AppCompatActivity {
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //user = new User("aaaaa", "ciao", "ciaoc", "ciao", "ciao", "ciao", "cioa", "ciao", "ciao", "25-03-2000", "ciao");
         fragment = new SplashScreenFragment();
         loadFragment(false);
 
@@ -89,7 +88,7 @@ public class Connection extends AppCompatActivity {
         map = new MapFragment().newInstance(connectionController, database);
         chat = new ChatFragment().newInstance(database, chatController);
         settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
-        connectionController.Active4G();
+        connectionController.active4G();
         boolean createSample = true;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo");
