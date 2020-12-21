@@ -94,7 +94,7 @@ public class ConnectionController {
                     }
                 });
                 serviceConnection.registerService(Task.ServiceEntry.serviceGroupOwner,database.getMyInformation()[0],SSID,networkPassword);
-                connectToGroup(serviceConnection.findOtherGroupOwner());
+                connectToGroup(serviceConnection.findOtherGroupOwner());                                                                    //TO SEE IF IT WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
             @Override
             public void onFailure(int reason) {
@@ -108,6 +108,8 @@ public class ConnectionController {
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
     public void connectToGroup(GroupOwner groupOwner){
         new WifiConnection(groupOwner.getSSID(),groupOwner.getPassword(),wifiManager);
+        serviceConnection.registerService(Task.ServiceEntry.serviceClientConnectedToGroupOwner,database.getMyInformation()[0],groupOwner.getId());
+        if(serviceConnection.clientListeningOtherClient())createGroup();
     }
 
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
@@ -192,7 +194,13 @@ public class ConnectionController {
 
     public void initProcess() {
         active4G();
-
+        Optional<GroupOwner> optionalGroupOwner = serviceConnection.lookingForGroupOwner();
+        if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
+        else {
+            optionalGroupOwner = serviceConnection.searchAndRequestForIdNetwork();
+            if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
+            else createGroup();
+        }
     }
 
     public void active4G(){

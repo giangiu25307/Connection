@@ -6,6 +6,7 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
 import android.net.wifi.p2p.nsd.WifiP2pServiceRequest;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.example.connection.Model.GroupOwner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class ServiceConnections {
 
@@ -89,11 +91,6 @@ public class ServiceConnections {
             @Override
             public void onSuccess() {
                 logd("discoverServices.onSuccess()");
-                //verificare se in questo istante il dispositivo viene visto, controllare con un if se qualcuno della lista e GO
-                // senno connettersi al primo perche si presuppone che vada in base alla distanza
-                //se non trova nessuno allora crea il servizio e diventa GO
-                //se trovi un dispositivo non GO si valuta come sempre id del servizio
-
             }
 
             @Override
@@ -140,22 +137,6 @@ public class ServiceConnections {
 
     private String append(String a, String b) {
         return a + "\n\n" + b;
-    }
-
-
-    public void createOwnerRequestThread(final String nearDeviceId) {
-        registerService(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner, nearDeviceId);
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
     }
 
     //PART GROUP OWNER -----------------------------------------------------------------------------------------------------------------
@@ -259,30 +240,6 @@ public class ServiceConnections {
         });
     }
 
-    //RETURN THE NEAREST GROUPOWNER for new client
-    public GroupOwner clientRetrieveGroupOwner() {
-        final GroupOwner[] groupOwner = new GroupOwner[1];
-        final Thread thread = new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        sleep(1000);
-                        startServiceDiscovery();
-                        if(!groupOwners.isEmpty()) {
-                            groupOwner[0] = groupOwners.get(0); //the first should be the nearest (if google make thinks good, in other case we should  use RSSI)
-                            interrupt();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        thread.start();
-        return groupOwner[0];
-    }
-
     //listening to the near client, if i find my id, i have to become a GO
     public boolean clientListeningOtherClient() {
         final Thread thread = new Thread() {
@@ -346,7 +303,7 @@ public class ServiceConnections {
     }
 
     //FIND THE NEAREST DEVICE ID FROM A CLIENT WHICH IS CONNECTED TO A GROUP OWNER, AND ASK HIM TO BECOME GROUP OWNER
-    public void searchAndRequestForIdNetwork(String id) {
+    public Optional<GroupOwner> searchAndRequestForIdNetwork() {
         registerService(Task.ServiceEntry.serviceLookingForGroupOwner, myId, null);
         Thread thread = new Thread(){
                 @Override
@@ -365,5 +322,68 @@ public class ServiceConnections {
                 }
             }
         };
+        return lookingForGroupOwner(clientConnectedToGO.get(0));
+    }
+
+    //CALLED AFTER I REQUEST A SPECIFIED DEVICE TO BECOME GO
+    public Optional<GroupOwner> lookingForGroupOwner(final String id) {
+        final int[] j = {0};
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                int count=0;
+                while (true) {
+                    try {
+                        sleep(1000);
+                        count++;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    startServiceDiscovery();
+
+                    if (!groupOwners.isEmpty()) {
+                        for (int i =0; i<groupOwners.size();i++){
+                            if(groupOwners.get(i).getId().equals(id)){
+                                j[0] =i;
+                                interrupt();
+                            }
+                        }
+                        if(count>10){
+                            j[0]=0;
+                            interrupt();
+                        }
+                    }
+
+                    if(count>10){
+                        interrupt();
+                    }
+                }
+            }
+        };
+        return Optional.of(groupOwners.get(j[0]));
+    }
+
+    //FIRST METHOD TO BE CALLED WHEN THE APP STARTS, WITH THIS THE DEVICE START LOOKING FOR A GO
+    public Optional<GroupOwner> lookingForGroupOwner() {
+        registerService(Task.ServiceEntry.serviceLookingForGroupOwner, myId, null);
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                int count=0;
+                while (true) {
+                    try {
+                        sleep(1000);
+                        count++;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    startServiceDiscovery();
+                    if (!groupOwners.isEmpty() || count > 10) {
+                        interrupt();
+                    }
+                }
+            }
+        };
+        return Optional.of(groupOwners.get(0));
     }
 }
