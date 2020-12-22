@@ -109,13 +109,14 @@ public class ConnectionController {
     public void connectToGroup(GroupOwner groupOwner){
         new WifiConnection(groupOwner.getSSID(),groupOwner.getPassword(),wifiManager);
         serviceConnection.registerService(Task.ServiceEntry.serviceClientConnectedToGroupOwner,database.getMyInformation()[0],groupOwner.getId());
+        udpClient.sendInfo();
         if(serviceConnection.clientListeningOtherClient())createGroup();
     }
 
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
     public void disconnectToGroup() {
+        wifiManager.disconnect();
         udpClient.imLeaving();
-
     }
 
     //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
@@ -146,36 +147,10 @@ public class ConnectionController {
 
     }
 
-    public String getMacAddr() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("p2p0")) continue;
-
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return null;
-                }
-
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-                    res1.append(Integer.toHexString(b & 0xFF) + ":");
-                }
-
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
-            }
-        } catch (Exception ex) {
-            //handle exception
-        }
-        return null;
+    public void broadcastNewGroupOwnerId(){
+        udpClient.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMyInformation()[0]));
     }
 
-    public void MACSender(){
-        udpClient.sendGlobalMsg("GO_LEAVES_BYE£€".concat(getMacAddr()));
-    }
     //return the all client list --------------------------------------------------------------------------------------------------------------------------------
     public Optional<Cursor> getAllClientList() {
 
@@ -222,5 +197,42 @@ public class ConnectionController {
         connectivityManager.requestNetwork(networkRequest, networkCallback);
     }
 
+    //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
+    public void connectToGroupOwnerId(String id){
+        Optional<GroupOwner> optionalGroupOwner=serviceConnection.lookingForGroupOwner(id);
+        if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
+    }
 
 }
+
+/*
+    public String getMacAddr() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("p2p0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return null;
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(Integer.toHexString(b & 0xFF) + ":");
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                return res1.toString();
+            }
+        } catch (Exception ex) {
+            //handle exception
+        }
+        return null;
+    }
+
+    public void MACSender(){
+        udpClient.sendGlobalMsg("GO_LEAVES_BYE£€".concat(getMacAddr()));
+    }*/

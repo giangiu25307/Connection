@@ -75,7 +75,7 @@ class WorkerRunnable implements Runnable {
                     case "GO_LEAVES_BY":
                         //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
                         database.deleteUser(database.findId_user("192.168.49.1"));
-                        connectionController.MACSender();
+                        connectionController.broadcastNewGroupOwnerId();
                         connectionController.disconnectToGroup();
                         connectionController.createGroup();
                         break;

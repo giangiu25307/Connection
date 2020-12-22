@@ -200,6 +200,11 @@ public class ServiceConnections {
             }
         };
         thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return groupOwner[0];
     }
 
@@ -263,6 +268,11 @@ public class ServiceConnections {
             }
         };
         thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
@@ -322,6 +332,12 @@ public class ServiceConnections {
                 }
             }
         };
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return lookingForGroupOwner(clientConnectedToGO.get(0));
     }
 
@@ -360,6 +376,12 @@ public class ServiceConnections {
                 }
             }
         };
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return Optional.of(groupOwners.get(j[0]));
     }
 
@@ -384,6 +406,12 @@ public class ServiceConnections {
                 }
             }
         };
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return Optional.of(groupOwners.get(0));
     }
 }
