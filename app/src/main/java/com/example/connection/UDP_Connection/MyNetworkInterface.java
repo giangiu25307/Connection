@@ -7,8 +7,8 @@ import java.util.Enumeration;
 public class MyNetworkInterface extends java.net.SocketAddress {
 
 
-
-public static NetworkInterface getMyP2pNetworkInterface(){
+// "p2p-wlan0-0" name of the wi-fi direct interface
+public static NetworkInterface getMyP2pNetworkInterface(String nicName){
     Enumeration<NetworkInterface> enumeration = null;
     try {
         enumeration = NetworkInterface.getNetworkInterfaces();
@@ -21,7 +21,7 @@ public static NetworkInterface getMyP2pNetworkInterface(){
     while (enumeration.hasMoreElements()){
 
         p2p = enumeration.nextElement();
-        if (p2p.getName().equals("p2p-wlan0-0")) {
+        if (p2p.getName().equals(nicName)) {
             System.out.println(p2p.getName());
        return p2p;
         }

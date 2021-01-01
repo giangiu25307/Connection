@@ -33,7 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-public class ConnectionController {
+public class
+ConnectionController {
 
     private String SSID, networkPassword;
     private WifiManager wifiManager;
@@ -94,7 +95,8 @@ public class ConnectionController {
                     }
                 });
                 serviceConnection.registerService(Task.ServiceEntry.serviceGroupOwner,database.getMyInformation()[0],SSID,networkPassword);
-                connectToGroup(serviceConnection.findOtherGroupOwner());                                                                    //TO SEE IF IT WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                connectToGroup(serviceConnection.findOtherGroupOwner());
+                udpClient.createMulticastSocketWlan0();//TO SEE IF IT WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
             @Override
             public void onFailure(int reason) {
