@@ -30,16 +30,16 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     private Database database;
 
 
-    public Multicast(User user, Database database,ConnectionController connectionController) {
-        this.connectionController=connectionController;
+    public Multicast(User user, Database database, ConnectionController connectionController) {
+        this.connectionController = connectionController;
         try {
             tcp_client = new TCP_Client();
             this.database = database;
             this.user = user;
             group = InetAddress.getByName("234.0.0.0");
-            SocketAddress sa=new InetSocketAddress(group,6789);
+            SocketAddress sa = new InetSocketAddress(group, 6789);
             s = new MulticastSocket(6789);
-            s.joinGroup(sa , MyNetworkInterface.getMyP2pNetworkInterface());
+            s.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -58,42 +58,49 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
                 String received = new String(recv.getData(), 0, recv.getLength());
                 System.out.println(received);
                 String[] splittedR = received.split("£€");
-                if (splittedR[0].equals("info")) {
-                    //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
-                    if (user.getInetAddress().equals("192.168.49.1")) {
-                        tcp_client.startConnection(splittedR[2], 50000);
-                        Cursor c = database.getAllUsers();
-                        tcp_client.sendMessage(this.cursorToString(c),"");
-                        database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);//check adduser
-                    } else {
-                        database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9],splittedR[10],splittedR[11]);
-                    }
-                } else if (splittedR[0].equals("message")) {
-                    //receiving a message -----------------------------------------------------------------------------------------------------------------------------------------------
-                    for (int i = 3; i < splittedR.length; i++) {
-                        received += splittedR[i];
-                    }
-                    database.addGlobalMsg(received, splittedR[1]);
+                switch (splittedR[0]) {
+                    case "info":
+                        //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
+                        if (user.getInetAddress().equals("192.168.49.1")) {
+                            tcp_client.startConnection(splittedR[2], 50000);
+                            Cursor c = database.getAllUsers();
+                            tcp_client.sendMessage(this.cursorToString(c), "");
+                            database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11]);//check adduser
+
+                        } else {
+                            database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11]);
+                        }
+                        break;
+                    case "message":
+                        //receiving a message -----------------------------------------------------------------------------------------------------------------------------------------------
+                        for (int i = 3; i < splittedR.length; i++) {
+                            received += splittedR[i];
+                        }
+                        database.addGlobalMsg(received, splittedR[1]);
                 /*} else if (database.checkGroupId(splittedR[0])) {
                     database.addGroupMsg(received, Integer.parseInt(splittedR[1]), Integer.parseInt(splittedR[0]));
                 */
-                } else if (splittedR[0].equals("localization")) {
-                    //implementare la localizzazione
-                }else if(splittedR[0].equals("leave")) {
-                    //A user is leaving the group :( ------------------------------------------------------------------------------------------------------------------------------------
-                    database.deleteUser(splittedR[1]);
-                }
-                else if (splittedR[0].equals("GO_LEAVES_BYE£€")){
-                    //the group owner is leaving the group -------------------------------------------------------------------------------------------------------------------------------
-                    database.deleteAllUser();
-                    connectionController.connectToGroupOwnerId(splittedR[1]);
+                        break;
+                    case "localization":
+                        //implementare la localizzazione
+                        break;
+                    case "leave":
+                        //A user is leaving the group :( ------------------------------------------------------------------------------------------------------------------------------------
+                        database.deleteUser(splittedR[1]);
+                        break;
+                    case "GO_LEAVES_BYE£€":
+                        //the group owner is leaving the group -------------------------------------------------------------------------------------------------------------------------------
+                        database.deleteAllUser();
+                        connectionController.connectToGroupOwnerId(splittedR[1]);
+                        break;
+                    default:
+                        break;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
 
     //Send a global message ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -105,7 +112,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             s.setNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface());
             s.setTimeToLive(255);
             s.send(message);
-           // database.addGlobalMsg(msg, user.getIdUser());
+            // database.addGlobalMsg(msg, user.getIdUser());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,7 +131,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     }
 
     //i'm telling everyone that i'm leaving the group ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    public void imLeaving(){
+    public void imLeaving() {
         try {
             String leave = "leave£€" + user.getIdUser();
             byte[] bytes = leave.getBytes(StandardCharsets.UTF_8);
@@ -138,23 +145,23 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        new Thread(new Multicast(user, database,connectionController)).start();
+        new Thread(new Multicast(user, database, connectionController)).start();
         return null;
     }
 
     //take all the user group info from the database and transform the in to a BIG string ----------------------------------------------------------------------------------------------------------------
-    private String cursorToString(Cursor c){
+    private String cursorToString(Cursor c) {
         c.moveToFirst();
-        int i=0;
-        String msg="sendInfo£€";
-        while(!c.isAfterLast()){
-            while(i<c.getColumnCount()){
-                msg+=c.getString(i)+",";
+        int i = 0;
+        String msg = "sendInfo£€";
+        while (!c.isAfterLast()) {
+            while (i < c.getColumnCount()) {
+                msg += c.getString(i) + ",";
                 i++;
             }
-            msg+=";";
+            msg += ";";
             c.moveToNext();
-            i=0;
+            i = 0;
         }
         c.close();
         return msg;

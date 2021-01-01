@@ -32,12 +32,13 @@ public class ServiceConnections {
     private static final int logViewID = View.generateViewId();
     private String backlog = "";
     private Database database;
-    private String myId = database.getMyInformation()[0];
+    private String myId;
 
     public ServiceConnections(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, Database database) {
         this.mManager = mManager;
         this.mChannel = mChannel;
         this.database = database;
+        myId = database.getMyInformation()[0];
         groupOwners = new ArrayList<GroupOwner>();
         clientConnectedToGO = new ArrayList<String>();
     }
