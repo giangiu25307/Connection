@@ -5,7 +5,7 @@ import android.location.Location;
 
 import com.example.connection.Controller.Database;
 import com.example.connection.TCP_Connection.TCP_Client;
-import com.example.connection.UDP_Connection.RTTSocket;
+import com.example.connection.UDP_Connection.UDP_Socket;
 import com.example.connection.View.Connection;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class LocalizationController {
 
-    RTTSocket rtt;
+    UDP_Socket rtt;
     Database database;
     TCP_Client tcp_client;
     GPS gps;
@@ -24,7 +24,7 @@ public class LocalizationController {
 
 
     public LocalizationController(Database database, Connection connection)  throws SocketException {
-        rtt = new RTTSocket();
+        rtt = new UDP_Socket();
         this.database = database;
         gps=new GPS(connection);
     }
@@ -35,7 +35,7 @@ public class LocalizationController {
                 public void run() {
                     try {
                         //fare while fino alla chiusura della finestra
-                        rtt.socketSender(LocalizationController.this.ip);
+                        rtt.packetSender(LocalizationController.this.ip);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

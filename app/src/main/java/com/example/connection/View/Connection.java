@@ -65,31 +65,6 @@ public class Connection extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
-        connectionController = new ConnectionController(this, database, user);
-        chatController = new ChatController();
-        chatController = chatController.newIstance(this, connectionController);
-        //LocalizationController localizationController=null;
-        // localizationController=new LocalizationController(database,this);
-        autoClicker=new AutoClicker();
-        loadTheme();
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        //user = new User("aaaaa", "ciao", "ciaoc", "ciao", "ciao", "ciao", "cioa", "ciao", "ciao", "25-03-2000", "ciao");
-        fragment = new SplashScreenFragment();
-        loadFragment(false);
-
-        //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW
-        final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
-        ActivityCompat.requestPermissions(this, permissions, 101);
-       if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED ) {
-        }
-        //ENDS PERMISSIONS REQUEST
-        createCountDowntimer();
-        countDownTimer.start();
-        map = new MapFragment().newInstance(connectionController, database);
-        chat = new ChatFragment().newInstance(database, chatController);
-        settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
-        connectionController.Active4G();
         boolean createSample = true;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo");
@@ -104,6 +79,31 @@ public class Connection extends AppCompatActivity {
             database.createChat("25", "Andrew345");
             database.addMsg("Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "25", "25");
         }
+        connectionController = new ConnectionController(this, database, user);
+        chatController = new ChatController();
+        chatController = chatController.newIstance(this, connectionController);
+        //LocalizationController localizationController=null;
+        // localizationController=new LocalizationController(database,this);
+        autoClicker=new AutoClicker();
+        loadTheme();
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        fragment = new SplashScreenFragment();
+        loadFragment(false);
+
+        //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW
+        final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
+        ActivityCompat.requestPermissions(this, permissions, 101);
+       if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED ) {
+        }
+        //ENDS PERMISSIONS REQUEST
+        createCountDowntimer();
+        countDownTimer.start();
+        map = new MapFragment().newInstance(connectionController, database);
+        chat = new ChatFragment().newInstance(database, chatController);
+        settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
+        connectionController.active4G();
+
 
 
         //connectionController.initProcess();
@@ -149,7 +149,7 @@ public class Connection extends AppCompatActivity {
             window.setNavigationBarColor(Color.WHITE);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
-            window.setStatusBarColor(getColor(R.color.mediumBlack));
+            window.setStatusBarColor(getColor(R.color.black2));
         }
         window.setNavigationBarColor(Color.BLACK);
     }

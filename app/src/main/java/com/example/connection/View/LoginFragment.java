@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +22,8 @@ import com.example.connection.R;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
-    private Button loginButton, signupButton, skipButton;
+    private Button skipButton;
+    private LinearLayout loginButton, signupButton;
     private ConnectionController connectionController;
     private Database database;
     private ChatController chatController;
@@ -46,7 +48,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.login_fragment, null);
+        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_login, null);
 
         signupButton = view.findViewById(R.id.signupButton);
         signupButton.setOnClickListener(this);

@@ -46,7 +46,7 @@ public class Task {
         public static final String serviceGroupOwner = "serviceGroupOwner"; //fatto
         public static final String serviceClientConnectedToGroupOwner = "serviceClientConnectedToGroupOwner";//fatto
         public static final String serviceRequestClientBecomeGroupOwner = "serviceRequestClientBecomeGroupOwner";//fatto
-        public static final String serviceLookingForGroupOwner = "serviceLookingForGroupOwner";
+        public static final String serviceLookingForGroupOwner = "serviceLookingForGroupOwner";//fatto
 
     }
 

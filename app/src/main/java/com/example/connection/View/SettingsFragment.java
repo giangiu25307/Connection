@@ -32,6 +32,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
@@ -335,14 +336,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             theme = R.style.DarkTheme;
             newTheme = "dark";
             Connection.lightOrDark = "Dark";
-            bgColor = R.color.lightLightBlack;
+            bgColor = R.color.black4;
             darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
         } else if (currentTheme.equals("auto")) {
             getCurrentSystemTheme();
             newTheme = "auto";
             Connection.lightOrDark = "Follow System";
             if (theme == R.style.DarkTheme) {
-                bgColor = R.color.lightLightBlack;
+                bgColor = R.color.black4;
             } else {
                 bgColor = R.color.mediumWhite;
             }
@@ -430,7 +431,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         } else {
             window.getDecorView().setSystemUiVisibility(0);
             //window.clearFlags(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-            window.setStatusBarColor(getContext().getColor(R.color.mediumBlack));
+            window.setStatusBarColor(getContext().getColor(R.color.black2));
         }
         HomeFragment homeFragment = new HomeFragment();
         settingsFragment = this;
@@ -444,6 +445,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         isBg = false;
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+
     }
 
     private void chooseBackgroundImage() {

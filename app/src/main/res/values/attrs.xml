@@ -35,6 +35,7 @@
 
         <!-- Icon -->
         <attr name="iconTint" format="color"/>
+        <attr name="invertedIconTint" format="color"/>
 
         <!-- Dialog -->
         <attr name="cancelDialogColor" format="color"/>

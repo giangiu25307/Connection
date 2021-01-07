@@ -33,7 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-public class ConnectionController {
+public class
+ConnectionController {
 
     private String SSID, networkPassword;
     private WifiManager wifiManager;
@@ -95,6 +96,7 @@ public class ConnectionController {
                 });
                 serviceConnection.registerService(Task.ServiceEntry.serviceGroupOwner,database.getMyInformation()[0],SSID,networkPassword);
                 connectToGroup(serviceConnection.findOtherGroupOwner());
+                udpClient.createMulticastSocketWlan0();//TO SEE IF IT WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
             @Override
             public void onFailure(int reason) {
@@ -108,12 +110,15 @@ public class ConnectionController {
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
     public void connectToGroup(GroupOwner groupOwner){
         new WifiConnection(groupOwner.getSSID(),groupOwner.getPassword(),wifiManager);
+        serviceConnection.registerService(Task.ServiceEntry.serviceClientConnectedToGroupOwner,database.getMyInformation()[0],groupOwner.getId());
+        udpClient.sendInfo();
+        if(serviceConnection.clientListeningOtherClient())createGroup();
     }
 
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
     public void disconnectToGroup() {
+        wifiManager.disconnect();
         udpClient.imLeaving();
-
     }
 
     //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
@@ -144,6 +149,65 @@ public class ConnectionController {
 
     }
 
+    public void broadcastNewGroupOwnerId(){
+        udpClient.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMyInformation()[0]));
+    }
+
+    //return the all client list --------------------------------------------------------------------------------------------------------------------------------
+    public Optional<Cursor> getAllClientList() {
+
+        return Optional.of(database.getAllUsers());
+
+    }
+
+    public BroadcastReceiver getmReceiver() {
+        return mReceiver;
+    }
+
+    public IntentFilter getmIntentFilter() {
+        return mIntentFilter;
+    }
+
+
+    public void initProcess() {
+        active4G();
+        Optional<GroupOwner> optionalGroupOwner = serviceConnection.lookingForGroupOwner();
+        if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
+        else {
+            optionalGroupOwner = serviceConnection.searchAndRequestForIdNetwork();
+            if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
+            else createGroup();
+        }
+    }
+
+    public void active4G(){
+        final ConnectivityManager connectivityManager= (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkRequest.Builder req = new NetworkRequest.Builder();
+        req.addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR);
+        req.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        NetworkRequest networkRequest=req.build();
+        ConnectivityManager.NetworkCallback networkCallback = new
+                ConnectivityManager.NetworkCallback() {
+
+                    @Override
+                    public void onAvailable(Network network) {
+                        mMobileNetwork=network;
+                        connectivityManager.bindProcessToNetwork(network);
+                        connection.startVpn();
+                    }
+                };
+        connectivityManager.requestNetwork(networkRequest, networkCallback);
+    }
+
+    //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
+    public void connectToGroupOwnerId(String id){
+        Optional<GroupOwner> optionalGroupOwner=serviceConnection.lookingForGroupOwner(id);
+        if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
+    }
+
+}
+
+/*
     public String getMacAddr() {
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
@@ -173,46 +237,4 @@ public class ConnectionController {
 
     public void MACSender(){
         udpClient.sendGlobalMsg("GO_LEAVES_BYE£€".concat(getMacAddr()));
-    }
-    //return the all client list --------------------------------------------------------------------------------------------------------------------------------
-    public Optional<Cursor> getAllClientList() {
-
-        return Optional.of(database.getAllUsers());
-
-    }
-
-    public BroadcastReceiver getmReceiver() {
-        return mReceiver;
-    }
-
-    public IntentFilter getmIntentFilter() {
-        return mIntentFilter;
-    }
-
-
-    public void initProcess() {
-        active4G();
-
-    }
-
-    public void active4G(){
-        final ConnectivityManager connectivityManager= (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkRequest.Builder req = new NetworkRequest.Builder();
-        req.addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR);
-        req.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
-        NetworkRequest networkRequest=req.build();
-        ConnectivityManager.NetworkCallback networkCallback = new
-                ConnectivityManager.NetworkCallback() {
-
-                    @Override
-                    public void onAvailable(Network network) {
-                        mMobileNetwork=network;
-                        connectivityManager.bindProcessToNetwork(network);
-                        connection.startVpn();
-                    }
-                };
-        connectivityManager.requestNetwork(networkRequest, networkCallback);
-    }
-
-
-}
+    }*/
