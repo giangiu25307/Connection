@@ -35,6 +35,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NUMBER + " TEXT  DEFAULT 0, "
                 + Task.TaskEntry.BIRTH + " TEXT NOT NULL, "
                 + Task.TaskEntry.PROFILE_PIC + " TEXT NOT NULL, "
+                + Task.TaskEntry.PUBLIC_KEY + " TEXT, "
                 + Task.TaskEntry.IP + " TEXT, "
                 + Task.TaskEntry.ACCEPT + " TEXT, "
                 + Task.TaskEntry.MESSAGES_ACCEPTED + " TEXT "
@@ -55,7 +56,8 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NAME + " TEXT, "
                 + Task.TaskEntry.DATETIME + " TEXT, "
                 + Task.TaskEntry.NOT_READ_MESSAGE + " INTEGER, "
-                + Task.TaskEntry.REQUEST + " TEXT "
+                + Task.TaskEntry.REQUEST + " TEXT, "
+                + Task.TaskEntry.SYMMETRIC_KEY + "TEXT"
                 + ")";
 
         String CREATE_GLOBAL_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GLOBAL_MESSAGE + " ( "
@@ -248,6 +250,13 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.CHAT,msgValues,Task.TaskEntry.ID_CHAT+"="+id,null);
     }
 
+    public void setSymmetricKey(String symmetricKey){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.SYMMETRIC_KEY, symmetricKey);
+        db.update(Task.TaskEntry.CHAT,msgValues,null,null);
+    }
+
     public Cursor getBacgroundImage(){
         db=this.getWritableDatabase();
         String query = "SELECT " + Task.TaskEntry.BACKGROUND_IMAGE +
@@ -314,6 +323,7 @@ public class Database extends SQLiteOpenHelper {
         user[8]=c.getString(9);
         user[9]=c.getString(10);
         user[10]=c.getString(11);
+        user[11]=c.getString(12);
         return user;
     }
 
@@ -336,8 +346,15 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
         db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER+" = "+"0",null);
     }
+    
+    public void setPublicKey(String symmetricKey){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.PUBLIC_KEY, symmetricKey);
+        db.update(Task.TaskEntry.USER,msgValues,null,null);
+    }
 
-    public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String profilePic){
+    public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String profilePic,String publicKey){
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ID_USER,idUser);
@@ -353,6 +370,7 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
         msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED,"true");
         msgValues.put(Task.TaskEntry.ACCEPT,"false");
+        msgValues.put(Task.TaskEntry.PUBLIC_KEY,publicKey);
         db.insert(Task.TaskEntry.USER, null, msgValues);
         ContentValues ipValues = new ContentValues();
     }

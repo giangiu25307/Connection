@@ -150,7 +150,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     } else viewPager.setCurrentItem(currentPage);
                 } else {
                     //send user info to server
-                    database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic());
+                    database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic(), user.getPublicKey());
                     database.setNumber("0", user.getNumber());
                     Fragment fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat);
                     loadFragment(fragment);
