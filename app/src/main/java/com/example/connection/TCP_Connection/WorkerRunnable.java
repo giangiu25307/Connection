@@ -6,6 +6,7 @@ import android.widget.Switch;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Controller.Task;
+import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
 import com.example.connection.localization.LocalizationController;
 
@@ -52,6 +53,18 @@ class WorkerRunnable implements Runnable {
                 msg = dIn.readLine();
                 String[] splittedR = msg.split("£€");
                 switch (splittedR[0]) {
+                    case "routingMessage":
+                        if(database.findIp(splittedR[1]).equals("192.168.49.1")){
+                            tcp_client.changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("Wlan0"));
+                            tcp_client.startConnection(database.findIp(splittedR[1]),50000);
+                            tcp_client.sendMessageNoKey(msg);
+                        }else{
+                            splittedR[0]="message";
+                            msg=splittedR[0]+"£€"+splittedR[2];
+                            tcp_client.startConnection(database.findIp(splittedR[1]),50000);
+                            tcp_client.sendMessageNoKey(msg);
+                        }
+                        break;
                     case "image":
                         String message = dIn.readLine();
                         sdf = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss");

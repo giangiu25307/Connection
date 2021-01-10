@@ -9,7 +9,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
+import java.net.SocketException;
 import java.security.GeneralSecurityException;
 
 
@@ -51,6 +54,19 @@ public class TCP_Client {
         }
     }
 
+    public void sendMessageNoKey(String msg) {
+        this.msg += msg;
+        try {
+
+            byte[] array = this.msg.getBytes();
+            dos.write(array, 0, array.length);
+            dos.flush();
+            stopConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     //send a image throw tcp --------------------------------------------------------------------------------------------------------------------------------
     public void sendImage(ImageView image) throws IOException {
         Bitmap bmp = ((BitmapDrawable) image.getDrawable()).getBitmap(); //String str = et.getText().toString();
@@ -67,6 +83,15 @@ public class TCP_Client {
         out.close();
         dos.close();
         socket.close();
+    }
+    public void changeNetworkInterface(NetworkInterface nic ){
+        try {
+            socket.bind(new InetSocketAddress(nic.getInterfaceAddresses().get(0).getAddress(), 0));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
