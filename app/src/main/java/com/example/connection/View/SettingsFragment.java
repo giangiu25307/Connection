@@ -104,7 +104,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") final View view = inflater.inflate(R.layout.settings_fragment, null);
+        @SuppressLint("inflateParams") final View view = inflater.inflate(R.layout.lyt_settings, null);
         sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         editProfileButton = view.findViewById(R.id.editProfileButton);
