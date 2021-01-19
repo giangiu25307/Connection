@@ -176,7 +176,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     private void editProfile(AlertDialog.Builder dialogBuilder) {
         //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-        dialogBuilder.setView(R.layout.edit_profile_alert_dialog);
+        dialogBuilder.setView(R.layout.dialog_edit_profile);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
@@ -216,7 +216,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     private void changePassword(AlertDialog.Builder dialogBuilder) {
         //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-        dialogBuilder.setView(R.layout.change_password_alert_dialog);
+        dialogBuilder.setView(R.layout.dialog_change_password);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
@@ -236,7 +236,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 alertDialog.dismiss();
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                dialogBuilder.setView(R.layout.forgotten_password_alert_dialog);
+                dialogBuilder.setView(R.layout.dialog_forgotten_password);
                 final AlertDialog alertDialog2 = dialogBuilder.create();
                 alertDialog2.show();
 
@@ -261,7 +261,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                             emailEditText.setBackgroundResource(R.drawable.input_data_background);
                             alertDialog2.dismiss();
                             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                            dialogBuilder.setView(R.layout.verify_code_alert_dialog);
+                            dialogBuilder.setView(R.layout.dialog_verify_code_alert);
                             final AlertDialog alertDialog3 = dialogBuilder.create();
                             alertDialog3.show();
                             //SEND REQUEST TO MAKE VERIFICATION FROM THE SERVER AND TAKE BACK THE CODE
@@ -316,7 +316,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     private void manageTheme(AlertDialog.Builder dialogBuilder) {
         //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-        dialogBuilder.setView(R.layout.select_theme_alert_dialog);
+        dialogBuilder.setView(R.layout.dialog_app_theme);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 

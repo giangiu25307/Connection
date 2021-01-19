@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:background="?attr/whiteLayoutBackground"
     android:orientation="vertical"
-    android:paddingVertical="20dp">
+    android:paddingTop="15dp"
+    android:paddingBottom="20dp">
 
     <TextView
         android:id="@+id/textView9"
@@ -14,10 +15,10 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_weight="0"
-        android:fontFamily="@font/opensans_regular"
+        android:fontFamily="sans-serif-medium"
         android:text="Edit profile"
-        android:textColor="#FB8C00"
-        android:textSize="18sp" />
+        android:textColor="?attr/textColor"
+        android:textSize="21sp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -27,12 +28,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1">
 
@@ -53,10 +54,10 @@
                 <TextView
                     android:id="@+id/textView13"
                     style="@style/inputDataStyle"
-                    android:layout_width="100dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
                     android:text="Take photo"
+                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -67,10 +68,10 @@
                 <TextView
                     android:id="@+id/textView14"
                     style="@style/inputDataStyle"
-                    android:layout_width="100dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
                     android:text="Gallery"
+                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -82,7 +83,6 @@
                 android:id="@+id/textView17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/opensans_regular"
@@ -95,7 +95,6 @@
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:ems="10"
@@ -106,7 +105,6 @@
                 android:id="@+id/textView34"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/opensans_regular"
@@ -119,7 +117,6 @@
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:ems="10"
@@ -130,7 +127,6 @@
                 android:id="@+id/textView18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/opensans_regular"
@@ -143,7 +139,6 @@
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:ems="10"
@@ -154,7 +149,6 @@
                 android:id="@+id/textView35"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/opensans_regular"
@@ -167,7 +161,6 @@
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:ems="10"
@@ -178,7 +171,6 @@
                 android:id="@+id/textView19"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/opensans_regular"
@@ -191,7 +183,6 @@
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:ems="10"
@@ -202,7 +193,6 @@
                 android:id="@+id/textView20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/opensans_regular"
@@ -215,7 +205,6 @@
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:ems="10"
@@ -226,7 +215,28 @@
                 android:id="@+id/textView36"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/opensans_regular"
+                android:text="City"
+                android:textColor="?attr/textColor"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/editTextCity"
+                style="@style/inputDataStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="City"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/textView37"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/opensans_regular"
@@ -239,36 +249,11 @@
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="4dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Country"
-                android:inputType="text" />
-
-            <TextView
-                android:id="@+id/textView37"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/opensans_regular"
-                android:text="Country"
-                android:textColor="?attr/textColor"
-                android:textSize="12sp" />
-
-            <EditText
-                android:id="@+id/editTextCity"
-                style="@style/inputDataStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="City"
+                android:hint="Country"
                 android:inputType="text" />
 
         </LinearLayout>

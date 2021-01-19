@@ -1,51 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/whiteLayoutBackground"
-    android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingVertical="20dp">
+    android:paddingHorizontal="20dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="20dp">
 
     <TextView
-        android:id="@+id/textView39"
+        android:id="@+id/textView25"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_weight="1"
-        android:text="Verify code"
-        android:textColor="#FB8C00"
-        android:textSize="18sp" />
+        android:fontFamily="sans-serif-medium"
+        android:text="Logout"
+        android:textColor="?attr/textColor"
+        android:textSize="21sp" />
 
     <TextView
-        android:id="@+id/textView40"
-        android:layout_width="wrap_content"
+        android:id="@+id/textView28"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_weight="1"
-        android:text="Code sent by email" />
+        android:text="Testo di avviso" />
 
     <EditText
-        android:id="@+id/editTextNumber7"
+        android:id="@+id/editTextNewPassword3"
         style="@style/inputDataStyle"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginHorizontal="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:layout_weight="1"
         android:ems="10"
-        android:gravity="center"
-        android:hint="0"
-        android:inputType="number"
-        tools:layout_editor_absoluteX="120dp"
-        tools:layout_editor_absoluteY="10dp" />
+        android:hint="Enter your password"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView4"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_weight="1">
 
         <TextView
@@ -56,25 +54,22 @@
             android:text="CANCEL"
             android:textColor="?attr/textColor"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/applyTextView"
+            app:layout_constraintEnd_toStartOf="@+id/confirmTextView"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/applyTextView"
+            android:id="@+id/confirmTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:text="CONFIRM"
-            android:textColor="?attr/textColor"
+            android:text="LOGOUT"
+            android:textColor="@color/red"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/cancelTextView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </LinearLayout>

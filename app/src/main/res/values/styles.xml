@@ -86,6 +86,10 @@
         <item name="cancelDialogColor">@color/cancelDialogColorDark</item>
     </style>
 
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/rounded_20dp_background</item>
+    </style>
+
     <style name="confirmAlertButton" parent="Widget.AppCompat.TextView">
         <item name="android:background">@drawable/confirm_alert_button_background</item>
         <item name="android:textColor">?attr/invertedTextColor</item>
@@ -141,10 +145,6 @@
     <style name="unselectedChatSelectorButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">?attr/textColor</item>
-    </style>
-
-    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:windowBackground">@drawable/rounded_20dp_background</item>
     </style>
 
     <style name="dateMessageStyle" parent="Widget.AppCompat.TextView">

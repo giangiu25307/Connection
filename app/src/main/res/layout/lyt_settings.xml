@@ -83,7 +83,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="16dp"
-                            android:background="@drawable/gray_settings_background_layout"
+                            android:background="@drawable/bg_gray_settings_option"
                             android:orientation="vertical"
                             android:padding="7.5dp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -171,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_settings_option"
+                    android:background="@drawable/bg_white_settings_option"
                     android:clickable="true"
                     android:paddingVertical="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -233,7 +233,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_settings_option"
+                    android:background="@drawable/bg_white_settings_option"
                     android:paddingVertical="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -304,7 +304,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_settings_option"
+                    android:background="@drawable/bg_white_settings_option"
                     android:paddingVertical="5dp">
 
                     <ImageView
@@ -371,7 +371,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
                     android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_settings_option"
+                    android:background="@drawable/bg_white_settings_option"
                     android:paddingVertical="5dp">
 
                     <ImageView
@@ -427,7 +427,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
                     android:layout_marginVertical="12dp"
-                    android:background="@drawable/bg_settings_option"
+                    android:background="@drawable/bg_white_settings_option"
                     android:paddingVertical="5dp">
 
                     <ImageView
