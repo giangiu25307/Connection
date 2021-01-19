@@ -43,9 +43,16 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 
@@ -502,6 +509,41 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             Locale obj = new Locale("", countryCode);
             nations.add(obj.getDisplayCountry());
         }
+    }
+
+    private ArrayList<String> getCountries(){
+        HashMap<String, ArrayList<String>> countries = new Gson().fromJson(getContentFromCountryFile(), new TypeToken<Map<String, List<String>>>() { }.getType());
+        ArrayList<String> myCountries = new ArrayList<>();
+        for (String key : countries.keySet())
+        {
+            if(user.getCountry().toLowerCase().equals(key.toLowerCase())) {
+                myCountries = countries.get(key);
+            }
+        }
+        return myCountries;
+    }
+
+    private String getContentFromCountryFile(){
+        String json = null;
+        try {
+            InputStream is = getContext().getAssets().open("countriesToCities.json");
+
+            int size = is.available();
+
+            byte[] buffer = new byte[size];
+
+            is.read(buffer);
+
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 
     public void setMap(Fragment map) {
