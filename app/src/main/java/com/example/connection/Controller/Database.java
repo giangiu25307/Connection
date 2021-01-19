@@ -346,7 +346,7 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
         db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER+" = "+"0",null);
     }
-    
+
     public void setPublicKey(String symmetricKey){
         db=this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
