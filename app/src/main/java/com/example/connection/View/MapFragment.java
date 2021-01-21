@@ -110,9 +110,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                         cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                         applyTextView = alertDialog.findViewById(R.id.applyTextView);
-                        male = alertDialog.findViewById(R.id.checkBoxMale);
-                        female = alertDialog.findViewById(R.id.checkBoxFemale);
-                        other = alertDialog.findViewById(R.id.checkBoxOther);
+                        male = null;
+                        female = null;
+                        other = null;
                         if (Connection.genders[0] != null && Connection.genders[0].equals("male"))
                             male.setChecked(true);
                         if (Connection.genders[1] != null && Connection.genders[1].equals("female"))
