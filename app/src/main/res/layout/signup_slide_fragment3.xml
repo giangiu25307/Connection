@@ -20,8 +20,7 @@
         android:layout_marginTop="20dp"
         android:layout_weight="0"
         android:ems="10"
-        android:hint="City"
-        android:inputType="textPassword" />
+        android:hint="City" />
 
     <LinearLayout
         android:layout_width="match_parent"
