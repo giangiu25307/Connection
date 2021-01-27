@@ -101,6 +101,7 @@
         <item name="android:textSize">15sp</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:padding">12.5dp</item>
+        <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
     </style>
 
     <style name="showHidepasswordImageStyle">
