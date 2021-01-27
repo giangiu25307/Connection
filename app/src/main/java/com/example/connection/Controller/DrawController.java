@@ -85,6 +85,8 @@ public class DrawController extends View {
             if (i == 0) {
                 createUserPoint(getWidth() / 2, getHeight() / 2, i);
                 Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), getWidth() / 2, getHeight() / 2, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
+                previousX.add(getWidth()/2);
+                previousY.add(getHeight()/2);
             } else {
                 tempX = (int) (Math.random() * getWidth());
                 tempY = (int) (Math.random() * getHeight());
@@ -163,7 +165,8 @@ public class DrawController extends View {
     private boolean check(ArrayList<Integer> previousCoordinates, int coordinates) {
         int count=0;
         for (int i = 0; i < previousCoordinates.size(); i++) {
-            if (previousCoordinates.get(i) - (widthHeight) < coordinates && coordinates < previousCoordinates.get(i)-50 || previousCoordinates.get(i)+50 < coordinates && coordinates < previousCoordinates.get(i) + (widthHeight)) count++;
+            //if (previousCoordinates.get(i) - (widthHeight) < coordinates && coordinates < previousCoordinates.get(i)-50 || previousCoordinates.get(i)+50 < coordinates && coordinates < previousCoordinates.get(i) + (widthHeight)) count++;
+            if(coordinates < previousCoordinates.get(i)-widthHeight || coordinates > previousCoordinates.get(i)+widthHeight) count++;
         }
         if(count==previousCoordinates.size())return true;
         else return false;
