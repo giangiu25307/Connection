@@ -5,12 +5,17 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -33,6 +38,8 @@ public class HomeFragment extends Fragment {
     private int[][] states;
     private int[] colors;
     private ColorStateList navigationViewColorStateList;
+    private Toolbar toolbar;
+    private TextView toolbarTitle;
 
     public HomeFragment() {
 
@@ -53,6 +60,12 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_home, null);
 
+        toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        toolbarTitle = toolbar.findViewById(R.id.toolbarTitle);
+
         bottomNavigationMenu = view.findViewById(R.id.bottomNavigationMenu);
         bottomNavigationMenu.setOnNavigationItemSelectedListener(bottomNavigationMenuListener);
         bottomNavigationMenu.setItemIconTintList(null);
@@ -61,19 +74,22 @@ public class HomeFragment extends Fragment {
         currentColor = getContext().getColor(R.color.pink);
 
         if (savedInstanceState == null && Connection.fragmentName.equals("MAP")) {
+
             bottomNavigationMenu.getMenu().getItem(0).setChecked(true);
             fragment = map;
             currentColor = getContext().getColor(R.color.pink);
+            toolbarTitle.setText("Explore");
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("CHAT")) {
             bottomNavigationMenu.getMenu().getItem(1).setChecked(true);
-            fragment = chat;
+            fragment = new ChatFragment().newInstance(database, chatController, toolbar);
             currentColor = getContext().getColor(R.color.green);
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("SETTINGS")) {
             bottomNavigationMenu.getMenu().getItem(2).setChecked(true);
             fragment = new SettingsFragment().newInstance(connectionController,database,chatController,map,chat);
             currentColor = getContext().getColor(R.color.orange);
+            toolbarTitle.setText("Settings");
             loadFragment();
         }
 
@@ -89,18 +105,20 @@ public class HomeFragment extends Fragment {
                 case R.id.map:
                     //if (Connection.fragmentName.equals("MAP")) break;
                     Connection.fragmentName = "MAP";
+                    toolbarTitle.setText("Explore");
                     fragment = map;
                     currentColor = getContext().getColor(R.color.pink);
                     break;
                 case R.id.chat:
                     //if (Connection.fragmentName.equals("CHAT")) break;
                     Connection.fragmentName = "CHAT";
-                    fragment = chat;
+                    fragment = new ChatFragment().newInstance(database, chatController, toolbar);
                     currentColor = getContext().getColor(R.color.green);
                     break;
                 case R.id.settings:
                     //if (Connection.fragmentName.equals("SETTINGS")) break;
                     Connection.fragmentName = "SETTINGS";
+                    toolbarTitle.setText("Settings");
                     fragment = new SettingsFragment().newInstance(connectionController,database,chatController,map,chat);
                     currentColor = getContext().getColor(R.color.orange);
                     break;

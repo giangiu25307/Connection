@@ -83,7 +83,7 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         map = new MapFragment().newInstance(connectionController, database);
-        chat = new ChatFragment().newInstance(database, chatController);
+        chat = new ChatFragment().newInstance(database, chatController, null);
         settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
         //BluetoothScanner bluetoothScanner=new BluetoothScanner();
 
@@ -140,11 +140,10 @@ public class Connection extends AppCompatActivity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         if (light) {
-            window.setStatusBarColor(Color.WHITE);
-            window.setNavigationBarColor(Color.WHITE);
+            window.setStatusBarColor(getColor(R.color.colorPrimaryDark));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
-            window.setStatusBarColor(getColor(R.color.black2));
+            window.setStatusBarColor(getColor(R.color.darkColorPrimaryDark));
         }
         window.setNavigationBarColor(Color.BLACK);
     }

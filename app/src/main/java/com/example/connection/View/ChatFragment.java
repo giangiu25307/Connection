@@ -7,6 +7,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,14 +46,16 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     private long secondsRemaining = 1500;
     private CountDownTimer countDownTimer;
     private Boolean startTimer = false,startTimer2 = true;
+    private Toolbar toolbar;
 
     public ChatFragment() {
     }
 
-    public ChatFragment newInstance(Database database,ChatController chatController) {
+    public ChatFragment newInstance(Database database,ChatController chatController, Toolbar toolbar) {
         ChatFragment chatFragment = new ChatFragment();
         chatFragment.setDatabase(database);
         chatFragment.setChatController(chatController);
+        chatFragment.setToolbar(toolbar);
         return chatFragment;
     }
 
@@ -65,6 +71,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.chat_fragment, null);
+
+        setHasOptionsMenu(true);
 
         /*
         sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -88,7 +96,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         numberRequest = view.findViewById(R.id.numberRequest);
         int totalRequest = database.getAllRequestChat().getCount();
         numberRequest.setText(String.valueOf(totalRequest));//(totalRequest==0 ? "No" : ""+totalRequest);
-        totalChat = view.findViewById(R.id.totalChat);
+        totalChat = toolbar.findViewById(R.id.toolbarTitle);
         int totalChatNumber = database.getAllNoRequestChat().getCount();
         totalChat.setText(totalChatNumber == 0 ? "Chat (0)" : "Chat (" + totalChatNumber + ")");
         final ViewTreeObserver viewTreeObserver = requestTextView2.getViewTreeObserver();
@@ -126,7 +134,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onFinish() {
-                animRequestButton(currentWidth, currentHeight);
+                //animRequestButton(currentWidth, currentHeight);
                 startTimer = false;
             }
         };
@@ -196,9 +204,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.globalButton:
-                //changeView(2);
-                break;
             default:
                 break;
         }
@@ -223,5 +228,27 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             TextView textView = view.findViewById(R.id.textView0Chat);
             textView.setVisibility(View.VISIBLE);
         }*/
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.chat_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.globalIcon:
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void setToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
     }
 }

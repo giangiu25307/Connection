@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
@@ -59,8 +62,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
-        filterImage = view.findViewById(R.id.filterButton);
-        filterImage.setOnClickListener(this);
+        setHasOptionsMenu(true);
+
 
         Cursor c = connectionController.getAllClientList().get();
         c.moveToFirst();
@@ -84,7 +87,27 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.filterButton:
+            case R.id.filterIcon:
+
+                break;
+            case R.id.gpsIcon:
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.home_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.filterIcon:
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
                 dialogBuilder.setView(R.layout.dialog_map_filter);
                 final AlertDialog alertDialog = dialogBuilder.create();
@@ -197,12 +220,12 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 break;
-            case R.id.gpsButton:
+            case R.id.gpsIcon:
                 break;
             default:
                 break;
         }
+        return super.onOptionsItemSelected(item);
     }
-
 }
 

@@ -105,6 +105,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") final View view = inflater.inflate(R.layout.lyt_settings, null);
+
+        setHasOptionsMenu(false);
+
         sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         editProfileButton = view.findViewById(R.id.editProfileButton);
@@ -425,12 +428,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         if (this.theme == R.style.AppTheme) {
 
-            window.setStatusBarColor(getContext().getColor(R.color.mediumWhite));
+            window.setStatusBarColor(getContext().getColor(R.color.colorPrimaryDark));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
             window.getDecorView().setSystemUiVisibility(0);
             //window.clearFlags(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-            window.setStatusBarColor(getContext().getColor(R.color.black2));
+            window.setStatusBarColor(getContext().getColor(R.color.darkColorPrimaryDark));
         }
         HomeFragment homeFragment = new HomeFragment();
         settingsFragment = this;

@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary and reversed primary color -->
-    <color name="colorPrimary">#ffffff</color>
-    <color name="colorPrimaryDark">#ffffff</color>
-    <color name="colorAccent">#282828</color>
+    <!-- Primary color -->
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryLight">#FCFCFC</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
+
+
+    <!-- Dark color primary -->
+    <color name="darkColorPrimary">#0D0D0D</color>
+    <color name="darkColorPrimaryLight">#111111</color>
+    <color name="darkColorPrimaryDark">#0A0A0A</color>
+
+    <color name="colorAccent">#FF5722</color>
+
+    <!-- Reversed color primary -->
     <color name="reversedColorPrimary">#282828</color>
     <color name="reversedColorPrimaryDark">#282828</color>
     <color name="reversedColorAccent">#ffffff</color>
