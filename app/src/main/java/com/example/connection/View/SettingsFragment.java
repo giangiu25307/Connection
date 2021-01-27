@@ -195,8 +195,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
-        final TextView cancelTextView, applyTextView, gallery, takePhoto;
-        final EditText editTextUsername, editTextMail, editTextName, editTextSurname, editTextPhoneNumber, editTextGender, editTextCity, editTextCountry;
+        final TextView cancelTextView, applyTextView, gallery, takePhoto,textViewGender;
+        final EditText editTextUsername, editTextMail, editTextName, editTextSurname, editTextPhoneNumber, editTextCity, editTextCountry;
 
         editTextCity = alertDialog.findViewById(R.id.editTextCity);
         editTextUsername = alertDialog.findViewById(R.id.editTextUsername);
@@ -204,7 +204,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         editTextName = alertDialog.findViewById(R.id.editTextName);
         editTextSurname = alertDialog.findViewById(R.id.editTextSurname);
         editTextPhoneNumber = alertDialog.findViewById(R.id.editTextPhonenumber);
-        editTextGender = alertDialog.findViewById(R.id.editTextGender);
+        textViewGender = alertDialog.findViewById(R.id.textViewGender);
         editTextCountry = alertDialog.findViewById(R.id.editTextCountry);
 
         User user = new User(database.getMyInformation()[0], database.getMyInformation()[1], database.getMyInformation()[2], database.getMyInformation()[3], database.getMyInformation()[4], database.getMyInformation()[5], database.getMyInformation()[6], database.getMyInformation()[7], database.getMyInformation()[8], database.getMyInformation()[9], database.getMyInformation()[10]);
@@ -215,11 +215,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         editTextName.setText(user.getName());
         editTextSurname.setText(user.getSurname());
         editTextPhoneNumber.setText(user.getNumber());
-        editTextGender.setText(user.getGender());
+        textViewGender.setText(user.getGender());
         editTextCountry.setText(user.getCountry());
 
-        takePhoto = alertDialog.findViewById(R.id.takePhoto);
-        gallery = alertDialog.findViewById(R.id.gallery);
+        takePhoto = alertDialog.findViewById(R.id.textView13);
+        gallery = alertDialog.findViewById(R.id.textView14);
         cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
         applyTextView = alertDialog.findViewById(R.id.applyTextView);
         profilePics = alertDialog.findViewById(R.id.profilePic);
@@ -229,6 +229,38 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             profilePics.setImageTintList(null);
             profilePics.setImageDrawable(draw);
         }
+        textViewGender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                dialogBuilder.setView(R.layout.dialog_gender);
+                final AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
+                TextView male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
+                male.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        textViewGender.setText("Maschio");
+                        alertDialog.dismiss();
+                    }
+                });
+                female.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        textViewGender.setText("Femmina");
+                        alertDialog.dismiss();
+                    }
+                });
+                other.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        textViewGender.setText("Altro");
+                        alertDialog.dismiss();
+                    }
+                });
+            }
+        });
+
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -304,7 +336,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     database.setMail("0", editTextMail.getText().toString());
                     database.setSurname("0", editTextSurname.getText().toString());
                     database.setNumber("0", editTextPhoneNumber.getText().toString());
-                    database.setGender("0", editTextGender.getText().toString());
+                    database.setGender("0", textViewGender.getText().toString());
                     database.setCountry("0", editTextCountry.getText().toString());
                     alertDialog.dismiss();
                 }

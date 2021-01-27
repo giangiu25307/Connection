@@ -200,16 +200,15 @@
                 android:textColor="?attr/textColor"
                 android:textSize="12sp" />
 
-            <EditText
-                android:id="@+id/editTextGender"
+            <TextView
+                android:id="@+id/textViewGender"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="Gender"
-                android:inputType="text" />
+                android:text="Gender" />
 
             <TextView
                 android:id="@+id/textView36"
