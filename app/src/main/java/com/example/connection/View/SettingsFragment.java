@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +30,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Model.User;
 import com.example.connection.R;
 
 import java.util.regex.Pattern;
@@ -51,7 +54,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private TextView themeOptionDescription, wallpaperOptionDescription;
     private ImageView editProfileButton;
     private int bgColor = R.color.mediumWhite;
-    private int PICK_IMAGE = 1;
+    private int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic, profilePics;
     private String previousProfilePic = "";
     private boolean isBg = false;
@@ -67,6 +70,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             ".{8,}" + //at least length of 8 character
             "$");
 
+    private static final Pattern regexName = Pattern.compile("^" +
+            ".{2,26}" +
+            "(?=.*[a-z])" + //at least 1 lower case
+            "$");
+
+    private static final Pattern regexPhoneNumber = Pattern.compile("^" +
+            "[0-9]*" +
+            ".{9,11}" +
+            "$");
 
     public SettingsFragment() {
     }
@@ -180,7 +192,31 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
-        final TextView cancelTextView, applyTextView;
+        final TextView cancelTextView, applyTextView, gallery, takePhoto;
+        final EditText editTextUsername, editTextMail, editTextName, editTextSurname, editTextPhoneNumber, editTextGender, editTextCity, editTextCountry;
+
+        editTextCity = alertDialog.findViewById(R.id.editTextCity);
+        editTextUsername = alertDialog.findViewById(R.id.editTextUsername);
+        editTextMail = alertDialog.findViewById(R.id.editTextMail);
+        editTextName = alertDialog.findViewById(R.id.editTextName);
+        editTextSurname = alertDialog.findViewById(R.id.editTextSurname);
+        editTextPhoneNumber = alertDialog.findViewById(R.id.editTextPhonenumber);
+        editTextGender = alertDialog.findViewById(R.id.editTextGender);
+        editTextCountry = alertDialog.findViewById(R.id.editTextCountry);
+
+        User user = new User(database.getMyInformation()[0], database.getMyInformation()[1], database.getMyInformation()[2], database.getMyInformation()[3], database.getMyInformation()[4], database.getMyInformation()[5], database.getMyInformation()[6], database.getMyInformation()[7], database.getMyInformation()[8], database.getMyInformation()[9], database.getMyInformation()[10]);
+
+        editTextCity.setText(user.getCity());
+        editTextUsername.setText(user.getUsername());
+        editTextMail.setText(user.getMail());
+        editTextName.setText(user.getName());
+        editTextSurname.setText(user.getSurname());
+        editTextPhoneNumber.setText(user.getNumber());
+        editTextGender.setText(user.getGender());
+        editTextCountry.setText(user.getCountry());
+
+        takePhoto = alertDialog.findViewById(R.id.takePhoto);
+        gallery = alertDialog.findViewById(R.id.gallery);
         cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
         applyTextView = alertDialog.findViewById(R.id.applyTextView);
         profilePics = alertDialog.findViewById(R.id.profilePic);
@@ -190,10 +226,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             profilePics.setImageTintList(null);
             profilePics.setImageDrawable(draw);
         }
-        profilePics.setOnClickListener(new View.OnClickListener() {
+        gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chooseImage();
+            }
+        });
+        takePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                captureImage();
             }
         });
 
@@ -209,7 +251,60 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 setProfilePic();
-                alertDialog.dismiss();
+                boolean bool = true;
+                if (!regexName.matcher(editTextCity.getText().toString()).matches()) {
+                    editTextCity.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    bool = false;
+                } else {
+                    editTextCity.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                }
+                if (!regexName.matcher(editTextUsername.getText().toString()).matches()) {
+                    editTextUsername.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    bool = false;
+                } else {
+                    editTextUsername.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                }
+                if (!regexName.matcher(editTextName.getText().toString()).matches()) {
+                    editTextName.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    bool = false;
+                } else {
+                    editTextName.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                }
+                if (!Patterns.EMAIL_ADDRESS.matcher(editTextMail.getText().toString()).matches()) {
+                    editTextMail.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    bool = false;
+                } else {
+                    editTextMail.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                }
+                if (!regexName.matcher(editTextSurname.getText().toString()).matches()) {
+                    editTextSurname.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    bool = false;
+                } else {
+                    editTextSurname.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                }
+                if (!regexPhoneNumber.matcher(editTextPhoneNumber.getText().toString()).matches()) {
+                    editTextPhoneNumber.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    bool = false;
+                } else {
+                    editTextPhoneNumber.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                }
+                if (!regexName.matcher(editTextCountry.getText().toString()).matches()) {
+                    editTextCountry.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    bool = false;
+                } else {
+                    editTextCountry.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                }
+                if (bool) {
+                    database.setCity("0", editTextCity.getText().toString());
+                    database.setUsername("0", editTextUsername.getText().toString());
+                    database.setName("0", editTextName.getText().toString());
+                    database.setMail("0", editTextMail.getText().toString());
+                    database.setSurname("0", editTextSurname.getText().toString());
+                    database.setNumber("0", editTextPhoneNumber.getText().toString());
+                    database.setGender("0", editTextGender.getText().toString());
+                    database.setCountry("0", editTextCountry.getText().toString());
+                    alertDialog.dismiss();
+                }
             }
         });
     }
@@ -257,7 +352,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         String data = database.getMyEmail();
-                        if(emailEditText.getText().toString().equals(data)){
+                        if (emailEditText.getText().toString().equals(data)) {
                             emailEditText.setBackgroundResource(R.drawable.input_data_background);
                             alertDialog2.dismiss();
                             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
@@ -265,7 +360,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                             final AlertDialog alertDialog3 = dialogBuilder.create();
                             alertDialog3.show();
                             //SEND REQUEST TO MAKE VERIFICATION FROM THE SERVER AND TAKE BACK THE CODE
-                        }else{
+                        } else {
                             emailEditText.setBackgroundResource(R.drawable.input_data_background_wrong);
                         }
                     }
@@ -440,6 +535,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         transaction.commit();
     }
 
+    private void captureImage() {
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        startActivityForResult(intent, CAPTURE_IMAGE);
+    }
+
     private void chooseImage() {
         isBg = false;
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -479,6 +579,20 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 }
                 cursor.close();
             }
+        } else if (requestCode == CAPTURE_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+                Uri tempUri = getImageUri(getContext(), photo);
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                String imagePath = getRealPathFromURI(tempUri);
+                database.setProfilePic(imagePath);
+                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                Drawable draw = new BitmapDrawable(getResources(), bitmap);
+                profilePic.setImageTintList(null);
+                profilePic.setImageDrawable(draw);
+            }
+
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
@@ -498,6 +612,26 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         profilePic.setImageTintList(null);
         profilePic.setImageDrawable(draw);
         c.close();
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        Bitmap OutImage = Bitmap.createScaledBitmap(inImage, 1000, 1000, true);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), OutImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        String path = "";
+        if (getContext().getContentResolver() != null) {
+            Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                path = cursor.getString(idx);
+                cursor.close();
+            }
+        }
+        return path;
     }
 
 }
