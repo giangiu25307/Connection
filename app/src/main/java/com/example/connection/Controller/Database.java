@@ -311,9 +311,9 @@ public class Database extends SQLiteOpenHelper {
         user[5]=c.getString(5);
         user[6]=c.getString(6);
         user[7]=c.getString(7);
-        user[8]=c.getString(9);
-        user[9]=c.getString(10);
-        user[10]=c.getString(11);
+        user[8]=c.getString(8);
+        user[9]=c.getString(9);
+        user[10]=c.getString(10);
         return user;
     }
 
