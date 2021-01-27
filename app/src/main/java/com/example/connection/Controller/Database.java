@@ -546,6 +546,55 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+"0",null);
     }
 
+    public void setCity(String id, String city){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.CITY, city);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setUsername(String id, String username){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.USERNAME, username);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setName(String id, String name){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.NAME, name);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setMail(String id, String mail){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.MAIL, mail);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setSurname(String id, String surname){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.SURNAME, surname);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setGender(String id, String gender){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.GENDER, gender);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setCountry(String id, String country){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.COUNTRY, country);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //duplicare i metodi sopra
     public void addGroupMsg(String msg, int idSender,int idgroup) {

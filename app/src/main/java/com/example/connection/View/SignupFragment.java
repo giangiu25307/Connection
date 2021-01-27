@@ -79,6 +79,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     private static final Pattern regexName = Pattern.compile("^" +
             ".{2,26}" +
+            "(?=.*[a-z])" + //at least 1 lower case
             "$");
 
     private static final Pattern regexPhoneNumber = Pattern.compile("^" +
