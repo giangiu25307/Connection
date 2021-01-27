@@ -161,11 +161,12 @@ public class DrawController extends View {
 
     //check coordinates distances
     private boolean check(ArrayList<Integer> previousCoordinates, int coordinates) {
+        int count=0;
         for (int i = 0; i < previousCoordinates.size(); i++) {
-            if (previousCoordinates.get(i) - (widthHeight) < coordinates && coordinates < previousCoordinates.get(i) + (widthHeight))
-                return true;
+            if (previousCoordinates.get(i) - (widthHeight) < coordinates && coordinates < previousCoordinates.get(i)-50 || previousCoordinates.get(i)+50 < coordinates && coordinates < previousCoordinates.get(i) + (widthHeight)) count++;
         }
-        return false;
+        if(count==previousCoordinates.size())return true;
+        else return false;
     }
 
     //ADDING NEW USERS TO THE MAP
