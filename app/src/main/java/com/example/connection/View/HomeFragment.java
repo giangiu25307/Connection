@@ -77,18 +77,18 @@ public class HomeFragment extends Fragment {
 
             bottomNavigationMenu.getMenu().getItem(0).setChecked(true);
             fragment = map;
-            currentColor = getContext().getColor(R.color.pink);
+            currentColor = getContext().getColor(R.color.colorAccent);
             toolbarTitle.setText("Explore");
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("CHAT")) {
             bottomNavigationMenu.getMenu().getItem(1).setChecked(true);
             fragment = new ChatFragment().newInstance(database, chatController, toolbar);
-            currentColor = getContext().getColor(R.color.green);
+            currentColor = getContext().getColor(R.color.colorAccent);
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("SETTINGS")) {
             bottomNavigationMenu.getMenu().getItem(2).setChecked(true);
             fragment = new SettingsFragment().newInstance(connectionController,database,chatController,map,chat);
-            currentColor = getContext().getColor(R.color.orange);
+            currentColor = getContext().getColor(R.color.colorAccent);
             toolbarTitle.setText("Settings");
             loadFragment();
         }
@@ -107,20 +107,20 @@ public class HomeFragment extends Fragment {
                     Connection.fragmentName = "MAP";
                     toolbarTitle.setText("Explore");
                     fragment = map;
-                    currentColor = getContext().getColor(R.color.pink);
+                    currentColor = getContext().getColor(R.color.colorAccent);
                     break;
                 case R.id.chat:
                     //if (Connection.fragmentName.equals("CHAT")) break;
                     Connection.fragmentName = "CHAT";
                     fragment = new ChatFragment().newInstance(database, chatController, toolbar);
-                    currentColor = getContext().getColor(R.color.green);
+                    currentColor = getContext().getColor(R.color.colorAccent);
                     break;
                 case R.id.settings:
                     //if (Connection.fragmentName.equals("SETTINGS")) break;
                     Connection.fragmentName = "SETTINGS";
                     toolbarTitle.setText("Settings");
                     fragment = new SettingsFragment().newInstance(connectionController,database,chatController,map,chat);
-                    currentColor = getContext().getColor(R.color.orange);
+                    currentColor = getContext().getColor(R.color.colorAccent);
                     break;
                 default:
                     break;

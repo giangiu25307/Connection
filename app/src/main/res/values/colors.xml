@@ -3,7 +3,7 @@
     <!-- Primary color -->
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryLight">#FCFCFC</color>
-    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorPrimaryDark">#FEFEFE</color>
 
 
     <!-- Dark color primary -->
