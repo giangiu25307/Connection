@@ -277,7 +277,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         cancelTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                database.setProfilePic(previousProfilePic);
+                database.setProfilePic("0",previousProfilePic);
                 alertDialog.dismiss();
             }
         });
@@ -602,7 +602,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
                 if (!isBg) {
-                    database.setProfilePic(imagePath);
+                    database.setProfilePic("0",imagePath);
                     Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                     Drawable draw = new BitmapDrawable(getResources(), bitmap);
                     profilePics.setImageTintList(null);
@@ -621,7 +621,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 Uri tempUri = getImageUri(getContext(), photo);
                 // CALL THIS METHOD TO GET THE ACTUAL PATH
                 String imagePath = getRealPathFromURI(tempUri);
-                database.setProfilePic(imagePath);
+                database.setProfilePic("0",imagePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 Drawable draw = new BitmapDrawable(getResources(), bitmap);
                 profilePic.setImageTintList(null);

@@ -331,10 +331,10 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
-    public void setProfilePic(String profilePic){
+    public void setProfilePic(String id,String profilePic){
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
-        db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER+" = "+"0",null);
+        db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER+" = "+id,null);
     }
 
     public void addUser(String idUser,String inetAddress,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String profilePic){
