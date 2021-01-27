@@ -1,8 +1,6 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
         <!-- SplashScreen -->
@@ -14,12 +12,12 @@
         <item name="nextButton">@color/black2</item>
 
         <!-- Toolbar and bottomNavigation -->
-        <item name="toolbarBackground">@android:color/white</item>
-        <item name="bottomMenuBackground">@android:color/white</item>
+        <item name="toolbarBackground">@color/colorPrimary</item>
+        <item name="bottomMenuBackground">@color/colorPrimary</item>
 
         <!-- General layout -->
         <item name="whiteLayoutBackground">@android:color/white</item>
-        <item name="layoutBackground">@color/lightWhite</item>
+        <item name="layoutBackground">@color/colorPrimaryLight</item>
 
         <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@android:color/white</item>
@@ -44,9 +42,6 @@
     </style>
 
     <style name="DarkTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/reversedColorPrimary</item>
-        <item name="colorPrimaryDark">@color/reversedColorPrimaryDark</item>
-        <item name="colorAccent">@color/reversedColorAccent</item>
 
         <!-- SplashScreen -->
         <item name="splashScreenLayoutBackground">@color/black2</item>
@@ -57,12 +52,12 @@
         <item name="nextButton">@android:color/white</item>
 
         <!-- Toolbar and bottomNavigation -->
-        <item name="toolbarBackground">@color/black2</item>
-        <item name="bottomMenuBackground">@color/black2</item>
+        <item name="toolbarBackground">@color/darkColorPrimary</item>
+        <item name="bottomMenuBackground">@color/darkColorPrimary</item>
 
         <!-- General layout -->
         <item name="whiteLayoutBackground">@color/black2</item>
-        <item name="layoutBackground">@color/black3</item>
+        <item name="layoutBackground">@color/darkColorPrimaryLight</item>
 
         <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@color/black3</item>
@@ -71,7 +66,7 @@
         <item name="messageInputElevation">1dp</item>
 
         <!-- Settings -->
-        <item name="groupSettingsBackground">@color/black2</item>
+        <item name="groupSettingsBackground">@color/darkColorPrimaryDark</item>
         <item name="groupOptionSettingsBackground">@color/black4</item>
 
         <!-- Text -->
