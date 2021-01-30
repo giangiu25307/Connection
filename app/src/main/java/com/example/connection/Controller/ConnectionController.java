@@ -14,7 +14,11 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pServiceRequest;
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import com.example.connection.Device_Connection.ServiceConnections;
 import com.example.connection.Model.GroupOwner;
@@ -84,7 +88,64 @@ ConnectionController {
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     @SuppressLint("MissingPermission")
     public void createGroup() {
+
+        new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+
+                mManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
+                    @Override
+                    public void onSuccess() {
+                        System.out.println("ok");
+                    }
+
+                    @Override
+                    public void onFailure(int reason) {
+
+                    }
+                });
+                mManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
+                    @Override
+                    public void onSuccess() {
+                        System.out.println("ok");
+                    }
+
+                    @Override
+                    public void onFailure(int reason) {
+
+                    }
+                });
+            }
+
+            public void onFinish() {
+
+                mManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
+                    @Override
+                    public void onSuccess() {
+                        System.out.println("ok");
+                    }
+
+                    @Override
+                    public void onFailure(int reason) {
+
+                    }
+                });
+                mManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
+                    @Override
+                    public void onSuccess() {
+                        System.out.println("ok");
+                    }
+
+                    @Override
+                    public void onFailure(int reason) {
+
+                    }
+                });
+            }
+        }.start();
+
         mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
+
             @Override
             public void onSuccess() {
                 mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
@@ -94,13 +155,14 @@ ConnectionController {
                         networkPassword =group.getPassphrase();
                     }
                 });
+
                 serviceConnection.registerService(Task.ServiceEntry.serviceGroupOwner,database.getMyInformation()[0],SSID,networkPassword);
                 connectToGroup(serviceConnection.findOtherGroupOwner());
                 udpClient.createMulticastSocketWlan0();//TO SEE IF IT WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
             @Override
             public void onFailure(int reason) {
-                System.out.println(reason);
+                System.out.println("ciao"+reason);
             }
         });
 
@@ -172,8 +234,10 @@ ConnectionController {
     public void initProcess() {
         active4G();
         Optional<GroupOwner> optionalGroupOwner = serviceConnection.lookingForGroupOwner();
-        if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
-        else {
+        if(optionalGroupOwner.isPresent()){
+            connectToGroup(optionalGroupOwner.get());
+        } else {
+
             optionalGroupOwner = serviceConnection.searchAndRequestForIdNetwork();
             if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
             else createGroup();

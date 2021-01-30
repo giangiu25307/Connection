@@ -30,7 +30,7 @@ public class LocalizationController {
     }
 
     public void RTTDistance() throws IOException, NoSuchAlgorithmException {
-        if (database.getAccept(database.findId_user(this.ip.toString())).equals("yes")) {//accept only use yes or no
+        /*if (database.getAccept(database.findId_user(this.ip.toString())).equals("yes")) {//accept only use yes or no
             new Thread(new Runnable() {
                 public void run() {
                     try {
@@ -47,7 +47,7 @@ public class LocalizationController {
         }
         else{
             //parte di luca
-        }
+        }*/
     }
     public float gpsDirection(double Userlatiutude,double Userlongitude){
         Location User=new Location("user");

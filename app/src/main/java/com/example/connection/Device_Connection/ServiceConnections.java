@@ -5,6 +5,7 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
+import android.net.wifi.p2p.nsd.WifiP2pServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pServiceRequest;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -33,6 +34,7 @@ public class ServiceConnections {
     private String backlog = "";
     private Database database;
     private String myId;
+    public  WifiP2pDnsSdServiceInfo serviceInfo;
 
     public ServiceConnections(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, Database database) {
         this.mManager = mManager;
@@ -158,7 +160,8 @@ public class ServiceConnections {
          * _protocol._transportlayer , and the map containing information other
          * devices will want once they connect to this one.
          */
-        WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(serviceName, serviceType, record);
+         WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(serviceName, serviceType, record);
+
 
         /**
          * Add the local service, sending the service info, network channel, and
@@ -226,7 +229,7 @@ public class ServiceConnections {
          * _protocol._transportlayer , and the map containing information other
          * devices will want once they connect to this one.
          */
-        WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(serviceName, serviceType, record);
+        serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(serviceName, serviceType, record);
 
         /**
          * Add the local service, sending the service info, network channel, and
@@ -319,16 +322,25 @@ public class ServiceConnections {
         Thread thread = new Thread(){
                 @Override
                 public void run() {
-                    while (true) {
+                    boolean stop = false;
+                    int count = 0;
+                    while (!stop) {
                         try {
                             sleep(1000);
+                            count++;
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                        System.out.println("ghhhkoftf");
                         startServiceDiscovery();
                     if (!clientConnectedToGO.isEmpty()) {
                         registerService(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner, clientConnectedToGO.get(0));
                         interrupt();
+                        stop=true;
+                    }
+                    if(count>1){
+                        interrupt();
+                        stop=true;
                     }
                 }
             }
@@ -339,17 +351,23 @@ public class ServiceConnections {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return lookingForGroupOwner(clientConnectedToGO.get(0));
+        try{
+            return lookingForGroupOwner(clientConnectedToGO.get(0));
+        }catch(IndexOutOfBoundsException e){
+            return Optional.empty();
+        }
     }
 
     //CALLED AFTER I REQUEST A SPECIFIED DEVICE TO BECOME GO
     public Optional<GroupOwner> lookingForGroupOwner(final String id) {
+        registerService(Task.ServiceEntry.serviceLookingForGroupOwner, myId, id);
         final int[] j = {0};
         Thread thread = new Thread(){
             @Override
             public void run() {
                 int count=0;
-                while (true) {
+                boolean stop = false;
+                while (!stop) {
                     try {
                         sleep(1000);
                         count++;
@@ -357,22 +375,24 @@ public class ServiceConnections {
                         e.printStackTrace();
                     }
                     startServiceDiscovery();
-
                     if (!groupOwners.isEmpty()) {
                         for (int i =0; i<groupOwners.size();i++){
                             if(groupOwners.get(i).getId().equals(id)){
                                 j[0] =i;
                                 interrupt();
+                                stop=true;
                             }
                         }
                         if(count>10){
                             j[0]=0;
                             interrupt();
+                            stop=true;
                         }
                     }
 
                     if(count>10){
                         interrupt();
+                        stop = true;
                     }
                 }
             }
@@ -392,8 +412,9 @@ public class ServiceConnections {
         Thread thread = new Thread(){
             @Override
             public void run() {
+                boolean stop = false;
                 int count=0;
-                while (true) {
+                while (!stop) {
                     try {
                         sleep(1000);
                         count++;
@@ -401,8 +422,10 @@ public class ServiceConnections {
                         e.printStackTrace();
                     }
                     startServiceDiscovery();
+                    System.out.println("eccomi");
                     if (!groupOwners.isEmpty() || count > 10) {
                         interrupt();
+                        stop=true;
                     }
                 }
             }
@@ -413,6 +436,12 @@ public class ServiceConnections {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return Optional.of(groupOwners.get(0));
+        try {
+            return Optional.ofNullable(groupOwners.get(0));
+        }catch (IndexOutOfBoundsException e){
+
+            return Optional.empty();
+
+        }
     }
 }

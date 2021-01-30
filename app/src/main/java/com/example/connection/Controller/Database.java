@@ -305,7 +305,7 @@ public class Database extends SQLiteOpenHelper {
 
     //USER
     public String[] getMyInformation(){
-        String[] user =new String[11];
+        String[] user =new String[12];
         String query = "SELECT *"+
                 " FROM "+ Task.TaskEntry.USER;
         Cursor c = db.rawQuery(query, null);
@@ -320,10 +320,10 @@ public class Database extends SQLiteOpenHelper {
         user[5]=c.getString(5);
         user[6]=c.getString(6);
         user[7]=c.getString(7);
-        user[8]=c.getString(9);
-        user[9]=c.getString(10);
-        user[10]=c.getString(11);
-        user[11]=c.getString(12);
+        user[8]=c.getString(8);
+        user[9]=c.getString(9);
+        user[10]=c.getString(10);
+        user[11]=c.getString(11);
         return user;
     }
 
