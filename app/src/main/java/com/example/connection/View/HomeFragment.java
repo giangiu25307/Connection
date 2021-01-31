@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
             switch (item.getItemId()) {
-                case R.id.map:
+                case R.id.home:
                     //if (Connection.fragmentName.equals("MAP")) break;
                     Connection.fragmentName = "MAP";
                     toolbarTitle.setText("Explore");

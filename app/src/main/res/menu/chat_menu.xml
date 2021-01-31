@@ -7,6 +7,6 @@
         android:icon="@drawable/ic_global"
         android:title="Global chat"
         app:showAsAction="always"
-        android:iconTint="?attr/iconTint"/>
+        android:iconTint="?attr/toolbarIcon"/>
 
 </menu>

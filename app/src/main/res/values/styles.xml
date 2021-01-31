@@ -13,7 +13,9 @@
 
         <!-- Toolbar and bottomNavigation -->
         <item name="toolbarBackground">@color/colorPrimary</item>
+        <item name="toolbarIcon">@color/darkColorPrimaryLight</item>
         <item name="bottomMenuBackground">@color/colorPrimary</item>
+        <item name="bottomMenuIcon">@color/lightGray</item>
 
         <!-- General layout -->
         <item name="whiteLayoutBackground">@android:color/white</item>
@@ -53,7 +55,9 @@
 
         <!-- Toolbar and bottomNavigation -->
         <item name="toolbarBackground">@color/darkColorPrimary</item>
+        <item name="toolbarIcon">@color/colorPrimaryDark</item>
         <item name="bottomMenuBackground">@color/darkColorPrimary</item>
+        <item name="bottomMenuIcon">@color/darkGray</item>
 
         <!-- General layout -->
         <item name="whiteLayoutBackground">@color/black2</item>

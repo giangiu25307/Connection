@@ -194,6 +194,7 @@
                 android:textColor="?attr/textColor"
                 android:textColorHint="@color/darkHintcolor"
                 android:textSize="15sp"
+                android:textCursorDrawable="@drawable/bg_cursor_drawable"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/sendView"
                 app:layout_constraintStart_toEndOf="@+id/imageView13"
@@ -213,7 +214,7 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/green" />
+                app:tint="@color/colorAccent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

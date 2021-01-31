@@ -49,13 +49,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/bottomMenuBackground"
-        android:paddingVertical="5dp"
+        android:paddingVertical="3dp"
+        app:itemIconSize="27dp"
         app:itemBackground="@color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:menu="@menu/bottom_menu" />
+        app:menu="@menu/bottom_menu"
+        app:labelVisibilityMode="unlabeled"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
