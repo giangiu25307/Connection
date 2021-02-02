@@ -88,62 +88,6 @@ ConnectionController {
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     @SuppressLint("MissingPermission")
     public void createGroup() {
-
-        new CountDownTimer(30000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-
-                mManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
-                        System.out.println("ok");
-                    }
-
-                    @Override
-                    public void onFailure(int reason) {
-
-                    }
-                });
-                mManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
-                        System.out.println("ok");
-                    }
-
-                    @Override
-                    public void onFailure(int reason) {
-
-                    }
-                });
-            }
-
-            public void onFinish() {
-
-                mManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
-                        System.out.println("ok");
-                    }
-
-                    @Override
-                    public void onFailure(int reason) {
-
-                    }
-                });
-                mManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
-                        System.out.println("ok");
-                    }
-
-                    @Override
-                    public void onFailure(int reason) {
-
-                    }
-                });
-            }
-        }.start();
-
         mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
 
             @Override
@@ -232,7 +176,7 @@ ConnectionController {
 
 
     public void initProcess() {
-        active4G();
+
         Optional<GroupOwner> optionalGroupOwner = serviceConnection.lookingForGroupOwner();
         if(optionalGroupOwner.isPresent()){
             connectToGroup(optionalGroupOwner.get());

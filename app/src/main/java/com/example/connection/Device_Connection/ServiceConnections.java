@@ -89,6 +89,7 @@ public class ServiceConnections {
 
     @SuppressLint("MissingPermission")
     public void startServiceDiscovery() {
+        setupServiceDiscovery();
         mManager.discoverServices(mChannel, new WifiP2pManager.ActionListener() {
 
             @Override
