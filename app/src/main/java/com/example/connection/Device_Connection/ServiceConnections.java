@@ -55,7 +55,7 @@ public class ServiceConnections {
     /**
      * Start looking for peer services.
      */
-    public void setupServiceDiscovery() {
+    private void setupServiceDiscovery() {
         /** Setup listeners for the Bonjour services */
         mManager.setDnsSdResponseListeners(mChannel, new WifiP2pManager.DnsSdServiceResponseListener() {
             @Override
@@ -89,6 +89,7 @@ public class ServiceConnections {
 
     @SuppressLint("MissingPermission")
     public void startServiceDiscovery() {
+        setupServiceDiscovery();
         mManager.discoverServices(mChannel, new WifiP2pManager.ActionListener() {
 
             @Override

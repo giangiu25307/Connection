@@ -237,7 +237,6 @@ ConnectionController {
         if(optionalGroupOwner.isPresent()){
             connectToGroup(optionalGroupOwner.get());
         } else {
-
             optionalGroupOwner = serviceConnection.searchAndRequestForIdNetwork();
             if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
             else createGroup();
