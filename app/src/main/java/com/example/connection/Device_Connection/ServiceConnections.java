@@ -332,7 +332,6 @@ public class ServiceConnections {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        System.out.println("ghhhkoftf");
                         startServiceDiscovery();
                     if (!clientConnectedToGO.isEmpty()) {
                         registerService(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner, clientConnectedToGO.get(0));
@@ -423,7 +422,6 @@ public class ServiceConnections {
                         e.printStackTrace();
                     }
                     startServiceDiscovery();
-                    System.out.println("eccomi");
                     if (!groupOwners.isEmpty() || count > 10) {
                         interrupt();
                         stop=true;

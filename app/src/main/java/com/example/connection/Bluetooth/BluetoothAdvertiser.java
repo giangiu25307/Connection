@@ -7,32 +7,26 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.AdvertisingSet;
 import android.bluetooth.le.AdvertisingSetCallback;
 import android.bluetooth.le.BluetoothLeAdvertiser;
-import android.os.Build;
 import android.os.ParcelUuid;
-
-import androidx.annotation.RequiresApi;
 
 
 public class BluetoothAdvertiser {
-    private android.bluetooth.le.AdvertiseCallback AdvertiseCallback;
+    private android.bluetooth.le.AdvertiseCallback advertiseCallback;
     private AdvertisingSet currentAdvertisingSet;
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public BluetoothAdvertiser(){
+    private AdvertiseData advertiseData;
+    private BluetoothLeAdvertiser bluetoothLeAdvertiser;
+    private AdvertiseSettings settings;
+
+    public BluetoothAdvertiser() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         bluetoothAdapter.setName("CONNECTION");
-        BluetoothLeAdvertiser bluetoothLeAdvertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
-        AdvertiseSettings settings = new AdvertiseSettings.Builder()
+        bluetoothLeAdvertiser = bluetoothAdapter.getBluetoothLeAdvertiser();
+        settings = new AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
                 .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
                 .setConnectable(false)
                 .build();
-
-        AdvertiseData advertiseData = new AdvertiseData.Builder()
-                .setIncludeTxPowerLevel(true)
-                .addServiceData(ParcelUuid.fromString("00000000-0000-1000-8000-00805F9B34FB"),"connec".getBytes())
-                .setIncludeDeviceName(true)
-                .build();
-       AdvertiseCallback=new AdvertiseCallback() {
+        advertiseCallback = new AdvertiseCallback() {
             @Override
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
                 super.onStartSuccess(settingsInEffect);
@@ -55,23 +49,56 @@ public class BluetoothAdvertiser {
 
             @Override
             public void onAdvertisingDataSet(AdvertisingSet advertisingSet, int status) {
-                System.out.println( "onAdvertisingDataSet() :status:" + status);
+                System.out.println("onAdvertisingDataSet() :status:" + status);
             }
 
             @Override
             public void onScanResponseDataSet(AdvertisingSet advertisingSet, int status) {
-                System.out.println( "onScanResponseDataSet(): status:" + status);
+                System.out.println("onScanResponseDataSet(): status:" + status);
             }
 
             @Override
             public void onAdvertisingSetStopped(AdvertisingSet advertisingSet) {
-                System.out.println( "onAdvertisingSetStopped():");
+                System.out.println("onAdvertisingSetStopped():");
             }
         };
-        bluetoothLeAdvertiser.startAdvertising(settings, advertiseData, AdvertiseCallback);
 
-        // After onAdvertisingSetStarted callback is called, you can modify the
-        // advertising data and scan response data:
+    }
+
+    public AdvertiseData setAdvertiseData(String myId, String type, String idGroupOwner) { //idGroupOwner can be null
+        int length;
+        if(myId.length()<7){
+            length=myId.length();
+            for (int i=0;i<7-length;i++){
+                myId=" "+myId;
+            }
+        }
+        if(idGroupOwner==null)idGroupOwner="";
+        if(idGroupOwner.length()<7){
+            length = idGroupOwner.length();
+            for (int i=0;i<7-length;i++){
+                idGroupOwner=" "+idGroupOwner;
+            }
+        }
+        String data = "connect"+myId+type+idGroupOwner;
+        advertiseData = new AdvertiseData.Builder()
+                .setIncludeTxPowerLevel(true)
+                .addServiceData(ParcelUuid.fromString("00000000-0000-1000-8000-00805F9B34FB"), data.getBytes())
+                .setIncludeDeviceName(false)
+                .build();
+        return advertiseData;
+    }
+
+    public void startAdvertising(){
+        bluetoothLeAdvertiser.startAdvertising(settings, advertiseData, advertiseCallback);
+    }
+
+    public void stopAdvertising(){
+        bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
+    }
+
+    // After onAdvertisingSetStarted callback is called, you can modify the
+    // advertising data and scan response data:
         /*currentAdvertisingSet.setAdvertisingData(new AdvertiseData.Builder().
                 setIncludeDeviceName(true).setIncludeTxPowerLevel(true).build());
         // Wait for onAdvertisingDataSet callback...
@@ -81,7 +108,4 @@ public class BluetoothAdvertiser {
 
         // When done with the advertising:
         advertiser.stopAdvertisingSet(callback);*/
-    }
-
-
 }

@@ -23,10 +23,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.connection.Bluetooth.BluetoothAdvertiser;
+import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Controller.Task;
 import com.example.connection.Model.MapUsers;
 import com.example.connection.Model.User;
 import com.example.connection.R;
@@ -65,7 +68,7 @@ public class Connection extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
-        boolean createSample = true;
+        boolean createSample = false;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
             database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo","");
@@ -85,7 +88,7 @@ public class Connection extends AppCompatActivity {
         chatController = chatController.newIstance(this, connectionController);
         //LocalizationController localizationController=null;
         // localizationController=new LocalizationController(database,this);
-        autoClicker=new AutoClicker();
+        //autoClicker=new AutoClicker();
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -103,8 +106,8 @@ public class Connection extends AppCompatActivity {
         map = new MapFragment().newInstance(connectionController, database);
         chat = new ChatFragment().newInstance(database, chatController);
         settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
-        connectionController.active4G();
-        connectionController.initProcess();
+        //connectionController.active4G();
+        //connectionController.initProcess();
     }
 
     private void loadTheme() {
