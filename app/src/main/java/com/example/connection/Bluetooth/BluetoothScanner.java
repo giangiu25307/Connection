@@ -39,10 +39,12 @@ public class BluetoothScanner {
         bluetoothManager = (BluetoothManager) connection.getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
         this.database = database;
+        resetVariables();
     }
 
     //FIND THE NEAREST DEVICE ID FROM A CLIENT WHICH IS CONNECTED TO A GROUP OWNER, AND ASK HIM TO BECOME GROUP OWNER
     public Optional<String[]> searchAndRequestForIdNetwork() {
+        resetVariables();
         String data[] = new String[3];
         bluetoothLeScanner.startScan(leScanCallback);
         if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceClientConnectedToGroupOwner)) {
@@ -56,6 +58,7 @@ public class BluetoothScanner {
 
     //listening to the near client, if i find my id, i have to become a GO
     public boolean clientListeningOtherClient() {
+        resetVariables();
         bluetoothLeScanner.startScan(leScanCallback);
         if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner) && idGroupOwner.trim().equals(database.getMyInformation()[0])) {
             bluetoothLeScanner.stopScan(leScanCallback);
@@ -65,6 +68,7 @@ public class BluetoothScanner {
 
     //find the nearest Connection groupOwner device
     public Optional<String[]> lookingForGroupOwner() {
+        resetVariables();
         String data[] = new String[3];
         if (!mScanning) {
             // Stops scanning after a pre-defined scan period.
@@ -93,6 +97,7 @@ public class BluetoothScanner {
     }
 
     public Optional<String[]> lookingForGroupOwner(String id) {
+        resetVariables();
         String data[] = new String[3];
         if (!mScanning) {
             // Stops scanning after a pre-defined scan period.
@@ -130,10 +135,6 @@ public class BluetoothScanner {
                 bytesResult = e;
             }
             String stringResult = new String(bytesResult, StandardCharsets.UTF_8);
-            identifierApp = "";
-            idHostingService = "";
-            serviceType = "";
-            idGroupOwner = "";
             for (int i = 0; i < stringResult.length(); i++) {
                 if (i < 7) identifierApp += stringResult.charAt(i);
                 if (7 <= i && i < 14) idHostingService += stringResult.charAt(i);
@@ -142,4 +143,11 @@ public class BluetoothScanner {
             }
         }
     };
+
+    private void resetVariables(){
+        identifierApp = "";
+        idHostingService = "";
+        serviceType = "";
+        idGroupOwner = "";
+    }
 }
