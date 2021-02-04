@@ -137,6 +137,12 @@ ConnectionController {
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
+    public void connectToGroupWhenGroupOwner(String id) {//GroupOwner groupOwner){//
+        new WifiConnection(SSID + id, networkPassword, wifiManager);
+        //udpClient.sendInfo(); Creare un sendAllMyGroupInfo
+    }
+
+    //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
     public void connectToGroup(String id) {//GroupOwner groupOwner){//
         new WifiConnection(SSID + id, networkPassword, wifiManager);
         bluetoothAdvertiser.stopAdvertising();
