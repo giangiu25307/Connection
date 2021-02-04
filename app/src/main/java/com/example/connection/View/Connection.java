@@ -107,7 +107,7 @@ public class Connection extends AppCompatActivity {
         chat = new ChatFragment().newInstance(database, chatController);
         settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
         //connectionController.active4G();
-        //connectionController.initProcess();
+        connectionController.initProcess();
     }
 
     private void loadTheme() {

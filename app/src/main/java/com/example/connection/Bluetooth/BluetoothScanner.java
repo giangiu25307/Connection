@@ -29,7 +29,6 @@ public class BluetoothScanner {
     private String idGroupOwner, serviceType, idHostingService, identifierApp;
 
     private BluetoothLeScanner bluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
-    private boolean mScanning;
     private Handler handler = new Handler();
     private Database database;
     // Stops scanning after 10 seconds.
@@ -39,12 +38,21 @@ public class BluetoothScanner {
         bluetoothManager = (BluetoothManager) connection.getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
         this.database = database;
+        resetVariables();
+    }
+
+    private void resetVariables() {
+        idGroupOwner = "";
+        serviceType = "";
+        idHostingService = "";
+        identifierApp = "";
     }
 
     //FIND THE NEAREST DEVICE ID FROM A CLIENT WHICH IS CONNECTED TO A GROUP OWNER, AND ASK HIM TO BECOME GROUP OWNER
     public Optional<String[]> searchAndRequestForIdNetwork() {
+        resetVariables();
         final String data[] = new String[3];
-        Thread thread = new Thread(){
+        Thread thread = new Thread() {
             @Override
             public void run() {
                 boolean stop = false;
@@ -57,16 +65,16 @@ public class BluetoothScanner {
                         e.printStackTrace();
                     }
                     bluetoothLeScanner.startScan(leScanCallback);
-                    if (identifierApp.equals("connect")&& serviceType.equals(Task.ServiceEntry.serviceClientConnectedToGroupOwner)) {
+                    if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceClientConnectedToGroupOwner)) {
                         data[0] = idHostingService;
                         data[1] = serviceType;
                         data[2] = idGroupOwner;
                         interrupt();
-                        stop=true;
+                        stop = true;
                     }
-                    if(count>1){
+                    if (count > 1) {
                         interrupt();
-                        stop=true;
+                        stop = true;
                     }
                 }
             }
@@ -77,13 +85,16 @@ public class BluetoothScanner {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return Optional.of(data);
+        if (data[0] != null) return Optional.of(data);
+        else return Optional.empty();
     }
 
     //listening to the near client, if i find my id, i have to become a GO
     public boolean clientListeningOtherClient() {
+        resetVariables();
         final Thread thread = new Thread() {
-            boolean stop=false;
+            boolean stop = false;
+
             @Override
             public void run() {
                 while (!stop) {
@@ -112,85 +123,119 @@ public class BluetoothScanner {
 
     //find the nearest Connection groupOwner device
     public Optional<String[]> lookingForGroupOwner() {
-        String data[] = new String[3];
-        if (!mScanning) {
-            // Stops scanning after a pre-defined scan period.
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mScanning = false;
-                    bluetoothLeScanner.stopScan(leScanCallback);
-                }
-            }, SCAN_PERIOD);
+        resetVariables();
+        final String data[] = new String[3];
+        final Thread thread = new Thread() {
+            boolean stop = false;
+            int count=0;
 
-            mScanning = true;
-            bluetoothLeScanner.startScan(leScanCallback);
-            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner)) {
-                data[0] = idHostingService;
-                data[1] = serviceType;
-                data[2] = idGroupOwner;
-                return Optional.of(data);
+            @Override
+            public void run() {
+                while (!stop) {
+                    try {
+                        bluetoothLeScanner.startScan(leScanCallback);
+                        sleep(1000);
+                        if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner)) {
+                            data[0] = idHostingService;
+                            data[1] = serviceType;
+                            data[2] = idGroupOwner;
+                            stop = true;
+                            bluetoothLeScanner.stopScan(leScanCallback);
+                        }
+                        if(count>9){
+                            stop=true;
+                        }
+                        count++;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        } else {
-            mScanning = false;
-            bluetoothLeScanner.stopScan(leScanCallback);
+        };
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        if (data[0] != null) return Optional.of(data);
         return Optional.empty();
     }
 
-    public Optional<String[]> lookingForGroupOwner(String id) {
-        String data[] = new String[3];
-        if (!mScanning) {
-            // Stops scanning after a pre-defined scan period.
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mScanning = false;
-                    bluetoothLeScanner.stopScan(leScanCallback);
-                }
-            }, SCAN_PERIOD);
+    public Optional<String[]> lookingForGroupOwner(final String id) {
+        resetVariables();
+        final String data[] = new String[3];
+        final Thread thread = new Thread() {
+            boolean stop = false;
+            int count=0;
 
-            mScanning = true;
-            bluetoothLeScanner.startScan(leScanCallback);
-            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().equals(id)) {
-                data[0] = idHostingService;
-                data[1] = serviceType;
-                data[2] = idGroupOwner;
-                return Optional.of(data);
+            @Override
+            public void run() {
+                while (!stop) {
+                    try {
+                        bluetoothLeScanner.startScan(leScanCallback);
+                        sleep(1000);
+                        if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().equals(id)) {
+                            data[0] = idHostingService;
+                            data[1] = serviceType;
+                            data[2] = idGroupOwner;
+                            stop = true;
+                            bluetoothLeScanner.stopScan(leScanCallback);
+                            if (count>9){
+                                stop=true;
+                            }
+                            count++;
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        } else {
-            mScanning = false;
-            bluetoothLeScanner.stopScan(leScanCallback);
+        };
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        if (data[0] != null) return Optional.of(data);
         return Optional.empty();
     }
 
     //Scan for the groupOwner near me with greater id than mine
     public String[] findOtherGroupOwner() {
-        String data[] = new String[3];
-        if (!mScanning) {
-            // Stops scanning after a pre-defined scan period.
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mScanning = false;
-                    bluetoothLeScanner.stopScan(leScanCallback);
-                }
-            }, SCAN_PERIOD);
+        resetVariables();
+        final String data[] = new String[3];
+        final Thread thread = new Thread() {
+            boolean stop = false;
 
-            mScanning = true;
-            bluetoothLeScanner.startScan(leScanCallback);
-            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().compareTo(database.getMyInformation()[0]) > 0) {
-                data[0] = idHostingService;
-                data[1] = serviceType;
-                data[2] = idGroupOwner;
-                return data;
+            @Override
+            public void run() {
+                while (!stop) {
+                    try {
+                        bluetoothLeScanner.startScan(leScanCallback);
+                        sleep(1000);
+                        if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().compareTo(database.getMyInformation()[0]) > 0) {
+                            data[0] = idHostingService;
+                            data[1] = serviceType;
+                            data[2] = idGroupOwner;
+                            stop = true;
+                            bluetoothLeScanner.stopScan(leScanCallback);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        } else {
-            mScanning = false;
-            bluetoothLeScanner.stopScan(leScanCallback);
+        };
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        return data;
+        if (data[0] != null) return data;
+        return null;
     }
 
     // Device scan callback.
@@ -204,10 +249,6 @@ public class BluetoothScanner {
                 bytesResult = e;
             }
             String stringResult = new String(bytesResult, StandardCharsets.UTF_8);
-            identifierApp = "";
-            idHostingService = "";
-            serviceType = "";
-            idGroupOwner = "";
             for (int i = 0; i < stringResult.length(); i++) {
                 if (i < 7) identifierApp += stringResult.charAt(i);
                 if (7 <= i && i < 14) idHostingService += stringResult.charAt(i);

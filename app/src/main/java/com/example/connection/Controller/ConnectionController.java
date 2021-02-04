@@ -74,6 +74,8 @@ ConnectionController {
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         this.database = database;
         this.user = user;
+        udpClient = new Multicast(user,database,this);
+        tcpClient = new TCP_Client();
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
@@ -109,18 +111,19 @@ ConnectionController {
 
             @Override
             public void onSuccess() {
-                /*mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+                mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
                     @Override
                     public void onGroupInfoAvailable(WifiP2pGroup group) {
-                        SSID=group.getNetworkName();
-                        networkPassword =group.getPassphrase();
+                        //SSID=group.getNetworkName();
+                        //networkPassword =group.getPassphrase();
+                        System.out.println(group.getNetworkName() + " " + group.getPassphrase());
                     }
-                });*/
+                });
                 bluetoothAdvertiser.stopAdvertising();
                 bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
                 bluetoothAdvertiser.startAdvertising();
                 //serviceConnection.registerService(Task.ServiceEntry.serviceGroupOwner,database.getMyInformation()[0],SSID,networkPassword);
-                connectToGroup(bluetoothScanner.findOtherGroupOwner()[2]);
+                //connectToGroup(bluetoothScanner.findOtherGroupOwner()[2]);
                 udpClient.createMulticastSocketWlan0();//TO SEE IF IT WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
 
@@ -206,18 +209,16 @@ ConnectionController {
         } else {
             optionalGroupOwner = bluetoothScanner.searchAndRequestForIdNetwork();
             if (optionalGroupOwner.isPresent()) {
-                if (optionalGroupOwner.get()[0] != null) {
-                    String idGO = optionalGroupOwner.get()[0];
-                    bluetoothAdvertiser.stopAdvertising();
-                    bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceRequestClientBecomeGroupOwner,idGO);
-                    bluetoothAdvertiser.startAdvertising();
-                    optionalGroupOwner = bluetoothScanner.lookingForGroupOwner(idGO);
-                    if(optionalGroupOwner.isPresent()){
-                        if(optionalGroupOwner.get()[0]!=null) connectToGroup(optionalGroupOwner.get()[0]);
-                    }
+                String idGO = optionalGroupOwner.get()[0];
+                bluetoothAdvertiser.stopAdvertising();
+                bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceRequestClientBecomeGroupOwner, idGO);
+                bluetoothAdvertiser.startAdvertising();
+                optionalGroupOwner = bluetoothScanner.lookingForGroupOwner(idGO);
+                if (optionalGroupOwner.isPresent()) {
+                    if (optionalGroupOwner.get()[0] != null)
+                        connectToGroup(optionalGroupOwner.get()[0]);
                 }
-            }
-            else createGroup();
+            } else createGroup();
         }
     }
 
@@ -243,7 +244,7 @@ ConnectionController {
     //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
     public void connectToGroupOwnerId(String id) {
         Optional<String[]> idGO = bluetoothScanner.lookingForGroupOwner(id);
-        if(idGO.isPresent())if(idGO.get()!=null)connectToGroup(idGO.get()[0]);
+        if (idGO.isPresent()) if (idGO.get() != null) connectToGroup(idGO.get()[0]);
     }
 
 }
