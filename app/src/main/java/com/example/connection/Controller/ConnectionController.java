@@ -9,8 +9,12 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.net.NetworkSpecifier;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSpecifier;
+import android.net.wifi.WifiNetworkSuggestion;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -26,7 +30,9 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 public class
@@ -88,7 +94,7 @@ ConnectionController {
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
-    private void removeGroup() {
+    public void removeGroup() {
         mManager.removeGroup(mChannel, null);
     }
 
@@ -104,11 +110,12 @@ ConnectionController {
                     public void onGroupInfoAvailable(WifiP2pGroup group) {
                         //SSID=group.getNetworkName();
                         //networkPassword =group.getPassphrase();
-                        System.out.println(group.getNetworkName() + " " + group.getPassphrase());
+                       // System.out.println(group.getNetworkName() + " " + group.getPassphrase());
                     }
                 });
                 bluetoothAdvertiser.stopAdvertising();
                 bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
+                System.out.println(bluetoothAdvertiser.getData());
                 bluetoothAdvertiser.startAdvertising();
                 bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                 //serviceConnection.registerService(Task.ServiceEntry.serviceGroupOwner,database.getMyInformation()[0],SSID,networkPassword);
@@ -133,12 +140,12 @@ ConnectionController {
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
     public void connectToGroup(String id) {//GroupOwner groupOwner){//
-        new WifiConnection(SSID + id, networkPassword, wifiManager);
-        bluetoothAdvertiser.stopAdvertising();
+        wifiConnection(id);
+       /* bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
         bluetoothAdvertiser.stopAdvertising();
         udpClient.sendInfo();
-        bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);*/
     }
 
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
@@ -225,6 +232,26 @@ ConnectionController {
         bluetoothScanner.setClientToRequestGroupId(id);
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithSpecifiedId);
     }
+
+    public void wifiConnection(String id){
+
+       WifiNetworkSuggestion suggestion = new WifiNetworkSuggestion.Builder()
+                .setSsid(SSID + id)
+                .setWpa2Passphrase(networkPassword)
+                .build();
+        ArrayList<WifiNetworkSuggestion> sugg= new ArrayList<>();
+       sugg.add(suggestion);
+      /* int status = wifiManager.addNetworkSuggestions(sugg);
+        System.out.println(status);
+        if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
+
+        }*/
+        System.out.println(wifiManager.removeNetworkSuggestions(sugg));
+
+                }
+
+
+
 
 }
 

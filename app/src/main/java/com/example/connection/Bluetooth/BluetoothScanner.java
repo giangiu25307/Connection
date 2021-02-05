@@ -170,6 +170,7 @@ public class BluetoothScanner {
                 bytesResult = e;
             }
             String stringResult = new String(bytesResult, StandardCharsets.UTF_8);
+            System.out.println(stringResult);
             for (int i = 0; i < stringResult.length(); i++) {
                 if (i < 7) identifierApp += stringResult.charAt(i);
                 if (7 <= i && i < 14) idHostingService += stringResult.charAt(i);
@@ -324,6 +325,7 @@ public class BluetoothScanner {
                 @Override
                 public void run() {
                     mScanning = false;
+
                     bluetoothLeScanner.stopScan(leScanCallback);
                 }
             }, SCAN_PERIOD);

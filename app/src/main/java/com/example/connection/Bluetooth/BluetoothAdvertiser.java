@@ -16,7 +16,7 @@ public class BluetoothAdvertiser {
     private AdvertiseData advertiseData;
     private BluetoothLeAdvertiser bluetoothLeAdvertiser;
     private AdvertiseSettings settings;
-
+        private String data="";
     public BluetoothAdvertiser() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         bluetoothAdapter.setName("CONNECTION");
@@ -80,7 +80,8 @@ public class BluetoothAdvertiser {
                 idGroupOwner=" "+idGroupOwner;
             }
         }
-        String data = "connect"+myId+type+idGroupOwner;
+         data = "connect"+myId+type+idGroupOwner;
+
         advertiseData = new AdvertiseData.Builder()
                 .setIncludeTxPowerLevel(true)
                 .addServiceData(ParcelUuid.fromString("00000000-0000-1000-8000-00805F9B34FB"), data.getBytes())
@@ -95,6 +96,10 @@ public class BluetoothAdvertiser {
 
     public void stopAdvertising(){
         bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
+    }
+
+    public String getData() {
+        return data;
     }
 
     // After onAdvertisingSetStarted callback is called, you can modify the
