@@ -12,20 +12,13 @@ import android.net.NetworkRequest;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
-import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pGroup;
-import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
-import android.net.wifi.p2p.nsd.WifiP2pServiceInfo;
-import android.net.wifi.p2p.nsd.WifiP2pServiceRequest;
 import android.os.CountDownTimer;
-import android.util.Log;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Device_Connection.ServiceConnections;
-import com.example.connection.Model.GroupOwner;
 import com.example.connection.Model.User;
 import com.example.connection.Model.WifiConnection;
 import com.example.connection.TCP_Connection.TCP_Client;
@@ -33,12 +26,7 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
 import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 public class
@@ -89,7 +77,7 @@ ConnectionController {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
         serviceConnection = new ServiceConnections(mManager, mChannel, database);
         bluetoothAdvertiser = new BluetoothAdvertiser();
-        bluetoothScanner = new BluetoothScanner(connection, database);
+        bluetoothScanner = new BluetoothScanner(connection, database, this, bluetoothAdvertiser);
         myId = database.getMyInformation()[0];
         mConfig = new WifiP2pConfig.Builder()
                 .setNetworkName(SSID + myId)
@@ -122,6 +110,7 @@ ConnectionController {
                 bluetoothAdvertiser.stopAdvertising();
                 bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
                 bluetoothAdvertiser.startAdvertising();
+                bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                 //serviceConnection.registerService(Task.ServiceEntry.serviceGroupOwner,database.getMyInformation()[0],SSID,networkPassword);
                 //connectToGroup(bluetoothScanner.findOtherGroupOwner()[2]);
                 udpClient.createMulticastSocketWlan0();//TO SEE IF IT WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -149,7 +138,7 @@ ConnectionController {
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
         bluetoothAdvertiser.stopAdvertising();
         udpClient.sendInfo();
-        if (bluetoothScanner.clientListeningOtherClient()) createGroup();
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
     }
 
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
@@ -209,23 +198,7 @@ ConnectionController {
     public void initProcess() {
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
-        Optional<String[]> optionalGroupOwner = bluetoothScanner.lookingForGroupOwner();
-        if (optionalGroupOwner.isPresent()) {
-            connectToGroup(optionalGroupOwner.get()[0]);
-        } else {
-            optionalGroupOwner = bluetoothScanner.searchAndRequestForIdNetwork();
-            if (optionalGroupOwner.isPresent()) {
-                String idGO = optionalGroupOwner.get()[0];
-                bluetoothAdvertiser.stopAdvertising();
-                bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceRequestClientBecomeGroupOwner, idGO);
-                bluetoothAdvertiser.startAdvertising();
-                optionalGroupOwner = bluetoothScanner.lookingForGroupOwner(idGO);
-                if (optionalGroupOwner.isPresent()) {
-                    if (optionalGroupOwner.get()[0] != null)
-                        connectToGroup(optionalGroupOwner.get()[0]);
-                }
-            } else createGroup();
-        }
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
     }
 
     public void active4G() {
@@ -249,8 +222,8 @@ ConnectionController {
 
     //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
     public void connectToGroupOwnerId(String id) {
-        Optional<String[]> idGO = bluetoothScanner.lookingForGroupOwner(id);
-        if (idGO.isPresent()) if (idGO.get() != null) connectToGroup(idGO.get()[0]);
+        bluetoothScanner.setClientToRequestGroupId(id);
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithSpecifiedId);
     }
 
 }

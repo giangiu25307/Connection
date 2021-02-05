@@ -49,6 +49,8 @@ public class Task {
         public static final String serviceClientConnectedToGroupOwner = "CTG";//fatto
         public static final String serviceRequestClientBecomeGroupOwner = "CBG";//fatto
         public static final String serviceLookingForGroupOwner = "LFG";//fatto
+        public static final String serviceLookingForGroupOwnerWithSpecifiedId = "LGS";//fatto
+        public static final String serviceLookingForGroupOwnerWithGreaterId = "LGG";//fatto
 
     }
 
