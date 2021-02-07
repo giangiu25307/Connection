@@ -240,6 +240,7 @@ ConnectionController {
     private ArrayList<WifiNetworkSuggestion> sugg;
 
     public void wifiConnection(String id) {
+
         WifiConfiguration wifiConfig = new WifiConfiguration();
         wifiConfig.SSID = String.format("\"%s\"", SSID+id);
         wifiConfig.preSharedKey = String.format("\"%s\"", networkPassword);
