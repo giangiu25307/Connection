@@ -58,6 +58,7 @@ ConnectionController {
     private ServiceConnections serviceConnection;
     private BluetoothScanner bluetoothScanner;
     private BluetoothAdvertiser bluetoothAdvertiser;
+    private int netId;
     private String myId;
 
     public static Network mMobileNetwork;
@@ -68,7 +69,7 @@ ConnectionController {
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         this.database = database;
         this.user = user;
-        udpClient = new Multicast(user,database,this);
+        udpClient = new Multicast(user, database, this);
         tcpClient = new TCP_Client();
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         intentFilter = new IntentFilter();
@@ -110,7 +111,7 @@ ConnectionController {
                     public void onGroupInfoAvailable(WifiP2pGroup group) {
                         //SSID=group.getNetworkName();
                         //networkPassword =group.getPassphrase();
-                       // System.out.println(group.getNetworkName() + " " + group.getPassphrase());
+                        // System.out.println(group.getNetworkName() + " " + group.getPassphrase());
                     }
                 });
                 bluetoothAdvertiser.stopAdvertising();
@@ -141,7 +142,7 @@ ConnectionController {
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
     public void connectToGroup(String id) {//GroupOwner groupOwner){//
         wifiConnection(id);
-       /* bluetoothAdvertiser.stopAdvertising();
+        /*bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
         bluetoothAdvertiser.stopAdvertising();
         udpClient.sendInfo();
@@ -151,7 +152,8 @@ ConnectionController {
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
     public void disconnectToGroup() {
         wifiManager.disconnect();
-        udpClient.imLeaving();
+        wifiManager.removeNetwork(netId);
+        //udpClient.imLeaving();
     }
 
     //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
@@ -233,25 +235,32 @@ ConnectionController {
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithSpecifiedId);
     }
 
-    public void wifiConnection(String id){
+    //TESTING DISCONNECTION
 
-       WifiNetworkSuggestion suggestion = new WifiNetworkSuggestion.Builder()
+    private ArrayList<WifiNetworkSuggestion> sugg;
+
+    public void wifiConnection(String id) {
+        WifiConfiguration wifiConfig = new WifiConfiguration();
+        wifiConfig.SSID = String.format("\"%s\"", SSID+id);
+        wifiConfig.preSharedKey = String.format("\"%s\"", networkPassword);
+//remember id
+        netId = wifiManager.addNetwork(wifiConfig);
+        wifiManager.disconnect();
+        wifiManager.enableNetwork(netId, true);
+        wifiManager.reconnect();
+        /*
+        WifiNetworkSuggestion suggestion = new WifiNetworkSuggestion.Builder()
                 .setSsid(SSID + id)
                 .setWpa2Passphrase(networkPassword)
                 .build();
-        ArrayList<WifiNetworkSuggestion> sugg= new ArrayList<>();
-       sugg.add(suggestion);
-      /* int status = wifiManager.addNetworkSuggestions(sugg);
+        sugg = new ArrayList<>();
+        sugg.add(suggestion);
+        int status = wifiManager.addNetworkSuggestions(sugg);
         System.out.println(status);
         if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
 
         }*/
-        System.out.println(wifiManager.removeNetworkSuggestions(sugg));
-
-                }
-
-
-
+    }
 
 }
 

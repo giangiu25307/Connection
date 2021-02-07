@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -61,7 +62,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         filterImage = view.findViewById(R.id.filterButton);
         filterImage.setOnClickListener(this);
-
+        ImageView gps = view.findViewById(R.id.gpsButton);
+        gps.setOnClickListener(this);
         Cursor c = connectionController.getAllClientList().get();
         c.moveToFirst();
 
@@ -198,6 +200,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 });
                 break;
             case R.id.gpsButton:
+                connectionController.disconnectToGroup();
                 break;
             default:
                 break;
