@@ -96,6 +96,7 @@ ConnectionController {
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
     public void removeGroup() {
+        bluetoothAdvertiser.stopAdvertising();
         mManager.removeGroup(mChannel, null);
     }
 

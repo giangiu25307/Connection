@@ -200,7 +200,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 });
                 break;
             case R.id.gpsButton:
-                connectionController.disconnectToGroup();
                 break;
             default:
                 break;

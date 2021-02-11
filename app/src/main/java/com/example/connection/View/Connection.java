@@ -1,6 +1,7 @@
 package com.example.connection.View;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -100,13 +101,22 @@ public class Connection extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, permissions, 101);
        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED ) {
         }
+
+        String manufacturer = "xiaomi";
+        if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
+            //this will open auto start screen where user can enable permission for your app
+            Intent intent1 = new Intent();
+            intent1.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsTabActivity"));
+            startActivity(intent1);
+        }
+
         //ENDS PERMISSIONS REQUEST
         createCountDowntimer();
         countDownTimer.start();
         map = new MapFragment().newInstance(connectionController, database);
         chat = new ChatFragment().newInstance(database, chatController);
         settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
-        //connectionController.active4G();
+        connectionController.active4G();
         connectionController.removeGroup();
         connectionController.initProcess();
 
