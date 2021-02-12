@@ -128,7 +128,7 @@ public class BioTcpHandler implements Runnable {
                 //connect
 
                 SocketChannel remote = SocketChannel.open();
-                ConnectionController.mMobileNetwork.bindSocket(remote.socket());
+                //ConnectionController.mMobileNetwork.bindSocket(remote.socket());
                 tunnel.vpnService.protect(remote.socket());
                 InetSocketAddress address = tunnel.destinationAddress;
                 Long ts = System.currentTimeMillis();

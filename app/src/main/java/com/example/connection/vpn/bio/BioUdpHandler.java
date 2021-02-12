@@ -115,7 +115,7 @@ public class BioUdpHandler implements Runnable {
                                 byte[] data = new byte[receiveBuffer.remaining()];
                                 receiveBuffer.get(data);
                                 Socket socket=new Socket();
-                                ConnectionController.mMobileNetwork.bindSocket(socket);
+                                //ConnectionController.mMobileNetwork.bindSocket(socket);
                                 sendUdpPack((UdpTunnel) key.attachment(), (InetSocketAddress) socket.getLocalSocketAddress(), data);
                             } catch (IOException e) {
                                 Log.e(TAG, "error", e);

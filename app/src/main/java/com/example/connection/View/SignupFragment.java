@@ -68,6 +68,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout next, back;
     private ArrayList<String> nations = new ArrayList<String>();
     private int yearText = 0, monthText = 0, dayText = 0;
+    private String countryCode="";
 
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
@@ -80,6 +81,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     private static final Pattern regexName = Pattern.compile("^" +
             ".{2,26}" +
+            "(?=.*[a-z])" + //at least 1 lower case
             "$");
 
     private static final Pattern regexPhoneNumber = Pattern.compile("^" +
@@ -151,7 +153,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.nextButton:
-                if (currentPage < 4) {
+                if (currentPage < 3) {
                     if (checker()) {
                         viewPager.setCurrentItem(currentPage + 1);
                     } else viewPager.setCurrentItem(currentPage);
@@ -164,6 +166,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.backButton:
+                if (currentPage > 0) viewPager.setCurrentItem(currentPage - 1);
                 break;
             default:
                 break;
@@ -181,7 +184,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             default:
                 return false;
             case 0:
-                boolean emailCheck = true, passwordCheck = true, usernameB = true;
                 EditText usernameLabel = viewPager.findViewById(R.id.username);
                 EditText email = viewPager.findViewById(R.id.email);
                 EditText password = viewPager.findViewById(R.id.password);
@@ -192,34 +194,28 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 if (!regexName.matcher(username).matches()) {
                     usernameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                     viewPager.setPagingEnabled(false);
-                    usernameB = false;
                 } else {
                     user.setUsername(username);
                     usernameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
-                    usernameB = true;
+                    viewPager.setPagingEnabled(true);
                 }
                 if (!Patterns.EMAIL_ADDRESS.matcher(mail).matches()) {
                     email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                     viewPager.setPagingEnabled(false);
-                    emailCheck = false;
                 } else {
                     user.setMail(mail);
                     email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
-                    emailCheck = true;
+                    viewPager.setPagingEnabled(true);
                 }
                 if (!regexPassword.matcher(pass).matches()) {
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                     viewPager.setPagingEnabled(false);
-                    passwordCheck = false;
                 } else {
                     user.setPassword(pass);
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
-                    passwordCheck = true;
-                }
-                if (emailCheck && passwordCheck && usernameB) {
                     viewPager.setPagingEnabled(true);
-                    return true;
-                } else return false;
+                }
+                return !user.getMail().equals("") && !user.getPassword().equals("") && !user.getUsername().equals("");
             case 1:
                 final DatePickerDialog datePickerDialog = new DatePickerDialog(getContext());
                 EditText firstNameLabel = viewPager.findViewById(R.id.firstname), surnameLabel = viewPager.findViewById(R.id.surname);
@@ -228,11 +224,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                        dialogBuilder.setView(R.layout.gender_alert_dialog);
+                        dialogBuilder.setView(R.layout.dialog_gender);
                         final AlertDialog alertDialog = dialogBuilder.create();
-                        System.out.println("Show non fatto");
                         alertDialog.show();
-                        System.out.println("Show fatto");
                         TextView male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
                         final TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
                         male.setOnClickListener(new View.OnClickListener() {
@@ -264,9 +258,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 final AppCompatTextView dateOfBirth = viewPager.findViewById(R.id.dateOfBirthSignUpTextView);
                 if (!user.getName().equals("")) firstNameLabel.setText(user.getName());
                 if (!user.getSurname().equals("")) surnameLabel.setText(user.getSurname());
+                if (!user.getGender().equals("")) gender.setText(user.getGender());
+                if (!user.getBirth().equals("")) dateOfBirth.setText(user.getBirth());
                 String firstname = firstNameLabel.getText().toString().trim(), surname = surnameLabel.getText().toString().trim();
-                boolean name = true, sur = true;
-                final boolean[] birthB = {false};
                 dateOfBirth.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -277,7 +271,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                 yearText = year;
                                 monthText = month;
                                 dayText = dayOfMonth;
-                                birthB[0] = true;
                                 String birth = yearText != 0 ? (dayText < 10 ? "0" + dayText : dayText) + "-" + (monthText < 10 ? "0" + monthText : monthText) + "-" + yearText : "";
                                 dateOfBirth.setText(birth);
                                 if (birth.equals("")) {
@@ -301,44 +294,34 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 }
                 if (!regexName.matcher(firstname).matches()) {
                     firstNameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
-                    name = false;
                     viewPager.setPagingEnabled(false);
                 } else {
                     user.setName(firstname);
                     firstNameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
-                    name = true;
                     viewPager.setPagingEnabled(true);
                 }
                 if (!regexName.matcher(surname).matches()) {
                     surnameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
-                    sur = false;
                     viewPager.setPagingEnabled(false);
                 } else {
                     user.setSurname(surname);
                     surnameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
-                    sur = true;
                     viewPager.setPagingEnabled(true);
                 }
-                if (name && sur && birthB[0]) {
-                    return true;
-                } else return false;
+                return !user.getName().equals("") && !user.getSurname().equals("") && !user.getBirth().equals("");
             case 2:
                 final TextView telephone = viewPager.findViewById(R.id.telephone), cities = viewPager.findViewById(R.id.city), numberCode = viewPager.findViewById(R.id.numberCode);
                 Spinner country = viewPager.findViewById(R.id.country);
+
                 String number = telephone.getText().toString().trim();
                 String city = cities.getText().toString().trim();
-                boolean numb = false;
-                boolean c = false;
-                final boolean[] count = {false};
                 if (!regexPhoneNumber.matcher(number).matches()) {
                     System.out.println("Inserire un numero di telefono valido");
                     telephone.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                     viewPager.setPagingEnabled(false);
-                    numb = false;
                 } else {
                     telephone.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
                     viewPager.setPagingEnabled(true);
-                    numb = true;
                     user.setNumber(number);
                 }
                 final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
@@ -350,7 +333,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                                int position, long id) {
                         user.setCountry(adapter.getItem(position));
                         viewPager.setPagingEnabled(true);
-                        count[0] = true;
+                        setNationCode();
                         String codeNumber = "+" + GetCountryZipCode();
                         numberCode.setText(codeNumber);
                     }
@@ -358,21 +341,18 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
                         viewPager.setPagingEnabled(false);
-                        count[0] = false;
                     }
                 });
                 if (!regexName.matcher(city).matches()) {
                     System.out.println("Inserire una città valida");
                     cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                     viewPager.setPagingEnabled(false);
-                    c = false;
                 } else {
                     cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
                     viewPager.setPagingEnabled(true);
-                    c = true;
                     user.setCity(city);
                 }
-                return numb && c && count[0];
+                return !user.getNumber().equals("") && !user.getCity().equals("") && !user.getCountry().equals("");
             case 3:
                 profilePic = viewPager.findViewById(R.id.profilePic);
                 AppCompatTextView gallery = viewPager.findViewById(R.id.gallery);
@@ -394,8 +374,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         //else next.setText("Next");
                     }
                 });
-                if (!user.getProfilePic().equals("")) return true;
-                else return false;
+                return !user.getProfilePic().equals("");
         }
     }
 
@@ -488,16 +467,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     }
 
     public String GetCountryZipCode() {
-        String CountryID = "";
         String CountryZipCode = "";
-
-        TelephonyManager manager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
-        //getNetworkCountryIso
-        CountryID = manager.getSimCountryIso().toUpperCase();
         String[] rl = this.getResources().getStringArray(R.array.CountryCodes);
         for (int i = 0; i < rl.length; i++) {
             String[] g = rl[i].split(",");
-            if (g[1].trim().equals(CountryID.trim())) {
+            if (g[1].trim().equals(this.countryCode.trim())) {
                 CountryZipCode = g[0];
                 break;
             }
@@ -509,43 +483,17 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         String[] locales = Locale.getISOCountries();
         for (String countryCode : locales) {
             Locale obj = new Locale("", countryCode);
+            this.countryCode=countryCode;
             nations.add(obj.getDisplayCountry());
         }
     }
 
-    private ArrayList<String> getCountries(){
-        HashMap<String, ArrayList<String>> countries = new Gson().fromJson(getContentFromCountryFile(), new TypeToken<Map<String, List<String>>>() { }.getType());
-        ArrayList<String> myCountries = new ArrayList<>();
-        for (String key : countries.keySet())
-        {
-            if(user.getCountry().toLowerCase().equals(key.toLowerCase())) {
-                myCountries = countries.get(key);
-            }
+    private void setNationCode() {
+        String[] locales = Locale.getISOCountries();
+        for (String countryCode : locales) {
+            Locale obj = new Locale("", countryCode);
+            if(user.getCountry().equals(obj.getDisplayCountry()))this.countryCode=countryCode;
         }
-        return myCountries;
-    }
-
-    private String getContentFromCountryFile(){
-        String json = null;
-        try {
-            InputStream is = getContext().getAssets().open("countriesToCities.json");
-
-            int size = is.available();
-
-            byte[] buffer = new byte[size];
-
-            is.read(buffer);
-
-            is.close();
-
-            json = new String(buffer, "UTF-8");
-
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
     }
 
     public void setMap(Fragment map) {

@@ -50,7 +50,6 @@ public class Connection extends AppCompatActivity {
     Database database;
     User user;
     ChatController chatController;
-    AutoClicker autoClicker;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     ConnectionController connectionController;
     public static String fragmentName = "MAP";
@@ -91,6 +90,7 @@ public class Connection extends AppCompatActivity {
         // localizationController=new LocalizationController(database,this);
         //autoClicker=new AutoClicker();
         loadTheme();
+        requestStoragePermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
@@ -120,6 +120,8 @@ public class Connection extends AppCompatActivity {
         connectionController.removeGroup();
         connectionController.initProcess();
 
+
+        //connectionController.initProcess();
     }
 
     private void loadTheme() {
@@ -158,11 +160,10 @@ public class Connection extends AppCompatActivity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         if (light) {
-            window.setStatusBarColor(Color.WHITE);
-            window.setNavigationBarColor(Color.WHITE);
+            window.setStatusBarColor(getColor(R.color.colorPrimaryDark));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
-            window.setStatusBarColor(getColor(R.color.black2));
+            window.setStatusBarColor(getColor(R.color.darkColorPrimaryDark));
         }
         window.setNavigationBarColor(Color.BLACK);
     }

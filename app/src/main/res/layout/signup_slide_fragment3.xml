@@ -8,7 +8,7 @@
 
     <Spinner
         android:id="@+id/country"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0" />
 
@@ -20,8 +20,7 @@
         android:layout_marginTop="20dp"
         android:layout_weight="0"
         android:ems="10"
-        android:hint="City"
-        android:inputType="textPassword" />
+        android:hint="City" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,12 +32,13 @@
         <TextView
             android:id="@+id/numberCode"
             style="@style/inputDataStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:layout_weight="0"
+            android:layout_weight="3"
             android:background="@drawable/input_data_background"
             android:clickable="false"
+            android:gravity="center"
             android:hint="+39" />
 
         <EditText
@@ -49,7 +49,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="Telephone"
-            android:inputType="text" />
+            android:inputType="phone" />
     </LinearLayout>
 
 </LinearLayout>

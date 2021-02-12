@@ -35,7 +35,6 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NUMBER + " TEXT  DEFAULT 0, "
                 + Task.TaskEntry.BIRTH + " TEXT NOT NULL, "
                 + Task.TaskEntry.PROFILE_PIC + " TEXT NOT NULL, "
-                + Task.TaskEntry.PUBLIC_KEY + " TEXT, "
                 + Task.TaskEntry.IP + " TEXT, "
                 + Task.TaskEntry.ACCEPT + " TEXT, "
                 + Task.TaskEntry.MESSAGES_ACCEPTED + " TEXT "
@@ -341,10 +340,10 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
-    public void setProfilePic(String profilePic){
+    public void setProfilePic(String id,String profilePic){
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
-        db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER+" = "+"0",null);
+        db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER+" = "+id,null);
     }
 
     public void setPublicKey(String symmetricKey){
@@ -370,7 +369,6 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.PROFILE_PIC,profilePic);
         msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED,"true");
         msgValues.put(Task.TaskEntry.ACCEPT,"false");
-        msgValues.put(Task.TaskEntry.PUBLIC_KEY,publicKey);
         db.insert(Task.TaskEntry.USER, null, msgValues);
         ContentValues ipValues = new ContentValues();
     }
@@ -562,6 +560,55 @@ public class Database extends SQLiteOpenHelper {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.PASSWORD, password);
         db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+"0",null);
+    }
+
+    public void setCity(String id, String city){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.CITY, city);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setUsername(String id, String username){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.USERNAME, username);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setName(String id, String name){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.NAME, name);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setMail(String id, String mail){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.MAIL, mail);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setSurname(String id, String surname){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.SURNAME, surname);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setGender(String id, String gender){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.GENDER, gender);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
+    }
+
+    public void setCountry(String id, String country){
+        db=this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.COUNTRY, country);
+        db.update(Task.TaskEntry.USER,msgValues, Task.TaskEntry.ID_USER+" = "+id,null);
     }
 
     /*GRUPPI------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

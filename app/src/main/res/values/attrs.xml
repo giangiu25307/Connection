@@ -12,7 +12,9 @@
 
         <!-- Toolbar and bottomNavigation -->
         <attr name="toolbarBackground" format="color"/>
+        <attr name="toolbarIcon" format="color"/>
         <attr name="bottomMenuBackground" format="color"/>
+        <attr name="bottomMenuIcon" format="color"/>
 
         <!-- General layout -->
         <attr name="whiteLayoutBackground" format="color"/>
