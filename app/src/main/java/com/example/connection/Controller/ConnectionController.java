@@ -1,9 +1,7 @@
 package com.example.connection.Controller;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -21,19 +19,14 @@ import android.text.format.Formatter;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
-import com.example.connection.Device_Connection.ServiceConnections;
 import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.TCP_Client;
-import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.Multicast_WLAN;
 import com.example.connection.View.Connection;
-import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Optional;
 
 import static android.net.ConnectivityManager.*;
@@ -50,16 +43,8 @@ ConnectionController {
     private Multicast_P2P multicastP2P;
     private Multicast_WLAN multicastWLAN;
     private TCP_Client tcpClient;
-    private BroadcastReceiver wifiScanReceiver;
-    private IntentFilter intentFilter;
     private User user;
     private Database database;
-    private HashMap<String, String> macAdresses;
-    private WifiP2pManager.PeerListListener peerListListener;
-    private BroadcastReceiver mReceiver;
-    private IntentFilter mIntentFilter;
-    private WifiP2pManager.ConnectionInfoListener connectionInfoListener;
-    private ServiceConnections serviceConnection;
     private BluetoothScanner bluetoothScanner;
     private BluetoothAdvertiser bluetoothAdvertiser;
     private int netId;
@@ -69,30 +54,20 @@ ConnectionController {
     private NetworkRequest networkRequest;
     public static Network mMobileNetwork;
 
-    public ConnectionController(Connection connection, Database database, User user) {
+    public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         this.database = database;
-        this.user = user;
-        multicastP2P= new Multicast_P2P(user, database, this);
-        multicastWLAN= new Multicast_WLAN(user, database, this);
+        String info[] = database.getMyInformation();
+        this.user = new User(info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7],info[8],info[9],info[10]);
+        myId = user.getIdUser();
+        multicastP2P = new Multicast_P2P(user, database, this);
+        multicastWLAN = new Multicast_WLAN(user, database, this);
         tcpClient = new TCP_Client();
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        connection.registerReceiver(wifiScanReceiver, intentFilter);
-        macAdresses = new HashMap<>();
-        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, peerListListener, connectionInfoListener);
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        serviceConnection = new ServiceConnections(mManager, mChannel, database);
         bluetoothAdvertiser = new BluetoothAdvertiser();
-        bluetoothScanner = new BluetoothScanner(connection, database, this, bluetoothAdvertiser);
-        myId = database.getMyInformation()[0];
+        bluetoothScanner = new BluetoothScanner(connection, user, this, bluetoothAdvertiser);
         mConfig = new WifiP2pConfig.Builder()
                 .setNetworkName(SSID + myId)
                 .setPassphrase(networkPassword)
@@ -100,10 +75,10 @@ ConnectionController {
                 .enablePersistentMode(false)
                 .build();
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
-         networkRequest=new NetworkRequest.Builder()
-                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                 .build();
+        networkRequest = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build();
 
         mWifi = connManager.getNetworkInfo(TYPE_WIFI);
     }
@@ -159,7 +134,7 @@ ConnectionController {
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
         bluetoothAdvertiser.stopAdvertising();
 
-        connManager.requestNetwork(networkRequest,new NetworkCallback(){
+        connManager.requestNetwork(networkRequest, new NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
                 try {
@@ -224,16 +199,8 @@ ConnectionController {
 
     }
 
-    public BroadcastReceiver getmReceiver() {
-        return mReceiver;
-    }
-
-    public IntentFilter getmIntentFilter() {
-        return mIntentFilter;
-    }
-
-
     public void initProcess() {
+        setUser();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
@@ -266,6 +233,11 @@ ConnectionController {
 
     //TESTING DISCONNECTION
 
+    private void setUser(){
+        String info[] = database.getMyInformation();
+        this.user = new User(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9], info[10]);
+    }
+
     private ArrayList<WifiNetworkSuggestion> sugg;
 
     public void wifiConnection(String id) {
@@ -278,50 +250,6 @@ ConnectionController {
         wifiManager.disconnect();
         wifiManager.enableNetwork(netId, true);
         wifiManager.reconnect();
-        /*
-        WifiNetworkSuggestion suggestion = new WifiNetworkSuggestion.Builder()
-                .setSsid(SSID + id)
-                .setWpa2Passphrase(networkPassword)
-                .build();
-        sugg = new ArrayList<>();
-        sugg.add(suggestion);
-        int status = wifiManager.addNetworkSuggestions(sugg);
-        System.out.println(status);
-        if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
-
-        }*/
     }
 
 }
-
-/*
-    public String getMacAddr() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("p2p0")) continue;
-
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return null;
-                }
-
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-                    res1.append(Integer.toHexString(b & 0xFF) + ":");
-                }
-
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
-            }
-        } catch (Exception ex) {
-            //handle exception
-        }
-        return null;
-    }
-
-    public void MACSender(){
-        udpClient.sendGlobalMsg("GO_LEAVES_BYE£€".concat(getMacAddr()));
-    }*/

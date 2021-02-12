@@ -1,6 +1,7 @@
 package com.example.connection.View;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -49,16 +50,12 @@ public class Connection extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     public static boolean boot = true;
     Database database;
-    User user;
-    ChatController chatController;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
-    ConnectionController connectionController;
     public static String fragmentName = "MAP";
     public static String lightOrDark = "light";
     public static ArrayList<MapUsers> mapUsers = new ArrayList<MapUsers>();
     public static String minAge = "", maxAge = "";
     public static String[] genders = {"", "", ""};
-    private Fragment map, chat, settings;
     private static final int VPN_REQUEST_CODE = 0x0F;
 
     @Override
@@ -69,32 +66,7 @@ public class Connection extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
-        boolean createSample = false;
-        if (createSample) {
-            database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
-            database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo","");
-            database.createChat("2", "Andrew2");
-            database.addMsg("Ciao", "2", "2");
-            database.addMsg("WeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeWeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "0", "2");
-            database.addMsg("we", "0", "2");
-            database.addUser("23", "192.168.49.20", "Andrew123", "andrew@12gmail.com", "ma123le", "Andr1ew2", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
-            database.createChat("23", "Andrew123");
-            database.addMsg("Ciao", "23", "23");
-            database.addUser("25", "192.168.49.20", "Andrew345", "andrew@12gmail.com", "ma123le", "Andr1ew2", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
-            database.createChat("25", "Andrew345");
-            database.addMsg("wee", "25", "25");
-        }
-        String[] info=database.getMyInformation();
-        user=new User(info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7],info[8],info[9],info[10],info[11]);
-
-        connectionController = new ConnectionController(this, database, user);
-        chatController = new ChatController();
-        chatController = chatController.newIstance(this, connectionController);
-        //LocalizationController localizationController=null;
-        // localizationController=new LocalizationController(database,this);
-        //autoClicker=new AutoClicker();
         loadTheme();
-        requestStoragePermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
@@ -103,29 +75,24 @@ public class Connection extends AppCompatActivity {
         //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW
         final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
         ActivityCompat.requestPermissions(this, permissions, 101);
-       if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED ) {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         }
 
-        String manufacturer = "xiaomi";
-        if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
-            //this will open auto start screen where user can enable permission for your app
-            Intent intent1 = new Intent();
-            intent1.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsTabActivity"));
-            startActivity(intent1);
+        try {
+            String manufacturer = "xiaomi";
+            if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
+                //this will open auto start screen where user can enable permission for your app
+                Intent intent1 = new Intent();
+                intent1.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsTabActivity"));
+                startActivity(intent1);
+            }
+        } catch (ActivityNotFoundException e) {
+            System.out.println("Not MIUI device");
         }
 
         //ENDS PERMISSIONS REQUEST
         createCountDowntimer();
         countDownTimer.start();
-        map = new MapFragment().newInstance(connectionController, database);
-        chat = new ChatFragment().newInstance(database, chatController,null);
-        settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
-        connectionController.active4G();
-        connectionController.removeGroup();
-        connectionController.initProcess();
-
-
-        //connectionController.initProcess();
     }
 
     private void loadTheme() {
@@ -190,10 +157,10 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                if(firstLogin()) {
-                    fragment = new LoginFragment().newInstance(connectionController, database, chatController, map, chat, settings);
-                }else {
-                    fragment = new HomeFragment().newInstance(connectionController, database, chatController,map,chat);
+                if (firstLogin()) {
+                    fragment = createLoginFragment();
+                } else {
+                    fragment = createHomeFragment();
                 }
                 loadFragment(true);
                 startTimer2 = false;
@@ -201,6 +168,13 @@ public class Connection extends AppCompatActivity {
         };
     }
 
+    private HomeFragment createHomeFragment() {
+        return new HomeFragment().newInstance(this, database);
+    }
+
+    private LoginFragment createLoginFragment() {
+        return new LoginFragment().newInstance(this, database);
+    }
 
     @Override
     protected void onResume() {
@@ -209,13 +183,11 @@ public class Connection extends AppCompatActivity {
             createCountDowntimer();
             countDownTimer.start();
         }
-        registerReceiver(connectionController.getmReceiver(), connectionController.getmIntentFilter());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(connectionController.getmReceiver());
     }
 
     @Override
@@ -273,11 +245,11 @@ public class Connection extends AppCompatActivity {
         }
     }
 
-    public boolean firstLogin(){
-        String myid="";
+    public boolean firstLogin() {
+        String myid = "";
         try {
             myid = database.getUser("0").getString(0);
-        }catch(IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             System.out.println("Utente non trovato");
             return true;
         }
@@ -293,7 +265,8 @@ public class Connection extends AppCompatActivity {
             //enableButton(false);
         }
     }
-    public  void startVpn() {
+
+    public void startVpn() {
 
         Intent vpnIntent = VpnService.prepare(this);
 

@@ -71,7 +71,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         final ArrayList<User> userList = new ArrayList<>();
         String[] arrayName = new String[c.getCount()];
         for (int i = 0; i < c.getCount(); i++) {
-            user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10),c.getString(11));
+            user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
             userList.add(user);
             arrayName[i] = c.getString(1);
             c.moveToNext();

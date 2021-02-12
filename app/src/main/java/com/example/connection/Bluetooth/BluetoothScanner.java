@@ -12,6 +12,7 @@ import android.os.Handler;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Controller.Task;
+import com.example.connection.Model.User;
 import com.example.connection.View.Connection;
 
 import java.nio.charset.StandardCharsets;
@@ -33,10 +34,10 @@ public class BluetoothScanner {
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
 
-    public BluetoothScanner(Connection connection, Database database, ConnectionController connectionController, BluetoothAdvertiser bluetoothAdvertiser) {
+    public BluetoothScanner(Connection connection, User user, ConnectionController connectionController, BluetoothAdvertiser bluetoothAdvertiser) {
         bluetoothManager = (BluetoothManager) connection.getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
-        myId = database.getMyInformation()[0];
+        myId = user.getIdUser();
         this.connectionController = connectionController;
         this.bluetoothAdvertiser = bluetoothAdvertiser;
         resetVariables();

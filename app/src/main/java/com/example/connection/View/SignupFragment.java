@@ -60,9 +60,7 @@ import java.util.regex.Pattern;
 
 public class SignupFragment extends Fragment implements View.OnClickListener {
 
-    private ConnectionController connectionController;
     private Database database;
-    private ChatController chatController;
     private static final int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic;
     private RelativeLayout next, back;
@@ -91,18 +89,15 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     private int currentPage;
     private MyViewPager viewPager;
-    private User user = new User();
-    private Fragment map, chat, settings;
+    private User user;
+    private Connection connection;
 
-    public SignupFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat, Fragment settings) {
+    public SignupFragment newInstance(Connection connection, Database database) {
         SignupFragment signupFragment = new SignupFragment();
-        signupFragment.setConnectionController(connectionController);
+        signupFragment.setConnection(connection);
         signupFragment.setDatabase(database);
-        signupFragment.setChatController(chatController);
         signupFragment.setNations();
-        signupFragment.setChat(chat);
-        signupFragment.setMap(map);
-        signupFragment.setSettings(settings);
+        signupFragment.setUser();
         return signupFragment;
     }
 
@@ -119,7 +114,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new LoginFragment().newInstance(connectionController,database,chatController,map,chat,settings);
+                Fragment fragment = new LoginFragment().newInstance(connection,database);
                 loadFragment(fragment);
             }
         });
@@ -161,7 +156,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     //send user info to server
                     database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic(), user.getPublicKey());
                     database.setNumber("0", user.getNumber());
-                    Fragment fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat);
+                    Fragment fragment = new HomeFragment().newInstance(connection,database);
                     loadFragment(fragment);
                 }
                 break;
@@ -378,16 +373,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void setConnectionController(ConnectionController connectionController) {
-        this.connectionController = connectionController;
-    }
-
     public void setDatabase(Database database) {
         this.database = database;
-    }
-
-    public void setChatController(ChatController chatController) {
-        this.chatController = chatController;
     }
 
     private void captureImage() {
@@ -496,16 +483,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void setMap(Fragment map) {
-        this.map = map;
+    public void setConnection(Connection connection){
+        this.connection = connection;
     }
 
-    public void setChat(Fragment chat) {
-        this.chat = chat;
-    }
-
-    public void setSettings(Fragment settings) {
-        this.settings = settings;
+    public void setUser(){
+        user = new User();
     }
 
 }

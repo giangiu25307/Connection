@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
+import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -33,25 +35,42 @@ public class HomeFragment extends Fragment {
     private ChatController chatController;
     private BottomNavigationView bottomNavigationMenu;
     private HomeFragment homeFragment;
-    private Fragment map, chat;
+    private MapFragment map;
+    private ChatFragment chat;
     private int currentColor;
     private int[][] states;
     private int[] colors;
     private ColorStateList navigationViewColorStateList;
     private Toolbar toolbar;
     private TextView toolbarTitle;
+    private SettingsFragment settings;
+    private Connection connection;
 
     public HomeFragment() {
 
     }
 
-    public HomeFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat) {
+    public HomeFragment newInstance(Connection connection, Database database) {
         homeFragment = new HomeFragment();
+        homeFragment.setConnection(connection);
+        homeFragment.setDatabase(database);
+        homeFragment.setConnectionController();
+        homeFragment.setChatController();
+        homeFragment.setChat();
+        homeFragment.setMap();
+        homeFragment.setSettings();
+        return homeFragment;
+    }
+
+    public HomeFragment newInstance(Connection connection, ConnectionController connectionController, Database database, ChatController chatController, MapFragment map, ChatFragment chat, SettingsFragment settings) {
+        homeFragment = new HomeFragment();
+        homeFragment.setConnection(connection);
+        homeFragment.setDatabase(database);
         homeFragment.setConnectionController(connectionController);
         homeFragment.setChatController(chatController);
-        homeFragment.setDatabase(database);
         homeFragment.setChat(chat);
         homeFragment.setMap(map);
+        homeFragment.setSettings(settings);
         return homeFragment;
     }
 
@@ -61,7 +80,7 @@ public class HomeFragment extends Fragment {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_home, null);
 
         toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         toolbarTitle = toolbar.findViewById(R.id.toolbarTitle);
@@ -74,7 +93,6 @@ public class HomeFragment extends Fragment {
         currentColor = getContext().getColor(R.color.pink);
 
         if (savedInstanceState == null && Connection.fragmentName.equals("MAP")) {
-
             bottomNavigationMenu.getMenu().getItem(0).setChecked(true);
             fragment = map;
             currentColor = getContext().getColor(R.color.colorAccent);
@@ -87,7 +105,7 @@ public class HomeFragment extends Fragment {
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("SETTINGS")) {
             bottomNavigationMenu.getMenu().getItem(2).setChecked(true);
-            fragment = new SettingsFragment().newInstance(connectionController,database,chatController,map,chat);
+            fragment = new SettingsFragment().newInstance(connection, connectionController, database, chatController, map, chat);
             currentColor = getContext().getColor(R.color.colorAccent);
             toolbarTitle.setText("Settings");
             loadFragment();
@@ -119,7 +137,7 @@ public class HomeFragment extends Fragment {
                     //if (Connection.fragmentName.equals("SETTINGS")) break;
                     Connection.fragmentName = "SETTINGS";
                     toolbarTitle.setText("Settings");
-                    fragment = new SettingsFragment().newInstance(connectionController,database,chatController,map,chat);
+                    fragment = new SettingsFragment().newInstance(connection,connectionController, database, chatController, map, chat);
                     currentColor = getContext().getColor(R.color.colorAccent);
                     break;
                 default:
@@ -140,24 +158,52 @@ public class HomeFragment extends Fragment {
         bottomNavigationMenu.setItemTextColor(navigationViewColorStateList);
     }
 
-    public void setConnectionController(ConnectionController connectionController) {
-        this.connectionController = connectionController;
-    }
-
-    public void setChatController(ChatController chatController) {
-        this.chatController = chatController;
+    public void setChatController() {
+        this.chatController = new ChatController().newIstance(connection, connectionController);
     }
 
     public void setDatabase(Database database) {
         this.database = database;
     }
 
-    public void setMap(Fragment map) {
+    public void setMap() {
+        this.map = new MapFragment().newInstance(connectionController, database);
+    }
+
+    public void setChat() {
+        this.chat = new ChatFragment().newInstance(database, chatController, toolbar);
+    }
+
+    public void setSettings() {
+        this.settings = new SettingsFragment().newInstance(connection, connectionController, database, chatController, map, chat);
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
+    public void setConnectionController(ConnectionController connectionController) {
+        this.connectionController = connectionController;
+    }
+
+    public void setConnectionController() {
+        this.connectionController = new ConnectionController(connection,database);
+    }
+
+    public void setChatController(ChatController chatController) {
+        this.chatController = chatController;
+    }
+
+    public void setMap(MapFragment map) {
         this.map = map;
     }
 
-    public void setChat(Fragment chat) {
+    public void setChat(ChatFragment chat) {
         this.chat = chat;
+    }
+
+    public void setSettings(SettingsFragment settings) {
+        this.settings = settings;
     }
 
     public Fragment getMap() {

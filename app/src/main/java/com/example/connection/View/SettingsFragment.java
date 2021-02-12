@@ -60,8 +60,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private String previousProfilePic = "";
     private boolean isBg = false;
     private ConstraintLayout wallpaperSettings;
-    private Fragment map, chat;
+    private MapFragment map;
+    private ChatFragment chat;
     private SettingsFragment settingsFragment;
+    private Connection connection;
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
             "(?=.*[a-z])" + //at least 1 lower case
@@ -92,11 +94,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         this.database = database;
     }
 
-    public void setMap(Fragment map) {
+    public void setMap(MapFragment map) {
         this.map = map;
     }
 
-    public void setChat(Fragment chat) {
+    public void setChat(ChatFragment chat) {
         this.chat = chat;
     }
 
@@ -104,8 +106,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         this.chatController = chatController;
     }
 
-    public SettingsFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat) {
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
+    public SettingsFragment newInstance(Connection connection,ConnectionController connectionController, Database database, ChatController chatController, MapFragment map, ChatFragment chat) {
         settingsFragment = new SettingsFragment();
+        settingsFragment.setConnection(connection);
         settingsFragment.setChatController(chatController);
         settingsFragment.setConnectionController(connectionController);
         settingsFragment.setDatabase(database);
@@ -208,7 +215,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         textViewGender = alertDialog.findViewById(R.id.textViewGender);
         editTextCountry = alertDialog.findViewById(R.id.editTextCountry);
 
-        User user = new User(database.getMyInformation()[0], database.getMyInformation()[1], database.getMyInformation()[2], database.getMyInformation()[3], database.getMyInformation()[4], database.getMyInformation()[5], database.getMyInformation()[6], database.getMyInformation()[7], database.getMyInformation()[8], database.getMyInformation()[9], database.getMyInformation()[10],database.getMyInformation()[11]);
+        User user = new User(database.getMyInformation()[0], database.getMyInformation()[1], database.getMyInformation()[2], database.getMyInformation()[3], database.getMyInformation()[4], database.getMyInformation()[5], database.getMyInformation()[6], database.getMyInformation()[7], database.getMyInformation()[8], database.getMyInformation()[9], database.getMyInformation()[10]);
 
         editTextCity.setText(user.getCity());
         editTextUsername.setText(user.getUsername());
@@ -564,8 +571,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             window.setStatusBarColor(getContext().getColor(R.color.darkColorPrimaryDark));
         }
         HomeFragment homeFragment = new HomeFragment();
-        settingsFragment = this;
-        Fragment fragment = homeFragment.newInstance(connectionController, database, chatController, map, chat);
+        settingsFragment = newInstance(connection,connectionController,database,chatController,map,chat);
+        Fragment fragment = homeFragment.newInstance(connection,connectionController,database, chatController, map, chat,settingsFragment);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();

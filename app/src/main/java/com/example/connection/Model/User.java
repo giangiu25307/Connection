@@ -43,7 +43,7 @@ public class User {
         this.publicKey = "";
     }
 
-    public User(String idUser, String username, String mail, String gender, String name, String surname, String country, String city, String number, String birth, String profilePic,String publicKey) {
+    public User(String idUser, String username, String mail, String gender, String name, String surname, String country, String city, String number, String birth, String profilePic) {
         this.idUser = idUser;
         this.username = username;
         this.mail = mail;
@@ -56,6 +56,9 @@ public class User {
         this.birth = birth;
         this.profilePic = profilePic;
         this.password = "";
+    }
+
+    public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
 
