@@ -36,6 +36,7 @@ import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.vpn.LocalVPNService;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -83,6 +84,9 @@ public class Connection extends AppCompatActivity {
             database.createChat("25", "Andrew345");
             database.addMsg("wee", "25", "25");
         }
+        String[] info=database.getMyInformation();
+        user=new User(info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7],info[8],info[9],info[10],info[11]);
+
         connectionController = new ConnectionController(this, database, user);
         chatController = new ChatController();
         chatController = chatController.newIstance(this, connectionController);
@@ -114,7 +118,7 @@ public class Connection extends AppCompatActivity {
         createCountDowntimer();
         countDownTimer.start();
         map = new MapFragment().newInstance(connectionController, database);
-        chat = new ChatFragment().newInstance(database, chatController);
+        chat = new ChatFragment().newInstance(database, chatController,null);
         settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
         connectionController.active4G();
         connectionController.removeGroup();

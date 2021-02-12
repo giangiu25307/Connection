@@ -229,7 +229,7 @@ public class BluetoothScanner {
             }
             if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().compareTo(myId) > 0) {
                 bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwnerId);
-                connectionController.connectToGroup(idGroupOwner.trim());
+                connectionController.connectToGroupWhenGroupOwner(idGroupOwner.trim());
             }
         }
     };

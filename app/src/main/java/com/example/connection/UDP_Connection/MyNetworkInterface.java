@@ -22,7 +22,6 @@ public static NetworkInterface getMyP2pNetworkInterface(String nicName){
 
         p2p = enumeration.nextElement();
         if (p2p.getName().equals(nicName)) {
-            System.out.println(p2p.getName());
        return p2p;
         }
 

@@ -208,7 +208,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         textViewGender = alertDialog.findViewById(R.id.textViewGender);
         editTextCountry = alertDialog.findViewById(R.id.editTextCountry);
 
-        User user = new User(database.getMyInformation()[0], database.getMyInformation()[1], database.getMyInformation()[2], database.getMyInformation()[3], database.getMyInformation()[4], database.getMyInformation()[5], database.getMyInformation()[6], database.getMyInformation()[7], database.getMyInformation()[8], database.getMyInformation()[9], database.getMyInformation()[10]);
+        User user = new User(database.getMyInformation()[0], database.getMyInformation()[1], database.getMyInformation()[2], database.getMyInformation()[3], database.getMyInformation()[4], database.getMyInformation()[5], database.getMyInformation()[6], database.getMyInformation()[7], database.getMyInformation()[8], database.getMyInformation()[9], database.getMyInformation()[10],database.getMyInformation()[11]);
 
         editTextCity.setText(user.getCity());
         editTextUsername.setText(user.getUsername());
