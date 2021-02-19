@@ -43,7 +43,7 @@ public class AccountController {
         return null;
     }
 
-    public String register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number) throws IOException {
+    public String register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number, String valletParameter) throws IOException {
 
         RequestBody formBody = new FormBody.Builder()
                 .add("username", username)
@@ -60,6 +60,7 @@ public class AccountController {
 
         Request request = new Request.Builder()
                 .url("www.connection.it" + "/register")
+                .header("parametroVallet",valletParameter)
                 .post(formBody)
                 .build();
 

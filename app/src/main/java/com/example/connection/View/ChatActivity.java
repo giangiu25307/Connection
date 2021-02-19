@@ -87,9 +87,7 @@ public class ChatActivity extends AppCompatActivity {
         sendView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 chatController.sendTCPMsg(message_input.getText().toString(), id);
-
             }
         });
         //Database database = (Database) getIntent().getParcelableExtra("database");

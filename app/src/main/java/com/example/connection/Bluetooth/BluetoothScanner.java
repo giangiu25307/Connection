@@ -32,7 +32,7 @@ public class BluetoothScanner {
     private ConnectionController connectionController;
     private BluetoothAdvertiser bluetoothAdvertiser;
     private CountDownTimer countDownTimer;
-    // Stops scanning after 10 seconds.
+    // Stops scanning after 3 seconds.
     private static long SCAN_PERIOD = 3000;
 
     public BluetoothScanner(Connection connection, ConnectionController connectionController, BluetoothAdvertiser bluetoothAdvertiser) {

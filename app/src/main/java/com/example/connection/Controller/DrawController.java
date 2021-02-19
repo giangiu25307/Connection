@@ -61,7 +61,7 @@ public class DrawController extends View {
     }
 
     private void drawCoordinates(Canvas canvas) {
-        for (int i = 0; i < Connection.mapUsers.size(); i++) {
+        for (int i = 0; i <= Connection.mapUsers.size(); i++) {
             if (Connection.mapUsers.get(i).isVisible()) {
                 if (i == 0) {
                     ((ViewGroup) Connection.mapUsers.get(i).getImage().getParent()).removeView(Connection.mapUsers.get(i).getImage());
