@@ -28,17 +28,15 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     protected Thread runningThread = null;
     protected DatagramSocket socket = null;
     protected SocketAddress sa;
-    User user;
     TCP_Client tcp_client;
     ConnectionController connectionController;
     protected Database database;
     protected UDP_Socket udp_socket;
-    public Multicast(User user, Database database, ConnectionController connectionController) {
+    public Multicast(Database database, ConnectionController connectionController) {
         this.connectionController = connectionController;
 
             tcp_client = new TCP_Client();
             this.database = database;
-            this.user = user;
         try {
             group = InetAddress.getByName("234.0.0.0");
         } catch (UnknownHostException e) {
@@ -73,7 +71,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     //Send a global message ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendGlobalMsg(String msg) {
         try {
-            msg = "globalmessage£€" + user.getIdUser() + "£€" + user.getUsername() + "£€" + msg;
+            msg = "globalmessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
             byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupP2p.setNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0"));
@@ -88,7 +86,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     //send my info ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendInfo() {
         try {
-            String info = "info£€" + user.getAll();
+            String info = "info£€" + ConnectionController.myUser.getAll();
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupwlan0.send(message);
@@ -101,7 +99,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     //i'm telling everyone that i'm leaving the group ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void imLeaving() {
         try {
-            String leave = "leave£€" + user.getIdUser();
+            String leave = "leave£€" + ConnectionController.myUser.getIdUser();
             byte[] bytes = leave.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupP2p.send(message);
@@ -113,7 +111,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        new Thread(new Multicast(user, database, connectionController)).start();
+        new Thread(new Multicast(database, connectionController)).start();
         return null;
     }
 

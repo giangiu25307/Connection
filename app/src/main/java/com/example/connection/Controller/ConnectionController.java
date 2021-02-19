@@ -43,7 +43,7 @@ ConnectionController {
     private Multicast_P2P multicastP2P;
     private Multicast_WLAN multicastWLAN;
     private TCP_Client tcpClient;
-    private User user;
+    public static User myUser;
     private Database database;
     private BluetoothScanner bluetoothScanner;
     private BluetoothAdvertiser bluetoothAdvertiser;
@@ -59,15 +59,14 @@ ConnectionController {
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         this.database = database;
-        String info[] = database.getMyInformation();
-        this.user = new User(info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7],info[8],info[9],info[10]);
-        myId = user.getIdUser();
-        multicastP2P = new Multicast_P2P(user, database, this);
-        multicastWLAN = new Multicast_WLAN(user, database, this);
+        setUser();
+        myId = myUser.getIdUser();
+        multicastP2P = new Multicast_P2P(database, this);
+        multicastWLAN = new Multicast_WLAN(database, this);
         tcpClient = new TCP_Client();
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
-        bluetoothScanner = new BluetoothScanner(connection, user, this, bluetoothAdvertiser);
+        bluetoothScanner = new BluetoothScanner(connection,this, bluetoothAdvertiser);
         mConfig = new WifiP2pConfig.Builder()
                 .setNetworkName(SSID + myId)
                 .setPassphrase(networkPassword)
@@ -101,7 +100,7 @@ ConnectionController {
                 bluetoothAdvertiser.startAdvertising();
                 wifiManager.disconnect();
                 try {
-                    user.setInetAddress("192.168.49.1");
+                    myUser.setInetAddress("192.168.49.1");
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
@@ -140,7 +139,7 @@ ConnectionController {
                 try {
                     String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
                     System.out.println(ip);
-                    user.setInetAddress(ip);
+                    myUser.setInetAddress(ip);
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
@@ -234,14 +233,11 @@ ConnectionController {
     //TESTING DISCONNECTION
 
     private void setUser(){
-        String info[] = database.getMyInformation();
-        this.user = new User(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9], info[10]);
+        String[] info = database.getMyInformation();
+        myUser = new User(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9], info[10]);
     }
 
-    private ArrayList<WifiNetworkSuggestion> sugg;
-
     public void wifiConnection(String id) {
-
         WifiConfiguration wifiConfig = new WifiConfiguration();
         wifiConfig.SSID = String.format("\"%s\"", SSID + id);
         wifiConfig.preSharedKey = String.format("\"%s\"", networkPassword);

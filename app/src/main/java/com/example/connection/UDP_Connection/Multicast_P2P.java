@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 
 public class Multicast_P2P extends Multicast{
-    public Multicast_P2P(User user, Database database, ConnectionController connectionController) {
-        super(user, database, connectionController);
+    public Multicast_P2P(Database database, ConnectionController connectionController) {
+        super(database, connectionController);
     }
     @Override
     public void run(){
@@ -26,7 +26,7 @@ public class Multicast_P2P extends Multicast{
                 switch (splittedR[0]) {
                     case "info":
                         //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
-                        if (user.getInetAddress().equals(GROUP_OWNER_IP)) {
+                        if (ConnectionController.myUser.getInetAddress().equals(GROUP_OWNER_IP)) {
                             tcp_client.startConnection(splittedR[2], 50000);
                             Cursor c = database.getAllUsers();
                             tcp_client.sendMessage(this.cursorToString(c), "");

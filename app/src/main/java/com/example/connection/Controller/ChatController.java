@@ -14,7 +14,6 @@ public class ChatController {
     Multicast udp;
     MultiThreadedServer tcpServer;
     Database database;
-    User user;
     ConnectionController connectionController;
     public static ChatController istance = null;
 
@@ -22,15 +21,10 @@ public class ChatController {
         return istance;
     }
 
-    public ChatController newIstance(Connection connection, ConnectionController connectionController) {
+    public ChatController newIstance(Database database, ConnectionController connectionController) {
         istance = new ChatController();
         setConnectionController(connectionController);
-        istance.setDatabase(new Database(connection.getApplicationContext()));
-        //String userInfo[]=database.getMyInformation();
-        //user=new User(userInfo[0],userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],userInfo[9],userInfo[10]);
-        istance.setUser(user);
-        istance.setTcp(new TCP_Client());
-        istance.setUdp(new Multicast(user, database, connectionController));
+        setDatabase(database);
         return istance;
     }
 
@@ -46,12 +40,8 @@ public class ChatController {
         this.tcpServer = tcpServer;
     }
 
-    public void setDatabase(Database database) {
+    private void setDatabase(Database database) {
         this.database = database;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public void setConnectionController(ConnectionController connectionController) {
@@ -69,11 +59,10 @@ public class ChatController {
 
     //send a direct message -------------------------------------------------------------------------------------------------------------------------------
     public void sendTCPMsg(String msg, String idReceiver) {
-
             String ip = database.findIp(idReceiver);
-                tcp.startConnection("192.168.49.1", 50000);
-            tcp.sendMessage(msg,"");
-            database.addMsg(msg, user.getIdUser(), idReceiver);
+                tcp.startConnection(ip, 50000);
+            tcp.sendMessage(msg,database.getPublicKey(idReceiver));
+            database.addMsg(msg, ConnectionController.myUser.getIdUser(), idReceiver);
     }
 
     //send a direct image -------------------------------------------------------------------------------------------------------------------------------
@@ -81,8 +70,8 @@ public class ChatController {
 
             String ip = database.findIp(idReceiver);
                 tcp.startConnection(ip, 50000);
-            tcp.sendMessage(path.toString(),"");//encoding to byte DA FARE
-            database.addMsg(path, idReceiver, user.getIdUser(), idReceiver);
+            tcp.sendMessage(path.toString(),database.getPublicKey(idReceiver));//encoding to byte DA FARE
+            database.addMsg(path, idReceiver, ConnectionController.myUser.getIdUser(), idReceiver);
 
     }
 }

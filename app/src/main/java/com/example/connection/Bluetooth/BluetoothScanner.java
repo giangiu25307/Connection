@@ -34,10 +34,10 @@ public class BluetoothScanner {
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
 
-    public BluetoothScanner(Connection connection, User user, ConnectionController connectionController, BluetoothAdvertiser bluetoothAdvertiser) {
+    public BluetoothScanner(Connection connection, ConnectionController connectionController, BluetoothAdvertiser bluetoothAdvertiser) {
         bluetoothManager = (BluetoothManager) connection.getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
-        myId = user.getIdUser();
+        myId = ConnectionController.myUser.getIdUser();
         this.connectionController = connectionController;
         this.bluetoothAdvertiser = bluetoothAdvertiser;
         resetVariables();
