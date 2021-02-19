@@ -31,8 +31,9 @@ public class BluetoothScanner {
     private String myId, clientToRequestGroupId;
     private ConnectionController connectionController;
     private BluetoothAdvertiser bluetoothAdvertiser;
+    private CountDownTimer countDownTimer;
     // Stops scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 10000;
+    private static long SCAN_PERIOD = 3000;
 
     public BluetoothScanner(Connection connection, ConnectionController connectionController, BluetoothAdvertiser bluetoothAdvertiser) {
         bluetoothManager = (BluetoothManager) connection.getSystemService(Context.BLUETOOTH_SERVICE);
@@ -50,17 +51,21 @@ public class BluetoothScanner {
                 break;
             case Task.ServiceEntry.serviceLookingForGroupOwner:
                 if (!mScanning) {
-                    // Stops scanning after a pre-defined scan period.
-                    handler.postDelayed(new Runnable() {
+                    mScanning = true;
+                    bluetoothLeScanner.startScan(scanCallbackLookingForGroupOwner);
+                    countDownTimer = new CountDownTimer(SCAN_PERIOD, 1000) {
                         @Override
-                        public void run() {
+                        public void onTick(long millisUntilFinished) {
+                            System.out.println(millisUntilFinished);
+                        }
+                        @Override
+                        public void onFinish() {
                             mScanning = false;
                             bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwner);
                             initScan(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner);
                         }
-                    }, SCAN_PERIOD);
-                    mScanning = true;
-                    bluetoothLeScanner.startScan(scanCallbackLookingForGroupOwner);
+                    };
+                    countDownTimer.start();
                 } else {
                     mScanning = false;
                     bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwner);
@@ -68,17 +73,21 @@ public class BluetoothScanner {
                 break;
             case Task.ServiceEntry.serviceRequestClientBecomeGroupOwner:
                 if (!mScanning) {
-                    // Stops scanning after a pre-defined scan period.
-                    handler.postDelayed(new Runnable() {
+                    mScanning = true;
+                    bluetoothLeScanner.startScan(scanCallbackSearchAndRequestForIdNetwork);
+                    countDownTimer = new CountDownTimer(SCAN_PERIOD, 1000) {
                         @Override
-                        public void run() {
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+                        @Override
+                        public void onFinish() {
                             mScanning = false;
                             bluetoothLeScanner.stopScan(scanCallbackSearchAndRequestForIdNetwork);
                             connectionController.createGroup();
                         }
-                    }, SCAN_PERIOD);
-                    mScanning = true;
-                    bluetoothLeScanner.startScan(scanCallbackSearchAndRequestForIdNetwork);
+                    };
+                    countDownTimer.start();
                 } else {
                     mScanning = false;
                     bluetoothLeScanner.stopScan(scanCallbackSearchAndRequestForIdNetwork);
@@ -86,10 +95,15 @@ public class BluetoothScanner {
                 break;
             case Task.ServiceEntry.serviceClientConnectedToGroupOwner:
                 if (!mScanning) {
-                    // Stops scanning after a pre-defined scan period.
-                    handler.postDelayed(new Runnable() {
+                    mScanning = true;
+                    bluetoothLeScanner.startScan(scanCallbackClientListeningOtherClient);
+                    countDownTimer = new CountDownTimer(SCAN_PERIOD, 1000) {
                         @Override
-                        public void run() {
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+                        @Override
+                        public void onFinish() {
                             mScanning = false;
                             bluetoothLeScanner.stopScan(scanCallbackClientListeningOtherClient);
                             new CountDownTimer(60000, 1000) {
@@ -103,9 +117,8 @@ public class BluetoothScanner {
 
                             }.start();
                         }
-                    }, SCAN_PERIOD);
-                    mScanning = true;
-                    bluetoothLeScanner.startScan(scanCallbackClientListeningOtherClient);
+                    };
+                    countDownTimer.start();
                 } else {
                     mScanning = false;
                     bluetoothLeScanner.stopScan(scanCallbackClientListeningOtherClient);
@@ -113,17 +126,21 @@ public class BluetoothScanner {
                 break;
             case Task.ServiceEntry.serviceLookingForGroupOwnerWithSpecifiedId:
                 if (!mScanning) {
-                    // Stops scanning after a pre-defined scan period.
-                    handler.postDelayed(new Runnable() {
+                    mScanning = true;
+                    bluetoothLeScanner.startScan(scanCallbackLookingForGroupOwnerId);
+                    countDownTimer = new CountDownTimer(SCAN_PERIOD, 1000) {
                         @Override
-                        public void run() {
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+                        @Override
+                        public void onFinish() {
                             mScanning = false;
                             bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwnerId);
                             initScan(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner);
                         }
-                    }, SCAN_PERIOD);
-                    mScanning = true;
-                    bluetoothLeScanner.startScan(scanCallbackLookingForGroupOwnerId);
+                    };
+                    countDownTimer.start();
                 } else {
                     mScanning = false;
                     bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwnerId);
@@ -131,10 +148,15 @@ public class BluetoothScanner {
                 break;
             case Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId:
                 if (!mScanning) {
-                    // Stops scanning after a pre-defined scan period.
-                    handler.postDelayed(new Runnable() {
+                    mScanning = true;
+                    bluetoothLeScanner.startScan(scanCallbackLookingForGroupOwnerWithGreaterId);
+                    countDownTimer = new CountDownTimer(SCAN_PERIOD, 1000) {
                         @Override
-                        public void run() {
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+                        @Override
+                        public void onFinish() {
                             mScanning = false;
                             bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwnerWithGreaterId);
                             new CountDownTimer(60000, 1000) {
@@ -148,9 +170,8 @@ public class BluetoothScanner {
 
                             }.start();
                         }
-                    }, SCAN_PERIOD);
-                    mScanning = true;
-                    bluetoothLeScanner.startScan(scanCallbackLookingForGroupOwnerWithGreaterId);
+                    };
+                    countDownTimer.start();
                 } else {
                     mScanning = false;
                     bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwnerWithGreaterId);
@@ -171,7 +192,6 @@ public class BluetoothScanner {
                 bytesResult = e;
             }
             String stringResult = new String(bytesResult, StandardCharsets.UTF_8);
-            System.out.println(stringResult);
             for (int i = 0; i < stringResult.length(); i++) {
                 if (i < 7) identifierApp += stringResult.charAt(i);
                 if (7 <= i && i < 14) idHostingService += stringResult.charAt(i);
@@ -180,6 +200,7 @@ public class BluetoothScanner {
             }
             if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner)) {
                 bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwner);
+                countDownTimer.cancel();
                 connectionController.connectToGroup(idGroupOwner.trim());
             }
         }
@@ -205,6 +226,7 @@ public class BluetoothScanner {
             }
             if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().equals(clientToRequestGroupId)) {
                 bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwnerId);
+                countDownTimer.cancel();
                 connectionController.connectToGroup(idGroupOwner.trim());
             }
         }
@@ -230,6 +252,7 @@ public class BluetoothScanner {
             }
             if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().compareTo(myId) > 0) {
                 bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwnerId);
+                countDownTimer.cancel();
                 connectionController.connectToGroupWhenGroupOwner(idGroupOwner.trim());
             }
         }
@@ -255,6 +278,7 @@ public class BluetoothScanner {
             }
             if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceClientConnectedToGroupOwner)) {
                 bluetoothLeScanner.stopScan(scanCallbackSearchAndRequestForIdNetwork);
+                countDownTimer.cancel();
                 bluetoothAdvertiser.stopAdvertising();
                 bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceRequestClientBecomeGroupOwner, idGroupOwner.trim());
                 bluetoothAdvertiser.startAdvertising();
@@ -284,6 +308,7 @@ public class BluetoothScanner {
             }
             if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner) && idGroupOwner.trim().equals(myId)) {
                 bluetoothLeScanner.stopScan(scanCallbackClientListeningOtherClient);
+                countDownTimer.cancel();
                 connectionController.createGroup();
             }
         }
