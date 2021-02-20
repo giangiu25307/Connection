@@ -56,6 +56,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         chatFragment.setDatabase(database);
         chatFragment.setChatController(chatController);
         chatFragment.setToolbar(toolbar);
+        chatFragment.createCountDowntimer();
         return chatFragment;
     }
 
@@ -107,7 +108,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                     currentWidth = requestTextView2.getWidth();
                     currentHeight = requestTextView2.getHeight();
                     if (currentWidth != 0 && currentHeight != 0) {
-                        createCountDowntimer();
                         countDownTimer.start();
                         requestTextView2.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }

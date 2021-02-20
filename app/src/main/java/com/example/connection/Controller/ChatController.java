@@ -25,6 +25,7 @@ public class ChatController {
         istance = new ChatController();
         setConnectionController(connectionController);
         setDatabase(database);
+
         return istance;
     }
 

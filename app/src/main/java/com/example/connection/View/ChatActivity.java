@@ -37,6 +37,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText message_input;
     private ImageView sendView;
     private RecyclerView recyclerView;
+    private MessageAdapter chatAdapter;
     private Database database;
     private ConstraintLayout chatBackground;
 
@@ -84,14 +85,17 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        setupRecyclerView();
+
         sendView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chatController.sendTCPMsg(message_input.getText().toString(), id);
+                chatAdapter.swapCursor(getAllMessage());
             }
         });
+
         //Database database = (Database) getIntent().getParcelableExtra("database");
-        setupRecyclerView(database, id);
 
     }
 
@@ -137,16 +141,20 @@ public class ChatActivity extends AppCompatActivity {
         window.setNavigationBarColor(Color.BLACK);
     }
 
-    private void setupRecyclerView(Database database, String id) {
-        Cursor messageCursor = database.getAllMsg(id);
+    private void setupRecyclerView() {
+        Cursor messageCursor = getAllMessage();
         recyclerView = findViewById(R.id.messageRecyclerView);
         setBackgroundImage();
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        MessageAdapter chatAdapter = new MessageAdapter(this, database, id, messageCursor, linearLayoutManager);
+        chatAdapter = new MessageAdapter(this, database, id, messageCursor, linearLayoutManager);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.scrollToPosition(messageCursor.getCount() - 1);
+    }
+
+    private Cursor getAllMessage(){
+        return database.getAllMsg(id);
     }
 
     private void setBackgroundImage(){

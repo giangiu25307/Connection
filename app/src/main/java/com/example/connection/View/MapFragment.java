@@ -69,14 +69,21 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         c.moveToFirst();
 
         final ArrayList<User> userList = new ArrayList<>();
-        String[] arrayName = new String[c.getCount()];
+        String[] arrayName = new String[c.getCount()==0?1:c.getCount()];
+
+        userList.add(ConnectionController.myUser);
+        arrayName[0]=ConnectionController.myUser.getName();
+
         for (int i = 0; i < c.getCount(); i++) {
-            user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-            userList.add(user);
-            arrayName[i] = c.getString(1);
+            if(i==0);
+            else {
+                user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
+                userList.add(user);
+                arrayName[i] = c.getString(1);
+            }
             c.moveToNext();
         }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
+        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
         AbsoluteLayout mapLayout = view.findViewById(R.id.mapLayout);
         drawController = new DrawController(mapLayout.getContext(), userList, mapLayout);
         mapLayout.addView(drawController);
@@ -106,7 +113,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.filterIcon:
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
                 dialogBuilder.setView(R.layout.dialog_map_filter);
@@ -153,7 +160,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         applyTextView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (male != null && male.isChecked()) Connection.genders[0] = "male";
+                                if (male != null && male.isChecked())
+                                    Connection.genders[0] = "male";
                                 else Connection.genders[0] = "";
                                 if (female != null && female.isChecked())
                                     Connection.genders[1] = "female";
@@ -212,9 +220,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 applyTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        drawController.applyFilters(Connection.minAge,Connection.maxAge,Connection.genders);
+                        drawController.applyFilters(Connection.minAge, Connection.maxAge, Connection.genders);
                         alertDialog.dismiss();
-                        Fragment fragment = new MapFragment().newInstance(connectionController,database);
+                        Fragment fragment = new MapFragment().newInstance(connectionController, database);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
                     }

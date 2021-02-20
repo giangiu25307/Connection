@@ -24,16 +24,16 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
     private Database database;
     private Connection connection;
     private ConnectionController connectionController;
-     LocalizationController localizationController;
+    //LocalizationController localizationController;
     ServerSocketFactory serverSocketFactory= ServerSocketFactory.getDefault();
 
-    public MultiThreadedServer(int port, Database database, Connection connection, ConnectionController connectionController, LocalizationController localizationController) throws NoSuchAlgorithmException, KeyManagementException {
+    public MultiThreadedServer(int port, Database database, Connection connection, ConnectionController connectionController/*, LocalizationController localizationController*/) throws NoSuchAlgorithmException, KeyManagementException {
         this.serverPort = port;
         this.database=database;
         receive="";
         this.connection=connection;
         this.connectionController = connectionController;
-        this.localizationController= localizationController;
+        //this.localizationController= localizationController;
     }
 
     private synchronized boolean isStopped() {
@@ -77,11 +77,13 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
                 throw new RuntimeException(
                         "Error accepting client connection", e);
             }
-            new Thread(new WorkerRunnable(clientSocket,database,connection,connectionController,localizationController)).start();
+            new Thread(new WorkerRunnable(clientSocket,database,connection,connectionController/*,localizationController*/)).start();
         }
         System.out.println("Server Stopped.");
         return null;
-    }public void test(){
+    }
+
+    public void test(){
         openServerSocket();
         while (!isStopped()) {
             Socket clientSocket = null;
@@ -95,7 +97,7 @@ public class MultiThreadedServer extends AsyncTask<Void, Void, Void> {
                 throw new RuntimeException(
                         "Error accepting client connection", e);
             }
-            new Thread(new WorkerRunnable(clientSocket,database,connection,connectionController,localizationController)).start();
+            new Thread(new WorkerRunnable(clientSocket,database,connection,connectionController/*,localizationController*/)).start();
         }
         System.out.println("Server Stopped.");
         return ;

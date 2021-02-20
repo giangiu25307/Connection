@@ -565,6 +565,13 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    public void setIp(String id, String ip) {
+        db = this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.IP, ip);
+        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
+    }
+
     public void setUsername(String id, String username) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();

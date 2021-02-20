@@ -31,15 +31,15 @@ class WorkerRunnable implements Runnable {
     Connection connection;
     ConnectionController connectionController;
     TCP_Client tcp_client;
-    LocalizationController localizationController;
+    //LocalizationController localizationController;
     String idChat = null;
 
-    public WorkerRunnable(Socket clientSocket, Database database, Connection connection, ConnectionController connectionController, LocalizationController localizationController) {
+    public WorkerRunnable(Socket clientSocket, Database database, Connection connection, ConnectionController connectionController/*, LocalizationController localizationController*/) {
         this.connection = connection;
         this.clientSocket = clientSocket;
         this.database = database;
         this.connectionController = connectionController;
-        this.localizationController = localizationController;
+        //this.localizationController = localizationController;
     }
 
     public void run() {
@@ -119,7 +119,7 @@ class WorkerRunnable implements Runnable {
                     case "RESPONSE-MEET":
                         database.setAccept(splittedR[1], splittedR[2]);
                         break;
-                    case "RESULT-MEET":
+                    /*case "RESULT-MEET":
                         if (database.getAccept(splittedR[1]).equals("yes")) {
                             tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
                             tcp_client.sendMessage("RESULT-MEET£€" + database.getMyInformation()[0] + splittedR[2] + "£€" + localizationController.gpsDirection(Double.parseDouble(splittedR[3]), Double.parseDouble(splittedR[4])), "");
@@ -127,9 +127,10 @@ class WorkerRunnable implements Runnable {
 
                         } else {
                             tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
-                            tcp_client.sendMessage("RESPONSE-MEET£€" + database.getMyInformation()[0] + "£€"/*+valore di bergo*/, "");
+                            tcp_client.sendMessage("RESPONSE-MEET£€" + database.getMyInformation()[0] + "£€"/*+valore di bergo, "");
                         }
                         break;
+                */
                     default:
                         break;
                 }
