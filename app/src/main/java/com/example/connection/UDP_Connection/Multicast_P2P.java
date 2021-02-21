@@ -8,6 +8,9 @@ import com.example.connection.Model.User;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.MulticastSocket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 public class Multicast_P2P extends Multicast {
@@ -99,6 +102,23 @@ public class Multicast_P2P extends Multicast {
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createMultigroupP2P() {
+        try {
+            multicastSocketGroupP2p = new MulticastSocket(6789);
+            multicastSocketGroupP2p.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0"));
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            udp_socket = new UDP_Socket();
+        } catch (SocketException e) {
             e.printStackTrace();
         }
     }

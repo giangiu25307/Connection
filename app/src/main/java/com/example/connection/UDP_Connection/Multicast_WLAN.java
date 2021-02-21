@@ -8,6 +8,7 @@ import com.example.connection.Model.User;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.MulticastSocket;
 import java.nio.charset.StandardCharsets;
 
 public class Multicast_WLAN extends Multicast {
@@ -130,5 +131,29 @@ public class Multicast_WLAN extends Multicast {
             e.printStackTrace();
         }
     }
+
+    //i'm telling everyone that i'm leaving the group ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    public void imLeaving() {
+        try {
+            String leave = "leave£€" + ConnectionController.myUser.getIdUser();
+            byte[] bytes = leave.getBytes(StandardCharsets.UTF_8);
+            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
+            multicastSocketGroupwlan0.send(message);
+            database.deleteAllUser();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createMulticastSocketWlan0() {
+        try {
+            multicastSocketGroupwlan0 = new MulticastSocket(6789);
+            multicastSocketGroupwlan0.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("wlan0"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 }

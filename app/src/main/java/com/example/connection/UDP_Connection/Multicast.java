@@ -22,21 +22,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
-    public static final String GROUP_OWNER_IP = "192.168.49.1";
     protected InetAddress group;
     protected MulticastSocket multicastSocketGroupP2p;
     protected MulticastSocket multicastSocketGroupwlan0;
-    protected Thread runningThread = null;
-    protected DatagramSocket socket = null;
     protected SocketAddress sa;
-    TCP_Client tcp_client;
-    ConnectionController connectionController;
+    protected TCP_Client tcp_client;
+    protected ConnectionController connectionController;
     protected Database database;
     protected UDP_Socket udp_socket;
 
     public Multicast(Database database, ConnectionController connectionController) {
         this.connectionController = connectionController;
-
         tcp_client = new TCP_Client();
         this.database = database;
         try {
@@ -48,22 +44,6 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
 
     }
 
-    public void createMultigroupP2P() {
-        try {
-            multicastSocketGroupP2p = new MulticastSocket(6789);
-            multicastSocketGroupP2p.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0"));
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            udp_socket = new UDP_Socket();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void run() {
@@ -85,51 +65,10 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         }
     }
 
-    //i'm telling everyone that i'm leaving the group ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    public void imLeaving() {
-        try {
-            String leave = "leave£€" + ConnectionController.myUser.getIdUser();
-            byte[] bytes = leave.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
-            multicastSocketGroupP2p.send(message);
-            database.deleteAllUser();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected Void doInBackground(Void... voids) {
         new Thread(new Multicast(database, connectionController)).start();
         return null;
-    }
-
-    //take all the user group info from the database and transform the in to a BIG string ----------------------------------------------------------------------------------------------------------------
-    protected String cursorToString(Cursor c) {
-        c.moveToFirst();
-        int i = 0;
-        String msg = "sendInfo£€";
-        while (!c.isAfterLast()) {
-            while (i < c.getColumnCount()) {
-                msg += c.getString(i) + ",";
-                i++;
-            }
-            msg += ";";
-            c.moveToNext();
-            i = 0;
-        }
-        c.close();
-        return msg;
-    }
-
-    public void createMulticastSocketWlan0() {
-        try {
-            multicastSocketGroupwlan0 = new MulticastSocket(6789);
-            multicastSocketGroupwlan0.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("wlan0"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     //MAYBE WE NEED TO ADD MULTICAST LOCK !!!!!!!!!!!!!!!!!!!!!!!!!!!

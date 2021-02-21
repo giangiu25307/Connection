@@ -162,13 +162,16 @@ ConnectionController {
 
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
     public void disconnectToGroup() {
+        if (MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0") == null) {
+            bluetoothAdvertiser.stopAdvertising();
+        }
+        multicastWLAN.imLeaving();
         wifiManager.disconnect();
         wifiManager.removeNetwork(netId);
-        //udpClient.imLeaving();
     }
 
     //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
-    public void clientList() {
+    public void autoDisconnect() {
         int numberOfLevels = 5;
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), numberOfLevels);
@@ -182,6 +185,8 @@ ConnectionController {
         multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
         if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && wifiInfo().contains("DIRECT-CONNEXION")) {
             multicastWLAN.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()+"£€"+myUser.getInetAddress()));
+            wifiManager.disconnect();
+            wifiManager.removeNetwork(netId);
         }
         final boolean[] finish = {false};
         new CountDownTimer(10000, 1000) {
@@ -196,15 +201,9 @@ ConnectionController {
         while(finish[0])this.removeGroup();
     }
 
-    public void broadcastNewGroupOwnerId() {
-        multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMyInformation()[0]));
-    }
-
     //return the all client list --------------------------------------------------------------------------------------------------------------------------------
     public Optional<Cursor> getAllClientList() {
-
         return Optional.of(database.getAllUsers());
-
     }
 
     public void initProcess() {
