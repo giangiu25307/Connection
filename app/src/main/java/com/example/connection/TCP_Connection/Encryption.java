@@ -45,10 +45,10 @@ public class Encryption {
     private KeyStore ks;
 
     public Encryption() {
-        init();//  System.out.println(encryption.decrypt(encryption.encrypt("ciao",encryption.convertStringToPublicKey(encryption.getStringPublicKey())))); SCRIVERE MESSAGGI AD UN ALTRA PERSONA ATTRAVERSO IL METODO convert
+        generateAsymmetricKeys();//  System.out.println(encryption.decrypt(encryption.encrypt("ciao",encryption.convertStringToPublicKey(encryption.getStringPublicKey())))); SCRIVERE MESSAGGI AD UN ALTRA PERSONA ATTRAVERSO IL METODO convert
     }
 
-    public void init() {
+    public void generateAsymmetricKeys() {
         try {
             //Generate asymmetric keys
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
@@ -61,8 +61,6 @@ public class Encryption {
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
             privateKey = keyPair.getPrivate();
             publicKey = keyPair.getPublic();
-
-            generateAES();
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }

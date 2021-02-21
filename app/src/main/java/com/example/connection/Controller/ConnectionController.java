@@ -11,7 +11,6 @@ import android.net.NetworkRequest;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.net.wifi.WifiNetworkSuggestion;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.CountDownTimer;
@@ -28,7 +27,6 @@ import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
 
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static android.net.ConnectivityManager.*;
@@ -183,7 +181,7 @@ ConnectionController {
     //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
     public void GOLeaves() {
         multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
-        if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && wifiInfo().contains("DIRECT-CONNEXION")) {
+        if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && getSSID().contains("DIRECT-CONNEXION")) {
             multicastWLAN.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()+"£€"+myUser.getInetAddress()));
             wifiManager.disconnect();
             wifiManager.removeNetwork(netId);
@@ -256,7 +254,7 @@ ConnectionController {
         wifiManager.reconnect();
     }
 
-    public String wifiInfo() {
+    public String getSSID() {
         return wifiManager.getConnectionInfo().getSSID();
     }
 

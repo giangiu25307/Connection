@@ -636,6 +636,18 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    public boolean isOtherGroup(String id) {
+        String query = "SELECT " + Task.TaskEntry.ID_USER +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.OTHER_GROUP + "=" + "1 AND "+ Task.TaskEntry.ID_USER + "="+ id;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public String detectAllOtherGroupClient() {
         String query = "SELECT " + Task.TaskEntry.ID_USER +
                 " FROM " + Task.TaskEntry.USER +

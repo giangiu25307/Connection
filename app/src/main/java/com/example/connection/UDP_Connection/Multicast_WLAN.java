@@ -1,10 +1,7 @@
 package com.example.connection.UDP_Connection;
 
-import android.database.Cursor;
-
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
-import com.example.connection.Model.User;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -87,14 +84,14 @@ public class Multicast_WLAN extends Multicast {
                             database.addUser(splittedR[i], "192.168.49.1", splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                         }
                         //Check for the other group owner
-                        if (MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0") != null && connectionController.wifiInfo().contains("DIRECT-CONNEXION")) {
+                        if (MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                             DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                             multicastSocketGroupP2p.send(message);
                         }
                         break;
                     case "userToDelete":
                         database.deleteAllIdUser(splittedR[1]);
-                        if (MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0") != null && connectionController.wifiInfo().contains("DIRECT-CONNEXION")) {
+                        if (MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                             DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                             multicastSocketGroupP2p.send(message);
                         }

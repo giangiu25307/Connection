@@ -53,28 +53,20 @@ class WorkerRunnable implements Runnable {
                 msg = dIn.readLine();
                 String[] splittedR = msg.split("£€");
                 switch (splittedR[0]) {
-                    case "routingMessage":
-                        if(database.findIp(splittedR[1]).equals("192.168.49.1")){
-                            tcp_client.changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("Wlan0"));
-                            tcp_client.startConnection(database.findIp(splittedR[1]),50000);
-                            tcp_client.sendMessageNoKey(msg);
-                        }else{
-                            splittedR[0]="message";
-                            msg=splittedR[0]+"£€"+splittedR[2];
-                            tcp_client.startConnection(database.findIp(splittedR[1]),50000);
-                            tcp_client.sendMessageNoKey(msg);
-                        }
-                        break;
                     case "image":
-                        String message = dIn.readLine();
-                        sdf = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss");
-                        String currentDateandTime = sdf.format(new Date());
-                        File.createTempFile(currentDateandTime + ".jpeg", null, connection.getApplicationContext().getCacheDir());
-                        FileOutputStream fos = new FileOutputStream(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg");
-                        fos.write(message.getBytes());
-                        fos.close();
-                        idChat = database.findId_user(ip);
-                        database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", idChat, idChat);
+                        if(splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
+                            String message = dIn.readLine();
+                            sdf = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss");
+                            String currentDateandTime = sdf.format(new Date());
+                            File.createTempFile(currentDateandTime + ".jpeg", null, connection.getApplicationContext().getCacheDir());
+                            FileOutputStream fos = new FileOutputStream(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg");
+                            fos.write(message.getBytes());
+                            fos.close();
+                            idChat = database.findId_user(ip);
+                            database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", idChat, idChat);
+                        }else{
+                            tcp_client.sendMessageNoKey(splittedR.toString()); //message already crypted
+                        }
                         break;
                     case "sendInfo":
                         //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
@@ -87,31 +79,35 @@ class WorkerRunnable implements Runnable {
                         break;
                     case "message":
                         //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
-                        msg = splittedR[1];
-                        Date date = new Date();
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-                        Cursor dateDB = database.getLastMessageChat(idChat);
-                        String datetime = dateDB.getString(dateDB.getColumnIndex(Task.TaskEntry.DATETIME));
-                        try {
-                            date = format.parse(datetime);
-                            if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
-                                database.addMsg("date£€" + date, idChat, idChat);
+                        if(splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
+                            msg = splittedR[2];
+                            Date date = new Date();
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                            Cursor dateDB = database.getLastMessageChat(idChat);
+                            String datetime = dateDB.getString(dateDB.getColumnIndex(Task.TaskEntry.DATETIME));
+                            try {
+                                date = format.parse(datetime);
+                                if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
+                                    database.addMsg("date£€" + date, idChat, idChat);
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                            idChat = database.findId_user(ip);
+                            database.addMsg(msg, idChat, idChat);
+                        }else{
+                            tcp_client.sendMessageNoKey(splittedR.toString()); //message already crypted
                         }
-                        idChat = database.findId_user(ip);
-                        database.addMsg(msg, idChat, idChat);
                         break;
-                    case "REQUEST-MEET":
+                    /*case "REQUEST-MEET":
                         //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
                         //database.setAccept(valore ritornato da bergo);
                         tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
-                        tcp_client.sendMessage("RESPONSE-MEET£€" + database.getMyInformation()[0] + "£€"/*+valore di bergo*/, "");
+                        tcp_client.sendMessage("RESPONSE-MEET£€" + database.getMyInformation()[0] + "£€"/*+valore di bergo*//*, "");
                         break;
                     case "RESPONSE-MEET":
                         database.setAccept(splittedR[1], splittedR[2]);
-                        break;
+                        break;*/
                     /*case "RESULT-MEET":
                         if (database.getAccept(splittedR[1]).equals("yes")) {
                             tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
