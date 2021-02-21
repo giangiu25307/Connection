@@ -19,11 +19,12 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
-    public static final String GROUP_OWNER_IP="192.168.49.1";
+    public static final String GROUP_OWNER_IP = "192.168.49.1";
     protected InetAddress group;
-    protected  MulticastSocket multicastSocketGroupP2p;
+    protected MulticastSocket multicastSocketGroupP2p;
     protected MulticastSocket multicastSocketGroupwlan0;
     protected Thread runningThread = null;
     protected DatagramSocket socket = null;
@@ -32,11 +33,12 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     ConnectionController connectionController;
     protected Database database;
     protected UDP_Socket udp_socket;
+
     public Multicast(Database database, ConnectionController connectionController) {
         this.connectionController = connectionController;
 
-            tcp_client = new TCP_Client();
-            this.database = database;
+        tcp_client = new TCP_Client();
+        this.database = database;
         try {
             group = InetAddress.getByName("234.0.0.0");
         } catch (UnknownHostException e) {
@@ -45,7 +47,8 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         this.sa = new InetSocketAddress(group, 6789);
 
     }
-    public void createMultigroupP2P(){
+
+    public void createMultigroupP2P() {
         try {
             multicastSocketGroupP2p = new MulticastSocket(6789);
             multicastSocketGroupP2p.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0"));
@@ -56,17 +59,17 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             e.printStackTrace();
         }
         try {
-            udp_socket=new UDP_Socket();
+            udp_socket = new UDP_Socket();
         } catch (SocketException e) {
             e.printStackTrace();
         }
     }
+
     @Override
     public void run() {
 
 
     }
-
 
     //Send a global message ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendGlobalMsg(String msg) {
@@ -74,23 +77,9 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             msg = "globalmessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
             byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
-            multicastSocketGroupP2p.setNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0"));
             multicastSocketGroupP2p.setTimeToLive(255);
             multicastSocketGroupP2p.send(message);
             // database.addGlobalMsg(msg, user.getIdUser());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //send my info ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    public void sendInfo() {
-        try {
-            String info = "info£€" + ConnectionController.myUser.getAll();
-            byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
-            multicastSocketGroupwlan0.send(message);
-            System.out.println("letsgo");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -132,11 +121,11 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         c.close();
         return msg;
     }
-    public void createMulticastSocketWlan0(){
+
+    public void createMulticastSocketWlan0() {
         try {
             multicastSocketGroupwlan0 = new MulticastSocket(6789);
-            System.out.println(MyNetworkInterface.getMyP2pNetworkInterface("wlan0"));
-            multicastSocketGroupwlan0.joinGroup(sa,MyNetworkInterface.getMyP2pNetworkInterface("wlan0"));
+            multicastSocketGroupwlan0.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("wlan0"));
         } catch (IOException e) {
             e.printStackTrace();
         }

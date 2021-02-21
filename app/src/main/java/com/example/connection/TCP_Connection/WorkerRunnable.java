@@ -85,13 +85,6 @@ class WorkerRunnable implements Runnable {
                             database.addUser(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10],user[11]);
                         }
                         break;
-                    case "GO_LEAVES_BY":
-                        //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
-                        database.deleteUser(database.findId_user("192.168.49.1"));
-                        connectionController.broadcastNewGroupOwnerId();
-                        connectionController.disconnectToGroup();
-                        connectionController.createGroup();
-                        break;
                     case "message":
                         //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                         msg = splittedR[1];

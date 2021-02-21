@@ -201,7 +201,7 @@ public class Connection extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        System.out.println("Activity distrutta");
+        System.out.println("distrutta");
     }
 
     public boolean isAccessibilityEnabled() {

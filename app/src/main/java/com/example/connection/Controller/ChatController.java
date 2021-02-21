@@ -10,11 +10,10 @@ import java.nio.file.Paths;
 
 public class ChatController {
 
-    TCP_Client tcp;
-    Multicast udp;
-    MultiThreadedServer tcpServer;
-    Database database;
-    ConnectionController connectionController;
+    private TCP_Client tcp;
+    private Multicast udp;
+    private Database database;
+    private ConnectionController connectionController;
     public static ChatController istance = null;
 
     public static ChatController getInstance() {
@@ -25,7 +24,6 @@ public class ChatController {
         istance = new ChatController();
         setConnectionController(connectionController);
         setDatabase(database);
-
         return istance;
     }
 
@@ -35,10 +33,6 @@ public class ChatController {
 
     public void setUdp(Multicast udp) {
         this.udp = udp;
-    }
-
-    public void setTcpServer(MultiThreadedServer tcpServer) {
-        this.tcpServer = tcpServer;
     }
 
     private void setDatabase(Database database) {
@@ -68,7 +62,6 @@ public class ChatController {
 
     //send a direct image -------------------------------------------------------------------------------------------------------------------------------
     public void sendTCPPath(Paths path, String idReceiver) {
-
             String ip = database.findIp(idReceiver);
                 tcp.startConnection(ip, 50000);
             tcp.sendMessage(path.toString(),database.getPublicKey(idReceiver));//encoding to byte DA FARE

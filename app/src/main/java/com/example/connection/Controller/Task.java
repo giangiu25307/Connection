@@ -37,6 +37,7 @@ public class Task {
         public static final String REQUEST = "request";
         public static final String PUBLIC_KEY = "public_key";
         public static final String SYMMETRIC_KEY = "symmetric_key";
+        public static final String OTHER_GROUP = "other_group";
         /*public static final String GROUPS = "GROUPS";
         public static final String GROUP_NAME = "GROUP_NAME";
         public static final String USERS_GROUP = "USER_GROUP";

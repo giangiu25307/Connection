@@ -38,6 +38,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.PUBLIC_KEY + " TEXT,"
                 + Task.TaskEntry.IP + " TEXT, "
                 + Task.TaskEntry.ACCEPT + " TEXT, "
+                + Task.TaskEntry.OTHER_GROUP + " TEXT DEFAULT 0, "
                 + Task.TaskEntry.MESSAGES_ACCEPTED + " TEXT "
                 + ")";
 
@@ -367,6 +368,17 @@ public class Database extends SQLiteOpenHelper {
         ContentValues ipValues = new ContentValues();
     }
 
+    public String getAllMyGroupInfo() {
+        Cursor allUser = getAllUsers();
+        String allMyGroupInfo = ConnectionController.myUser.getAll();
+        for (int i = 0; i < allUser.getCount(); i++) {
+            if (i == 0) ;
+            else
+                allMyGroupInfo += allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€" + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€" + allUser.getString(7) + "£€" + allUser.getString(8) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€" + allUser.getString(11);
+        }
+        return allMyGroupInfo;
+    }
+
     public void SetMyInformation(String inetAddress, String username, String mail, String gender, String name, String surname, String country, String city, String birth, String number, String profilePic) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -472,9 +484,12 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public String getMaxId() {
-        String query = " SELECT MAX(" + Task.TaskEntry.ID_USER + ")" +
+        String query = " SELECT MAX( " + Task.TaskEntry.ID_USER + " ) " +
                 " FROM " + Task.TaskEntry.USER +
-                " WHERE " + Task.TaskEntry.IP + " IS NOT NULL";
+                " WHERE " + Task.TaskEntry.IP + " IN (SELECT " + Task.TaskEntry.IP +
+                "                   FROM " + Task.TaskEntry.USER + " " +
+                "                   GROUP BY " + Task.TaskEntry.IP + "" +
+                "                   HAVING count(" + Task.TaskEntry.IP + ") = 1 )";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
@@ -612,6 +627,56 @@ public class Database extends SQLiteOpenHelper {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.COUNTRY, country);
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
+    }
+
+    public void setOtherGroup(String id) {
+        db = this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.OTHER_GROUP, "1");
+        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
+    }
+
+    public String detectAllOtherGroupClient() {
+        String query = "SELECT " + Task.TaskEntry.ID_USER +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.OTHER_GROUP + "=" + "1";
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        String idToBeDeleted = "";
+        for (int i = 0; i < c.getCount(); i++) {
+            idToBeDeleted += c.getString(0) + ",";
+        }
+        return idToBeDeleted;
+    }
+
+    public String detectAllOtherGroupClientByIp(String ip) {
+        String query = "SELECT " + Task.TaskEntry.ID_USER +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.IP + "=" + ip;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        String idToBeDeleted = "";
+        for (int i = 0; i < c.getCount(); i++) {
+            idToBeDeleted += c.getString(0) + ",";
+        }
+        return idToBeDeleted;
+    }
+
+    public void deleteAllIdUser(String idsToBeDeleted) {
+        db = this.getWritableDatabase();
+        String query = "DELETE FROM USER " +
+                " WHERE " + Task.TaskEntry.ID_USER + " IN( " + idsToBeDeleted + " ) AND NOT EXISTS(SELECT NULL " +
+                " FROM CHAT f " +
+                " WHERE f.id_chat = USER.id_user) ";
+        db.execSQL(query);
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.IP, "NULL");
+        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " IN(" + idsToBeDeleted + " )", null);
+
     }
 
 }

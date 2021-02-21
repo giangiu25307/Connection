@@ -20,9 +20,11 @@ import android.text.format.Formatter;
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Model.User;
+import com.example.connection.TCP_Connection.MultiThreadedServer;
 import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.Multicast_WLAN;
+import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
 
 import java.net.UnknownHostException;
@@ -53,6 +55,7 @@ ConnectionController {
     private NetworkInfo mWifi;
     private NetworkRequest networkRequest;
     public static Network mMobileNetwork;
+    private MultiThreadedServer multiThreadedServer;
 
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
@@ -80,6 +83,7 @@ ConnectionController {
                 .build();
 
         mWifi = connManager.getNetworkInfo(TYPE_WIFI);
+        multiThreadedServer = new MultiThreadedServer(database,connection,this);
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
@@ -108,7 +112,8 @@ ConnectionController {
                 Thread t1 = new Thread(multicastP2P);
                 t1.start();
                 bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
-                //udpClient.createMulticastSocketWlan0();//TO SEE IF IT WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                multiThreadedServer.openServerSocketP2p();
+                multiThreadedServer.run();
             }
 
             @Override
@@ -123,7 +128,8 @@ ConnectionController {
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
     public void connectToGroupWhenGroupOwner(String id) {//GroupOwner groupOwner){//
         wifiConnection(id);
-        // udpClient.sendInfo(); Creare un sendAllMyGroupInfo
+        multicastWLAN.createMulticastSocketWlan0();
+        multicastWLAN.sendAllMyGroupInfo();
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
@@ -147,6 +153,8 @@ ConnectionController {
                 multicastWLAN.createMulticastSocketWlan0();
                 multicastWLAN.sendInfo();
                 bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
+                multiThreadedServer.openServerSocketWlan();
+                multiThreadedServer.run();
             }
         });
     }
@@ -171,20 +179,21 @@ ConnectionController {
 
     //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
     public void GOLeaves() {
-        final String maxId = database.getMaxId();
-
-        tcpClient.startConnection(database.findIp(maxId), 50000);
-        tcpClient.sendMessage("GO_LEAVES_BY£€", "");
+        multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
+        if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && wifiInfo().contains("DIRECT-CONNEXION")) {
+            multicastWLAN.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()+"£€"+myUser.getInetAddress()));
+        }
+        final boolean[] finish = {false};
         new CountDownTimer(10000, 1000) {
 
             public void onTick(long millisUntilFinished) {
             }
 
             public void onFinish() {
+                finish[0] =true;
             }
         }.start();
-        this.removeGroup();
-
+        while(finish[0])this.removeGroup();
     }
 
     public void broadcastNewGroupOwnerId() {
@@ -246,6 +255,10 @@ ConnectionController {
         wifiManager.disconnect();
         wifiManager.enableNetwork(netId, true);
         wifiManager.reconnect();
+    }
+
+    public String wifiInfo() {
+        return wifiManager.getConnectionInfo().getSSID();
     }
 
 }

@@ -56,11 +56,11 @@ public class AccountController {
                 .add("city", city)
                 .add("birth", birth)
                 .add("number", number)
+                .add("yagosaf","yagosaf")
                 .build();
 
         Request request = new Request.Builder()
                 .url("www.connection.it" + "/register")
-                .header("parametroVallet",valletParameter)
                 .post(formBody)
                 .build();
 
