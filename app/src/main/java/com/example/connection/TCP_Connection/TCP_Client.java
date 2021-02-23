@@ -17,17 +17,18 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 import java.security.GeneralSecurityException;
+import java.security.PublicKey;
 
 
 public class TCP_Client {
     private Socket socket = null;
     private OutputStream out;
     private DataOutputStream dos;
-    private String msg = "message£€";
+    private String msg = "message£€",shake="handShake£€";
     private Encryption encryption;
     private Database database;
 
-    public TCP_Client(Encryption encryption, Database database) {
+    public TCP_Client(Database database, Encryption encryption) {
         this.database = database;
         this.encryption = encryption;
     }
@@ -47,13 +48,34 @@ public class TCP_Client {
 
     }
 
-    //send a message --------------------------------------------------------------------------------------------------------------------------------
-    public void sendMessage(String msg, String id, String publicKey) {
+    public void handShake(String id, String publicKey, String msg) {
         checkInterface(id,database.findIp(id));
-        this.msg += id + "£€" + msg;
+        encryption.generateAES();
+        shake += id+"£€";
         try {
-            this.msg = encryption.encrypt(this.msg, encryption.convertStringToPublicKey(publicKey));
-            byte[] array = this.msg.getBytes();
+            String secretKey = encryption.convertSecretKeyToString(encryption.getSecretKey());
+            database.setSymmetricKey(secretKey);
+            shake += encryption.encrypt(secretKey+"£€"+msg,encryption.convertStringToPublicKey(publicKey));
+            byte[] array = shake.getBytes();
+            dos.write(array,0, array.length);
+            dos.flush();
+            stopConnection();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //send a message --------------------------------------------------------------------------------------------------------------------------------
+    public void sendMessage(String msg, String id) {
+        checkInterface(id,database.findIp(id));
+        this.msg += id + "£€";
+        try {
+            byte[] key = encryption.encryptAES(msg, encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
+            byte[] array = new byte[this.msg.getBytes().length + key.length];
+            System.arraycopy(this.msg.getBytes(), 0, array, 0, this.msg.getBytes().length);
+            System.arraycopy(key, 0, array, this.msg.getBytes().length, key.length);
             dos.write(array, 0, array.length);
             dos.flush();
             stopConnection();
@@ -62,7 +84,8 @@ public class TCP_Client {
         }
     }
 
-    public void sendMessageNoKey(String msg) {
+    public void sendMessageNoKey(String msg, String id) {
+        checkInterface(id,database.findIp(id));
         try {
             byte[] array = msg.getBytes();
             dos.write(array, 0, array.length);
@@ -73,7 +96,7 @@ public class TCP_Client {
         }
     }
 
-    //send a image throw tcp --------------------------------------------------------------------------------------------------------------------------------
+    //send a image throw tcp --------------------------------------------------------------------------------------------------------------------------------//DA CRYPTARE
     public void sendImage(ImageView image, String id) throws IOException {
         Bitmap bmp = ((BitmapDrawable) image.getDrawable()).getBitmap(); //String str = et.getText().toString();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

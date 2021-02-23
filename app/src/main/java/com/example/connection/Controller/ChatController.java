@@ -13,17 +13,16 @@ public class ChatController {
     private TCP_Client tcp;
     private Multicast udp;
     private Database database;
-    private ConnectionController connectionController;
     public static ChatController istance = null;
 
     public static ChatController getInstance() {
         return istance;
     }
 
-    public ChatController newIstance(Database database, ConnectionController connectionController) {
+    public ChatController newIstance(Database database, TCP_Client tcp) {
         istance = new ChatController();
-        setConnectionController(connectionController);
-        setDatabase(database);
+        istance.setDatabase(database);
+        istance.setTcp(tcp);
         return istance;
     }
 
@@ -39,9 +38,6 @@ public class ChatController {
         this.database = database;
     }
 
-    public void setConnectionController(ConnectionController connectionController) {
-        this.connectionController = connectionController;
-    }
 
     public ChatController() {
     }
@@ -54,18 +50,19 @@ public class ChatController {
 
     //send a direct message -------------------------------------------------------------------------------------------------------------------------------
     public void sendTCPMsg(String msg, String idReceiver) {
-            String ip = database.findIp(idReceiver);
-                tcp.startConnection(ip, 50000);
-            tcp.sendMessage(msg,database.getPublicKey(idReceiver));
-            database.addMsg(msg, ConnectionController.myUser.getIdUser(), idReceiver);
+        if (database.getSymmetricKey(idReceiver) != null) {
+            tcp.sendMessage(msg, idReceiver);
+        } else {
+            tcp.handShake(idReceiver, database.getPublicKey(idReceiver), msg);
+        }
+        database.addMsg(msg, ConnectionController.myUser.getIdUser(), idReceiver);
     }
 
     //send a direct image -------------------------------------------------------------------------------------------------------------------------------
     public void sendTCPPath(Paths path, String idReceiver) {
-            String ip = database.findIp(idReceiver);
-                tcp.startConnection(ip, 50000);
-            tcp.sendMessage(path.toString(),database.getPublicKey(idReceiver));//encoding to byte DA FARE
-            database.addMsg(path, idReceiver, ConnectionController.myUser.getIdUser(), idReceiver);
+        //DA FARE PER BENE
+        /*tcp.sendMessage(path.toString(), idReceiver);//encoding to byte DA FARE
+        database.addMsg(path, idReceiver, ConnectionController.myUser.getIdUser(), idReceiver);*/
 
     }
 }

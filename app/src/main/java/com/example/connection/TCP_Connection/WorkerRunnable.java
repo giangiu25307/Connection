@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -25,29 +26,27 @@ import java.util.Date;
 
 class WorkerRunnable implements Runnable {
 
-    protected Socket clientSocket = null;
+    protected Socket clientSocket;
     private Database database;
-    SimpleDateFormat sdf;
-    Connection connection;
-    ConnectionController connectionController;
-    TCP_Client tcp_client;
+    private SimpleDateFormat sdf;
+    private Connection connection;
+    private ConnectionController connectionController;
+    private TCP_Client tcp_client;
+    Encryption encryption;
     //LocalizationController localizationController;
-    String idChat = null;
 
-    public WorkerRunnable(Socket clientSocket, Database database, Connection connection, ConnectionController connectionController/*, LocalizationController localizationController*/) {
+    public WorkerRunnable(Socket clientSocket, Database database, Connection connection, ConnectionController connectionController, Encryption encryption/*, LocalizationController localizationController*/) {
         this.connection = connection;
         this.clientSocket = clientSocket;
         this.database = database;
         this.connectionController = connectionController;
+        this.encryption = encryption;
         //this.localizationController = localizationController;
     }
 
     public void run() {
         try {
-            String ip = clientSocket.getInetAddress().toString();
-            InputStream input = clientSocket.getInputStream();
             BufferedReader dIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
-            String a = "";
             if (dIn.ready()) {
                 String msg = "";
                 msg = dIn.readLine();
@@ -62,10 +61,9 @@ class WorkerRunnable implements Runnable {
                             FileOutputStream fos = new FileOutputStream(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg");
                             fos.write(message.getBytes());
                             fos.close();
-                            idChat = database.findId_user(ip);
-                            database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", idChat, idChat);
+                            database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", splittedR[1], splittedR[1]);
                         }else{
-                            tcp_client.sendMessageNoKey(splittedR.toString()); //message already crypted
+                            tcp_client.sendMessageNoKey(splittedR.toString(),splittedR[1]); //message already crypted
                         }
                         break;
                     case "sendInfo":
@@ -83,20 +81,29 @@ class WorkerRunnable implements Runnable {
                             msg = splittedR[2];
                             Date date = new Date();
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-                            Cursor dateDB = database.getLastMessageChat(idChat);
+                            Cursor dateDB = database.getLastMessageChat(splittedR[1]);
                             String datetime = dateDB.getString(dateDB.getColumnIndex(Task.TaskEntry.DATETIME));
                             try {
                                 date = format.parse(datetime);
                                 if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
-                                    database.addMsg("date£€" + date, idChat, idChat);
+                                    database.addMsg("date£€" + date, splittedR[1], splittedR[1]);
                                 }
+                                database.addMsg(encryption.decryptAES(msg.getBytes(),encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1]))), splittedR[1], splittedR[1]);
                             } catch (ParseException e) {
                                 e.printStackTrace();
+                            } catch (GeneralSecurityException e) {
+                                e.printStackTrace();
                             }
-                            idChat = database.findId_user(ip);
-                            database.addMsg(msg, idChat, idChat);
                         }else{
-                            tcp_client.sendMessageNoKey(splittedR.toString()); //message already crypted
+                            tcp_client.sendMessageNoKey(splittedR.toString(),splittedR[1]); //message already crypted
+                        }
+                        break;
+                    case "handShake":
+                        if(splittedR[1].equals(ConnectionController.myUser.getIdUser())){
+                            database.setSymmetricKey(encryption.decrypt(splittedR[2]).split("£€")[0]);
+                            tcp_client.sendMessage(encryption.decrypt(splittedR[2]).split("£€")[1],splittedR[1]);
+                        }else{
+                            tcp_client.sendMessageNoKey(splittedR.toString(),splittedR[1]);
                         }
                         break;
                     /*case "REQUEST-MEET":

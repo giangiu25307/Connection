@@ -37,15 +37,15 @@ import static java.security.KeyFactory.getInstance;
 
 public class Encryption {
 
-    private PrivateKey privateKey;
-    private PublicKey publicKey;
+    public static PrivateKey privateKey;
+    public static PublicKey publicKey;
     private SecretKey secretKey;
     byte[] IV;
     private Cipher cipher;
     private KeyStore ks;
 
     public Encryption() {
-        generateAsymmetricKeys();//  System.out.println(encryption.decrypt(encryption.encrypt("ciao",encryption.convertStringToPublicKey(encryption.getStringPublicKey())))); SCRIVERE MESSAGGI AD UN ALTRA PERSONA ATTRAVERSO IL METODO convert
+
     }
 
     public void generateAsymmetricKeys() {
@@ -105,11 +105,7 @@ public class Encryption {
         return result;
     }
 
-    public PublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    public String getStringPublicKey() {
+    public String convertPublicKeyToString() {
         try {
             return Base64.encodeToString(ks.getCertificate("key1").getPublicKey().getEncoded(), Base64.DEFAULT);
         } catch (KeyStoreException e) {
@@ -134,6 +130,40 @@ public class Encryption {
         return Base64.encodeToString(secretKey.getEncoded(),Base64.DEFAULT);
     }
 
+    public byte[] encryptAES(String plaintext, SecretKey secretKey) {
+        try {
+            cipher = Cipher.getInstance("AES");
+            SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
+            IvParameterSpec ivSpec = new IvParameterSpec(IV);
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+            return cipher.doFinal(plaintext.getBytes());
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String decryptAES(byte[] cipherText, SecretKey secretKey)  {
+        try {
+            cipher = Cipher.getInstance("AES");
+            SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
+            IvParameterSpec ivSpec = new IvParameterSpec(IV);
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+            return new String(cipher.doFinal(cipherText));
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public SecretKey getSecretKey(){
+        return secretKey;
+    }
+
+    /*public void setSecretKey(SecretKey secretKey){
+        this.secretKey=secretKey;
+    }
+
     public void setPublic_PrivateKey() {
         try {
             ks = KeyStore.getInstance("AndroidKeyStore");
@@ -150,35 +180,5 @@ public class Encryption {
             e.printStackTrace();
             return;
         }
-    }
-
-    public byte[] encryptAES(String plaintext) {
-        try {
-            cipher = Cipher.getInstance("AES");
-            SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
-            IvParameterSpec ivSpec = new IvParameterSpec(IV);
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
-            return cipher.doFinal(plaintext.getBytes());
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public String decryptAES(byte[] cipherText)  {
-        try {
-            cipher = Cipher.getInstance("AES");
-            SecretKeySpec keySpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
-            IvParameterSpec ivSpec = new IvParameterSpec(IV);
-            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-            return new String(cipher.doFinal(cipherText));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public void setSecretKey(SecretKey secretKey){
-        this.secretKey=secretKey;
-    }
+    }*/
 }

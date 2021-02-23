@@ -19,6 +19,7 @@ import android.text.format.Formatter;
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Model.User;
+import com.example.connection.TCP_Connection.Encryption;
 import com.example.connection.TCP_Connection.MultiThreadedServer;
 import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.UDP_Connection.Multicast_P2P;
@@ -42,7 +43,6 @@ ConnectionController {
     private WifiP2pConfig mConfig;
     private Multicast_P2P multicastP2P;
     private Multicast_WLAN multicastWLAN;
-    private TCP_Client tcpClient;
     public static User myUser;
     private Database database;
     private BluetoothScanner bluetoothScanner;
@@ -50,10 +50,10 @@ ConnectionController {
     private int netId;
     private String myId;
     private ConnectivityManager connManager;
-    private NetworkInfo mWifi;
     private NetworkRequest networkRequest;
     public static Network mMobileNetwork;
     private MultiThreadedServer multiThreadedServer;
+    private Encryption encryption;
 
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
@@ -64,7 +64,6 @@ ConnectionController {
         myId = myUser.getIdUser();
         multicastP2P = new Multicast_P2P(database, this);
         multicastWLAN = new Multicast_WLAN(database, this);
-        tcpClient = new TCP_Client();
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection,this, bluetoothAdvertiser);
@@ -79,9 +78,8 @@ ConnectionController {
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build();
-
-        mWifi = connManager.getNetworkInfo(TYPE_WIFI);
         multiThreadedServer = new MultiThreadedServer(database,connection,this);
+        encryption = new Encryption();
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
@@ -112,6 +110,8 @@ ConnectionController {
                 bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                 multiThreadedServer.openServerSocketP2p();
                 multiThreadedServer.run();
+                encryption.generateAsymmetricKeys();
+                database.setPublicKey(encryption.convertPublicKeyToString());
             }
 
             @Override
@@ -136,7 +136,8 @@ ConnectionController {
         bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
         bluetoothAdvertiser.stopAdvertising();
-
+        encryption.generateAsymmetricKeys();
+        database.setPublicKey(encryption.convertPublicKeyToString());
         connManager.requestNetwork(networkRequest, new NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
