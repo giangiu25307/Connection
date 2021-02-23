@@ -4,6 +4,9 @@ import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.MultiThreadedServer;
 import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.UDP_Connection.Multicast;
+import com.example.connection.UDP_Connection.Multicast_P2P;
+import com.example.connection.UDP_Connection.Multicast_WLAN;
+import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
 
 import java.nio.file.Paths;
@@ -11,18 +14,23 @@ import java.nio.file.Paths;
 public class ChatController {
 
     private TCP_Client tcp;
-    private Multicast udp;
+    private Multicast_P2P udpP2p;
+    private Multicast_WLAN udpWlan;
     private Database database;
     public static ChatController istance = null;
+    private ConnectionController connectionController;
 
     public static ChatController getInstance() {
         return istance;
     }
 
-    public ChatController newIstance(Database database, TCP_Client tcp) {
+    public ChatController newIstance(Database database, TCP_Client tcp, Multicast_P2P udpP2p, Multicast_WLAN udpWlan, ConnectionController connectionController) {
         istance = new ChatController();
         istance.setDatabase(database);
         istance.setTcp(tcp);
+        istance.setUdpP2p(udpP2p);
+        istance.setUdpWlan(udpWlan);
+        istance.setConnectionController(connectionController);
         return istance;
     }
 
@@ -30,8 +38,16 @@ public class ChatController {
         this.tcp = tcp;
     }
 
-    public void setUdp(Multicast udp) {
-        this.udp = udp;
+    public void setUdpP2p(Multicast_P2P udpP2p) {
+        this.udpP2p = udpP2p;
+    }
+
+    public void setUdpWlan(Multicast_WLAN udpWlan) {
+        this.udpWlan = udpWlan;
+    }
+
+    public void setConnectionController(ConnectionController connectionController) {
+        this.connectionController = connectionController;
     }
 
     private void setDatabase(Database database) {
@@ -45,7 +61,10 @@ public class ChatController {
 
     //Send a global message -------------------------------------------------------------------------------------------------------------------------------
     public void sendGlobalMsg(String msg) {
-        udp.sendGlobalMsg(msg);
+        if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION"))
+            udpWlan.sendGlobalMsg(msg);
+        if (MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0") != null)
+            udpP2p.sendGlobalMsg(msg);
     }
 
     //send a direct message -------------------------------------------------------------------------------------------------------------------------------

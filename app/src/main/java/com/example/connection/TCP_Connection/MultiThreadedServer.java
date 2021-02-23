@@ -25,14 +25,16 @@ public class MultiThreadedServer {
     private Connection connection;
     private ConnectionController connectionController;
     private Encryption encryption;
+    private TCP_Client tcp_client;
     //LocalizationController localizationController;
     ServerSocketFactory serverSocketFactory = ServerSocketFactory.getDefault();
 
-    public MultiThreadedServer(Database database, Connection connection, ConnectionController connectionController, Encryption encryption/*, LocalizationController localizationController*/) {
+    public MultiThreadedServer(Database database, Connection connection, ConnectionController connectionController, Encryption encryption, TCP_Client tcp_client/*, LocalizationController localizationController*/) {
         this.database = database;
         this.connection = connection;
         this.connectionController = connectionController;
         this.encryption = encryption;
+        this.tcp_client = tcp_client;
         //this.localizationController= localizationController;
     }
 
@@ -80,7 +82,7 @@ public class MultiThreadedServer {
                 throw new RuntimeException(
                         "Error accepting client connection", e);
             }
-            new Thread(new WorkerRunnable(clientSocket, database, connection, connectionController,encryption/*,localizationController*/)).start();
+            new Thread(new WorkerRunnable(clientSocket, database, connection, connectionController,encryption,tcp_client/*,localizationController*/)).start();
         }
         System.out.println("Server Stopped.");
         return;

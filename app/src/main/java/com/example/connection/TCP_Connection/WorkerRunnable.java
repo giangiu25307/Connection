@@ -35,12 +35,13 @@ class WorkerRunnable implements Runnable {
     Encryption encryption;
     //LocalizationController localizationController;
 
-    public WorkerRunnable(Socket clientSocket, Database database, Connection connection, ConnectionController connectionController, Encryption encryption/*, LocalizationController localizationController*/) {
+    public WorkerRunnable(Socket clientSocket, Database database, Connection connection, ConnectionController connectionController, Encryption encryption,TCP_Client tcp_client/*, LocalizationController localizationController*/) {
         this.connection = connection;
         this.clientSocket = clientSocket;
         this.database = database;
         this.connectionController = connectionController;
         this.encryption = encryption;
+        this.tcp_client = tcp_client;
         //this.localizationController = localizationController;
     }
 
@@ -101,7 +102,7 @@ class WorkerRunnable implements Runnable {
                     case "handShake":
                         if(splittedR[1].equals(ConnectionController.myUser.getIdUser())){
                             database.setSymmetricKey(encryption.decrypt(splittedR[2]).split("£€")[0]);
-                            tcp_client.sendMessage(encryption.decrypt(splittedR[2]).split("£€")[1],splittedR[1]);
+                            database.addMsg(encryption.decrypt(splittedR[2]).split("£€")[1],splittedR[1],splittedR[1]);
                         }else{
                             tcp_client.sendMessageNoKey(splittedR.toString(),splittedR[1]);
                         }

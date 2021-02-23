@@ -159,7 +159,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void setChatController() {
-        this.chatController = new ChatController().newIstance(database, connectionController);
+        this.chatController = ChatController.getInstance();
     }
 
     public void setDatabase(Database database) {

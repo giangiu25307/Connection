@@ -2,6 +2,7 @@ package com.example.connection.UDP_Connection;
 
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
@@ -29,11 +30,10 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     protected TCP_Client tcp_client;
     protected ConnectionController connectionController;
     protected Database database;
-    protected UDP_Socket udp_socket;
 
-    public Multicast(Database database, ConnectionController connectionController) {
+    public Multicast(Database database, ConnectionController connectionController,TCP_Client tcp_client) {
         this.connectionController = connectionController;
-        tcp_client = new TCP_Client();
+        this.tcp_client = tcp_client;
         this.database = database;
         try {
             group = InetAddress.getByName("234.0.0.0");
@@ -44,30 +44,15 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
 
     }
 
-
     @Override
     public void run() {
 
 
     }
 
-    //Send a global message ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    public void sendGlobalMsg(String msg) {
-        try {
-            msg = "globalmessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
-            byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
-            multicastSocketGroupP2p.setTimeToLive(255);
-            multicastSocketGroupP2p.send(message);
-            // database.addGlobalMsg(msg, user.getIdUser());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected Void doInBackground(Void... voids) {
-        new Thread(new Multicast(database, connectionController)).start();
+        new Thread(new Multicast(database, connectionController,tcp_client)).start();
         return null;
     }
 

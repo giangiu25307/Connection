@@ -29,26 +29,6 @@ public class LocalizationController {
         gps=new GPS(connection);
     }
 
-    public void RTTDistance() throws IOException, NoSuchAlgorithmException {
-        /*if (database.getAccept(database.findId_user(this.ip.toString())).equals("yes")) {//accept only use yes or no
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        //fare while fino alla chiusura della finestra
-                        rtt.packetSender(LocalizationController.this.ip);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                        tcp_client.startConnection(LocalizationController.this.ip.toString(),50000);
-                        tcp_client.sendMessage("RESULT-MEET£€"+database.getMyInformation()[0]+rtt.getRTT()+"£€"+gps.getLatitude()+"£€"+gps.getLongitude(),"");
-                }
-            }).start();
-
-        }
-        else{
-            //parte di luca
-        }*/
-    }
     public float gpsDirection(double Userlatiutude,double Userlongitude){
         Location User=new Location("user");
         User.setLatitude(Userlatiutude);
@@ -58,9 +38,7 @@ public class LocalizationController {
     }
 
     public void acceptMeet() throws IOException, NoSuchAlgorithmException {
-        tcp_client.startConnection(ip.toString(),50000);
         tcp_client.sendMessage("REQUEST-MEET£€"+database.getMyInformation()[0],"");
-        RTTDistance();
     }
 
     public InetAddress getIp() {

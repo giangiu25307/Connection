@@ -54,16 +54,19 @@ ConnectionController {
     public static Network mMobileNetwork;
     private MultiThreadedServer multiThreadedServer;
     private Encryption encryption;
+    private TCP_Client tcp_client;
 
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
+        encryption = new Encryption();
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         this.database = database;
         setUser();
         myId = myUser.getIdUser();
-        multicastP2P = new Multicast_P2P(database, this);
-        multicastWLAN = new Multicast_WLAN(database, this);
+        tcp_client = new TCP_Client(database,encryption);
+        multicastP2P = new Multicast_P2P(database, this,tcp_client);
+        multicastWLAN = new Multicast_WLAN(database, this,tcp_client);
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection,this, bluetoothAdvertiser);
@@ -78,8 +81,8 @@ ConnectionController {
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build();
-        multiThreadedServer = new MultiThreadedServer(database,connection,this);
-        encryption = new Encryption();
+        multiThreadedServer = new MultiThreadedServer(database,connection,this,encryption,tcp_client);
+        ChatController chatController = new ChatController().newIstance(database,tcp_client,multicastP2P,multicastWLAN,this);
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
