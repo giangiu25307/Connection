@@ -40,6 +40,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.connection.Adapter.SliderAdapter;
+import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
@@ -91,13 +92,15 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private MyViewPager viewPager;
     private User user;
     private Connection connection;
+    private AccountController accountController;
 
-    public SignupFragment newInstance(Connection connection, Database database) {
+    public SignupFragment newInstance(Connection connection, Database database, AccountController accountController) {
         SignupFragment signupFragment = new SignupFragment();
         signupFragment.setConnection(connection);
         signupFragment.setDatabase(database);
         signupFragment.setNations();
         signupFragment.setUser();
+        signupFragment.setAccountController(accountController);
         return signupFragment;
     }
 
@@ -114,7 +117,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new LoginFragment().newInstance(connection,database);
+                Fragment fragment = new LoginFragment().newInstance(connection,database,accountController);
                 loadFragment(fragment);
             }
         });
@@ -154,6 +157,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     } else viewPager.setCurrentItem(currentPage);
                 } else {
                     //send user info to server
+                    System.out.println(user.getAll());
+                    try {
+                        System.out.println(accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePic()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic(), user.getPublicKey());
                     database.setNumber("0", user.getNumber());
                     Fragment fragment = new HomeFragment().newInstance(connection,database);
@@ -491,4 +500,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         user = new User();
     }
 
+    public void setAccountController(AccountController accountController) {
+        this.accountController = accountController;
+    }
 }

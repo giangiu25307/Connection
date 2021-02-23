@@ -27,6 +27,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
+import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
@@ -37,6 +38,7 @@ import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.vpn.LocalVPNService;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -57,6 +59,7 @@ public class Connection extends AppCompatActivity {
     public static String minAge = "", maxAge = "";
     public static String[] genders = {"", "", ""};
     private static final int VPN_REQUEST_CODE = 0x0F;
+    private AccountController accountController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +69,12 @@ public class Connection extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
+        accountController = new AccountController();
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
         loadFragment(false);
-
         //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW
         final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
         ActivityCompat.requestPermissions(this, permissions, 101);
@@ -173,7 +176,7 @@ public class Connection extends AppCompatActivity {
     }
 
     private LoginFragment createLoginFragment() {
-        return new LoginFragment().newInstance(this, database);
+        return new LoginFragment().newInstance(this, database, accountController);
     }
 
     @Override

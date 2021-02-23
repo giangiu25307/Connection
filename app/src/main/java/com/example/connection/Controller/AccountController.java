@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.Buffer;
 
 public class AccountController {
 
@@ -25,10 +26,11 @@ public class AccountController {
         RequestBody formBody = new FormBody.Builder()
                 .add("username", username)
                 .add("password", password)
+                //.add("yagosaf","yagosaf")
                 .build();
 
         Request request = new Request.Builder()
-                .url("www.connection.it" + "/login")
+                .url("https://connexionauth.herokuapp.com/auth/login/")
                 .post(formBody)
                 .build();
 
@@ -43,27 +45,27 @@ public class AccountController {
         return null;
     }
 
-    public String register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number, String valletParameter) throws IOException {
+    public String register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number,String profilePic) throws IOException {
 
         RequestBody formBody = new FormBody.Builder()
+                .add("name", name)
                 .add("username", username)
                 .add("password", password)
                 .add("mail", mail)
                 .add("gender", gender)
-                .add("name", name)
                 .add("surname", surname)
                 .add("country", country)
                 .add("city", city)
                 .add("birth", birth)
                 .add("number", number)
-                .add("yagosaf","yagosaf")
+                .add("profilePic",profilePic)
+                //.add("yagosaf","yagosaf")
                 .build();
 
         Request request = new Request.Builder()
-                .url("www.connection.it" + "/register")
+                .url("https://connexionauth.herokuapp.com/auth/signup/")
                 .post(formBody)
                 .build();
-
 
         Call call = client.newCall(request);
         try {
@@ -73,6 +75,18 @@ public class AccountController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static String bodyToString(final Request request){
+
+        try {
+            final Request copy = request.newBuilder().build();
+            final Buffer buffer = new Buffer();
+            copy.body().writeTo(buffer);
+            return buffer.readUtf8();
+        } catch (final IOException e) {
+            return "did not work";
+        }
     }
 
 }

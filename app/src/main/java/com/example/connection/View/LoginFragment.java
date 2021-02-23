@@ -15,12 +15,15 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Model.Chat;
 import com.example.connection.Model.User;
 import com.example.connection.R;
+
+import java.io.IOException;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
@@ -31,15 +34,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private ChatController chatController;
     private EditText email, password;
     private Connection connection;
+    private AccountController accountController;
 
     public LoginFragment() {
 
     }
 
-    public LoginFragment newInstance(Connection connection, Database database) {
+    public LoginFragment newInstance(Connection connection, Database database, AccountController accountController) {
         LoginFragment loginFragment = new LoginFragment();
         loginFragment.setConnection(connection);
         loginFragment.setDatabase(database);
+        loginFragment.setAccountController(accountController);
         return loginFragment;
     }
 
@@ -65,7 +70,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Fragment fragment;
         switch (v.getId()) {
             case R.id.signupButton:
-                fragment = new SignupFragment().newInstance(connection, database);
+                fragment = new SignupFragment().newInstance(connection, database,accountController);
                 loadFragment(fragment);
                 break;
             case R.id.skipButton:
@@ -79,6 +84,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     loadFragment(fragment);
                     email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    try {
+                        System.out.println(accountController.login(email.getText().toString(),password.getText().toString()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
@@ -109,4 +119,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         this.connection = connection;
     }
 
+    public void setAccountController(AccountController accountController) {
+        this.accountController = accountController;
+    }
 }
