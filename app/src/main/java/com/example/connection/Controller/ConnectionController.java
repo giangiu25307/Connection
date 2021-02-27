@@ -14,6 +14,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.format.Formatter;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
@@ -111,10 +112,21 @@ ConnectionController {
                 Thread t1 = new Thread(multicastP2P);
                 t1.start();
                 bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
-                multiThreadedServer.openServerSocketP2p();
-                multiThreadedServer.run();
+                Handler handler = new Handler();
                 encryption.generateAsymmetricKeys();
-                database.setPublicKey(encryption.convertPublicKeyToString());
+                database.setPublicKey(encryption.convertPublicKeyToString());handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        multiThreadedServer.openServerSocketP2p();
+                        Thread thread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                multiThreadedServer.run();
+                            }
+                        });
+                        thread.start();
+                    }
+                },100);
             }
 
             @Override

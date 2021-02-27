@@ -106,12 +106,12 @@ public class Encryption {
     }
 
     public String convertPublicKeyToString() {
-        try {
-            return Base64.encodeToString(ks.getCertificate("key1").getPublicKey().getEncoded(), Base64.DEFAULT);
-        } catch (KeyStoreException e) {
+        //try {
+            return Base64.encodeToString(/*ks.getCertificate("key1").getPublicKey()*/publicKey.getEncoded(), Base64.DEFAULT);
+        /*} catch (KeyStoreException e) {
             e.printStackTrace();
             return null;
-        }
+        }*/
     }
 
     public PublicKey convertStringToPublicKey(String key) throws GeneralSecurityException, IOException {
