@@ -1,25 +1,27 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
 
         <!-- SplashScreen -->
-        <item name="splashScreenLayoutBackground">@android:color/white</item>
+        <item name="splashScreenLayoutBackground">@color/colorPrimary</item>
 
         <!-- Login -->
         <item name="inputData">@color/darkWhite</item>
         <item name="inputDataHintColor">@color/darkHintcolor</item>
         <item name="nextButton">@color/black2</item>
 
-        <!-- Toolbar and bottomNavigation -->
+        <!-- Toolbar -->
         <item name="toolbarBackground">@color/colorPrimary</item>
-        <item name="toolbarIcon">@color/darkColorPrimaryLight</item>
-        <item name="bottomMenuBackground">@color/colorPrimary</item>
+        <item name="toolbarIcon">@color/toolbarIconColorLight</item>
+
+        <!-- BottomNavigation -->
+        <item name="bottomMenuBackground">@android:color/white</item>
         <item name="bottomMenuIcon">@color/lightGray</item>
+        <item name="bottomUnselectedIcon">@color/bottomUnselectedColorLight</item>
 
         <!-- General layout -->
-        <item name="whiteLayoutBackground">@android:color/white</item>
-        <item name="layoutBackground">@color/colorPrimaryLight</item>
+        <item name="layoutBackground">@color/colorPrimary</item>
+        <item name="blackWhiteLayoutBackground">@android:color/white</item>
 
         <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@android:color/white</item>
@@ -43,25 +45,28 @@
         <item name="cancelDialogColor">@color/cancelDialogColorLight</item>
     </style>
 
-    <style name="DarkTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="DarkTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
 
         <!-- SplashScreen -->
-        <item name="splashScreenLayoutBackground">@color/black2</item>
+        <item name="splashScreenLayoutBackground">@color/darkColorPrimary</item>
 
         <!-- Login -->
         <item name="inputData">@color/black3</item>
         <item name="inputDataHintColor">@color/lightHintColor</item>
         <item name="nextButton">@android:color/white</item>
 
-        <!-- Toolbar and bottomNavigation -->
+        <!-- Toolbar -->
         <item name="toolbarBackground">@color/darkColorPrimary</item>
-        <item name="toolbarIcon">@color/colorPrimaryDark</item>
-        <item name="bottomMenuBackground">@color/darkColorPrimary</item>
+        <item name="toolbarIcon">@color/toolbarIconColorDark</item>
+
+        <!-- BottomNavigation -->
+        <item name="bottomMenuBackground">@android:color/black</item>
         <item name="bottomMenuIcon">@color/darkGray</item>
+        <item name="bottomUnselectedIcon">@color/bottomUnselectedColorDark</item>
 
         <!-- General layout -->
-        <item name="whiteLayoutBackground">@color/black2</item>
-        <item name="layoutBackground">@color/darkColorPrimaryLight</item>
+        <item name="layoutBackground">@color/darkColorPrimary</item>
+        <item name="blackWhiteLayoutBackground">@android:color/black</item>
 
         <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@color/black3</item>
@@ -70,7 +75,7 @@
         <item name="messageInputElevation">1dp</item>
 
         <!-- Settings -->
-        <item name="groupSettingsBackground">@color/darkColorPrimaryDark</item>
+        <item name="groupSettingsBackground">@color/lightGray</item>
         <item name="groupOptionSettingsBackground">@color/black4</item>
 
         <!-- Text -->
@@ -83,6 +88,12 @@
 
         <!-- Dialog -->
         <item name="cancelDialogColor">@color/cancelDialogColorDark</item>
+    </style>
+    
+    <style name="ScreenTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:fontFamily">@font/opensans_bold</item>
+        <item name="android:textSize">24sp</item>
     </style>
 
     <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -118,21 +129,18 @@
         <item name="android:background">@drawable/next_button_background</item>
         <item name="android:textColor">?attr/invertedTextColor</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:fontFamily">@font/opensans_regular</item>
     </style>
 
     <style name="signupButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/signup_button_background</item>
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:fontFamily">@font/opensans_regular</item>
     </style>
 
     <style name="permissionButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/bg_permission_button</item>
         <item name="android:textColor">?attr/invertedTextColor</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:fontFamily">@font/opensans_regular</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">0dp</item>
     </style>

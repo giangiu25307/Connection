@@ -563,12 +563,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         if (this.theme == R.style.AppTheme) {
 
-            window.setStatusBarColor(getContext().getColor(R.color.colorPrimaryDark));
+            window.setStatusBarColor(getContext().getColor(R.color.colorPrimary));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
             window.getDecorView().setSystemUiVisibility(0);
             //window.clearFlags(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-            window.setStatusBarColor(getContext().getColor(R.color.darkColorPrimaryDark));
+            window.setStatusBarColor(getContext().getColor(R.color.darkColorPrimary));
         }
         HomeFragment homeFragment = new HomeFragment();
         settingsFragment = newInstance(connection,connectionController,database,chatController,map,chat);

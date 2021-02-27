@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Primary color -->
-    <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryLight">#FCFCFC</color>
-    <color name="colorPrimaryDark">#FEFEFE</color>
+    <color name="colorPrimary">#FAFAFA</color>
 
     <!-- Dark color primary -->
-    <color name="darkColorPrimary">#0D0D0D</color>
-    <color name="darkColorPrimaryLight">#111111</color>
-    <color name="darkColorPrimaryDark">#0A0A0A</color>
+    <color name="darkColorPrimary">#191919</color>
 
+    <!-- Accent colors and variants -->
     <color name="colorAccent">#FF5722</color>
+    <color name="bottomIconColor">#D84315</color>
 
     <!-- Reversed color primary -->
     <color name="reversedColorPrimary">#282828</color>
@@ -40,6 +38,10 @@
     <!-- Gray color -->
     <color name="lightGray">#CDCDCD</color>
     <color name="darkGray">#5C5C5C</color>
+    <color name="toolbarIconColorLight">#4B4B4B</color>
+    <color name="toolbarIconColorDark">#F4F4F4</color>
+    <color name="bottomUnselectedColorLight">#9F9F9F</color>
+    <color name="bottomUnselectedColorDark">#6F6F6F</color>
 
     <!-- Hint color -->
     <color name="lightHintColor">#D2D2D2</color>

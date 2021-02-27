@@ -67,12 +67,13 @@ ConnectionController {
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection,this, bluetoothAdvertiser);
-        mConfig = new WifiP2pConfig.Builder()
+        /*mConfig = new WifiP2pConfig.Builder()
                 .setNetworkName(SSID + myId)
                 .setPassphrase(networkPassword)
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
                 .enablePersistentMode(false)
                 .build();
+         */
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         networkRequest = new NetworkRequest.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
@@ -91,6 +92,7 @@ ConnectionController {
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     @SuppressLint("MissingPermission")
     public void createGroup() {
+        /*
         mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
 
             @Override
@@ -117,6 +119,7 @@ ConnectionController {
             }
         });
 
+         */
 
     }
 
