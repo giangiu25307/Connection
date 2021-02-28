@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.connection.Adapter.ChatAdapter;
 import com.example.connection.Adapter.RequestAdapter;
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.R;
 
 public class ChatFragment extends Fragment implements View.OnClickListener {

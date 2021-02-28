@@ -1,15 +1,12 @@
 package com.example.connection.UDP_Connection;
 
-import android.net.wifi.WifiManager;
-
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.TCP_Client;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
@@ -32,14 +29,15 @@ public class Multicast_P2P extends Multicast {
                     switch (splittedR[0]) {
                         case "info":
                             //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
-                            tcp_client.sendMessage(database.getAllMyGroupInfo(), splittedR[1]);
+                            String groupInfo= database.getAllMyGroupInfo();
                             database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);//check adduser
-
+                            tcp_client.sendMessage(groupInfo, splittedR[1]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
+                            dbUserEvent=false;
                             break;
                         case "message":
                             //receiving a message -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,6 +64,7 @@ public class Multicast_P2P extends Multicast {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
+                            dbUserEvent=false;
                             break;
                         case "GO_LEAVES_BYE":
                             //the group owner is leaving the group -------------------------------------------------------------------------------------------------------------------------------
@@ -79,6 +78,7 @@ public class Multicast_P2P extends Multicast {
                                 database.deleteAllUser();
                             }
                             connectionController.connectToGroupOwnerId(splittedR[1]);
+                            dbUserEvent=false;
                             break;
                         case "groupInfo":
                             for (int i = 1; i < splittedR.length - 1; i = i + 12) {
@@ -89,6 +89,7 @@ public class Multicast_P2P extends Multicast {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
+                            dbUserEvent=false;
                             break;
                         case "userToDelete":
                             database.deleteAllIdUser(splittedR[1]);
@@ -96,6 +97,7 @@ public class Multicast_P2P extends Multicast {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
+                            dbUserEvent=false;
                             break;
                         default:
                             break;
@@ -110,7 +112,7 @@ public class Multicast_P2P extends Multicast {
     public void createMultigroupP2P() {
         try {
             multicastSocketGroupP2p = new MulticastSocket(6789);
-            multicastSocketGroupP2p.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0"));
+            multicastSocketGroupP2p.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("p2p0"));
 
         } catch (UnknownHostException e) {
             e.printStackTrace();

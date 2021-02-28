@@ -17,11 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.Controller.Task;
 import com.example.connection.R;
 import com.example.connection.View.ChatActivity;

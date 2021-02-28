@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
@@ -19,6 +18,7 @@ import android.text.format.Formatter;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
+import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.Encryption;
 import com.example.connection.TCP_Connection.MultiThreadedServer;

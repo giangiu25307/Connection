@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 
 import java.io.ByteArrayOutputStream;
@@ -17,7 +17,6 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 import java.security.GeneralSecurityException;
-import java.security.PublicKey;
 
 
 public class TCP_Client {
@@ -129,14 +128,14 @@ public class TCP_Client {
     private void checkInterface(String id, String ip) {
         try {
             stopConnection();
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e ) {
             e.printStackTrace();
         }
         if (database.isOtherGroup(id)) {
             changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("wlan0"));
             startConnection(ip, 50000);
         } else {
-            changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0"));
+            changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("p2p0"));
             startConnection(ip, 50000);
         }
     }

@@ -1,4 +1,4 @@
-package com.example.connection.Controller;
+package com.example.connection.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.Task;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;

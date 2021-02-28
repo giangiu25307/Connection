@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,10 +23,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.Controller.DrawController;
 import com.example.connection.Model.User;
 import com.example.connection.R;
+import com.example.connection.UDP_Connection.Multicast;
 
 import java.util.ArrayList;
 
@@ -63,8 +63,25 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         setHasOptionsMenu(true);
+        drawing(view);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    if(!Multicast.dbUserEvent){
+                        Fragment fragment = new MapFragment().newInstance(connectionController, database);
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
+                        Multicast.dbUserEvent=true;
+                    }
+                }
+            }
+        });
+        //thread.start();
+        return view;
+    }
 
-
+    public void drawing(View view){
         Cursor c = connectionController.getAllClientList().get();
         c.moveToFirst();
 
@@ -87,9 +104,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         AbsoluteLayout mapLayout = view.findViewById(R.id.mapLayout);
         drawController = new DrawController(mapLayout.getContext(), userList, mapLayout);
         mapLayout.addView(drawController);
-        return view;
     }
-
 
     @Override
     public void onClick(View v) {

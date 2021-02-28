@@ -1,20 +1,17 @@
 package com.example.connection.TCP_Connection;
 
 import android.database.Cursor;
-import android.widget.Switch;
 
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.Controller.Task;
-import com.example.connection.UDP_Connection.MyNetworkInterface;
+import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.View.Connection;
-import com.example.connection.localization.LocalizationController;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -75,6 +72,7 @@ class WorkerRunnable implements Runnable {
                             String[] user = splitted[i].split(",");
                             database.addUser(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10],user[11]);
                         }
+                        Multicast.dbUserEvent=false;
                         break;
                     case "message":
                         //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------

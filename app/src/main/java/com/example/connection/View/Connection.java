@@ -25,21 +25,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.connection.Bluetooth.BluetoothAdvertiser;
-import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Controller.AccountController;
-import com.example.connection.Controller.AutoClicker;
-import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
-import com.example.connection.Controller.Task;
+import com.example.connection.Database.Database;
 import com.example.connection.Model.MapUsers;
-import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.vpn.LocalVPNService;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -75,6 +66,7 @@ public class Connection extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
         loadFragment(false);
+        System.out.println(database.getMyInformation()[0]);
         //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
         //database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
         //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo

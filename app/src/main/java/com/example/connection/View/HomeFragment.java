@@ -2,12 +2,8 @@ package com.example.connection.View;
 
 import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +18,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
-import com.example.connection.Model.User;
+import com.example.connection.Database.Database;
 import com.example.connection.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 

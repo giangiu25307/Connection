@@ -18,9 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
-import com.example.connection.Model.Chat;
-import com.example.connection.Model.User;
+import com.example.connection.Database.Database;
 import com.example.connection.R;
 
 import java.io.IOException;

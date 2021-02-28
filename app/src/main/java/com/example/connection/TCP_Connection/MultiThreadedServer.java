@@ -1,19 +1,13 @@
 package com.example.connection.TCP_Connection;
 
-import android.os.AsyncTask;
-
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.View.Connection;
-import com.example.connection.View.HomeFragment;
-import com.example.connection.localization.LocalizationController;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 import javax.net.ServerSocketFactory;
 

@@ -34,10 +34,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.bumptech.glide.Glide;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 

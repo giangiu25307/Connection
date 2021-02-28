@@ -26,7 +26,7 @@ import android.widget.TextView;
 
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.R;
 
 public class ChatActivity extends AppCompatActivity {

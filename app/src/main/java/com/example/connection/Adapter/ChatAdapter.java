@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.View.ChatActivity;
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.Controller.Task;
 import com.example.connection.R;
 

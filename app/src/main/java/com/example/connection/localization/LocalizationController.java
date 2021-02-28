@@ -3,7 +3,7 @@ package com.example.connection.localization;
 
 import android.location.Location;
 
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.UDP_Connection.UDP_Socket;
 import com.example.connection.View.Connection;

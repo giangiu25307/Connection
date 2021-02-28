@@ -10,9 +10,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
 import com.example.connection.Controller.Task;
-import com.example.connection.Model.User;
 import com.example.connection.View.Connection;
 
 import java.nio.charset.StandardCharsets;
