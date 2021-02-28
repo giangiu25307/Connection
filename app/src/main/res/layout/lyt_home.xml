@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/toolbarTitle"
-            style="@style/ScreenTitle"
+            style="@style/screenTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Explore"

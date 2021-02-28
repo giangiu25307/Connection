@@ -1,5 +1,7 @@
 <resources>
 
+    <!-- App theme -->
+
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
 
         <!-- SplashScreen -->
@@ -23,6 +25,9 @@
         <item name="layoutBackground">@color/colorPrimary</item>
         <item name="blackWhiteLayoutBackground">@android:color/white</item>
 
+        <!-- Map -->
+        <item name="mapFilterCardBackground">@color/mapFilterCardBackgroundLight</item>
+
         <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@android:color/white</item>
         <item name="messageInputColor">@android:color/white</item>
@@ -36,6 +41,7 @@
         <!-- Text -->
         <item name="textColor">@android:color/black</item>
         <item name="invertedTextColor">@android:color/white</item>
+        <item name="subTitleGroup">@color/subTitleGroupLight</item>
 
         <!-- Icon -->
         <item name="iconTint">@android:color/black</item>
@@ -43,6 +49,8 @@
 
         <!-- Dialog -->
         <item name="cancelDialogColor">@color/cancelDialogColorLight</item>
+        <item name="cancelButtonBackground">@color/cancelButtonLight</item>
+        <item name="cancelButtonText">@color/cancelButtonTextLight</item>
     </style>
 
     <style name="DarkTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -68,6 +76,9 @@
         <item name="layoutBackground">@color/darkColorPrimary</item>
         <item name="blackWhiteLayoutBackground">@android:color/black</item>
 
+        <!-- Map -->
+        <item name="mapFilterCardBackground">@color/mapFilterCardBackgroundDark</item>
+
         <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@color/black3</item>
         <item name="messageInputColor">@color/black2</item>
@@ -81,6 +92,7 @@
         <!-- Text -->
         <item name="textColor">@android:color/white</item>
         <item name="invertedTextColor">@android:color/black</item>
+        <item name="subTitleGroup">@color/subTitleGroupDark</item>
 
         <!-- Icon -->
         <item name="iconTint">@android:color/white</item>
@@ -88,12 +100,60 @@
 
         <!-- Dialog -->
         <item name="cancelDialogColor">@color/cancelDialogColorDark</item>
+        <item name="cancelButtonBackground">@color/cancelButtonDark</item>
+        <item name="cancelButtonText">@color/cancelButtonTextDark</item>
     </style>
-    
-    <style name="ScreenTitle" parent="Widget.MaterialComponents.TextView">
+
+    <!-- Screen title -->
+    <style name="screenTitle" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:fontFamily">@font/opensans_bold</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <!-- Gender in map's filter -->
+    <style name="genderUnselected" parent="Widget.MaterialComponents.TextView">
+        <item name="android:background">@drawable/bg_gender_filter_unselected</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:paddingHorizontal">17.5dp</item>
+        <item name="android:paddingVertical">7.5dp</item>
+    </style>
+
+    <style name="genderSelected" parent="Widget.MaterialComponents.TextView">
+        <item name="android:background">@drawable/bg_gender_filter_selected</item>
+        <item name="android:textColor">?attr/invertedTextColor</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:paddingHorizontal">17.5dp</item>
+        <item name="android:paddingVertical">7.5dp</item>
+    </style>
+
+    <!-- Age in map's filter -->
+    <style name="ageInputStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:background">@drawable/bg_age_input</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textColorHint">?attr/inputDataHintColor</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
+        <item name="android:paddingHorizontal">15dp</item>
+        <item name="android:paddingVertical">7.5dp</item>
+    </style>
+
+    <!-- Cancel and apply/confirm dialog's buttons -->
+    <style name="cancelButton" parent="Widget.MaterialComponents.TextView">
+        <item name="android:background">@drawable/bg_cancel_button</item>
+        <item name="android:textColor">?attr/cancelButtonText</item>
+        <item name="android:fontFamily">@font/opensans_semibold</item>
+        <item name="android:paddingVertical">12.5dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="applyConfirmButton" parent="Widget.MaterialComponents.TextView">
+        <item name="android:background">@drawable/bg_apply_confirm_buttons</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:fontFamily">@font/opensans_semibold</item>
+        <item name="android:paddingVertical">12.5dp</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">

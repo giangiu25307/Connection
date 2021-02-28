@@ -122,12 +122,12 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                 final LinearLayout genderLayout, ageLayout;
                 final TextView cancelTextView, applyTextView;
-                genderLayout = alertDialog.findViewById(R.id.genderLayout);
-                ageLayout = alertDialog.findViewById(R.id.ageLayout);
+                //genderLayout = alertDialog.findViewById(R.id.genderLayout);
+                //ageLayout = alertDialog.findViewById(R.id.ageLayout);
                 cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
 
-                //gender alert dialog
+                /*Gender alert dialog
                 genderLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -175,7 +175,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     }
                 });
 
-                //age alert dialog
+                //Age alert dialog
                 ageLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -209,6 +209,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         });
                     }
                 });
+
+                */
 
                 cancelTextView.setOnClickListener(new View.OnClickListener() {
                     @Override

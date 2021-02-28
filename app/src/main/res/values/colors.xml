@@ -34,6 +34,8 @@
     <color name="black3">#202020</color>
     <color name="black2">#131313</color>
     <color name="black1">#111111</color>
+    <color name="mapFilterCardBackgroundDark">#282828</color>
+    <color name="cancelButtonDark">#212121</color>
 
     <!-- Gray color -->
     <color name="lightGray">#CDCDCD</color>
@@ -42,6 +44,12 @@
     <color name="toolbarIconColorDark">#F4F4F4</color>
     <color name="bottomUnselectedColorLight">#9F9F9F</color>
     <color name="bottomUnselectedColorDark">#6F6F6F</color>
+    <color name="mapFilterCardBackgroundLight">#FAFAFA</color>
+    <color name="cancelButtonLight">#F8F8F8</color>
+    <color name="cancelButtonTextLight">#7E7E7E</color>
+    <color name="cancelButtonTextDark">#9A9A9A</color>
+    <color name="subTitleGroupLight">#404040</color>
+    <color name="subTitleGroupDark">#E4E4E4</color>
 
     <!-- Hint color -->
     <color name="lightHintColor">#D2D2D2</color>
