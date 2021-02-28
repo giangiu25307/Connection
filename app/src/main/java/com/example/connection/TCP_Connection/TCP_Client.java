@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
@@ -20,7 +21,7 @@ import java.security.GeneralSecurityException;
 
 
 public class TCP_Client {
-    private Socket socket = null;
+    private Socket socket;
     private OutputStream out;
     private DataOutputStream dos;
     private String msg = "message£€",shake="handShake£€";
@@ -30,9 +31,7 @@ public class TCP_Client {
     public TCP_Client(Database database, Encryption encryption) {
         this.database = database;
         this.encryption = encryption;
-    }
-
-    public TCP_Client() {
+        this.socket= new Socket();
     }
 
     //start a connection with another user -----------------------
@@ -117,7 +116,8 @@ public class TCP_Client {
 
     private void changeNetworkInterface(NetworkInterface nic) {
         try {
-            socket.bind(new InetSocketAddress(nic.getInterfaceAddresses().get(0).getAddress(), 0));
+            System.out.println(nic.getInterfaceAddresses().get(0).getAddress().getHostAddress());
+            socket.bind(new InetSocketAddress(InetAddress.getByName("192.168.49.1"/*nic.getInterfaceAddresses().get(0).getAddress().getHostAddress()*/), 50000));
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -132,11 +132,12 @@ public class TCP_Client {
             e.printStackTrace();
         }
         if (database.isOtherGroup(id)) {
+            System.out.println("yes");
             changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("wlan0"));
             startConnection(ip, 50000);
         } else {
             changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("p2p0"));
-            startConnection(ip, 50000);
+            startConnection("192.168.49.181", 50000);
         }
     }
 

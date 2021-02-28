@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -40,11 +41,11 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NUMBER + " TEXT  DEFAULT 0, "
                 + Task.TaskEntry.BIRTH + " TEXT NOT NULL, "
                 + Task.TaskEntry.PROFILE_PIC + " TEXT NOT NULL, "
-                + Task.TaskEntry.PUBLIC_KEY + " TEXT,"
+                + Task.TaskEntry.PUBLIC_KEY + " TEXT, "
                 + Task.TaskEntry.IP + " TEXT, "
                 + Task.TaskEntry.ACCEPT + " TEXT, "
-                + Task.TaskEntry.OTHER_GROUP + " TEXT DEFAULT 0, "
-                + Task.TaskEntry.MESSAGES_ACCEPTED + " TEXT "
+                + Task.TaskEntry.MESSAGES_ACCEPTED + " TEXT, "
+                + Task.TaskEntry.OTHER_GROUP + " TEXT DEFAULT 0 "
                 + ")";
 
         String CREATE_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.MESSAGE + " ( "
@@ -642,13 +643,14 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public boolean isOtherGroup(String id) {
-        String query = "SELECT " + Task.TaskEntry.ID_USER +
+        String query = "SELECT " + Task.TaskEntry.OTHER_GROUP +
                 " FROM " + Task.TaskEntry.USER +
-                " WHERE " + Task.TaskEntry.OTHER_GROUP + "=" + "1 AND "+ Task.TaskEntry.ID_USER + "="+ id;
+                " WHERE " + Task.TaskEntry.OTHER_GROUP + "=" + "1 AND " + Task.TaskEntry.ID_USER + "=" + id;
         Cursor c = db.rawQuery(query, null);
-        if (c != null) {
+        try {
+            c.getString(0);
             return true;
-        }else{
+        } catch (CursorIndexOutOfBoundsException e) {
             return false;
         }
     }

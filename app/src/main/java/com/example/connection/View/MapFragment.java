@@ -77,7 +77,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
-        //thread.start();
+        thread.start();
         return view;
     }
 

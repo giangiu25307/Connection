@@ -155,6 +155,7 @@ ConnectionController {
                     String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
                     System.out.println(ip);
                     myUser.setInetAddress(ip);
+                    database.setIp(myUser.getIdUser(),myUser.getInetAddress().getHostAddress());
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
