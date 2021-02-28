@@ -17,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.net.ServerSocketFactory;
 
-public class MultiThreadedServer {
+public class MultiThreadedServer implements Runnable{
     protected int serverPort = 50000;
     protected ServerSocket serverSocket = null;
     protected boolean isStopped = false;

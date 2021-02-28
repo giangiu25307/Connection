@@ -1,6 +1,8 @@
 package com.example.connection.UDP_Connection;
 
+import android.content.Context;
 import android.database.Cursor;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 
@@ -41,7 +43,6 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
             e.printStackTrace();
         }
         this.sa = new InetSocketAddress(group, 6789);
-
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.connection.Controller;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -13,8 +14,9 @@ public class Database extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Connection";
-    SQLiteDatabase db = this.getWritableDatabase();
-    Context context;
+    private SQLiteDatabase db = this.getWritableDatabase();
+    private Context context;
+    private Intent intent = new Intent();
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

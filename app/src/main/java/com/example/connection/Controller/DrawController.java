@@ -287,7 +287,6 @@ public class DrawController extends View {
             if (!genders[2].equals("")){
                 for (int i = 1; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[2]))Connection.mapUsers.get(i).setVisibility(true);
             }
-
         }
     }
 

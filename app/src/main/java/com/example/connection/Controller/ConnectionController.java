@@ -118,12 +118,7 @@ ConnectionController {
                     @Override
                     public void run() {
                         multiThreadedServer.openServerSocketP2p();
-                        Thread thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                multiThreadedServer.run();
-                            }
-                        });
+                        Thread thread = new Thread(multiThreadedServer);
                         thread.start();
                     }
                 },100);
@@ -274,4 +269,7 @@ ConnectionController {
         return wifiManager.getConnectionInfo().getSSID();
     }
 
+    public WifiManager getWifiManager() {
+        return wifiManager;
+    }
 }

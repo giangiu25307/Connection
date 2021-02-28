@@ -1,5 +1,7 @@
 package com.example.connection.UDP_Connection;
 
+import android.net.wifi.WifiManager;
+
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.TCP_Connection.TCP_Client;
