@@ -27,6 +27,7 @@
 
         <!-- Map -->
         <item name="mapFilterCardBackground">@color/mapFilterCardBackgroundLight</item>
+        <item name="topLineBottomSheet">@color/topLineBottomSheetLight</item>
 
         <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@android:color/white</item>
@@ -78,6 +79,7 @@
 
         <!-- Map -->
         <item name="mapFilterCardBackground">@color/mapFilterCardBackgroundDark</item>
+        <item name="topLineBottomSheet">@color/topLineBottomSheetDark</item>
 
         <!-- Chat -->
         <item name="dateMessageLayoutBackgroundColor">@color/black3</item>
@@ -158,6 +160,14 @@
 
     <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/rounded_20dp_background</item>
+    </style>
+
+    <style name="customBottomSheet" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetBackground</item>
+    </style>
+
+    <style name="bottomSheetBackground" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bs_new_chat</item>
     </style>
 
     <style name="confirmAlertButton" parent="Widget.AppCompat.TextView">

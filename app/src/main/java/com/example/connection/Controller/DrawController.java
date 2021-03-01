@@ -1,28 +1,27 @@
 package com.example.connection.Controller;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.connection.Model.MapUsers;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.View.ChatActivity;
+import com.example.connection.View.BottomSheetNewChat;
 import com.example.connection.View.Connection;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 
@@ -127,6 +126,7 @@ public class DrawController extends View {
                 return true;
             }
         });
+        /*
         image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,6 +155,17 @@ public class DrawController extends View {
                         getContext().startActivity(myIntent);
                     }
                 });
+            }
+        });*/
+        image.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*BottomSheetDialog bottomSheet = new BottomSheetDialog(getContext(), R.style.customBottomSheet);
+                View bottomSheetView = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.lyt_bs_new_chat, (LinearLayout)findViewById(R.id.bottomSheetContainer));
+                bottomSheet.setContentView(bottomSheetView);
+                bottomSheet.show();*/
+                BottomSheetNewChat bottomSheet = new BottomSheetNewChat();
+                bottomSheet.show(((AppCompatActivity)getContext()).getSupportFragmentManager(), "ModalBottomSheet");
             }
         });
         images.add(image);

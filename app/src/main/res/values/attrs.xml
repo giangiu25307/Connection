@@ -23,6 +23,7 @@
 
         <!-- Map layout -->
         <attr name="mapFilterCardBackground" format="color"/>
+        <attr name="topLineBottomSheet" format="color"/>
 
         <!-- Chat -->
         <attr name="dateMessageLayoutBackgroundColor" format="color"/>

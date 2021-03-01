@@ -9,6 +9,7 @@
     <!-- Accent colors and variants -->
     <color name="colorAccent">#FF5722</color>
     <color name="bottomIconColor">#D84315</color>
+    <color name="colorPrimaryDark">#FF5722</color>
 
     <!-- Reversed color primary -->
     <color name="reversedColorPrimary">#282828</color>
@@ -50,6 +51,8 @@
     <color name="cancelButtonTextDark">#9A9A9A</color>
     <color name="subTitleGroupLight">#404040</color>
     <color name="subTitleGroupDark">#E4E4E4</color>
+    <color name="topLineBottomSheetLight">#A8A8A8</color>
+    <color name="topLineBottomSheetDark">#282828</color>
 
     <!-- Hint color -->
     <color name="lightHintColor">#D2D2D2</color>
