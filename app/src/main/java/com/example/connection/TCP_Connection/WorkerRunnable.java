@@ -66,12 +66,13 @@ class WorkerRunnable implements Runnable {
                         break;
                     case "sendInfo":
                         //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
-                        String[] splitted = splittedR[1].split(",;");
-
-                        for (int i = 0; i < splitted.length; i++) {
-                            String[] user = splitted[i].split(",");
-                            database.addUser(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10],user[11]);
+                        for (int i = 1; i < splittedR.length; i=i+12) {
+                            if(i==1)
+                                database.addUser(splittedR[i],"192.168.49.1", splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                            else
+                                database.addUser(splittedR[i],splittedR[i+1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                         }
+                        System.out.println(database.getUser("0").getString(1));
                         Multicast.dbUserEvent=false;
                         break;
                     case "message":

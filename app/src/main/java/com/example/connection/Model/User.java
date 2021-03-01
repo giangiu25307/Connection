@@ -75,7 +75,7 @@ public class User {
     }
 
     public String getAll() {
-        return idUser + "£€" + inetAddress + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic+ "£€" +publicKey;
+        return idUser + "£€" + inetAddress.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic+ "£€" +publicKey;
     }
 
     public String getIdUser() {

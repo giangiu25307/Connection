@@ -114,6 +114,7 @@ ConnectionController {
                 bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                 Handler handler = new Handler();
                 encryption.generateAsymmetricKeys();
+
                 database.setPublicKey(encryption.convertPublicKeyToString());handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

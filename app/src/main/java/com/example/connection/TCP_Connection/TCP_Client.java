@@ -5,13 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
+import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
+import com.example.connection.View.Connection;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -37,7 +40,7 @@ public class TCP_Client {
     //start a connection with another user -----------------------
     private void startConnection(String ip, int port) {
         try {
-            socket = new Socket(ip, port);
+            socket = new Socket(ip, port, InetAddress.getByName(database.findIp(ConnectionController.myUser.getIdUser())),40000);
             out = socket.getOutputStream();
             dos = new DataOutputStream(out);
         } catch (IOException e) {
@@ -45,7 +48,16 @@ public class TCP_Client {
         }
 
     }
+    private void startConnectionp2p(String ip, int port) {
+        try {
+            socket = new Socket(ip, port,InetAddress.getByName("192.168.49.1"),40000);
+            out = socket.getOutputStream();
+            dos = new DataOutputStream(out);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
 
+    }
     public void handShake(String id, String publicKey, String msg) {
         checkInterface(id,database.findIp(id));
         encryption.generateAES();
@@ -116,8 +128,8 @@ public class TCP_Client {
 
     private void changeNetworkInterface(NetworkInterface nic) {
         try {
-            System.out.println(nic.getInterfaceAddresses().get(0).getAddress().getHostAddress());
-            socket.bind(new InetSocketAddress(InetAddress.getByName("192.168.49.1"/*nic.getInterfaceAddresses().get(0).getAddress().getHostAddress()*/), 50000));
+
+            socket.bind(new InetSocketAddress(InetAddress.getByName("192.168.49.1"/*nic.getInterfaceAddresses().get(0).getAddress().getHostAddress()*/), 40000));
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -133,11 +145,11 @@ public class TCP_Client {
         }
         if (database.isOtherGroup(id)) {
             System.out.println("yes");
-            changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("wlan0"));
+           // changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("wlan0-0"));
             startConnection(ip, 50000);
         } else {
-            changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("p2p0"));
-            startConnection("192.168.49.181", 50000);
+           // changeNetworkInterface(MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0"));
+            startConnectionp2p(ip, 50000);
         }
     }
 

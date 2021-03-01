@@ -69,10 +69,11 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             public void run() {
                 while(true){
                     if(!Multicast.dbUserEvent){
+                        Multicast.dbUserEvent=true;
                         Fragment fragment = new MapFragment().newInstance(connectionController, database);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
-                        Multicast.dbUserEvent=true;
+
                     }
                 }
             }
