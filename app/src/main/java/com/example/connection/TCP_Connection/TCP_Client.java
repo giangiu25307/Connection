@@ -21,6 +21,10 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 import java.security.GeneralSecurityException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Random;
 
 
 public class TCP_Client {
@@ -30,6 +34,7 @@ public class TCP_Client {
     private String msg = "message£€",shake="handShake£€";
     private Encryption encryption;
     private Database database;
+    private int port1=0;
 
     public TCP_Client(Database database, Encryption encryption) {
         this.database = database;
@@ -40,6 +45,7 @@ public class TCP_Client {
     //start a connection with another user -----------------------
     private void startConnection(String ip, int port) {
         try {
+            socket.setReuseAddress(true);
             socket = new Socket(ip, port, InetAddress.getByName(database.findIp(ConnectionController.myUser.getIdUser())),40000);
             out = socket.getOutputStream();
             dos = new DataOutputStream(out);
@@ -50,7 +56,8 @@ public class TCP_Client {
     }
     private void startConnectionp2p(String ip, int port) {
         try {
-            socket = new Socket(ip, port,InetAddress.getByName("192.168.49.1"),40000);
+
+            socket = new Socket(ip, port,InetAddress.getByName("192.168.49.1"), port1);
             out = socket.getOutputStream();
             dos = new DataOutputStream(out);
         } catch (IOException e) {
@@ -64,7 +71,7 @@ public class TCP_Client {
         shake += id+"£€";
         try {
             String secretKey = encryption.convertSecretKeyToString(encryption.getSecretKey());
-            database.setSymmetricKey(secretKey);
+            database.createChat(id,database.getUserName(id),secretKey);
             shake += encryption.encrypt(secretKey+"£€"+msg,encryption.convertStringToPublicKey(publicKey));
             byte[] array = shake.getBytes();
             dos.write(array,0, array.length);
@@ -79,6 +86,8 @@ public class TCP_Client {
 
     //send a message --------------------------------------------------------------------------------------------------------------------------------
     public void sendMessage(String msg, String id) {
+        Random random = new Random();
+        port1=  random.nextInt(20000);
         checkInterface(id,database.findIp(id));
         this.msg += id + "£€";
         try {
@@ -121,15 +130,19 @@ public class TCP_Client {
 
     //Close the connection --------------------------------------------------------------------------------------------------------------------------------
     private void stopConnection() throws IOException {
-        out.close();
-        dos.close();
-        socket.close();
+            out.close();
+            dos.close();
+            socket.close();
+
+
+
+
     }
 
     private void changeNetworkInterface(NetworkInterface nic) {
         try {
 
-            socket.bind(new InetSocketAddress(InetAddress.getByName("192.168.49.1"/*nic.getInterfaceAddresses().get(0).getAddress().getHostAddress()*/), 40000));
+            socket.bind(new InetSocketAddress(InetAddress.getByName("192.168.49.1"/*nic.getInterfaceAddresses().get(0).getAddress().getHostAddress()*/), port1));
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {

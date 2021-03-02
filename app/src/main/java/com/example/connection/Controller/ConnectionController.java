@@ -127,7 +127,20 @@ ConnectionController {
 
             @Override
             public void onFailure(int reason) {
-                System.out.println("ciao" + reason);
+                System.out.println("create group error" + reason);
+
+               resetWifi();
+                new CountDownTimer(5000, 2000) {
+
+                    public void onTick(long millisUntilFinished) {
+                    }
+
+                    public void onFinish() {
+                        createGroup();
+                    }
+                }.start();
+
+
             }
         });
 
@@ -158,7 +171,8 @@ ConnectionController {
                     myUser.setInetAddress(ip);
                     database.setIp(myUser.getIdUser(),myUser.getInetAddress().getHostAddress());
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    System.out.println("connect to group failed "+e);
+
                 }
 
                 multicastWLAN.createMulticastSocketWlan0();
@@ -274,4 +288,10 @@ ConnectionController {
     public WifiManager getWifiManager() {
         return wifiManager;
     }
+
+public void resetWifi(){
+    wifiManager.setWifiEnabled(false);
+    wifiManager.setWifiEnabled(true);
+
+}
 }

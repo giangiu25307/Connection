@@ -45,7 +45,7 @@ public class Encryption {
     private KeyStore ks;
 
     public Encryption() {
-
+        IV = new byte[16];
     }
 
     public void generateAsymmetricKeys() {

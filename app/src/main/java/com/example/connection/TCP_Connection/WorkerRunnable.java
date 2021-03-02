@@ -72,13 +72,14 @@ class WorkerRunnable implements Runnable {
                             else
                                 database.addUser(splittedR[i],splittedR[i+1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                         }
-                        System.out.println(database.getUser("0").getString(1));
                         Multicast.dbUserEvent=false;
+
                         break;
                     case "message":
                         //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                         if(splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                             msg = splittedR[2];
+                            System.out.println(msg);
                             Date date = new Date();
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
                             Cursor dateDB = database.getLastMessageChat(splittedR[1]);
@@ -96,11 +97,12 @@ class WorkerRunnable implements Runnable {
                             }
                         }else{
                             tcp_client.sendMessageNoKey(splittedR.toString(),splittedR[1]); //message already crypted
+
                         }
                         break;
                     case "handShake":
                         if(splittedR[1].equals(ConnectionController.myUser.getIdUser())){
-                            database.setSymmetricKey(encryption.decrypt(splittedR[2]).split("£€")[0]);
+                            database.createChat(splittedR[1],database.getUserName(splittedR[1]),encryption.decrypt(splittedR[2]).split("£€")[0]);
                             database.addMsg(encryption.decrypt(splittedR[2]).split("£€")[1],splittedR[1],splittedR[1]);
                         }else{
                             tcp_client.sendMessageNoKey(splittedR.toString(),splittedR[1]);
@@ -130,6 +132,7 @@ class WorkerRunnable implements Runnable {
                     default:
                         break;
                 }
+
             }
         } catch (
                 IOException e) {

@@ -28,8 +28,10 @@ import com.example.connection.Controller.DrawController;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.UDP_Connection.Multicast;
+import com.example.connection.UDP_Connection.MyNetworkInterface;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MapFragment extends Fragment implements View.OnClickListener {
 
@@ -38,6 +40,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private Database database;
     private ImageView filterImage;
     private DrawController drawController;
+
 
     public MapFragment() {
 
@@ -68,9 +71,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 while(true){
+
                     if(!Multicast.dbUserEvent){
                         Multicast.dbUserEvent=true;
-                        Fragment fragment = new MapFragment().newInstance(connectionController, database);
+                        MapFragment fragment = new MapFragment().newInstance(connectionController,database);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
 
@@ -83,7 +87,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     }
 
     public void drawing(View view){
-        Cursor c = connectionController.getAllClientList().get();
+        Cursor c = database.getAllUsers();
         c.moveToFirst();
 
         final ArrayList<User> userList = new ArrayList<>();
@@ -93,7 +97,14 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         arrayName[0]=ConnectionController.myUser.getName();
 
         for (int i = 0; i < c.getCount(); i++) {
-            if(i==0);
+            if(i==0){
+                if (MyNetworkInterface.getMyP2pNetworkInterface("p2p0")!=null){
+                    user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
+                    userList.add(user);
+                    arrayName[i] = c.getString(1);
+                }
+
+            }
             else {
                 user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
                 userList.add(user);
@@ -102,8 +113,11 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             c.moveToNext();
         }
         //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
+
         AbsoluteLayout mapLayout = view.findViewById(R.id.mapLayout);
+
         drawController = new DrawController(mapLayout.getContext(), userList, mapLayout);
+
         mapLayout.addView(drawController);
     }
 
@@ -252,5 +266,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }
 
