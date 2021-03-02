@@ -463,15 +463,18 @@ public class Database extends SQLiteOpenHelper {
 
     public void deleteUser(String idUser) {
         db = this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.IP, "NULL");
+        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + idUser, null);
+
         String query = "SELECT *" +
                 " FROM " + Task.TaskEntry.CHAT +
                 " WHERE " + Task.TaskEntry.ID_CHAT + "=" + idUser;
         Cursor c = db.rawQuery(query, null);
-        if (c != null) {
-            ContentValues msgValues = new ContentValues();
-            msgValues.put(Task.TaskEntry.IP, "NULL");
-            db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + idUser, null);
-        } else {
+        try {
+            c.moveToFirst();
+            c.getString(0);
+        }catch(IndexOutOfBoundsException e){
             query = " DELETE FROM " + Task.TaskEntry.USER
                     + " WHERE '" + Task.TaskEntry.ID_USER + "' = '" + idUser + "'";
             db.execSQL(query);
