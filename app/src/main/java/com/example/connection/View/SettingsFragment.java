@@ -135,8 +135,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         themeSettings = view.findViewById(R.id.themeSettings);
         themeSettings.setOnClickListener(this);
-        themeOptionDescription = view.findViewById(R.id.themeOptionDescription);
-        themeOptionDescription.setText(Connection.lightOrDark);
+        //themeOptionDescription = view.findViewById(R.id.themeOptionDescription);
+        //themeOptionDescription.setText(Connection.lightOrDark);
 
         changePasswordSettings = view.findViewById(R.id.changePasswordSettings);
         changePasswordSettings.setOnClickListener(this);
@@ -146,7 +146,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         profilePic = view.findViewById(R.id.profilePic);
 
-        wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
+        //wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
 
         setProfilePic();
 

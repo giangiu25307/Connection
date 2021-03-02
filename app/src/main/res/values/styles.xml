@@ -38,6 +38,10 @@
         <!-- Settings -->
         <item name="groupSettingsBackground">@android:color/white</item>
         <item name="groupOptionSettingsBackground">@color/mediumWhite</item>
+        <item name="settingsProfileButtonBackground">@color/settingsProfileButtonBackgroundLight</item>
+        <item name="settingsGroupTitleColor">@color/settingsGroupTitleLight</item>
+        <item name="settingsCardColor">@color/settingsCardLight</item>
+        <item name="settingsCardIconColor">@color/settingsCardIconLight</item>
 
         <!-- Text -->
         <item name="textColor">@android:color/black</item>
@@ -90,6 +94,10 @@
         <!-- Settings -->
         <item name="groupSettingsBackground">@color/lightGray</item>
         <item name="groupOptionSettingsBackground">@color/black4</item>
+        <item name="settingsProfileButtonBackground">@color/settingsProfileButtonBackgroundDark</item>
+        <item name="settingsGroupTitleColor">@color/settingsGroupTitleDark</item>
+        <item name="settingsCardColor">@color/settingsCardDark</item>
+        <item name="settingsCardIconColor">@color/settingsCardIconDark</item>
 
         <!-- Text -->
         <item name="textColor">@android:color/white</item>
@@ -156,6 +164,25 @@
         <item name="android:fontFamily">@font/opensans_semibold</item>
         <item name="android:paddingVertical">12.5dp</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <!-- Settings card -->
+    <style name="settingsGroupTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?attr/settingsGroupTitleColor</item>
+        <item name="android:fontFamily">@font/opensans_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="titleSettingsCard" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:fontFamily">@font/opensans_semibold</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="subTitleSettingsCard" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:fontFamily">@font/opensans_light</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
