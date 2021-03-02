@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -64,7 +65,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.DATETIME + " TEXT, "
                 + Task.TaskEntry.NOT_READ_MESSAGE + " INTEGER, "
                 + Task.TaskEntry.REQUEST + " TEXT, "
-                + Task.TaskEntry.SYMMETRIC_KEY + "TEXT"
+                + Task.TaskEntry.SYMMETRIC_KEY + " TEXT"
                 + ")";
 
         String CREATE_GLOBAL_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GLOBAL_MESSAGE + " ( "
@@ -153,12 +154,13 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
-    public void createChat(String idChat, String name) {
+    public void createChat(String idChat, String name, String symmetric) {
         db = this.getWritableDatabase();
         ContentValues chatValues = new ContentValues();
         chatValues.put(Task.TaskEntry.ID_CHAT, idChat);
         chatValues.put(Task.TaskEntry.NAME, name);
         chatValues.put(Task.TaskEntry.REQUEST, "true");
+        chatValues.put(Task.TaskEntry.SYMMETRIC_KEY, symmetric);
         db.insert(Task.TaskEntry.CHAT, null, chatValues);
     }
 
@@ -223,25 +225,25 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.CHAT, msgValues, Task.TaskEntry.ID_CHAT + "=" + id, null);
     }
 
-    public void setSymmetricKey(String symmetricKey) {
-        db = this.getWritableDatabase();
-        ContentValues msgValues = new ContentValues();
-        msgValues.put(Task.TaskEntry.SYMMETRIC_KEY, symmetricKey);
-        db.update(Task.TaskEntry.CHAT, msgValues, null, null);
-    }
 
     public String getSymmetricKey(String idChat) {
         db = this.getWritableDatabase();
         String query = "SELECT " + Task.TaskEntry.SYMMETRIC_KEY +
                 " FROM " + Task.TaskEntry.CHAT +
                 " WHERE " + Task.TaskEntry.ID_CHAT + " = " + idChat;
-        Cursor c = db.rawQuery(query, null);
-        if (c != null) {
-            c.moveToLast();
-        } else {
-            return null;
+        try {
+            Cursor c = db.rawQuery(query, null);
+            if (c != null) {
+                c.moveToFirst();
+                return c.getString(0);
+            } else {
+                return null;
+            }
         }
-        return c.getString(0);
+       catch (IndexOutOfBoundsException  e){
+            return null;
+       }
+
     }
 
     public Cursor getBacgroundImage() {
@@ -697,5 +699,16 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " IN(" + idsToBeDeleted + " )", null);
 
     }
-
+    public String getUserName(String id){
+        String query = "SELECT " + Task.TaskEntry.NAME +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.ID_USER + "=" + id;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }else{
+            return null;
+        }
+        return c.getString(0);
+    }
 }

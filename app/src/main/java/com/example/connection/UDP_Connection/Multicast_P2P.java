@@ -10,7 +10,8 @@ import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
-public class Multicast_P2P extends Multicast {
+public class
+Multicast_P2P extends Multicast {
     public Multicast_P2P(Database database, ConnectionController connectionController, TCP_Client tcp_client) {
         super(database, connectionController, tcp_client);
     }
@@ -112,7 +113,8 @@ public class Multicast_P2P extends Multicast {
     public void createMultigroupP2P() {
         try {
             multicastSocketGroupP2p = new MulticastSocket(6789);
-            multicastSocketGroupP2p.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("p2p0"));
+            multicastSocketGroupP2p.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0"));
+
 
         } catch (UnknownHostException e) {
             e.printStackTrace();

@@ -66,18 +66,20 @@ class WorkerRunnable implements Runnable {
                         break;
                     case "sendInfo":
                         //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
-                        String[] splitted = splittedR[1].split(",;");
-
-                        for (int i = 0; i < splitted.length; i++) {
-                            String[] user = splitted[i].split(",");
-                            database.addUser(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7], user[8], user[9], user[10],user[11]);
+                        for (int i = 1; i < splittedR.length; i=i+12) {
+                            if(i==1)
+                                database.addUser(splittedR[i],"192.168.49.1", splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                            else
+                                database.addUser(splittedR[i],splittedR[i+1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                         }
                         Multicast.dbUserEvent=false;
+
                         break;
                     case "message":
                         //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                         if(splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                             msg = splittedR[2];
+                            System.out.println(msg);
                             Date date = new Date();
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
                             Cursor dateDB = database.getLastMessageChat(splittedR[1]);
@@ -95,11 +97,12 @@ class WorkerRunnable implements Runnable {
                             }
                         }else{
                             tcp_client.sendMessageNoKey(splittedR.toString(),splittedR[1]); //message already crypted
+
                         }
                         break;
                     case "handShake":
                         if(splittedR[1].equals(ConnectionController.myUser.getIdUser())){
-                            database.setSymmetricKey(encryption.decrypt(splittedR[2]).split("£€")[0]);
+                            database.createChat(splittedR[1],database.getUserName(splittedR[1]),encryption.decrypt(splittedR[2]).split("£€")[0]);
                             database.addMsg(encryption.decrypt(splittedR[2]).split("£€")[1],splittedR[1],splittedR[1]);
                         }else{
                             tcp_client.sendMessageNoKey(splittedR.toString(),splittedR[1]);
@@ -129,6 +132,7 @@ class WorkerRunnable implements Runnable {
                     default:
                         break;
                 }
+
             }
         } catch (
                 IOException e) {

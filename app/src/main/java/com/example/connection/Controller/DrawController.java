@@ -41,14 +41,16 @@ public class DrawController extends View {
         this.paint = new Paint();
         this.userList = userList;
         this.mapLayout = mapLayout;
+        this.setWillNotDraw(false);
         this.postInvalidate();
         this.previousY = this.previousX = new ArrayList<Integer>();
         this.images = new ArrayList<ImageView>();
+
     }
 
     @Override
-    protected void onDraw(final Canvas canvas) {
-        super.onDraw(canvas);
+    protected void dispatchDraw(final Canvas canvas) {
+        super.dispatchDraw(canvas);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5);
         if (Connection.boot) createCoordinates(canvas);
