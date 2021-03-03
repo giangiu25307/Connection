@@ -86,26 +86,23 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    public void drawing(View view){
+    public void drawing(View view) {
         Cursor c = database.getAllUsers();
         c.moveToFirst();
-
         final ArrayList<User> userList = new ArrayList<>();
-        String[] arrayName = new String[c.getCount()==0?1:c.getCount()];
+        String[] arrayName = new String[c.getCount() == 0 ? 1 : c.getCount()];
 
         userList.add(ConnectionController.myUser);
-        arrayName[0]=ConnectionController.myUser.getName();
+        arrayName[0] = ConnectionController.myUser.getName();
 
         for (int i = 0; i < c.getCount(); i++) {
-            if(i==0){
-                if (MyNetworkInterface.getMyP2pNetworkInterface("p2p0")!=null){
+            if (i == 0) {
+                if (MyNetworkInterface.getMyP2pNetworkInterface("p2p0") != null) {
                     user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
                     userList.add(user);
                     arrayName[i] = c.getString(1);
                 }
-
-            }
-            else {
+            }else {
                 user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
                 userList.add(user);
                 arrayName[i] = c.getString(1);
@@ -113,14 +110,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             c.moveToNext();
         }
         //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
-
         AbsoluteLayout mapLayout = view.findViewById(R.id.mapLayout);
-
         drawController = new DrawController(mapLayout.getContext(), userList, mapLayout);
-
         mapLayout.addView(drawController);
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
