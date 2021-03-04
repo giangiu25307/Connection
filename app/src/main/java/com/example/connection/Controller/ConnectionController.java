@@ -118,9 +118,9 @@ ConnectionController {
                 database.setPublicKey(encryption.convertPublicKeyToString());handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        multiThreadedServer.openServerSocketP2p();
+                        //multiThreadedServer.openServerSocketP2p();
                         Thread thread = new Thread(multiThreadedServer);
-                        thread.start();
+                        //thread.start();
                     }
                 },100);
             }
@@ -178,8 +178,8 @@ ConnectionController {
                 multicastWLAN.createMulticastSocketWlan0();
                 multicastWLAN.sendInfo();
                 bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
-                multiThreadedServer.openServerSocketWlan();
-                multiThreadedServer.run();
+                //multiThreadedServer.openServerSocketWlan();
+                //multiThreadedServer.run();
             }
         });
     }

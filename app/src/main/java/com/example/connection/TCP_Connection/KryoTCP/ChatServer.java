@@ -1,12 +1,13 @@
 
 package com.example.connection.TCP_Connection.KryoTCP;
 
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryonet.Server;
+
+import com.example.connection.TCP_Connection.KryoTCP.kryonet.*;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
 
@@ -21,7 +22,7 @@ public class ChatServer {
 				return new ChatConnection();
 			}
 		};
-
+		server.stop();
 		// For consistency, the classes to be sent over the network are
 		// registered by the same method for both the client and server.
 		Network.register(server);
@@ -61,6 +62,7 @@ public class ChatServer {
 					if (message == null) return;
 					message = message.trim();
 					if (message.length() == 0) return;
+					System.out.println(message);
 					// Prepend the connection's name and send to everyone.
 					chatMessage.text = connection.name + ": " + message;
 					server.sendToAllTCP(chatMessage);
@@ -79,7 +81,7 @@ public class ChatServer {
 				}
 			}
 		});
-		server.bind(50000);
+		server.bind(new InetSocketAddress("192.168.1.23",50000),null);
 		server.start();
 
 	}
@@ -103,8 +105,4 @@ public class ChatServer {
 		public String name;
 	}
 
-	public static void main (String[] args) throws IOException {
-		Log.set(Log.LEVEL_DEBUG);
-		new ChatServer();
-	}
 }

@@ -20,7 +20,11 @@ import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
+import com.example.connection.TCP_Connection.KryoTCP.ChatClient;
+import com.example.connection.TCP_Connection.KryoTCP.ChatServer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.io.IOException;
 
 public class HomeFragment extends Fragment {
 
@@ -183,8 +187,16 @@ public class HomeFragment extends Fragment {
 
     public void setConnectionController() {
         this.connectionController = new ConnectionController(connection,database);
-        connectionController.active4G();
-        connectionController.initProcess();
+        //connectionController.createGroup();
+        //connectionController.connectToGroup("0");
+        ChatClient chatClient = new ChatClient();
+        /*try {
+            ChatServer server = new ChatServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+        //connectionController.active4G();
+        //connectionController.initProcess();
     }
 
     public void setChatController(ChatController chatController) {

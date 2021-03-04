@@ -2,7 +2,7 @@
 package com.example.connection.TCP_Connection.KryoTCP;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryonet.EndPoint;
+import com.example.connection.TCP_Connection.KryoTCP.kryonet.*;
 
 // This class is a convenient place to keep things common to both the client and server.
 public class Network {
