@@ -2,10 +2,7 @@
 
 buildscript {
     repositories {
-        maven { url "https://jitpack.io"
-        }
-        maven { url  "http://clojars.org/repo/"
-        }
+
         google()
         jcenter()
         

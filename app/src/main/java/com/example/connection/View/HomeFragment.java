@@ -1,12 +1,15 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,8 +23,8 @@ import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
-import com.example.connection.TCP_Connection.KryoTCP.ChatClient;
-import com.example.connection.TCP_Connection.KryoTCP.ChatServer;
+import com.example.connection.libs.EchoClient;
+import com.example.connection.libs.EchoServer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;
@@ -187,14 +190,27 @@ public class HomeFragment extends Fragment {
 
     public void setConnectionController() {
         this.connectionController = new ConnectionController(connection,database);
+        EchoClient echoClient=new EchoClient("192.168.1.13",50000,"yellowpecora","192.168.1.12");
+int i=1;
+
+if(i==1){
+    new CountDownTimer(30000, 60) {
+
+        public void onTick(long millisUntilFinished) {
+            echoClient.setup("yellow");
+        }
+
+        public void onFinish() {
+            echoClient.setup("yellow");
+        }
+    }.start();
+}else{
+    EchoServer echoServer=new EchoServer("192.168.1.13",50000);
+}
+
+
         //connectionController.createGroup();
         //connectionController.connectToGroup("0");
-        ChatClient chatClient = new ChatClient();
-        /*try {
-            ChatServer server = new ChatServer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         //connectionController.active4G();
         //connectionController.initProcess();
     }
