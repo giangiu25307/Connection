@@ -99,7 +99,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="12dp"
-        android:background="@drawable/input_data_background"
+        android:background="@drawable/bg_input_data"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

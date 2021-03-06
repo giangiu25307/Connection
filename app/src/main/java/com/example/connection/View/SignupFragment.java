@@ -13,19 +13,16 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.telephony.TelephonyManager;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -40,21 +37,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.connection.Adapter.SliderAdapter;
-import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 
@@ -187,27 +175,27 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 if (!user.getPassword().equals("")) password.setText(user.getPassword());
                 String mail = email.getText().toString().trim(), pass = password.getText().toString().trim(), username = usernameLabel.getText().toString().trim();
                 if (!regexName.matcher(username).matches()) {
-                    usernameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    usernameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
                     user.setUsername(username);
-                    usernameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    usernameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
                 }
                 if (!Patterns.EMAIL_ADDRESS.matcher(mail).matches()) {
-                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
                     user.setMail(mail);
-                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
                 }
                 if (!regexPassword.matcher(pass).matches()) {
-                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
                     user.setPassword(pass);
-                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
                 }
                 return !user.getMail().equals("") && !user.getPassword().equals("") && !user.getUsername().equals("");
@@ -269,11 +257,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                 String birth = yearText != 0 ? (dayText < 10 ? "0" + dayText : dayText) + "-" + (monthText < 10 ? "0" + monthText : monthText) + "-" + yearText : "";
                                 dateOfBirth.setText(birth);
                                 if (birth.equals("")) {
-                                    dateOfBirth.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                                    dateOfBirth.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                                     viewPager.setPagingEnabled(false);
                                 } else {
                                     user.setBirth(birth);
-                                    dateOfBirth.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                                    dateOfBirth.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                                     viewPager.setPagingEnabled(true);
                                 }
                             }
@@ -281,26 +269,26 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 if (gender.getText().toString().trim().isEmpty()) {
-                    gender.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    gender.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
-                    gender.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    gender.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
                 }
                 if (!regexName.matcher(firstname).matches()) {
-                    firstNameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    firstNameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
                     user.setName(firstname);
-                    firstNameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    firstNameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
                 }
                 if (!regexName.matcher(surname).matches()) {
-                    surnameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    surnameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
                     user.setSurname(surname);
-                    surnameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    surnameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
                 }
                 return !user.getName().equals("") && !user.getSurname().equals("") && !user.getBirth().equals("");
@@ -312,10 +300,10 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 String city = cities.getText().toString().trim();
                 if (!regexPhoneNumber.matcher(number).matches()) {
                     System.out.println("Inserire un numero di telefono valido");
-                    telephone.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    telephone.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
-                    telephone.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    telephone.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
                     user.setNumber(number);
                 }
@@ -340,10 +328,10 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 });
                 if (!regexName.matcher(city).matches()) {
                     System.out.println("Inserire una città valida");
-                    cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
-                    cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
                     user.setCity(city);
                 }

@@ -12,7 +12,7 @@
         android:id="@+id/textView25"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="@font/opensans_bold"
         android:text="No internet connection"
         android:textColor="?attr/textColor"
         android:textSize="21sp" />
@@ -29,6 +29,7 @@
         android:id="@+id/textView28"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_regular"
         android:gravity="center"
         android:text="Connect to the internet and try again"
         android:textColor="?attr/textColor" />
@@ -38,8 +39,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:gravity="right"
+        android:background="@drawable/bg_ok_button_no_internet_connection"
+        android:fontFamily="@font/opensans_semibold"
+        android:gravity="center"
+        android:paddingVertical="10dp"
         android:text="Ok"
-        android:textColor="?attr/textColor" />
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp" />
 
 </LinearLayout>

@@ -8,7 +8,8 @@
 
     <!-- Accent colors and variants -->
     <color name="colorAccent">#FF5722</color>
-    <color name="bottomIconColor">#D84315</color>
+    <color name="semiTransparentColorAccent">#26FF5722</color>
+    <color name="darkColorAccent">#E53935</color>
 
     <!-- Reversed color primary -->
     <color name="reversedColorPrimary">#282828</color>
@@ -36,6 +37,7 @@
     <color name="black1">#111111</color>
     <color name="mapFilterCardBackgroundDark">#282828</color>
     <color name="cancelButtonDark">#212121</color>
+    <color name="inputDataDark">#2A2A2A</color>
 
     <!-- Gray color -->
     <color name="lightGray">#CDCDCD</color>
@@ -53,6 +55,7 @@
     <color name="transparent">#00ffffff</color>
 
     <!-- Elements colors  -->
+    <color name="inputDataLight">#F8F8F8</color>
     <color name="toolbarIconColorLight">#4B4B4B</color>
     <color name="toolbarIconColorDark">#F4F4F4</color>
     <color name="bottomUnselectedColorLight">#9F9F9F</color>

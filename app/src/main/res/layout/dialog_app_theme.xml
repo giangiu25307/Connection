@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="@font/opensans_bold"
         android:text="Select app theme"
         android:textColor="?attr/textColor"
         android:textSize="21sp" />
@@ -49,6 +49,7 @@
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/opensans_regular"
                 android:text="Light"
                 android:textColor="?attr/textColor" />
         </LinearLayout>
@@ -76,6 +77,7 @@
                 android:id="@+id/textView11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/opensans_regular"
                 android:text="Dark"
                 android:textColor="?attr/textColor" />
         </LinearLayout>
@@ -118,6 +120,7 @@
                 android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/opensans_regular"
                 android:text="Follow system"
                 android:textColor="?attr/textColor" />
         </LinearLayout>
@@ -131,36 +134,6 @@
             android:visibility="invisible" />
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_weight="1">
+    <include layout="@layout/lyt_cancel_apply_buttons"/>
 
-        <TextView
-            android:id="@+id/cancelTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="CANCEL"
-            android:textColor="?attr/textColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/applyTextView"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/applyTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="APPLY"
-            android:textColor="?attr/textColor"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

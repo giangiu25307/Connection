@@ -18,8 +18,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
-import com.example.connection.Model.Chat;
-import com.example.connection.Model.User;
 import com.example.connection.R;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
@@ -77,11 +75,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 if (checker()) {
                     fragment = new HomeFragment().newInstance(connection, database);
                     loadFragment(fragment);
-                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
-                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                 } else {
-                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
-                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                 }
                 break;
             default:

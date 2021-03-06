@@ -34,7 +34,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.bumptech.glide.Glide;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
@@ -296,46 +295,46 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 setProfilePic();
                 boolean bool = true;
                 if (!regexName.matcher(editTextCity.getText().toString()).matches()) {
-                    editTextCity.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    editTextCity.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     bool = false;
                 } else {
-                    editTextCity.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    editTextCity.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                 }
                 if (!regexName.matcher(editTextUsername.getText().toString()).matches()) {
-                    editTextUsername.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    editTextUsername.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     bool = false;
                 } else {
-                    editTextUsername.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    editTextUsername.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                 }
                 if (!regexName.matcher(editTextName.getText().toString()).matches()) {
-                    editTextName.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    editTextName.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     bool = false;
                 } else {
-                    editTextName.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    editTextName.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                 }
                 if (!Patterns.EMAIL_ADDRESS.matcher(editTextMail.getText().toString()).matches()) {
-                    editTextMail.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    editTextMail.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     bool = false;
                 } else {
-                    editTextMail.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    editTextMail.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                 }
                 if (!regexName.matcher(editTextSurname.getText().toString()).matches()) {
-                    editTextSurname.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    editTextSurname.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     bool = false;
                 } else {
-                    editTextSurname.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    editTextSurname.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                 }
                 if (!regexPhoneNumber.matcher(editTextPhoneNumber.getText().toString()).matches()) {
-                    editTextPhoneNumber.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    editTextPhoneNumber.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     bool = false;
                 } else {
-                    editTextPhoneNumber.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    editTextPhoneNumber.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                 }
                 if (!regexName.matcher(editTextCountry.getText().toString()).matches()) {
-                    editTextCountry.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    editTextCountry.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     bool = false;
                 } else {
-                    editTextCountry.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    editTextCountry.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                 }
                 if (bool) {
                     database.setCity("0", editTextCity.getText().toString());
@@ -396,15 +395,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     public void onClick(View v) {
                         String data = database.getMyEmail();
                         if (emailEditText.getText().toString().equals(data)) {
-                            emailEditText.setBackgroundResource(R.drawable.input_data_background);
+                            emailEditText.setBackgroundResource(R.drawable.bg_input_data);
                             alertDialog2.dismiss();
                             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                            dialogBuilder.setView(R.layout.dialog_verify_code_alert);
+                            dialogBuilder.setView(R.layout.dialog_verify_code);
                             final AlertDialog alertDialog3 = dialogBuilder.create();
                             alertDialog3.show();
                             //SEND REQUEST TO MAKE VERIFICATION FROM THE SERVER AND TAKE BACK THE CODE
                         } else {
-                            emailEditText.setBackgroundResource(R.drawable.input_data_background_wrong);
+                            emailEditText.setBackgroundResource(R.drawable.bg_input_data_wrong);
                         }
                     }
                 });

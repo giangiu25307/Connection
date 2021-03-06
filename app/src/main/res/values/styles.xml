@@ -8,7 +8,7 @@
         <item name="splashScreenLayoutBackground">@color/colorPrimary</item>
 
         <!-- Login -->
-        <item name="inputData">@color/darkWhite</item>
+        <item name="inputData">@color/inputDataLight</item>
         <item name="inputDataHintColor">@color/darkHintcolor</item>
         <item name="nextButton">@color/black2</item>
 
@@ -64,7 +64,7 @@
         <item name="splashScreenLayoutBackground">@color/darkColorPrimary</item>
 
         <!-- Login -->
-        <item name="inputData">@color/black3</item>
+        <item name="inputData">@color/inputDataDark</item>
         <item name="inputDataHintColor">@color/lightHintColor</item>
         <item name="nextButton">@android:color/white</item>
 
@@ -154,7 +154,7 @@
         <item name="android:background">@drawable/bg_cancel_button</item>
         <item name="android:textColor">?attr/cancelButtonText</item>
         <item name="android:fontFamily">@font/opensans_semibold</item>
-        <item name="android:paddingVertical">12.5dp</item>
+        <item name="android:paddingVertical">10dp</item>
         <item name="android:gravity">center</item>
     </style>
 
@@ -162,7 +162,7 @@
         <item name="android:background">@drawable/bg_apply_confirm_buttons</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:fontFamily">@font/opensans_semibold</item>
-        <item name="android:paddingVertical">12.5dp</item>
+        <item name="android:paddingVertical">10dp</item>
         <item name="android:gravity">center</item>
     </style>
 
@@ -184,6 +184,8 @@
         <item name="android:fontFamily">@font/opensans_light</item>
         <item name="android:textSize">14sp</item>
     </style>
+
+
 
     <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/rounded_20dp_background</item>
@@ -207,11 +209,11 @@
     </style>
 
     <style name="inputDataStyle" parent="Widget.Design.TextInputLayout">
-        <item name="android:background">@drawable/input_data_background</item>
+        <item name="android:background">@drawable/bg_input_data</item>
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:textColorHint">?attr/inputDataHintColor</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily">@font/opensans_light</item>
         <item name="android:padding">12.5dp</item>
         <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
     </style>
