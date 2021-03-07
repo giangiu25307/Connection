@@ -28,6 +28,9 @@ import com.example.connection.libs.EchoServer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class HomeFragment extends Fragment {
 
@@ -190,13 +193,17 @@ public class HomeFragment extends Fragment {
 
     public void setConnectionController() {
         this.connectionController = new ConnectionController(connection,database);
-        EchoClient echoClient=new EchoClient("192.168.1.13",50000,"yellowpecora","192.168.1.12");
+        //connectionController.createGroup();
+        //connectionController.connectToGroup("0");
+        //final EchoClient echoClient=new EchoClient("192.168.49.1",50000,"yellowpecora","192.168.49.154");
+        final EchoClient echoClient=new EchoClient("192.168.49.181",50000,"yellowpecora","192.168.49.1");
 int i=1;
 
 if(i==1){
-    new CountDownTimer(30000, 60) {
+    new CountDownTimer(30000, 5000) {
 
         public void onTick(long millisUntilFinished) {
+
             echoClient.setup("yellow");
         }
 
@@ -205,12 +212,35 @@ if(i==1){
         }
     }.start();
 }else{
-    EchoServer echoServer=new EchoServer("192.168.1.13",50000);
+    EchoServer echoServer=new EchoServer("0.0.0.0",50000);
+    /*new CountDownTimer(5000,1000){
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            System.out.println("inizio");
+            new CountDownTimer(30000, 2000) {
+
+                public void onTick(long millisUntilFinished) {
+                    echoClient.setup("yellow");
+                    System.out.println("setup fatto");
+                }
+
+                public void onFinish() {
+                    echoClient.setup("yellow");
+                }
+            }.start();
+        }
+    }.start();*/
 }
 
 
         //connectionController.createGroup();
-        //connectionController.connectToGroup("0");
+        //
         //connectionController.active4G();
         //connectionController.initProcess();
     }

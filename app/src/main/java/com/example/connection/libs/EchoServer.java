@@ -22,10 +22,10 @@ public class EchoServer {
 
         this.port = port;
 
-        setup();
+        setup(this.host,port);
     }
 
-    public void setup() {
+    public void setup(InetAddress host,int port) {
         AsyncServer.getDefault().listen(host, port, new ListenCallback() {
 
             @Override
@@ -52,16 +52,17 @@ public class EchoServer {
         socket.setDataCallback(new DataCallback() {
             @Override
             public void onDataAvailable(DataEmitter emitter, ByteBufferList bb) {
+                socket.close();
                 System.out.println("[Server] Received Message " + new String(bb.getAllByteArray()));
 
-                Util.writeAll(socket, "ok".getBytes(), new CompletedCallback() {
+                /*Util.writeAll(socket, "ok".getBytes(), new CompletedCallback() {
                     @Override
                     public void onCompleted(Exception ex) {
                         if (ex != null) throw new RuntimeException(ex);
                         System.out.println("[Server] Successfully wrote message");
                         socket.close();
                     }
-                });
+                });*/
             }
         });
 

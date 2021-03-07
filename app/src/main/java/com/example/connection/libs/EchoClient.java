@@ -20,9 +20,11 @@ public class EchoClient {
     }
 
     public void setup(String text) {
+        System.out.println("Call");
         AsyncServer.getDefault().connectSocket(new InetSocketAddress(host, port), new ConnectCallback() {
             @Override
             public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
+                System.out.println("Done");
                 handleConnectCompleted(ex, socket,text);
             }
         });
@@ -36,6 +38,7 @@ public class EchoClient {
             public void onCompleted(Exception ex) {
                 if (ex != null) throw new RuntimeException(ex);
                 System.out.println("[Client] Successfully wrote message");
+                socket.close();
             }
         });
 
