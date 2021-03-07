@@ -27,6 +27,8 @@ import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.Multicast_WLAN;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
+import com.example.connection.libs.EchoClient;
+import com.example.connection.libs.EchoServer;
 
 import java.net.UnknownHostException;
 import java.util.Optional;
@@ -118,11 +120,14 @@ ConnectionController {
                 database.setPublicKey(encryption.convertPublicKeyToString());handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                       // EchoServer echoServer=new EchoServer("0.0.0.0",50000);
                         //multiThreadedServer.openServerSocketP2p();
-                        Thread thread = new Thread(multiThreadedServer);
+                      //  Thread thread = new Thread(multiThreadedServer);
                         //thread.start();
+
                     }
-                },100);
+                },1000);
+
             }
 
             @Override
@@ -162,6 +167,7 @@ ConnectionController {
         bluetoothAdvertiser.stopAdvertising();
         encryption.generateAsymmetricKeys();
         database.setPublicKey(encryption.convertPublicKeyToString());
+        myUser.setPublicKey(encryption.convertPublicKeyToString());
         connManager.requestNetwork(networkRequest, new NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
@@ -178,6 +184,30 @@ ConnectionController {
                 multicastWLAN.createMulticastSocketWlan0();
                 multicastWLAN.sendInfo();
                 bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
+                final EchoClient echoClient=new EchoClient("192.168.49.1",50000,"yellowpecora","192.168.49.111");
+                new CountDownTimer(5000,1000){
+
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        System.out.println("inizio");
+                        new CountDownTimer(30000, 1000) {
+
+                            public void onTick(long millisUntilFinished) {
+                                echoClient.setup("yellow");
+                                System.out.println("setup fatto");
+                            }
+
+                            public void onFinish() {
+                                echoClient.setup("yellow");
+                            }
+                        }.start();
+                    }
+                }.start();
                 //multiThreadedServer.openServerSocketWlan();
                 //multiThreadedServer.run();
             }

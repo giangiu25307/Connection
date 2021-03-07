@@ -49,6 +49,7 @@ class WorkerRunnable implements Runnable {
                 String msg = "";
                 msg = dIn.readLine();
                 String[] splittedR = msg.split("£€");
+                System.out.println(msg);
                 switch (splittedR[0]) {
                     case "image":
                         if(splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
@@ -79,15 +80,20 @@ class WorkerRunnable implements Runnable {
                         //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                         if(splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                             msg = splittedR[2];
-                            System.out.println(msg);
+                            System.out.println(splittedR[2]);
                             Date date = new Date();
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-                            Cursor dateDB = database.getLastMessageChat(splittedR[1]);
-                            String datetime = dateDB.getString(dateDB.getColumnIndex(Task.TaskEntry.DATETIME));
+                            String datetime="";
+                            try {
+                                Cursor dateDB = database.getLastMessageChat(splittedR[1]);
+                                datetime = dateDB.getString(dateDB.getColumnIndex(Task.TaskEntry.DATETIME));
+                            }catch (IndexOutOfBoundsException e){
+                                datetime=String.valueOf(LocalDateTime.now());
+                            }
                             try {
                                 date = format.parse(datetime);
                                 if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
-                                    database.addMsg("date£€" + date, splittedR[1], splittedR[1]);
+                                    database.addMsg("", splittedR[1], splittedR[1]);
                                 }
                                 database.addMsg(encryption.decryptAES(msg.getBytes(),encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1]))), splittedR[1], splittedR[1]);
                             } catch (ParseException e) {
@@ -96,13 +102,16 @@ class WorkerRunnable implements Runnable {
                                 e.printStackTrace();
                             }
                         }else{
+                            System.out.println(msg);
                             tcp_client.sendMessageNoKey(splittedR.toString(),splittedR[1]); //message already crypted
 
                         }
                         break;
                     case "handShake":
+
                         if(splittedR[1].equals(ConnectionController.myUser.getIdUser())){
                             database.createChat(splittedR[1],database.getUserName(splittedR[1]),encryption.decrypt(splittedR[2]).split("£€")[0]);
+                            database.addMsg("", splittedR[1], splittedR[1]);
                             database.addMsg(encryption.decrypt(splittedR[2]).split("£€")[1],splittedR[1],splittedR[1]);
                         }else{
                             tcp_client.sendMessageNoKey(splittedR.toString(),splittedR[1]);

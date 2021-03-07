@@ -193,56 +193,24 @@ public class HomeFragment extends Fragment {
 
     public void setConnectionController() {
         this.connectionController = new ConnectionController(connection,database);
-        //connectionController.createGroup();
-        //connectionController.connectToGroup("0");
+       // connectionController.createGroup();
+       // connectionController.connectToGroup("0");
         //final EchoClient echoClient=new EchoClient("192.168.49.1",50000,"yellowpecora","192.168.49.154");
-        final EchoClient echoClient=new EchoClient("192.168.49.181",50000,"yellowpecora","192.168.49.1");
-int i=1;
+        final EchoClient echoClient=new EchoClient("192.168.49.1",50000,"yellowpecora","192.168.49.111");
+int i=0;
 
-if(i==1){
-    new CountDownTimer(30000, 5000) {
 
-        public void onTick(long millisUntilFinished) {
 
-            echoClient.setup("yellow");
-        }
 
-        public void onFinish() {
-            echoClient.setup("yellow");
-        }
-    }.start();
-}else{
-    EchoServer echoServer=new EchoServer("0.0.0.0",50000);
-    /*new CountDownTimer(5000,1000){
 
-        @Override
-        public void onTick(long millisUntilFinished) {
-
-        }
-
-        @Override
-        public void onFinish() {
-            System.out.println("inizio");
-            new CountDownTimer(30000, 2000) {
-
-                public void onTick(long millisUntilFinished) {
-                    echoClient.setup("yellow");
-                    System.out.println("setup fatto");
-                }
-
-                public void onFinish() {
-                    echoClient.setup("yellow");
-                }
-            }.start();
-        }
-    }.start();*/
-}
 
 
         //connectionController.createGroup();
         //
-        //connectionController.active4G();
-        //connectionController.initProcess();
+        connectionController.active4G();
+        connectionController.initProcess();
+
+            // EchoServer echoServer=new EchoServer("0.0.0.0",50000);}
     }
 
     public void setChatController(ChatController chatController) {

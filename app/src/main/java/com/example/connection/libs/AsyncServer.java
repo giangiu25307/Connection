@@ -70,6 +70,7 @@ public void setLocalAddress(String local){
                 hasRun = true;
             }
             try {
+
                 runnable.run();
             }
             finally {

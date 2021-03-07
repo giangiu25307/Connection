@@ -196,6 +196,7 @@ public class DrawController extends View {
         for (int i = 0; i < ids.size(); i++) {
             if (!mapContainsId(ids.get(i))) {
                 userList.add(this.userList.get(i));
+                System.out.println(this.userList.get(i).getIdUser()+ids.get(i));
             }
         }
         return userList;

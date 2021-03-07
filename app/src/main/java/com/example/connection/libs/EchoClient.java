@@ -38,7 +38,7 @@ public class EchoClient {
             public void onCompleted(Exception ex) {
                 if (ex != null) throw new RuntimeException(ex);
                 System.out.println("[Client] Successfully wrote message");
-                socket.close();
+
             }
         });
 
