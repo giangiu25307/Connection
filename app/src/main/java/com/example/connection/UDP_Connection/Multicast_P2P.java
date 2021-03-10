@@ -3,6 +3,7 @@ package com.example.connection.UDP_Connection;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.TCP_Client;
+import com.example.connection.TCP_Connection.TcpClient;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -12,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 public class
 Multicast_P2P extends Multicast {
-    public Multicast_P2P(Database database, ConnectionController connectionController, TCP_Client tcp_client) {
+    public Multicast_P2P(Database database, ConnectionController connectionController, TcpClient tcp_client) {
         super(database, connectionController, tcp_client);
     }
 
@@ -32,7 +33,7 @@ Multicast_P2P extends Multicast {
                             //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
                             String groupInfo= "sendInfo£€"+database.getAllMyGroupInfo();
                             database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);//check adduser
-                            tcp_client.sendMessageNoKey(groupInfo, splittedR[1]);
+                            tcp_client.sendMessageNoKey(splittedR[2],groupInfo, splittedR[1]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);

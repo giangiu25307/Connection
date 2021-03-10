@@ -23,13 +23,14 @@ import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.Encryption;
 import com.example.connection.TCP_Connection.MultiThreadedServer;
 import com.example.connection.TCP_Connection.TCP_Client;
+import com.example.connection.TCP_Connection.TcpServer;
 import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.Multicast_WLAN;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
-import com.example.connection.libs.EchoClient;
-import com.example.connection.libs.EchoServer;
+import com.example.connection.TCP_Connection.TcpClient;
 
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;
 
@@ -57,7 +58,8 @@ ConnectionController {
     public static Network mMobileNetwork;
     private MultiThreadedServer multiThreadedServer;
     private Encryption encryption;
-    private TCP_Client tcp_client;
+    private TcpClient tcpClient;
+    private TcpServer tcpServer;
 
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
@@ -67,9 +69,9 @@ ConnectionController {
         this.database = database;
         setUser();
         myId = myUser.getIdUser();
-        tcp_client = new TCP_Client(database,encryption);
-        multicastP2P = new Multicast_P2P(database, this,tcp_client);
-        multicastWLAN = new Multicast_WLAN(database, this,tcp_client);
+        tcpClient = new TcpClient(database,encryption);
+        multicastP2P = new Multicast_P2P(database, this,tcpClient);
+        multicastWLAN = new Multicast_WLAN(database, this,tcpClient);
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection,this, bluetoothAdvertiser);
@@ -84,8 +86,8 @@ ConnectionController {
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build();
-        multiThreadedServer = new MultiThreadedServer(database,connection,this,encryption,tcp_client);
-        ChatController chatController = new ChatController().newIstance(database,tcp_client,multicastP2P,multicastWLAN,this);
+        tcpServer = new TcpServer(connection,database,encryption,tcpClient);
+        ChatController chatController = new ChatController().newIstance(database,tcpClient,multicastP2P,multicastWLAN,this);
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
@@ -120,11 +122,7 @@ ConnectionController {
                 database.setPublicKey(encryption.convertPublicKeyToString());handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                       // EchoServer echoServer=new EchoServer("0.0.0.0",50000);
-                        //multiThreadedServer.openServerSocketP2p();
-                      //  Thread thread = new Thread(multiThreadedServer);
-                        //thread.start();
-
+                        tcpServer.setup();
                     }
                 },1000);
 
@@ -180,36 +178,10 @@ ConnectionController {
                     System.out.println("connect to group failed "+e);
 
                 }
-
                 multicastWLAN.createMulticastSocketWlan0();
                 multicastWLAN.sendInfo();
                 bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
-                final EchoClient echoClient=new EchoClient("192.168.49.1",50000,"yellowpecora","192.168.49.111");
-                new CountDownTimer(5000,1000){
-
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        System.out.println("inizio");
-                        new CountDownTimer(30000, 1000) {
-
-                            public void onTick(long millisUntilFinished) {
-                                echoClient.setup("yellow");
-                                System.out.println("setup fatto");
-                            }
-
-                            public void onFinish() {
-                                echoClient.setup("yellow");
-                            }
-                        }.start();
-                    }
-                }.start();
-                //multiThreadedServer.openServerSocketWlan();
-                //multiThreadedServer.run();
+                tcpServer.setup();
             }
         });
     }

@@ -115,14 +115,14 @@ public class Database extends SQLiteOpenHelper {
         lastMessageChat(msg, idChat);
     }
 
-    public void addMsg(Paths paths, String idReceiver, String idSender, String idChat) {
+    public void addImage(String paths, String idSender, String idChat) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ID_CHAT, idChat);
         msgValues.put(Task.TaskEntry.ID_SENDER, idSender);
-        msgValues.put(Task.TaskEntry.PATH, paths.toString());
+        msgValues.put(Task.TaskEntry.PATH, paths);
         msgValues.put(Task.TaskEntry.DATETIME, String.valueOf(LocalDateTime.now()));
         db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
-        lastMessageChat(paths.toString(), idChat);
+        lastMessageChat(paths, idChat);
     }
 
     private void lastMessageChat(String msg, String idChat) {

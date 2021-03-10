@@ -3,6 +3,7 @@ package com.example.connection.UDP_Connection;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.TCP_Client;
+import com.example.connection.TCP_Connection.TcpClient;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,7 +11,7 @@ import java.net.MulticastSocket;
 import java.nio.charset.StandardCharsets;
 
 public class Multicast_WLAN extends Multicast {
-    public Multicast_WLAN(Database database, ConnectionController connectionController, TCP_Client tcp_client) {
+    public Multicast_WLAN(Database database, ConnectionController connectionController, TcpClient tcp_client) {
         super(database, connectionController, tcp_client);
     }
 

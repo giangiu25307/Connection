@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.TCP_Client;
+import com.example.connection.TCP_Connection.TcpClient;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -17,12 +18,12 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     protected MulticastSocket multicastSocketGroupP2p;
     protected MulticastSocket multicastSocketGroupwlan0;
     protected SocketAddress sa;
-    protected TCP_Client tcp_client;
+    protected TcpClient tcp_client;
     protected ConnectionController connectionController;
     protected Database database;
     public static boolean dbUserEvent;
 
-    public Multicast(Database database, ConnectionController connectionController,TCP_Client tcp_client) {
+    public Multicast(Database database, ConnectionController connectionController, TcpClient tcp_client) {
         this.connectionController = connectionController;
         this.tcp_client = tcp_client;
         this.database = database;

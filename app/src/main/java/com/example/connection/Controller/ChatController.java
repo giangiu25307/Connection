@@ -2,6 +2,7 @@ package com.example.connection.Controller;
 
 import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.TCP_Client;
+import com.example.connection.TCP_Connection.TcpClient;
 import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.Multicast_WLAN;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
@@ -10,7 +11,7 @@ import java.nio.file.Paths;
 
 public class ChatController {
 
-    private TCP_Client tcp;
+    private TcpClient tcp;
     private Multicast_P2P udpP2p;
     private Multicast_WLAN udpWlan;
     private Database database;
@@ -21,7 +22,7 @@ public class ChatController {
         return istance;
     }
 
-    public ChatController newIstance(Database database, TCP_Client tcp, Multicast_P2P udpP2p, Multicast_WLAN udpWlan, ConnectionController connectionController) {
+    public ChatController newIstance(Database database, TcpClient tcp, Multicast_P2P udpP2p, Multicast_WLAN udpWlan, ConnectionController connectionController) {
         istance = new ChatController();
         istance.setDatabase(database);
         istance.setTcp(tcp);
@@ -31,7 +32,7 @@ public class ChatController {
         return istance;
     }
 
-    public void setTcp(TCP_Client tcp) {
+    public void setTcp(TcpClient tcp) {
         this.tcp = tcp;
     }
 

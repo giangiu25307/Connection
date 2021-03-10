@@ -1,15 +1,12 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,14 +20,7 @@ import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
-import com.example.connection.libs.EchoClient;
-import com.example.connection.libs.EchoServer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 public class HomeFragment extends Fragment {
 
@@ -142,7 +132,7 @@ public class HomeFragment extends Fragment {
                     //if (Connection.fragmentName.equals("SETTINGS")) break;
                     Connection.fragmentName = "SETTINGS";
                     toolbarTitle.setText("Settings");
-                    fragment = new SettingsFragment().newInstance(connection,connectionController, database, chatController, map, chat);
+                    fragment = new SettingsFragment().newInstance(connection, connectionController, database, chatController, map, chat);
                     currentColor = getContext().getColor(R.color.colorAccent);
                     break;
                 default:
@@ -192,25 +182,10 @@ public class HomeFragment extends Fragment {
     }
 
     public void setConnectionController() {
-        this.connectionController = new ConnectionController(connection,database);
-       // connectionController.createGroup();
-       // connectionController.connectToGroup("0");
-        //final EchoClient echoClient=new EchoClient("192.168.49.1",50000,"yellowpecora","192.168.49.154");
-        final EchoClient echoClient=new EchoClient("192.168.49.1",50000,"yellowpecora","192.168.49.111");
-int i=0;
-
-
-
-
-
-
-
-        //connectionController.createGroup();
-        //
+        this.connectionController = new ConnectionController(connection, database);
         connectionController.active4G();
         connectionController.initProcess();
 
-            // EchoServer echoServer=new EchoServer("0.0.0.0",50000);}
     }
 
     public void setChatController(ChatController chatController) {
