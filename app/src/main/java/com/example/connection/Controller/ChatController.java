@@ -1,7 +1,6 @@
 package com.example.connection.Controller;
 
 import com.example.connection.Database.Database;
-import com.example.connection.TCP_Connection.TCP_Client;
 import com.example.connection.TCP_Connection.TcpClient;
 import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.Multicast_WLAN;
