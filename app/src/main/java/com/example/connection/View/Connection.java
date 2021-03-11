@@ -142,7 +142,6 @@ public class Connection extends AppCompatActivity {
     }
 
     private void setStatusAndNavbarColor(boolean light) {
-
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         if (light) {

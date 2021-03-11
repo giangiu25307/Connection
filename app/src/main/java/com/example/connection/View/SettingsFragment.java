@@ -57,7 +57,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic, profilePics;
     private String previousProfilePic = "";
-    private boolean isBg = false;
     private ConstraintLayout wallpaperSettings;
     private MapFragment map;
     private ChatFragment chat;
@@ -109,7 +108,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         this.connection = connection;
     }
 
-    public SettingsFragment newInstance(Connection connection,ConnectionController connectionController, Database database, ChatController chatController, MapFragment map, ChatFragment chat) {
+    public SettingsFragment newInstance(Connection connection, ConnectionController connectionController, Database database, ChatController chatController, MapFragment map, ChatFragment chat) {
         settingsFragment = new SettingsFragment();
         settingsFragment.setConnection(connection);
         settingsFragment.setChatController(chatController);
@@ -164,7 +163,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
         switch (v.getId()) {
             case R.id.editProfileButton:
-                editProfile(dialogBuilder);
+                //editProfile(dialogBuilder);
+                Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+                startActivity(intent);
                 break;
             case R.id.themeSettings:
                 manageTheme(dialogBuilder);
@@ -194,161 +195,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
-    }
-
-    private void editProfile(AlertDialog.Builder dialogBuilder) {
-        //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-        dialogBuilder.setView(R.layout.dialog_edit_profile);
-        final AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
-
-        final TextView cancelTextView, applyTextView, gallery, takePhoto,textViewGender;
-        final EditText editTextUsername, editTextMail, editTextName, editTextSurname, editTextPhoneNumber, editTextCity, editTextCountry;
-
-        editTextCity = alertDialog.findViewById(R.id.editTextCity);
-        editTextUsername = alertDialog.findViewById(R.id.editTextUsername);
-        editTextMail = alertDialog.findViewById(R.id.editTextMail);
-        editTextName = alertDialog.findViewById(R.id.editTextName);
-        editTextSurname = alertDialog.findViewById(R.id.editTextSurname);
-        editTextPhoneNumber = alertDialog.findViewById(R.id.editTextPhonenumber);
-        textViewGender = alertDialog.findViewById(R.id.textViewGender);
-        editTextCountry = alertDialog.findViewById(R.id.editTextCountry);
-
-        User user = new User(database.getMyInformation()[0], database.getMyInformation()[1], database.getMyInformation()[2], database.getMyInformation()[3], database.getMyInformation()[4], database.getMyInformation()[5], database.getMyInformation()[6], database.getMyInformation()[7], database.getMyInformation()[8], database.getMyInformation()[9], database.getMyInformation()[10]);
-
-        editTextCity.setText(user.getCity());
-        editTextUsername.setText(user.getUsername());
-        editTextMail.setText(user.getMail());
-        editTextName.setText(user.getName());
-        editTextSurname.setText(user.getSurname());
-        editTextPhoneNumber.setText(user.getNumber());
-        textViewGender.setText(user.getGender());
-        editTextCountry.setText(user.getCountry());
-
-        takePhoto = alertDialog.findViewById(R.id.textView13);
-        gallery = alertDialog.findViewById(R.id.textView14);
-        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-        applyTextView = alertDialog.findViewById(R.id.applyTextView);
-        profilePics = alertDialog.findViewById(R.id.profilePic);
-        if (!previousProfilePic.equals("")) {
-            Bitmap bitmap = BitmapFactory.decodeFile(previousProfilePic);
-            Drawable draw = new BitmapDrawable(getResources(), bitmap);
-            profilePics.setImageTintList(null);
-            profilePics.setImageDrawable(draw);
-        }
-        textViewGender.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                dialogBuilder.setView(R.layout.dialog_gender);
-                final AlertDialog alertDialog = dialogBuilder.create();
-                alertDialog.show();
-                TextView male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
-                male.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        textViewGender.setText("Maschio");
-                        alertDialog.dismiss();
-                    }
-                });
-                female.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        textViewGender.setText("Femmina");
-                        alertDialog.dismiss();
-                    }
-                });
-                other.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        textViewGender.setText("Altro");
-                        alertDialog.dismiss();
-                    }
-                });
-            }
-        });
-
-        gallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseImage();
-            }
-        });
-        takePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                captureImage();
-            }
-        });
-
-        cancelTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                database.setProfilePic("0",previousProfilePic);
-                alertDialog.dismiss();
-            }
-        });
-
-        applyTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setProfilePic();
-                boolean bool = true;
-                if (!regexName.matcher(editTextCity.getText().toString()).matches()) {
-                    editTextCity.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
-                    bool = false;
-                } else {
-                    editTextCity.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
-                }
-                if (!regexName.matcher(editTextUsername.getText().toString()).matches()) {
-                    editTextUsername.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
-                    bool = false;
-                } else {
-                    editTextUsername.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
-                }
-                if (!regexName.matcher(editTextName.getText().toString()).matches()) {
-                    editTextName.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
-                    bool = false;
-                } else {
-                    editTextName.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
-                }
-                if (!Patterns.EMAIL_ADDRESS.matcher(editTextMail.getText().toString()).matches()) {
-                    editTextMail.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
-                    bool = false;
-                } else {
-                    editTextMail.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
-                }
-                if (!regexName.matcher(editTextSurname.getText().toString()).matches()) {
-                    editTextSurname.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
-                    bool = false;
-                } else {
-                    editTextSurname.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
-                }
-                if (!regexPhoneNumber.matcher(editTextPhoneNumber.getText().toString()).matches()) {
-                    editTextPhoneNumber.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
-                    bool = false;
-                } else {
-                    editTextPhoneNumber.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
-                }
-                if (!regexName.matcher(editTextCountry.getText().toString()).matches()) {
-                    editTextCountry.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
-                    bool = false;
-                } else {
-                    editTextCountry.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
-                }
-                if (bool) {
-                    database.setCity("0", editTextCity.getText().toString());
-                    database.setUsername("0", editTextUsername.getText().toString());
-                    database.setName("0", editTextName.getText().toString());
-                    database.setMail("0", editTextMail.getText().toString());
-                    database.setSurname("0", editTextSurname.getText().toString());
-                    database.setNumber("0", editTextPhoneNumber.getText().toString());
-                    database.setGender("0", textViewGender.getText().toString());
-                    database.setCountry("0", editTextCountry.getText().toString());
-                    alertDialog.dismiss();
-                }
-            }
-        });
     }
 
     private void changePassword(AlertDialog.Builder dialogBuilder) {
@@ -570,8 +416,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             window.setStatusBarColor(getContext().getColor(R.color.darkColorPrimary));
         }
         HomeFragment homeFragment = new HomeFragment();
-        settingsFragment = newInstance(connection,connectionController,database,chatController,map,chat);
-        Fragment fragment = homeFragment.newInstance(connection,connectionController,database, chatController, map, chat,settingsFragment);
+        settingsFragment = newInstance(connection, connectionController, database, chatController, map, chat);
+        Fragment fragment = homeFragment.newInstance(connection, connectionController, database, chatController, map, chat, settingsFragment);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();
@@ -582,15 +428,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         startActivityForResult(intent, CAPTURE_IMAGE);
     }
 
-    private void chooseImage() {
-        isBg = false;
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-
-    }
-
     private void chooseBackgroundImage() {
-        isBg = true;
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
@@ -609,17 +447,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 if (cursor == null) return;
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-                if (!isBg) {
-                    database.setProfilePic("0",imagePath);
-                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-                    Drawable draw = new BitmapDrawable(getResources(), bitmap);
-                    profilePics.setImageTintList(null);
-                    profilePics.setImageDrawable(draw);
-                } else {
-                    database.setBacgroundImage(imagePath);
-                    String string[] = imagePath.split("/");
-                    wallpaperOptionDescription.setText(string[string.length - 1]);
-                }
+                database.setBacgroundImage(imagePath);
+                String string[] = imagePath.split("/");
+                wallpaperOptionDescription.setText(string[string.length - 1]);
                 cursor.close();
             }
         } else if (requestCode == CAPTURE_IMAGE) {
@@ -629,7 +459,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 Uri tempUri = getImageUri(getContext(), photo);
                 // CALL THIS METHOD TO GET THE ACTUAL PATH
                 String imagePath = getRealPathFromURI(tempUri);
-                database.setProfilePic("0",imagePath);
+                database.setProfilePic("0", imagePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 Drawable draw = new BitmapDrawable(getResources(), bitmap);
                 profilePic.setImageTintList(null);

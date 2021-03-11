@@ -154,7 +154,7 @@
         <item name="android:background">@drawable/bg_cancel_button</item>
         <item name="android:textColor">?attr/cancelButtonText</item>
         <item name="android:fontFamily">@font/opensans_semibold</item>
-        <item name="android:paddingVertical">10dp</item>
+        <item name="android:paddingVertical">12dp</item>
         <item name="android:gravity">center</item>
     </style>
 
@@ -162,7 +162,7 @@
         <item name="android:background">@drawable/bg_apply_confirm_buttons</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:fontFamily">@font/opensans_semibold</item>
-        <item name="android:paddingVertical">10dp</item>
+        <item name="android:paddingVertical">12dp</item>
         <item name="android:gravity">center</item>
     </style>
 
@@ -182,7 +182,7 @@
     <style name="subTitleSettingsCard" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:fontFamily">@font/opensans_light</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">13sp</item>
     </style>
 
 

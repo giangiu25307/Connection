@@ -25,7 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:requestLegacyExternalStorage="true">
-        <activity android:name=".View.ChatActivity"></activity>
+        <activity android:name=".View.ChatActivity"/>
+        <activity android:name=".View.EditProfileActivity"/>
 
         <service
             android:name=".Controller.AutoClicker"
