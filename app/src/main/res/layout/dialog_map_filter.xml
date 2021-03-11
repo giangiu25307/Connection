@@ -62,7 +62,7 @@
             app:layout_constraintTop_toBottomOf="@+id/genderTextView">
 
             <TextView
-                android:id="@+id/textView58"
+                android:id="@+id/male"
                 style="@style/genderSelected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                 android:text="Male" />
 
             <TextView
-                android:id="@+id/textView59"
+                android:id="@+id/female"
                 style="@style/genderSelected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                 android:text="Female" />
 
             <TextView
-                android:id="@+id/textView60"
+                android:id="@+id/other"
                 style="@style/genderSelected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
