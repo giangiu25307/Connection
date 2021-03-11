@@ -133,11 +133,12 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         if(Connection.genders[0].equals("")) {
-                            System.out.println("si");
                             male.setTextAppearance(R.style.genderSelected);
+                            male.setBackgroundResource(R.drawable.bg_gender_filter_selected);
                             Connection.genders[0] = "male";
                         }else{
                             male.setTextAppearance(R.style.genderUnselected);
+                            male.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
                             Connection.genders[0] = "";
                         }
                     }
@@ -147,9 +148,12 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     public void onClick(View v) {
                         if(Connection.genders[1].equals("")) {
                             female.setTextAppearance(R.style.genderSelected);
+                            female.setBackgroundResource(R.drawable.bg_gender_filter_selected);
                             Connection.genders[1] = "female";
                         }else{
                             female.setTextAppearance(R.style.genderUnselected);
+                            female.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
+
                             Connection.genders[1] = "";
                         }
                     }
@@ -159,9 +163,11 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     public void onClick(View v) {
                         if(Connection.genders[2].equals("")) {
                             other.setTextAppearance(R.style.genderSelected);
+                            other.setBackgroundResource(R.drawable.bg_gender_filter_selected);
                             Connection.genders[2] = "other";
                         }else{
                             other.setTextAppearance(R.style.genderUnselected);
+                            other.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
                             Connection.genders[2] = "";
                         }
                     }

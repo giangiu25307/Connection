@@ -54,8 +54,8 @@ public class Connection extends AppCompatActivity {
     public static String fragmentName = "MAP";
     public static String lightOrDark = "light";
     public static ArrayList<MapUsers> mapUsers = new ArrayList<MapUsers>();
-    public static String minAge = "", maxAge = "";
-    public static String[] genders = {"", "", ""};
+    public static String minAge = "16", maxAge = "100";
+    public static String[] genders = {"male", "female", "other"};
     private static final int VPN_REQUEST_CODE = 0x0F;
 
     @Override
