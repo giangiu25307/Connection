@@ -1,6 +1,7 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -120,97 +121,51 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
 
-                final LinearLayout genderLayout, ageLayout;
-                final TextView cancelTextView, applyTextView;
+                final TextView cancelTextView, applyTextView, male = alertDialog.findViewById(R.id.male),female = alertDialog.findViewById(R.id.female),other=alertDialog.findViewById(R.id.other);
+                final EditText minAge = alertDialog.findViewById(R.id.editTextMinAge), maxAge=alertDialog.findViewById(R.id.editTextMaxAge);
                 //genderLayout = alertDialog.findViewById(R.id.genderLayout);
                 //ageLayout = alertDialog.findViewById(R.id.ageLayout);
                 cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
 
-                /*Gender alert dialog
-                genderLayout.setOnClickListener(new View.OnClickListener() {
+                //Gender
+                male.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                        dialogBuilder.setView(R.layout.dialog_map_filter_gender);
-                        final AlertDialog alertDialog = dialogBuilder.create();
-                        alertDialog.show();
-                        final TextView cancelTextView, applyTextView;
-                        final CheckBox male, female, other;
-
-                        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-                        applyTextView = alertDialog.findViewById(R.id.applyTextView);
-                        male = null;
-                        female = null;
-                        other = null;
-                        if (Connection.genders[0] != null && Connection.genders[0].equals("male"))
-                            male.setChecked(true);
-                        if (Connection.genders[1] != null && Connection.genders[1].equals("female"))
-                            female.setChecked(true);
-                        if (Connection.genders[2] != null && Connection.genders[2].equals("other"))
-                            other.setChecked(true);
-
-                        cancelTextView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertDialog.dismiss();
-                            }
-                        });
-
-                        applyTextView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (male != null && male.isChecked())
-                                    Connection.genders[0] = "male";
-                                else Connection.genders[0] = "";
-                                if (female != null && female.isChecked())
-                                    Connection.genders[1] = "female";
-                                else Connection.genders[1] = "";
-                                if (other != null && other.isChecked())
-                                    Connection.genders[2] = "other";
-                                else Connection.genders[2] = "";
-                                alertDialog.dismiss();
-                            }
-                        });
+                        if(Connection.genders[0].equals("")) {
+                            System.out.println("si");
+                            male.setTextAppearance(R.style.genderSelected);
+                            Connection.genders[0] = "male";
+                        }else{
+                            male.setTextAppearance(R.style.genderUnselected);
+                            Connection.genders[0] = "";
+                        }
                     }
                 });
-
-                //Age alert dialog
-                ageLayout.setOnClickListener(new View.OnClickListener() {
+                female.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                        dialogBuilder.setView(R.layout.dialog_map_filter_age);
-                        final AlertDialog alertDialog = dialogBuilder.create();
-                        alertDialog.show();
-                        final TextView cancelTextView, applyTextView;
-
-                        final EditText editTextMinAge = alertDialog.findViewById(R.id.editTextMinAge);
-                        final EditText editTextMaxAge = alertDialog.findViewById(R.id.editTextMaxAge);
-
-                        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-                        applyTextView = alertDialog.findViewById(R.id.applyTextView);
-                        if (!Connection.minAge.isEmpty()) editTextMinAge.setText(Connection.minAge);
-                        if (!Connection.maxAge.isEmpty()) editTextMinAge.setText(Connection.maxAge);
-                        cancelTextView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertDialog.dismiss();
-                            }
-                        });
-
-                        applyTextView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Connection.minAge = editTextMinAge.getText().toString();
-                                Connection.maxAge = editTextMaxAge.getText().toString();
-                                alertDialog.dismiss();
-                            }
-                        });
+                        if(Connection.genders[1].equals("")) {
+                            female.setTextAppearance(R.style.genderSelected);
+                            Connection.genders[1] = "female";
+                        }else{
+                            female.setTextAppearance(R.style.genderUnselected);
+                            Connection.genders[1] = "";
+                        }
                     }
                 });
-
-                */
+                other.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(Connection.genders[2].equals("")) {
+                            other.setTextAppearance(R.style.genderSelected);
+                            Connection.genders[2] = "other";
+                        }else{
+                            other.setTextAppearance(R.style.genderUnselected);
+                            Connection.genders[2] = "";
+                        }
+                    }
+                });
 
                 cancelTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -222,6 +177,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 applyTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Connection.minAge = minAge.getText().toString();
+                        Connection.maxAge = maxAge.getText().toString();
                         drawController.applyFilters(Connection.minAge, Connection.maxAge, Connection.genders);
                         alertDialog.dismiss();
                         Fragment fragment = new MapFragment().newInstance(connectionController, database);
