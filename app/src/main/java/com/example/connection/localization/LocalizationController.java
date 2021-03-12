@@ -4,6 +4,7 @@ package com.example.connection.localization;
 import android.location.Location;
 
 import com.example.connection.Database.Database;
+import com.example.connection.TCP_Connection.TcpClient;
 import com.example.connection.UDP_Connection.UDP_Socket;
 import com.example.connection.View.Connection;
 
@@ -16,7 +17,7 @@ public class LocalizationController {
 
     UDP_Socket rtt;
     Database database;
-    TCP_Client tcp_client;
+    TcpClient tcp_client;
     GPS gps;
     Connection connection;
     InetAddress ip;

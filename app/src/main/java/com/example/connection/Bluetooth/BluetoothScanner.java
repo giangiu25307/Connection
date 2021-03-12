@@ -196,7 +196,8 @@ public class BluetoothScanner {
                 if (14 <= i && i < 17) serviceType += stringResult.charAt(i);
                 if (17 <= i) idGroupOwner += stringResult.charAt(i);
             }
-            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner)) {
+            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && mScanning) {
+                mScanning = false;
                 bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwner);
                 countDownTimer.cancel();
                 connectionController.connectToGroup(idGroupOwner.trim());
@@ -222,7 +223,8 @@ public class BluetoothScanner {
                 if (14 <= i && i < 17) serviceType += stringResult.charAt(i);
                 if (17 <= i) idGroupOwner += stringResult.charAt(i);
             }
-            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().equals(clientToRequestGroupId)) {
+            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().equals(clientToRequestGroupId) && mScanning) {
+                mScanning = false;
                 bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwnerId);
                 countDownTimer.cancel();
                 connectionController.connectToGroup(idGroupOwner.trim());
@@ -248,7 +250,8 @@ public class BluetoothScanner {
                 if (14 <= i && i < 17) serviceType += stringResult.charAt(i);
                 if (17 <= i) idGroupOwner += stringResult.charAt(i);
             }
-            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().compareTo(myId) > 0) {
+            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceGroupOwner) && idGroupOwner.trim().compareTo(myId) > 0 && mScanning) {
+                mScanning = false;
                 bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwnerId);
                 countDownTimer.cancel();
                 connectionController.connectToGroupWhenGroupOwner(idGroupOwner.trim());
@@ -274,7 +277,8 @@ public class BluetoothScanner {
                 if (14 <= i && i < 17) serviceType += stringResult.charAt(i);
                 if (17 <= i) idGroupOwner += stringResult.charAt(i);
             }
-            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceClientConnectedToGroupOwner)) {
+            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceClientConnectedToGroupOwner) && mScanning) {
+                mScanning = false;
                 bluetoothLeScanner.stopScan(scanCallbackSearchAndRequestForIdNetwork);
                 countDownTimer.cancel();
                 bluetoothAdvertiser.stopAdvertising();
@@ -304,7 +308,8 @@ public class BluetoothScanner {
                 if (14 <= i && i < 17) serviceType += stringResult.charAt(i);
                 if (17 <= i) idGroupOwner += stringResult.charAt(i);
             }
-            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner) && idGroupOwner.trim().equals(myId)) {
+            if (identifierApp.equals("connect") && serviceType.equals(Task.ServiceEntry.serviceRequestClientBecomeGroupOwner) && idGroupOwner.trim().equals(myId) && mScanning) {
+                mScanning = false;
                 bluetoothLeScanner.stopScan(scanCallbackClientListeningOtherClient);
                 countDownTimer.cancel();
                 connectionController.createGroup();
