@@ -1,5 +1,6 @@
 package com.example.connection.View;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +42,26 @@ public class BottomSheetNewChat extends BottomSheetDialogFragment {
 
         CircleImageView profileImage = view.findViewById(R.id.profilePicMapAlertDialog2);
         profileImage.setImageBitmap(BitmapFactory.decodeFile(user.getProfilePic()));
+        TextView name = view.findViewById(R.id.nameMapAlertDialog2),information = view.findViewById(R.id.informationMapAlertDialog2);
+        name.setText(user.getUsername());
+        String info =user.getGender()+" "+user.getAge();
+        information.setText(info);
+        TextView send = view.findViewById(R.id.sendMessageTextView),cancel = view.findViewById(R.id.cancelTextView);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(getContext(), ChatActivity.class);
+                myIntent.putExtra("idChat", user.getIdUser());
+                myIntent.putExtra("name", user.getName());
+                getContext().startActivity(myIntent);
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
         return view;
     }
