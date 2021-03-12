@@ -2,7 +2,7 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:forceDarkAllowed">true</item>
+        <item name="android:forceDarkAllowed">false</item>
 
         <!-- SplashScreen -->
         <item name="splashScreenLayoutBackground">@color/colorPrimary</item>
@@ -60,7 +60,7 @@
     </style>
 
     <style name="DarkTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:forceDarkAllowed">true</item>
+        <item name="android:forceDarkAllowed">false</item>
 
         <!-- SplashScreen -->
         <item name="splashScreenLayoutBackground">@color/darkColorPrimary</item>
