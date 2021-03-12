@@ -25,15 +25,17 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class DrawController extends View {
 
     private Paint paint;
     private ArrayList<User> userList;
     private int x, y;
     private AbsoluteLayout mapLayout;
-    private int widthHeight = 200;
+    private int widthHeight = 126;
     private ArrayList<Integer> previousX, previousY;
-    private ArrayList<ImageView> images;
+    private ArrayList<CircleImageView> images;
 
     public DrawController(Context context, ArrayList<User> userList, AbsoluteLayout mapLayout) {
         super(context);
@@ -42,7 +44,7 @@ public class DrawController extends View {
         this.mapLayout = mapLayout;
         this.postInvalidate();
         this.previousY = this.previousX = new ArrayList<Integer>();
-        this.images = new ArrayList<ImageView>();
+        this.images = new ArrayList<>();
     }
 
     @Override
@@ -107,7 +109,7 @@ public class DrawController extends View {
 
     //create a clickable item who refers to a user at the coordinates x,y
     private void createUserPoint(final int x, final int y, final int id) {
-        final ImageView image = new ImageView(mapLayout.getContext());
+        final CircleImageView image = new CircleImageView(mapLayout.getContext());
         Bitmap bitmap = BitmapFactory.decodeFile(userList.get(id).getProfilePic());
         if (bitmap != null) {
             image.setImageBitmap(bitmap);
@@ -118,7 +120,7 @@ public class DrawController extends View {
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 image.getViewTreeObserver().removeOnPreDrawListener(this);
-                AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(widthHeight, widthHeight, x - 100, y - 100);
+                AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(widthHeight, widthHeight, x - 63, y - 63);
                 image.setLayoutParams(params);
                 int finalWidth = image.getLayoutParams().width;
                 int finalHeight = image.getLayoutParams().height;
@@ -164,7 +166,7 @@ public class DrawController extends View {
                 View bottomSheetView = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.lyt_bs_new_chat, (LinearLayout)findViewById(R.id.bottomSheetContainer));
                 bottomSheet.setContentView(bottomSheetView);
                 bottomSheet.show();*/
-                BottomSheetNewChat bottomSheet = new BottomSheetNewChat();
+                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(userList.get(id));
                 bottomSheet.show(((AppCompatActivity)getContext()).getSupportFragmentManager(), "ModalBottomSheet");
             }
         });
@@ -215,7 +217,7 @@ public class DrawController extends View {
 
     private void addToMap() {
         previousX = previousY = new ArrayList<Integer>();
-        images = new ArrayList<ImageView>();
+        images = new ArrayList<>();
         for (int i = 0; i < Connection.mapUsers.size(); i++) {
             previousX.add(Connection.mapUsers.get(i).getX());
             previousY.add(Connection.mapUsers.get(i).getY());
