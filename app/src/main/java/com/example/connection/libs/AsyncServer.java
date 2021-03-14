@@ -356,7 +356,9 @@ public void setLocalAddress(String local){
                         isa = new InetSocketAddress(port);
                     else
                         isa = new InetSocketAddress(host, port);
+
                     server.socket().bind(isa);
+                    server.configureBlocking(false);
                     final SelectionKey key = wrapper.register(mSelector.getSelector());
                     key.attach(handler);
                     handler.onListening(holder.held = new AsyncServerSocket() {

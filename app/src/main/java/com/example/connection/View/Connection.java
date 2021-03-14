@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.VpnService;
 import android.os.Bundle;
@@ -30,8 +31,13 @@ import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.MapUsers;
 import com.example.connection.R;
+import com.example.connection.TCP_Connection.Encryption;
+import com.example.connection.TCP_Connection.NewEncryption;
+import com.example.connection.TCP_Connection.TcpServer;
 import com.example.connection.vpn.LocalVPNService;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -55,7 +61,7 @@ public class Connection extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //deleteDatabase("Connection");
+       // deleteDatabase("Connection");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -68,9 +74,11 @@ public class Connection extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
         loadFragment(false);
-
-        //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
-        database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
+        Cursor c=database.getAllChat();
+     c.moveToNext();
+        System.out.println(c.getString(0));
+      //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
+   // database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
         //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
         //database.addUser("3",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
         //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW

@@ -4,6 +4,9 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
+import com.brettywhite.cryptomessenger.KeyManager;
+import com.example.connection.View.Connection;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
@@ -43,28 +46,22 @@ public class Encryption {
     byte[] IV;
     private Cipher cipher;
     private KeyStore ks;
+    Connection connection;
+    PublicKey userPubKey;
+    String pubKeyString;
+    String cipherText;
+    KeyManager km;
+    public Encryption(Connection connection) {
+        this.connection=connection;
+        km= new KeyManager(this.connection);
+        if (!km.keyExists()) {
+           km.createKeys(false);
+        }
 
-    public Encryption() {
         IV = new byte[16];
     }
 
-    public void generateAsymmetricKeys() {
-        try {
-            //Generate asymmetric keys
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
-            keyPairGenerator.initialize(new KeyGenParameterSpec.Builder("key1", KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                    .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA384, KeyProperties.DIGEST_SHA512)
-                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-                    .setUserAuthenticationRequired(false)
-                    .setKeySize(2048)
-                    .build());
-            KeyPair keyPair = keyPairGenerator.generateKeyPair();
-            privateKey = keyPair.getPrivate();
-            publicKey = keyPair.getPublic();
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     public void generateAES() {
         //Generate symmetric key
@@ -82,43 +79,21 @@ public class Encryption {
     }
 
     public String encrypt(String msg, PublicKey publicKey) {
-        String result = "";
-        try {
-            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            result = Base64.encodeToString(cipher.doFinal(msg.getBytes("UTF-8")), Base64.DEFAULT);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        String result= km.encrypt(msg,publicKey);
         return result;
     }
 
     public String decrypt(String msg) {
-        String result = "";
-        try {
-            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            result = new String(cipher.doFinal(Base64.decode(msg.replace("/n", ""), Base64.DEFAULT)), "UTF-8");
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        String result = km.decrypt(msg);
         return result;
     }
 
     public String convertPublicKeyToString() {
-        //try {
-            return Base64.encodeToString(/*ks.getCertificate("key1").getPublicKey()*/publicKey.getEncoded(), Base64.DEFAULT);
-        /*} catch (KeyStoreException e) {
-            e.printStackTrace();
-            return null;
-        }*/
+ return km.convertPublicKeyToString(km.getPublicKey());
     }
 
     public PublicKey convertStringToPublicKey(String key) throws GeneralSecurityException, IOException {
-        byte[] data = Base64.decode(key.getBytes(), Base64.DEFAULT);
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
-        KeyFactory fact = getInstance("RSA");
-        return fact.generatePublic(spec);
+            return km.convertStringToPublicKey(key);
     }
 
     public SecretKey convertStringToSecretKey(String key) throws GeneralSecurityException, IOException {
@@ -155,7 +130,9 @@ public class Encryption {
             return null;
         }
     }
-
+    public PublicKey getPublicKey(){
+        return km.getPublicKey();
+    }
     public SecretKey getSecretKey(){
         return secretKey;
     }

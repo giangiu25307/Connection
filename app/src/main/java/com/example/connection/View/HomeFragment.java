@@ -182,7 +182,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void setConnectionController() {
-        this.connectionController = new ConnectionController(connection, database);
+       this.connectionController = new ConnectionController(connection, database);
         connectionController.active4G();
         connectionController.initProcess();
 

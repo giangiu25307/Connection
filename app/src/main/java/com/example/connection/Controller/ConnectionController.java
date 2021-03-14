@@ -59,12 +59,14 @@ ConnectionController {
 
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
-        encryption = new Encryption();
+        encryption = new Encryption(connection);
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         this.database = database;
         setUser();
         myId = myUser.getIdUser();
+        myUser.setPublicKey(encryption.convertPublicKeyToString());
+        database.setPublicKey(encryption.convertPublicKeyToString());
         tcpClient = new TcpClient(database,encryption);
         multicastP2P = new Multicast_P2P(database, this,tcpClient);
         multicastWLAN = new Multicast_WLAN(database, this,tcpClient);
@@ -113,9 +115,7 @@ ConnectionController {
                 t1.start();
                 bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                 Handler handler = new Handler();
-                encryption.generateAsymmetricKeys();
-
-                database.setPublicKey(encryption.convertPublicKeyToString());handler.postDelayed(new Runnable() {
+              handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         tcpServer.setup();
@@ -159,9 +159,6 @@ ConnectionController {
         bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
         bluetoothAdvertiser.stopAdvertising();
-        encryption.generateAsymmetricKeys();
-        database.setPublicKey(encryption.convertPublicKeyToString());
-        myUser.setPublicKey(encryption.convertPublicKeyToString());
         connManager.requestNetwork(networkRequest, new NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
@@ -170,14 +167,30 @@ ConnectionController {
                     System.out.println(ip);
                     myUser.setInetAddress(ip);
                     database.setIp(myUser.getIdUser(),myUser.getInetAddress().getHostAddress());
+                    tcpServer.setup();
+
                 } catch (UnknownHostException e) {
                     System.out.println("connect to group failed "+e);
 
                 }
-                multicastWLAN.createMulticastSocketWlan0();
-                multicastWLAN.sendInfo();
-                bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
-                tcpServer.setup();
+
+                new CountDownTimer(5000,1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        multicastWLAN.createMulticastSocketWlan0();
+                        multicastWLAN.sendInfo();
+                        bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
+
+                    }
+                }.start();
+
+
+
             }
         });
     }
@@ -230,7 +243,6 @@ ConnectionController {
     }
 
     public void initProcess() {
-        setUser();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);

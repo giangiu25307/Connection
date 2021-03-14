@@ -20,6 +20,7 @@ public class Multicast_WLAN extends Multicast {
         DatagramPacket recv = new DatagramPacket(buf, buf.length);
         try {
             while (true) {
+
                 multicastSocketGroupwlan0.receive(recv);
                 String received = new String(recv.getData(), 0, recv.getLength());
                 System.out.println(received);
@@ -117,8 +118,8 @@ public class Multicast_WLAN extends Multicast {
     //send my info ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendInfo() {
         try {
+            (ConnectionController.myUser.getPublicKey());
             String info = "info£€" + ConnectionController.myUser.getAll();
-            System.out.println(info);
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupwlan0.send(message);

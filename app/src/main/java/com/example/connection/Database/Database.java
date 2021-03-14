@@ -339,7 +339,7 @@ public class Database extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.PUBLIC_KEY, publicKey);
-        db.update(Task.TaskEntry.USER, msgValues, null, null);
+        db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER + " = " + ConnectionController.myUser.getIdUser(), null);
     }
 
     public String getPublicKey(String id) {
@@ -372,6 +372,7 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.PROFILE_PIC, profilePic);
         msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED, "true");
         msgValues.put(Task.TaskEntry.ACCEPT, "false");
+        msgValues.put(Task.TaskEntry.PUBLIC_KEY, publicKey);
         db.insert(Task.TaskEntry.USER, null, msgValues);
         ContentValues ipValues = new ContentValues();
     }

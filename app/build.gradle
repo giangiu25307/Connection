@@ -24,6 +24,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.brettywhite:cryptomessenger:0.0.1'
     compileOnly group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.60'
     compileOnly group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.60'
     implementation 'androidx.appcompat:appcompat:1.2.0'

@@ -47,6 +47,7 @@ public class TcpServer {
 
     public void setup() {
         try {
+
             AsyncServer.getDefault().listen(InetAddress.getByName("0.0.0.0"), port, new ListenCallback() {
 
                 @Override
@@ -76,8 +77,9 @@ public class TcpServer {
         socket.setDataCallback(new DataCallback() {
             @Override
             public void onDataAvailable(DataEmitter emitter, ByteBufferList bb) {
-                System.out.println("[Server] Received Message " + new String(bb.getAllByteArray()));
-                String identifier = messageIdentifier(new String(bb.getAllByteArray()));
+                String received=new String(bb.getAllByteArray());
+                System.out.println("[Server] Received Message " + received);
+                String identifier = messageIdentifier(received);
                 Util.writeAll(socket, ("messageConfirmed£€" + identifier).getBytes(), new CompletedCallback() {
                     @Override
                     public void onCompleted(Exception ex) {
@@ -112,6 +114,7 @@ public class TcpServer {
         try {
             String[] splittedR = msg.split("£€");
             System.out.println(msg);
+
             switch (splittedR[0]) {
                 case "image":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
