@@ -27,17 +27,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.AccountController;
-import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.MapUsers;
 import com.example.connection.R;
-import com.example.connection.TCP_Connection.Encryption;
-import com.example.connection.TCP_Connection.NewEncryption;
-import com.example.connection.TCP_Connection.TcpServer;
 import com.example.connection.vpn.LocalVPNService;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Objects;
 
