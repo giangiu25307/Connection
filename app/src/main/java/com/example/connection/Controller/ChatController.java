@@ -58,9 +58,9 @@ public class ChatController {
 
     //Send a global message -------------------------------------------------------------------------------------------------------------------------------
     public void sendGlobalMsg(String msg) {
-        if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION"))
+        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION"))
             udpWlan.sendGlobalMsg(msg);
-        if (MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0") != null)
+        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null)
             udpP2p.sendGlobalMsg(msg);
     }
 

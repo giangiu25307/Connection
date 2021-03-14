@@ -34,7 +34,7 @@ Multicast_P2P extends Multicast {
                             database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);//check adduser
                             tcp_client.sendMessageNoKey(splittedR[2],groupInfo, splittedR[1]);
                             //Check for the other group owner
-                            if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
+                            if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
@@ -47,7 +47,7 @@ Multicast_P2P extends Multicast {
                             }
                             database.addGlobalMsg(received, splittedR[1]);
                             //Check for the other group owner
-                            if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
+                            if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
@@ -61,7 +61,7 @@ Multicast_P2P extends Multicast {
                         case "leave":
                             //A user is leaving the group :( ------------------------------------------------------------------------------------------------------------------------------------
                             database.deleteUser(splittedR[1]);
-                            if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
+                            if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
@@ -69,7 +69,7 @@ Multicast_P2P extends Multicast {
                             break;
                         case "GO_LEAVES_BYE":
                             //the group owner is leaving the group -------------------------------------------------------------------------------------------------------------------------------
-                            if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
+                            if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 String newMessage = database.detectAllOtherGroupClientByIp(splittedR[2]);
                                 database.deleteAllIdUser(newMessage);
                                 newMessage = "userToDelete£€" + newMessage;
@@ -86,7 +86,7 @@ Multicast_P2P extends Multicast {
                                 database.addUser(splittedR[i], splittedR[2], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             }
                             //Check for the other group owner
-                            if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
+                            if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
@@ -94,7 +94,7 @@ Multicast_P2P extends Multicast {
                             break;
                         case "userToDelete":
                             database.deleteAllIdUser(splittedR[1]);
-                            if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
+                            if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
@@ -113,9 +113,8 @@ Multicast_P2P extends Multicast {
     public void createMultigroupP2P() {
         try {
             multicastSocketGroupP2p = new MulticastSocket(6789);
-            multicastSocketGroupP2p.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0"));
-
-
+            System.out.println(MyNetworkInterface.p2pName);
+            multicastSocketGroupP2p.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {

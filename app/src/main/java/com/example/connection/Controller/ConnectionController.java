@@ -28,6 +28,7 @@ import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
 import com.example.connection.TCP_Connection.TcpClient;
 
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Optional;
 
@@ -110,17 +111,22 @@ ConnectionController {
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
-                multicastP2P.createMultigroupP2P();
-                Thread t1 = new Thread(multicastP2P);
-                t1.start();
-                bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                 Handler handler = new Handler();
-              handler.postDelayed(new Runnable() {
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        try {
+                            MyNetworkInterface.setNetworkInterfacesNames();
+                        } catch (SocketException e) {
+                            e.printStackTrace();
+                        }
+                        multicastP2P.createMultigroupP2P();
+                        Thread t1 = new Thread(multicastP2P);
+                        t1.start();
+                        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                         tcpServer.setup();
                     }
-                },1000);
+                },3000);
 
             }
 
@@ -167,7 +173,6 @@ ConnectionController {
                     System.out.println(ip);
                     myUser.setInetAddress(ip);
                     database.setIp(myUser.getIdUser(),myUser.getInetAddress().getHostAddress());
-                    tcpServer.setup();
 
                 } catch (UnknownHostException e) {
                     System.out.println("connect to group failed "+e);
@@ -182,6 +187,12 @@ ConnectionController {
 
                     @Override
                     public void onFinish() {
+                        tcpServer.setup();
+                        try {
+                            MyNetworkInterface.setNetworkInterfacesNames();
+                        } catch (SocketException e) {
+                            e.printStackTrace();
+                        }
                         multicastWLAN.createMulticastSocketWlan0();
                         multicastWLAN.sendInfo();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
@@ -198,7 +209,7 @@ ConnectionController {
 
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
     public void disconnectToGroup() {
-        if (MyNetworkInterface.getMyP2pNetworkInterface("p2p-wlan0-0") == null) {
+        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) == null) {
             bluetoothAdvertiser.stopAdvertising();
         }
         multicastWLAN.imLeaving();
@@ -219,7 +230,7 @@ ConnectionController {
     //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
     public void GOLeaves() {
         multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
-        if (MyNetworkInterface.getMyP2pNetworkInterface("wlan0") != null && getSSID().contains("DIRECT-CONNEXION")) {
+        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && getSSID().contains("DIRECT-CONNEXION")) {
             multicastWLAN.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()+"£€"+myUser.getInetAddress()));
             wifiManager.disconnect();
             wifiManager.removeNetwork(netId);
