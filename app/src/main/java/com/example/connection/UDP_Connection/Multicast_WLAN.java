@@ -7,6 +7,7 @@ import com.example.connection.TCP_Connection.TcpClient;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
 import java.nio.charset.StandardCharsets;
 
 public class Multicast_WLAN extends Multicast {
@@ -28,7 +29,6 @@ public class Multicast_WLAN extends Multicast {
                 if(!splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                     switch (splittedR[0]) {
                         case "info":
-
                             database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
@@ -157,7 +157,9 @@ public class Multicast_WLAN extends Multicast {
         try {
             System.out.println("wlan creato");
             multicastSocketGroupwlan0 = new MulticastSocket(6789);
-            multicastSocketGroupwlan0.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName));
+            NetworkInterface networkInterface = MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName);
+            multicastSocketGroupwlan0.setNetworkInterface(networkInterface);
+            multicastSocketGroupwlan0.joinGroup(sa, networkInterface);
         } catch (IOException e) {
             e.printStackTrace();
         }

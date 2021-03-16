@@ -1,14 +1,21 @@
 package com.example.connection.UDP_Connection;
 
+import android.os.CountDownTimer;
+import android.os.Handler;
+
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.TcpClient;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
 
 public class
 Multicast_P2P extends Multicast {
@@ -113,8 +120,9 @@ Multicast_P2P extends Multicast {
     public void createMultigroupP2P() {
         try {
             multicastSocketGroupP2p = new MulticastSocket(6789);
-            System.out.println(MyNetworkInterface.p2pName);
-            multicastSocketGroupP2p.joinGroup(sa, MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName));
+            NetworkInterface networkInterface = MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName);
+            multicastSocketGroupP2p.setNetworkInterface(networkInterface);
+            multicastSocketGroupP2p.joinGroup(sa,networkInterface);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {

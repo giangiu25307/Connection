@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Random;
 
-public class TcpClient {
+public class   TcpClient {
 
     private int port = 50000;
     private Database database;
@@ -49,8 +49,8 @@ public class TcpClient {
         oldIp = ip;
         oldMsg = text;
         oldId = id;
-        checkInterface(id);
-        AsyncServer.getDefault().connectSocket(new InetSocketAddress(ip, port), new ConnectCallback() {
+        //checkInterface(id);
+        AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
             @Override
             public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
                 System.out.println("Done");

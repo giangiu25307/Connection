@@ -1,10 +1,13 @@
 package com.example.connection.libs;
 
+import android.net.VpnService;
 import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.example.connection.Controller.ConnectionController;
+import com.example.connection.View.Connection;
 import com.example.connection.libs.AsyncDatagramSocket;
 import com.example.connection.libs.AsyncNetworkSocket;
 import com.example.connection.libs.AsyncServerSocket;
@@ -24,12 +27,15 @@ import com.example.connection.libs.future.FutureCallback;
 import com.example.connection.libs.future.SimpleCancellable;
 import com.example.connection.libs.future.SimpleFuture;
 import com.example.connection.libs.util.StreamUtility;
+import com.example.connection.vpn.LocalVPNService;
 
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.CancelledKeyException;
 import java.nio.channels.ClosedChannelException;
@@ -356,7 +362,8 @@ public void setLocalAddress(String local){
                         isa = new InetSocketAddress(port);
                     else
                         isa = new InetSocketAddress(host, port);
-
+                    //ConnectionController.mWifiNetwork.getSocketFactory();
+                    server.socket();//
                     server.socket().bind(isa);
                     server.configureBlocking(false);
                     final SelectionKey key = wrapper.register(mSelector.getSelector());
@@ -424,6 +431,8 @@ public void setLocalAddress(String local){
                     socket = cancel.socket = SocketChannel.open();
                     socket.configureBlocking(false);
                     socket.bind(local);
+                    //GESTIRE IN MODO ADEGUATO A QUALE CONNESSIONE ANDARE
+                    //ConnectionController.mWifiNetwork.bindSocket(socket.socket());
                     ckey = socket.register(mSelector.getSelector(), SelectionKey.OP_CONNECT);
                     ckey.attach(cancel);
                     if (createCallback != null)

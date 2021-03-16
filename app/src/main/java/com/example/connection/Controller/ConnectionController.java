@@ -53,7 +53,7 @@ ConnectionController {
     private String myId;
     private ConnectivityManager connManager;
     private NetworkRequest networkRequest;
-    public static Network mMobileNetwork;
+    public static Network mMobileNetwork, mWifiNetwork,mWifiP2pNetwork;
     private Encryption encryption;
     private TcpClient tcpClient;
     private TcpServer tcpServer;
@@ -68,12 +68,12 @@ ConnectionController {
         myId = myUser.getIdUser();
         myUser.setPublicKey(encryption.convertPublicKeyToString());
         database.setPublicKey(encryption.convertPublicKeyToString());
-        tcpClient = new TcpClient(database,encryption);
-        multicastP2P = new Multicast_P2P(database, this,tcpClient);
-        multicastWLAN = new Multicast_WLAN(database, this,tcpClient);
+        tcpClient = new TcpClient(database, encryption);
+        multicastP2P = new Multicast_P2P(database, this, tcpClient);
+        multicastWLAN = new Multicast_WLAN(database, this, tcpClient);
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
-        bluetoothScanner = new BluetoothScanner(connection,this, bluetoothAdvertiser);
+        bluetoothScanner = new BluetoothScanner(connection, this, bluetoothAdvertiser);
         mConfig = new WifiP2pConfig.Builder()
                 .setNetworkName(SSID + myId)
                 .setPassphrase(networkPassword)
@@ -85,8 +85,8 @@ ConnectionController {
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build();
-        tcpServer = new TcpServer(connection,database,encryption,tcpClient);
-        ChatController chatController = new ChatController().newIstance(database,tcpClient,multicastP2P,multicastWLAN,this);
+        tcpServer = new TcpServer(connection, database, encryption, tcpClient);
+        ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
@@ -126,7 +126,7 @@ ConnectionController {
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                         tcpServer.setup();
                     }
-                },3000);
+                }, 3000);
 
             }
 
@@ -134,7 +134,7 @@ ConnectionController {
             public void onFailure(int reason) {
                 System.out.println("create group error" + reason);
 
-               resetWifi();
+                resetWifi();
                 new CountDownTimer(5000, 2000) {
 
                     public void onTick(long millisUntilFinished) {
@@ -172,14 +172,13 @@ ConnectionController {
                     String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
                     System.out.println(ip);
                     myUser.setInetAddress(ip);
-                    database.setIp(myUser.getIdUser(),myUser.getInetAddress().getHostAddress());
+                    database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
 
                 } catch (UnknownHostException e) {
-                    System.out.println("connect to group failed "+e);
-
+                    System.out.println("connect to group failed " + e);
                 }
 
-                new CountDownTimer(5000,1000) {
+                new CountDownTimer(5000, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
 
@@ -193,13 +192,13 @@ ConnectionController {
                         } catch (SocketException e) {
                             e.printStackTrace();
                         }
+                        tcpClient.sendMessageNoKey("192.168.49.1", "ciao", "1");
                         multicastWLAN.createMulticastSocketWlan0();
                         multicastWLAN.sendInfo();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
 
                     }
                 }.start();
-
 
 
             }
@@ -231,7 +230,7 @@ ConnectionController {
     public void GOLeaves() {
         multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
         if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && getSSID().contains("DIRECT-CONNEXION")) {
-            multicastWLAN.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()+"£€"+myUser.getInetAddress()));
+            multicastWLAN.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId() + "£€" + myUser.getInetAddress()));
             wifiManager.disconnect();
             wifiManager.removeNetwork(netId);
         }
@@ -242,10 +241,10 @@ ConnectionController {
             }
 
             public void onFinish() {
-                finish[0] =true;
+                finish[0] = true;
             }
         }.start();
-        while(finish[0])this.removeGroup();
+        while (finish[0]) this.removeGroup();
     }
 
     //return the all client list --------------------------------------------------------------------------------------------------------------------------------
@@ -267,7 +266,6 @@ ConnectionController {
         NetworkRequest networkRequest = req.build();
         NetworkCallback networkCallback = new
                 NetworkCallback() {
-
                     @Override
                     public void onAvailable(Network network) {
                         mMobileNetwork = network;
@@ -276,6 +274,36 @@ ConnectionController {
                     }
                 };
         connectivityManager.requestNetwork(networkRequest, networkCallback);
+        NetworkRequest.Builder reqWifi = new NetworkRequest.Builder();
+        req.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+        req.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        NetworkRequest networkRequestWifi = reqWifi.build();
+        NetworkCallback networkCallbackWifi = new
+                NetworkCallback() {
+                    @Override
+                    public void onAvailable(Network network) {
+                        try {
+                            System.out.println(network.getByName(null));
+                        } catch (UnknownHostException e) {
+                            e.printStackTrace();
+                        }
+                        mWifiNetwork = network;
+                    }
+                };
+        connectivityManager.requestNetwork(networkRequestWifi, networkCallbackWifi);
+        connectivityManager.requestNetwork(networkRequest, networkCallback);
+        NetworkRequest.Builder reqWifiP2p = new NetworkRequest.Builder();
+        req.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+        req.addCapability(NetworkCapabilities.NET_CAPABILITY_WIFI_P2P);
+        NetworkRequest networkRequestWifiP2p = reqWifiP2p.build();
+        NetworkCallback networkCallbackWifiP2p = new
+                NetworkCallback() {
+                    @Override
+                    public void onAvailable(Network network) {
+                        mWifiP2pNetwork = network;
+                    }
+                };
+        connectivityManager.requestNetwork(networkRequestWifiP2p, networkCallbackWifiP2p);
     }
 
     //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
@@ -286,7 +314,7 @@ ConnectionController {
 
     //TESTING DISCONNECTION
 
-    private void setUser(){
+    private void setUser() {
         String[] info = database.getMyInformation();
         myUser = new User(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9], info[10]);
     }
@@ -310,9 +338,9 @@ ConnectionController {
         return wifiManager;
     }
 
-public void resetWifi(){
-    wifiManager.setWifiEnabled(false);
-    wifiManager.setWifiEnabled(true);
+    public void resetWifi() {
+        wifiManager.setWifiEnabled(false);
+        wifiManager.setWifiEnabled(true);
 
-}
+    }
 }

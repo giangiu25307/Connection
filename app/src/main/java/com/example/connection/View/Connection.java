@@ -55,10 +55,11 @@ public class Connection extends AppCompatActivity {
     public static String[] genders = {"", "", ""};
     private static final int VPN_REQUEST_CODE = 0x0F;
     private AccountController accountController;
+    public static LocalVPNService localVPNService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       // deleteDatabase("Connection");
+        deleteDatabase("Connection");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -71,8 +72,8 @@ public class Connection extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
         loadFragment(false);
-        //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
-        // database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
+        database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
+        //database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
         //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
         //database.addUser("3",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
         //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW
@@ -264,7 +265,8 @@ public class Connection extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == VPN_REQUEST_CODE && resultCode == RESULT_OK) {
             //waitingForVPNStart = true;
-            this.startService(new Intent(this, LocalVPNService.class));
+            localVPNService = new LocalVPNService();
+            this.startService(new Intent(this, localVPNService.getClass()));
             //enableButton(false);
         }
     }

@@ -20,7 +20,17 @@ import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
+import com.example.connection.TCP_Connection.Encryption;
+import com.example.connection.TCP_Connection.TcpClient;
+import com.example.connection.TCP_Connection.TcpServer;
+import com.example.connection.UDP_Connection.Multicast_P2P;
+import com.example.connection.UDP_Connection.Multicast_WLAN;
+import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 public class HomeFragment extends Fragment {
 
@@ -185,7 +195,25 @@ public class HomeFragment extends Fragment {
        this.connectionController = new ConnectionController(connection, database);
         connectionController.active4G();
         connectionController.initProcess();
-
+        /*try {
+            MyNetworkInterface.setNetworkInterfacesNames();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        Encryption encryption = new Encryption(connection);
+        TcpClient tcpClient = new TcpClient(database,encryption);
+        Multicast_P2P multicastP2P = new Multicast_P2P(database, connectionController,tcpClient);
+        multicastP2P.createMultigroupP2P();
+        Multicast_WLAN multicastWLAN = new Multicast_WLAN(database, connectionController,tcpClient);
+        //multicastWLAN.createMulticastSocketWlan0();
+        TcpServer tcpServer = new TcpServer(connection,database,encryption,tcpClient);
+        tcpServer.setup();
+        /*try {
+            ConnectionController.myUser.setInetAddress("192.168.49.114");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        multicastWLAN.sendInfo();*/
     }
 
     public void setChatController(ChatController chatController) {
