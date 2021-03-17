@@ -73,7 +73,7 @@ public class Connection extends AppCompatActivity {
         fragment = new SplashScreenFragment();
         loadFragment(false);
         //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
-        database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
+        //database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
         //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
         //database.addUser("3",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
         //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW

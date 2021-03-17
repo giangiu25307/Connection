@@ -195,7 +195,6 @@ ConnectionController {
                         multicastWLAN.createMulticastSocketWlan0();
                         multicastWLAN.sendInfo();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
-
                     }
                 }.start();
 
@@ -293,6 +292,7 @@ ConnectionController {
         wifiConfig.SSID = String.format("\"%s\"", SSID + id);
         wifiConfig.preSharedKey = String.format("\"%s\"", networkPassword);
 //remember id
+        System.out.println(id);
         netId = wifiManager.addNetwork(wifiConfig);
         wifiManager.disconnect();
         wifiManager.enableNetwork(netId, true);
