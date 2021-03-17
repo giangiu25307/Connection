@@ -26,6 +26,7 @@
         <attr name="topLineBottomSheet" format="color"/>
 
         <!-- Chat -->
+        <attr name="chatBackground" format="color"/>
         <attr name="dateMessageLayoutBackgroundColor" format="color"/>
         <attr name="messageInputColor" format="color"/>
         <attr name="messageInputBorder" format="color"/>

@@ -5,6 +5,9 @@
     android:id="@+id/chatLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="15dp"
+    android:background="@drawable/bg_chat"
     android:clickable="true"
     android:padding="10dp">
 
@@ -13,6 +16,8 @@
         android:id="@+id/profilePhoto"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
