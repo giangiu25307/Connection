@@ -431,7 +431,6 @@ public void setLocalAddress(String local){
                     socket = cancel.socket = SocketChannel.open();
                     socket.configureBlocking(false);
                     socket.bind(local);
-                    //GESTIRE IN MODO ADEGUATO A QUALE CONNESSIONE ANDARE
                     //ConnectionController.mWifiNetwork.bindSocket(socket.socket());
                     ckey = socket.register(mSelector.getSelector(), SelectionKey.OP_CONNECT);
                     ckey.attach(cancel);

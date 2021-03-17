@@ -192,7 +192,6 @@ ConnectionController {
                         } catch (SocketException e) {
                             e.printStackTrace();
                         }
-                        tcpClient.sendMessageNoKey("192.168.49.1", "ciao", "1");
                         multicastWLAN.createMulticastSocketWlan0();
                         multicastWLAN.sendInfo();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
@@ -269,41 +268,11 @@ ConnectionController {
                     @Override
                     public void onAvailable(Network network) {
                         mMobileNetwork = network;
-                        connectivityManager.bindProcessToNetwork(network);
+                        //connectivityManager.bindProcessToNetwork(network);
                         connection.startVpn();
                     }
                 };
         connectivityManager.requestNetwork(networkRequest, networkCallback);
-        NetworkRequest.Builder reqWifi = new NetworkRequest.Builder();
-        req.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
-        req.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
-        NetworkRequest networkRequestWifi = reqWifi.build();
-        NetworkCallback networkCallbackWifi = new
-                NetworkCallback() {
-                    @Override
-                    public void onAvailable(Network network) {
-                        try {
-                            System.out.println(network.getByName(null));
-                        } catch (UnknownHostException e) {
-                            e.printStackTrace();
-                        }
-                        mWifiNetwork = network;
-                    }
-                };
-        connectivityManager.requestNetwork(networkRequestWifi, networkCallbackWifi);
-        connectivityManager.requestNetwork(networkRequest, networkCallback);
-        NetworkRequest.Builder reqWifiP2p = new NetworkRequest.Builder();
-        req.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
-        req.addCapability(NetworkCapabilities.NET_CAPABILITY_WIFI_P2P);
-        NetworkRequest networkRequestWifiP2p = reqWifiP2p.build();
-        NetworkCallback networkCallbackWifiP2p = new
-                NetworkCallback() {
-                    @Override
-                    public void onAvailable(Network network) {
-                        mWifiP2pNetwork = network;
-                    }
-                };
-        connectivityManager.requestNetwork(networkRequestWifiP2p, networkCallbackWifiP2p);
     }
 
     //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME

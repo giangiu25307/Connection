@@ -193,27 +193,8 @@ public class HomeFragment extends Fragment {
 
     public void setConnectionController() {
        this.connectionController = new ConnectionController(connection, database);
-        connectionController.active4G();
+        //connectionController.active4G();
         connectionController.initProcess();
-        /*try {
-            MyNetworkInterface.setNetworkInterfacesNames();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        Encryption encryption = new Encryption(connection);
-        TcpClient tcpClient = new TcpClient(database,encryption);
-        Multicast_P2P multicastP2P = new Multicast_P2P(database, connectionController,tcpClient);
-        multicastP2P.createMultigroupP2P();
-        Multicast_WLAN multicastWLAN = new Multicast_WLAN(database, connectionController,tcpClient);
-        //multicastWLAN.createMulticastSocketWlan0();
-        TcpServer tcpServer = new TcpServer(connection,database,encryption,tcpClient);
-        tcpServer.setup();
-        /*try {
-            ConnectionController.myUser.setInetAddress("192.168.49.114");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        multicastWLAN.sendInfo();*/
     }
 
     public void setChatController(ChatController chatController) {
