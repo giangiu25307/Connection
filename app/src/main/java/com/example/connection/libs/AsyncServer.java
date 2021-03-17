@@ -57,6 +57,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.net.SocketFactory;
+
 public class AsyncServer {
     public static final String LOGTAG = "NIO";
 private InetSocketAddress local=null;
@@ -362,8 +364,7 @@ public void setLocalAddress(String local){
                         isa = new InetSocketAddress(port);
                     else
                         isa = new InetSocketAddress(host, port);
-                    //ConnectionController.mWifiNetwork.getSocketFactory();
-                    server.socket();//
+                    server.socket();
                     server.socket().bind(isa);
                     server.configureBlocking(false);
                     final SelectionKey key = wrapper.register(mSelector.getSelector());
@@ -431,8 +432,7 @@ public void setLocalAddress(String local){
                     socket = cancel.socket = SocketChannel.open();
                     socket.configureBlocking(false);
                     socket.bind(local);
-                    //GESTIRE IN MODO ADEGUATO A QUALE CONNESSIONE ANDARE
-                    //ConnectionController.mWifiNetwork.bindSocket(socket.socket());
+                    //Connection.localVPNService.protect(socket.socket());
                     ckey = socket.register(mSelector.getSelector(), SelectionKey.OP_CONNECT);
                     ckey.attach(cancel);
                     if (createCallback != null)

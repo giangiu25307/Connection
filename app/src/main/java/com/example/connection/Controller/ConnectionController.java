@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
@@ -15,6 +16,8 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.format.Formatter;
+
+import androidx.annotation.NonNull;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
@@ -28,9 +31,13 @@ import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
 import com.example.connection.TCP_Connection.TcpClient;
 
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.channels.SocketChannel;
 import java.util.Optional;
+
+import javax.net.SocketFactory;
 
 import static android.net.ConnectivityManager.*;
 
@@ -53,7 +60,7 @@ ConnectionController {
     private String myId;
     private ConnectivityManager connManager;
     private NetworkRequest networkRequest;
-    public static Network mMobileNetwork, mWifiNetwork,mWifiP2pNetwork;
+    public static Network mMobileNetwork, mWifiNetwork;
     private Encryption encryption;
     private TcpClient tcpClient;
     private TcpServer tcpServer;
@@ -125,6 +132,7 @@ ConnectionController {
                         t1.start();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                         tcpServer.setup();
+                        //active4G();
                     }
                 }, 3000);
 
@@ -192,11 +200,10 @@ ConnectionController {
                         } catch (SocketException e) {
                             e.printStackTrace();
                         }
-                        tcpClient.sendMessageNoKey("192.168.49.1", "ciao", "1");
                         multicastWLAN.createMulticastSocketWlan0();
                         multicastWLAN.sendInfo();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
-
+                        //active4G();
                     }
                 }.start();
 
@@ -269,41 +276,10 @@ ConnectionController {
                     @Override
                     public void onAvailable(Network network) {
                         mMobileNetwork = network;
-                        connectivityManager.bindProcessToNetwork(network);
                         connection.startVpn();
                     }
                 };
         connectivityManager.requestNetwork(networkRequest, networkCallback);
-        NetworkRequest.Builder reqWifi = new NetworkRequest.Builder();
-        req.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
-        req.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
-        NetworkRequest networkRequestWifi = reqWifi.build();
-        NetworkCallback networkCallbackWifi = new
-                NetworkCallback() {
-                    @Override
-                    public void onAvailable(Network network) {
-                        try {
-                            System.out.println(network.getByName(null));
-                        } catch (UnknownHostException e) {
-                            e.printStackTrace();
-                        }
-                        mWifiNetwork = network;
-                    }
-                };
-        connectivityManager.requestNetwork(networkRequestWifi, networkCallbackWifi);
-        connectivityManager.requestNetwork(networkRequest, networkCallback);
-        NetworkRequest.Builder reqWifiP2p = new NetworkRequest.Builder();
-        req.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
-        req.addCapability(NetworkCapabilities.NET_CAPABILITY_WIFI_P2P);
-        NetworkRequest networkRequestWifiP2p = reqWifiP2p.build();
-        NetworkCallback networkCallbackWifiP2p = new
-                NetworkCallback() {
-                    @Override
-                    public void onAvailable(Network network) {
-                        mWifiP2pNetwork = network;
-                    }
-                };
-        connectivityManager.requestNetwork(networkRequestWifiP2p, networkCallbackWifiP2p);
     }
 
     //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
