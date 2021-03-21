@@ -85,7 +85,7 @@ public class DrawController extends View {
         int tempX = 0, tempY = 0;
         for (int i = 0; i < userList.size(); i++) {
             if (i == 0) {
-                createUserPoint(getWidth() / 2, getHeight() / 2, i);
+                createUserPoint(getWidth() / 2, getHeight() / 2, userList.get(i).getIdUser());
                 Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), getWidth() / 2, getHeight() / 2, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
                 previousX.add(getWidth()/2);
                 previousY.add(getHeight()/2);
@@ -101,7 +101,7 @@ public class DrawController extends View {
                 canvas.drawLine(x, y, tempX, tempY, paint);
                 x = tempX;
                 y = tempY;
-                createUserPoint(x, y, i);
+                createUserPoint(x, y, userList.get(i).getIdUser());
                 Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
             }
         }
@@ -109,9 +109,14 @@ public class DrawController extends View {
     }
 
     //create a clickable item who refers to a user at the coordinates x,y
-    private void createUserPoint(final int x, final int y, final int id) {
+    private void createUserPoint(final int x, final int y, final String id) {
+        int n=0;
+        for (int i=0;i<userList.size();i++){
+            if(userList.get(i).getIdUser()==id) n=i;
+        }
+        final User user = userList.get(n);
         final ImageView image = new ImageView(mapLayout.getContext());
-        Bitmap bitmap = BitmapFactory.decodeFile(userList.get(id).getProfilePic());
+        Bitmap bitmap = BitmapFactory.decodeFile(user.getProfilePic());
         if (bitmap != null) {
             image.setImageBitmap(bitmap);
         }
@@ -136,7 +141,6 @@ public class DrawController extends View {
                 dialogBuilder.setView(R.layout.person_found_alert_dialog);
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
-                final User user = userList.get(id);
                 ImageView profilePic = alertDialog.findViewById(R.id.profilePicMapAlertDialog);
                 TextView name = alertDialog.findViewById(R.id.nameMapAlertDialog);
                 TextView information = alertDialog.findViewById(R.id.informationMapAlertDialog);
@@ -220,7 +224,7 @@ public class DrawController extends View {
                 y = (int) (Math.random() * getHeight());
             previousX.add(x);
             previousY.add(y);
-            createUserPoint(x, y, Integer.parseInt(userList.get(i).getIdUser()));
+            createUserPoint(x, y, userList.get(i).getIdUser());
             Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
         }
 
