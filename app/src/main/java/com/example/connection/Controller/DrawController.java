@@ -92,9 +92,9 @@ public class DrawController extends View {
             } else {
                 tempX = (int) (Math.random() * getWidth());
                 tempY = (int) (Math.random() * getHeight());
-                while (!check(previousX, tempX))
+                while (check(previousX, tempX))
                     tempX = (int) (Math.random() * getWidth());
-                while (!check(previousY, tempY))
+                while (check(previousY, tempY))
                     tempY = (int) (Math.random() * getHeight());
                 previousX.add(tempX);
                 previousY.add(tempY);
@@ -167,7 +167,7 @@ public class DrawController extends View {
     private boolean check(ArrayList<Integer> previousCoordinates, int coordinates) {
         int count=0;
         for (int i = 0; i < previousCoordinates.size(); i++) {
-            if(coordinates < previousCoordinates.get(i)-100 || coordinates > previousCoordinates.get(i)+100) count++;
+            if(coordinates < previousCoordinates.get(i)-125 || coordinates > previousCoordinates.get(i)+125) count++;
         }
         if(count==previousCoordinates.size())return true;
         else return false;
@@ -185,7 +185,9 @@ public class DrawController extends View {
 
     private boolean mapContainsId(String id) {
         for (int i = 0; i < Connection.mapUsers.size(); i++) {
-            if (Connection.mapUsers.get(i).getId().equals(id)) return true;
+            if (Connection.mapUsers.get(i).getId().equals(id)){
+                return true;
+            }
         }
         return false;
     }
@@ -196,7 +198,6 @@ public class DrawController extends View {
         for (int i = 0; i < ids.size(); i++) {
             if (!mapContainsId(ids.get(i))) {
                 userList.add(this.userList.get(i));
-                System.out.println(this.userList.get(i).getIdUser()+ids.get(i));
             }
         }
         return userList;
@@ -213,13 +214,13 @@ public class DrawController extends View {
         for (int i = 0; i < userList.size(); i++) {
             x = (int) (Math.random() * getWidth());
             y = (int) (Math.random() * getHeight());
-            while (!check(previousX, x))
+            while (check(previousX, x))
                 x = (int) (Math.random() * getWidth());
-            while (!check(previousY, y))
+            while (check(previousY, y))
                 y = (int) (Math.random() * getHeight());
             previousX.add(x);
             previousY.add(y);
-            createUserPoint(x, y, i);
+            createUserPoint(x, y, Integer.parseInt(userList.get(i).getIdUser()));
             Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
         }
 

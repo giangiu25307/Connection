@@ -3,6 +3,7 @@ package com.example.connection.View;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -65,19 +66,17 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         drawing(view);
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true){
-
                     if(!Multicast.dbUserEvent){
                         Multicast.dbUserEvent=true;
                         MapFragment fragment = new MapFragment().newInstance(connectionController,database);
-                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
-
                     }
                 }
             }
