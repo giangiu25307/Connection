@@ -71,7 +71,7 @@ public class ChatController {
         } else {
             tcp.handShake(idReceiver, database.getPublicKey(idReceiver), msg);
         }
-        database.addMsg(msg, ConnectionController.myUser.getIdUser(), idReceiver);
+
     }
 
     //send a direct image -------------------------------------------------------------------------------------------------------------------------------

@@ -431,7 +431,7 @@ public void setLocalAddress(String local){
                     socket = cancel.socket = SocketChannel.open();
                     socket.configureBlocking(false);
                     socket.bind(local);
-                    Connection.localVPNService.protect(socket.socket());
+                    //Connection.localVPNService.protect(socket.socket());
                     ckey = socket.register(mSelector.getSelector(), SelectionKey.OP_CONNECT);
                     ckey.attach(cancel);
                     if (createCallback != null)

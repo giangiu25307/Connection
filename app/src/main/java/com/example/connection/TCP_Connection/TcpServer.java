@@ -113,8 +113,6 @@ public class TcpServer {
     public String messageIdentifier(String msg) {
         try {
             String[] splittedR = msg.split("£€");
-            System.out.println(msg);
-
             switch (splittedR[0]) {
                 case "image":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
@@ -133,6 +131,7 @@ public class TcpServer {
                     //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
                     for (int i = 1; i < splittedR.length; i = i + 12) {
                         if (i == 1)
+
                             database.addUser(splittedR[i], "192.168.49.1", splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                         else
                             database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
@@ -143,7 +142,6 @@ public class TcpServer {
                     //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                         msg = splittedR[2];
-                        System.out.println(splittedR[2]);
                         Date date = new Date();
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
                         String datetime = "";
@@ -158,22 +156,24 @@ public class TcpServer {
                             if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
                                 database.addMsg("", splittedR[1], splittedR[1]);
                             }
-                            database.addMsg(encryption.decryptAES(msg.getBytes(), encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1]))), splittedR[1], splittedR[1]);
+                            database.addMsg(encryption.decryptAES(msg, encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1]))), splittedR[1], splittedR[1]);
+                            System.out.println(encryption.decryptAES(msg, encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1]))));
                         } catch (ParseException e) {
                             e.printStackTrace();
                         } catch (GeneralSecurityException e) {
                             e.printStackTrace();
                         }
                     } else {
-                        System.out.println(msg);
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, database.findIp(ConnectionController.myUser.getIdUser()));
 
                     }
                     return "message";
                 case "handShake":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
+
                         database.createChat(splittedR[1], database.getUserName(splittedR[1]), encryption.decrypt(splittedR[2]).split("£€")[0]);
                         database.addMsg("", splittedR[1], splittedR[1]);
+
                         database.addMsg(encryption.decrypt(splittedR[2]).split("£€")[1], splittedR[1], splittedR[1]);
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, database.findIp(ConnectionController.myUser.getIdUser()));
