@@ -95,8 +95,7 @@ public class   TcpClient {
         checkInterface(id);
         String msg = "message£€" + id + "£€";
         try {
-            byte[] messageCrypted = encryption.encryptAES(message, encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
-            msg += new String(messageCrypted, StandardCharsets.UTF_8);
+            msg +=encryption.encryptAES(message, encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
             oldMsg = msg;
             AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
                 @Override
@@ -105,7 +104,7 @@ public class   TcpClient {
                     handleConnectCompleted(ex, socket, oldMsg);
                 }
             });
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
     }
@@ -117,7 +116,7 @@ public class   TcpClient {
         String imageString = "image£€" + id + "£€";
         oldImage = imagePath;
         try {
-            imageString += new String(encryption.encryptAES( new String(bos.toByteArray(), StandardCharsets.UTF_8),encryption.convertStringToSecretKey(database.getSymmetricKey(id))),StandardCharsets.UTF_8);
+            imageString += encryption.encryptAES( new String(bos.toByteArray(), StandardCharsets.UTF_8),encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
@@ -186,7 +185,7 @@ public class   TcpClient {
                             database.createChat(oldId, database.getUserName(oldId), oldSecretKey);
                             checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
-                        } else if (received.split("£€").equals("message")) {
+                        } else if (received.split("£€")[1].equals("message")) {
                             checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
                         } else {
