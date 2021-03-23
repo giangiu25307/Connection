@@ -20,6 +20,7 @@ import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
+import com.example.connection.R;
 import com.example.connection.TCP_Connection.Encryption;
 import com.example.connection.TCP_Connection.TcpServer;
 import com.example.connection.UDP_Connection.Multicast_P2P;
@@ -94,6 +95,14 @@ ConnectionController {
                 disconnectToGroup();
             }
         }));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    autoDisconnect();
+                }
+            }
+        }).start();
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
