@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
 
     <uses-feature android:name="android.hardware.bluetooth" />
@@ -40,13 +41,19 @@
                 android:resource="@xml/serviceconfig" />
         </service>
 
-        <activity android:name=".View.Connection">
+        <service
+            android:name=".Services.MyForegroundService"
+            android:permission="android.permission.FOREGROUND_SERVICE"
+            android:stopWithTask="true">
+        </service>
+
+        <activity android:name=".View.Connection" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name="com.example.connection.vpn.LocalVPNService"
             android:permission="android.permission.BIND_VPN_SERVICE">
@@ -54,6 +61,7 @@
                 <action android:name="android.net.VpnService" />
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>

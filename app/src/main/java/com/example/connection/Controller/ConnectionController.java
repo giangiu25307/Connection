@@ -30,6 +30,7 @@ import com.example.connection.TCP_Connection.TcpClient;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static android.net.ConnectivityManager.*;
@@ -87,6 +88,12 @@ ConnectionController {
                 .build();
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                disconnectToGroup();
+            }
+        }));
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
@@ -206,12 +213,16 @@ ConnectionController {
 
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
     public void disconnectToGroup() {
-        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) == null) {
-            bluetoothAdvertiser.stopAdvertising();
+        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null) {
+            GOLeaves();
         }
-        multicastWLAN.imLeaving();
+        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null) {
+            multicastWLAN.imLeaving();
+        }
         wifiManager.disconnect();
         wifiManager.removeNetwork(netId);
+        bluetoothAdvertiser.stopAdvertising();
+        tcpServer.close();
     }
 
     //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
@@ -225,29 +236,13 @@ ConnectionController {
     }
 
     //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
-    public void GOLeaves() {
-        multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
-        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && getSSID().contains("DIRECT-CONNEXION")) {
-            multicastWLAN.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId() + "£€" + myUser.getInetAddress()));
-            wifiManager.disconnect();
-            wifiManager.removeNetwork(netId);
-        }
+    private void GOLeaves() {
+        multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€");//.concat(database.getMaxId()));
         final boolean[] finish = {false};
-        new CountDownTimer(10000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-            }
-
-            public void onFinish() {
-                finish[0] = true;
-            }
-        }.start();
-        while (finish[0]) this.removeGroup();
-    }
-
-    //return the all client list --------------------------------------------------------------------------------------------------------------------------------
-    public Optional<Cursor> getAllClientList() {
-        return Optional.of(database.getAllUsers());
+        int prec = LocalDateTime.now().getSecond();
+        while(LocalDateTime.now().getSecond()-prec<10);
+        this.removeGroup();
+        multicastP2P.closeMultigroupP2p();
     }
 
     public void initProcess() {

@@ -143,4 +143,7 @@ Multicast_P2P extends Multicast {
         }
     }
 
+    public void closeMultigroupP2p(){
+        multicastSocketGroupP2p.close();
+    }
 }

@@ -148,6 +148,7 @@ public class Multicast_WLAN extends Multicast {
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupwlan0.send(message);
             database.deleteAllUser();
+            multicastSocketGroupwlan0.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

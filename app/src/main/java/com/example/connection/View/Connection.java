@@ -1,6 +1,11 @@
 package com.example.connection.View;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,6 +16,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.VpnService;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -28,9 +34,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.AccountController;
+import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.MapUsers;
 import com.example.connection.R;
+import com.example.connection.Services.MyForegroundService;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.vpn.LocalVPNService;
@@ -48,7 +56,7 @@ public class Connection extends AppCompatActivity {
     private long secondsRemaining = 1000;
     private SharedPreferences sharedPreferences;
     public static boolean boot = true;
-    Database database;
+    private Database database;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     public static String fragmentName = "MAP";
     public static String lightOrDark = "light";
@@ -58,6 +66,8 @@ public class Connection extends AppCompatActivity {
     private static final int VPN_REQUEST_CODE = 0x0F;
     private AccountController accountController;
     public static LocalVPNService localVPNService;
+    private NotificationChannel channel;
+    public static MyForegroundService foregroundService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +89,7 @@ public class Connection extends AppCompatActivity {
         //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
         //database.addUser("3",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
         //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW
-        final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
+        final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.FOREGROUND_SERVICE};
         ActivityCompat.requestPermissions(this, permissions, 101);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         }
@@ -99,6 +109,9 @@ public class Connection extends AppCompatActivity {
         //ENDS PERMISSIONS REQUEST
         createCountDowntimer();
         countDownTimer.start();
+        foregroundService = new MyForegroundService();
+        Intent notificationIntent = new Intent(this, foregroundService.getClass());
+        this.startForegroundService(notificationIntent);
     }
 
     private void loadTheme() {
@@ -208,6 +221,7 @@ public class Connection extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         System.out.println("distrutta");
+        System.exit(1);
     }
 
     public boolean isAccessibilityEnabled() {

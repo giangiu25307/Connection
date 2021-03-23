@@ -45,6 +45,10 @@ public class TcpServer {
         port = 50000;
     }
 
+    public void close(){
+        AsyncServer.getDefault().kill();
+    }
+
     public void setup() {
         try {
 
