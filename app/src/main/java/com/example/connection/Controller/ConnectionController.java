@@ -237,7 +237,7 @@ ConnectionController {
 
     //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
     private void GOLeaves() {
-        multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€");//.concat(database.getMaxId()));
+        multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
         final boolean[] finish = {false};
         int prec = LocalDateTime.now().getSecond();
         while(LocalDateTime.now().getSecond()-prec<10);
