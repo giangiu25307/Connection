@@ -49,6 +49,7 @@ public class ChatActivity extends AppCompatActivity {
         loadTheme();
         setContentView(R.layout.activity_chat);
         id = getIntent().getStringExtra("idChat");
+        Connection.idChatOpen = id;
         String name = getIntent().getStringExtra("name");
         database = new Database(this);
         TextView nameTextView = findViewById(R.id.nameUser);
@@ -168,4 +169,27 @@ public class ChatActivity extends AppCompatActivity {
         c.close();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Connection.idChatOpen = "";
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Connection.idChatOpen = "";
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Connection.idChatOpen = "";
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Connection.idChatOpen = id;
+    }
 }
