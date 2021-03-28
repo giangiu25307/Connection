@@ -1,5 +1,6 @@
 package com.example.connection.TCP_Connection;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -181,16 +182,27 @@ public class   TcpClient {
                     sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
                 else {
                     if(!noKey) {
+                        checkDate(oldId);
+                        Intent intent = new Intent();
                         if (received.split("£€")[1].equals("handShake")) {
                             database.createChat(oldId, database.getUserName(oldId), oldSecretKey);
-                            checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
+                            intent.putExtra("intentType","messageController");
+                            intent.putExtra("communicationType","tcp");
+                            intent.putExtra("msg",oldClearMsg);
+                            intent.putExtra("id",oldId);
                         } else if (received.split("£€")[1].equals("message")) {
-                            checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
+                            intent.putExtra("intentType","messageController");
+                            intent.putExtra("communicationType","tcp");
+                            intent.putExtra("msg",oldClearMsg);
+                            intent.putExtra("id",oldId);
                         } else {
-                            checkDate(oldId);
                             database.addImage(oldImage, ConnectionController.myUser.getIdUser(), oldId);
+                            intent.putExtra("intentType","messageController");
+                            intent.putExtra("communicationType","tcp");
+                            intent.putExtra("msg",oldImage);
+                            intent.putExtra("id",oldId);
                         }
                     }
                 }

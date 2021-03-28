@@ -55,10 +55,10 @@ public class Connection extends AppCompatActivity {
     private Boolean startTimer2 = true;
     private long secondsRemaining = 1000;
     private SharedPreferences sharedPreferences;
-    public static boolean boot = true;
+    public static boolean boot = true,isGlobalChatOpen=false;
     private Database database;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
-    public static String fragmentName = "MAP";
+    public static String fragmentName = "MAP",idChatOpen;
     public static String lightOrDark = "light";
     public static ArrayList<MapUsers> mapUsers = new ArrayList<MapUsers>();
     public static String minAge = "", maxAge = "";
@@ -84,6 +84,10 @@ public class Connection extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
         loadFragment(false);
+
+        //PROBABILE CASO MULTIGRUPPO, IL TUO ID è IL MAGGIORE NEL GRUPPO, MODIFICARE QUINDI IL GETMAXID DEL DB
+        //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
+
        //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
         database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
         //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
