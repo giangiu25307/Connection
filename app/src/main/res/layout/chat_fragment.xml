@@ -23,45 +23,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+        <Button
             android:id="@+id/requestLinearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_request_counter"
-            android:orientation="horizontal"
+            android:background="@drawable/bg_request_button_counter"
+            android:fontFamily="@font/opensans_regular"
+            android:letterSpacing="0"
+            android:minHeight="0dp"
             android:paddingHorizontal="12.5dp"
-            android:paddingVertical="5dp"
+            android:paddingVertical="0dp"
+            android:text="Requests"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent"
+            app:backgroundTint="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
-
-            <TextView
-                android:id="@+id/numberRequest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif"
-                android:text="12"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/requestTextView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif"
-                android:paddingStart="2.5dp"
-                android:text="request"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
-
-        </LinearLayout>
+            app:layout_constraintVertical_bias="0.0" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chatRecyclerView"

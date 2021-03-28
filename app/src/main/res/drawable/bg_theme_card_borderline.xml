@@ -3,6 +3,6 @@
 
     <solid android:color="?attr/groupOptionSettingsBackground"/>
     <stroke android:color="?attr/textColor" android:width="2dp"/>
-    <corners android:radius="10dp"/>
+    <corners android:radius="12.5dp"/>
 
 </shape>

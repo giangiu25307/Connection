@@ -15,7 +15,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,14 +29,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Database;
-import com.example.connection.Model.User;
 import com.example.connection.R;
 
 import java.util.regex.Pattern;
@@ -51,7 +48,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private Database database;
     private ChatController chatController;
     private int theme = R.style.AppTheme;
-    private TextView themeOptionDescription, wallpaperOptionDescription;
+    private TextView themeOptionDescription, wallpaperOptionDescription, informationDescription;
     private ImageView editProfileButton;
     private int bgColor = R.color.mediumWhite;
     private int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
@@ -145,6 +142,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         profilePic = view.findViewById(R.id.profilePic);
 
         //wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
+
+        view.findViewById(R.id.informationDescription).setSelected(true);
 
         setProfilePic();
 
@@ -319,7 +318,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             newTheme = "dark";
             Connection.lightOrDark = "Dark";
             bgColor = R.color.black4;
-            darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
+            darkButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
         } else if (currentTheme.equals("auto")) {
             getCurrentSystemTheme();
             newTheme = "auto";
@@ -329,12 +328,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             } else {
                 bgColor = R.color.mediumWhite;
             }
-            followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
+            followSystemButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
         } else {
             theme = R.style.AppTheme;
             newTheme = "light";
             Connection.lightOrDark = "Light";
-            lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
+            lightButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
         }
                 /*
                 if (currentTheme.equals("light")) {
@@ -352,9 +351,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 theme = R.style.AppTheme;
                 newTheme = "light";
                 Connection.lightOrDark = "Light";
-                lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
-                darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
-                followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
+                lightButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
+                darkButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
+                followSystemButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
             }
         });
 
@@ -364,9 +363,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 theme = R.style.DarkTheme;
                 newTheme = "dark";
                 Connection.lightOrDark = "Dark";
-                lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
-                darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
-                followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
+                lightButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
+                darkButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
+                followSystemButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
             }
         });
 
@@ -376,9 +375,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 getCurrentSystemTheme();
                 newTheme = "auto";
                 Connection.lightOrDark = "Follow System";
-                lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
-                darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
-                followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
+                lightButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
+                darkButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
+                followSystemButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
             }
         });
 

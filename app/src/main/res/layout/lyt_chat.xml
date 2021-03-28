@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginTop="15dp"
-    android:background="@drawable/bg_chat"
+    android:background="@drawable/bg_chat_card"
     android:clickable="true"
     android:padding="10dp">
 

@@ -409,13 +409,16 @@
                     app:layout_constraintVertical_bias="1.0" />
 
                 <TextView
-                    android:id="@+id/textView61"
+                    android:id="@+id/informationDescription"
                     style="@style/subTitleSettingsCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="2dp"
-                    android:text="Look at the app version, the project on GitHub, ecc... "
+                    android:text="Look at the app version, the project on GitHub and more"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"

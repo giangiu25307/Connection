@@ -13,11 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Controller.ChatController;
@@ -41,18 +41,18 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     private Cursor chatCursor, userCursor;
     private Database database;
     private Bitmap bitmap, bitmap2;
-    private TextView textView;
+    private Button button;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     private Date date = new Date();
     private ChatController chatController;
 
 
-    public RequestAdapter(Context context, Cursor chatCursor, Database database, ChatController chatController, TextView textView) {
+    public RequestAdapter(Context context, Cursor chatCursor, Database database, ChatController chatController, Button button) {
         this.context = context;
         this.chatCursor = chatCursor;
         this.database = database;
         this.chatController = chatController;
-        this.textView = textView;
+        this.button = button;
         Log.v("Request Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
     }
 
@@ -61,7 +61,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     public RequestAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.request_layout, parent, false);
+        View view = inflater.inflate(R.layout.lyt_request, parent, false);
         ViewHolder holder = new ViewHolder(view, new RequestAdapter.ViewHolder.OnChatClickListener() {
 
             @Override
@@ -101,13 +101,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
         long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
         String userName = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.USERNAME));
+        String name = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.NAME));
         String gender = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.GENDER));
         String birth = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.BIRTH));
         String age = getAge(birth);
         String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
-        if(lastMessage.length() > 7){
-            lastMessage =lastMessage.substring(0, 5)+"...";
-        }
         String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
         String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
         File profilePic = new File(profilePicPosition);
@@ -136,8 +134,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         TextView informationTextView2 = holder.information2;
         TextView lastMessageTextView = holder.lastMessage;
         TextView timeLastMessageTextView = holder.timeLastMessage;
-        informationTextView.setText(userName);
-        String temp = age+","+gender;
+        informationTextView.setText(name);
+        String temp = age + ", " + gender;
         informationTextView2.setText(temp);
         lastMessageTextView.setText(lastMessage);
         try {
@@ -176,10 +174,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         chatCursor = newCursor;
 
         if (newCursor != null) {
-            textView.setText(String.valueOf(chatCursor.getCount()));
+            int totalRequest = chatCursor.getCount();
+            button.setText(totalRequest == 1 ? totalRequest + " request" : totalRequest + " requests");
             notifyDataSetChanged();
         }else{
-            textView.setText(0);
+            button.setText(0 + " requests");
         }
 
     }
@@ -205,7 +204,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             information2 = itemView.findViewById(R.id.textViewInformation2);
             lastMessage = itemView.findViewById(R.id.textViewMessage);
             timeLastMessage = itemView.findViewById(R.id.textViewDate);
-            answer = itemView.findViewById(R.id.answer);
+            answer = itemView.findViewById(R.id.reply);
             answer.setOnClickListener(this);
             cancel = itemView.findViewById(R.id.cancel);
             cancel.setOnClickListener(this);
@@ -215,7 +214,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         public void onClick(View view) {
 
             switch (view.getId()) {
-                case R.id.answer:
+                case R.id.reply:
                     listener.openChat(this.getLayoutPosition());
                     break;
                 case R.id.cancel:
