@@ -123,8 +123,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                 final TextView cancelTextView, applyTextView, male = alertDialog.findViewById(R.id.male),female = alertDialog.findViewById(R.id.female),other=alertDialog.findViewById(R.id.other);
                 final EditText minAge = alertDialog.findViewById(R.id.editTextMinAge), maxAge=alertDialog.findViewById(R.id.editTextMaxAge);
-                //genderLayout = alertDialog.findViewById(R.id.genderLayout);
-                //ageLayout = alertDialog.findViewById(R.id.ageLayout);
                 cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
 
