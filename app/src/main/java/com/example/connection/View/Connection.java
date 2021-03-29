@@ -7,9 +7,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -35,6 +37,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.MapUsers;
 import com.example.connection.R;
@@ -88,8 +91,8 @@ public class Connection extends AppCompatActivity {
         //PROBABILE CASO MULTIGRUPPO, IL TUO ID è IL MAGGIORE NEL GRUPPO, MODIFICARE QUINDI IL GETMAXID DEL DB
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
 
-       //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
-        database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
+      database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
+      //database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
         //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
         //database.addUser("3",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
         //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW
@@ -116,6 +119,8 @@ public class Connection extends AppCompatActivity {
         foregroundService = new MyForegroundService();
         Intent notificationIntent = new Intent(this, foregroundService.getClass());
         this.startForegroundService(notificationIntent);
+       MessageController.newInstance(database);
+
     }
 
     private void loadTheme() {

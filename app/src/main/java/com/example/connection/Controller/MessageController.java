@@ -22,6 +22,7 @@ public class MessageController extends BroadcastReceiver {
     public static MessageController newInstance(Database database) {
         messageController = new MessageController();
         messageController.setDatabase(database);
+        System.out.println(database);
         return messageController;
     }
 
@@ -41,20 +42,26 @@ public class MessageController extends BroadcastReceiver {
         this.database = database;
     }
 
+    public Database getDatabase() {
+        return database;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
+
         if(intent.getStringExtra("intentType").equals("messageController")) {
             switch (intent.getStringExtra("communicationType")) {
                 case "tcp":
                     if (Connection.idChatOpen.equals(intent.getStringExtra("id"))) {
-                        messageAdapter.swapCursor(database.getAllMsg(intent.getStringExtra("id")));
+                        System.out.println(messageController.getDatabase().getAllMsg("0"));
+                        messageAdapter.swapCursor(messageController.getDatabase().getAllMsg(intent.getStringExtra("id")));
                     } else {
-                        Cursor user = database.getUser(intent.getStringExtra("id"));
+                        Cursor user = messageController.getDatabase().getUser(intent.getStringExtra("id"));
                         MyNotificationService myNotificationService = new MyNotificationService(user.getString(user.getColumnIndex(Task.TaskEntry.NAME)),intent.getStringExtra("msg"),user.getString(user.getColumnIndex(Task.TaskEntry.PROFILE_PIC)));
                         Intent notificationIntent = new Intent(context, myNotificationService.getClass());
                         context.startForegroundService(notificationIntent);
                         if (Connection.fragmentName.equals("chat")) {
-                            chatAdapter.swapCursor(database.getAllChat());//chiedere a bergo se sto aggiornando col cursore giusto
+                            chatAdapter.swapCursor(messageController.getDatabase().getAllChat());//chiedere a bergo se sto aggiornando col cursore giusto
                         }
                     }
                     break;

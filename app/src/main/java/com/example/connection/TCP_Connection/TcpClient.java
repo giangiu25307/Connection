@@ -1,5 +1,7 @@
 package com.example.connection.TCP_Connection;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -8,9 +10,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.MessageController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.Encryption;
+import com.example.connection.View.Connection;
 import com.example.connection.libs.AsyncServer;
 import com.example.connection.libs.AsyncSocket;
 import com.example.connection.libs.ByteBufferList;
@@ -39,8 +43,11 @@ public class   TcpClient {
     private Encryption encryption;
     private String oldIp, oldMsg, oldLocalAddress, oldSecretKey, oldId, oldClearMsg, oldImage;
     private boolean noKey = false;
+    private Connection connection;
 
-    public TcpClient(Database database, Encryption encryption) {
+
+    public TcpClient(Database database, Encryption encryption,Connection connection) {
+        this.connection=connection;
         this.database = database;
         this.encryption = encryption;
     }
@@ -183,10 +190,13 @@ public class   TcpClient {
                 else {
                     if(!noKey) {
                         checkDate(oldId);
-                        Intent intent = new Intent();
+                        Intent intent = new Intent(connection.getApplicationContext(), MessageController.getIstance().getClass());
                         if (received.split("£€")[1].equals("handShake")) {
                             database.createChat(oldId, database.getUserName(oldId), oldSecretKey);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
+                            for(int i=0;i<100;i++)
+                                System.out.println(i);
+                            System.out.println(database.getAllChat().getString(0));
                             intent.putExtra("intentType","messageController");
                             intent.putExtra("communicationType","tcp");
                             intent.putExtra("msg",oldClearMsg);
@@ -203,7 +213,9 @@ public class   TcpClient {
                             intent.putExtra("communicationType","tcp");
                             intent.putExtra("msg",oldImage);
                             intent.putExtra("id",oldId);
+
                         }
+                        connection.getApplicationContext().sendBroadcast(intent);
                     }
                 }
             }

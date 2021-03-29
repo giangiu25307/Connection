@@ -69,6 +69,7 @@ public class MyNotificationService extends Service {
                 .setStyle(new NotificationCompat.MessagingStyle(person).addMessage(message))
                 .build();
         notificationManager.notify(3,notification);
+        System.out.println("notifica creata");
     }
 
 }

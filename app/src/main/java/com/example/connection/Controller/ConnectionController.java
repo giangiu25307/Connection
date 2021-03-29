@@ -70,7 +70,7 @@ ConnectionController {
         myId = myUser.getIdUser();
         myUser.setPublicKey(encryption.convertPublicKeyToString());
         database.setPublicKey(encryption.convertPublicKeyToString());
-        tcpClient = new TcpClient(database, encryption);
+        tcpClient = new TcpClient(database, encryption,connection);
         multicastP2P = new Multicast_P2P(database, this, tcpClient);
         multicastWLAN = new Multicast_WLAN(database, this, tcpClient);
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
@@ -95,14 +95,7 @@ ConnectionController {
                 disconnectToGroup();
             }
         }));
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true){
-                    autoDisconnect();
-                }
-            }
-        }).start();
+
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
@@ -141,8 +134,10 @@ ConnectionController {
                         t1.start();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                         tcpServer.setup();
+
                     }
                 }, 3000);
+
 
             }
 
@@ -211,6 +206,14 @@ ConnectionController {
                         multicastWLAN.createMulticastSocketWlan0();
                         multicastWLAN.sendInfo();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                while(true){
+                                    autoDisconnect();
+                                }
+                            }
+                        }).start();
                     }
                 }.start();
 

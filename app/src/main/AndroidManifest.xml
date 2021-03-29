@@ -61,7 +61,7 @@
                 <action android:name="android.net.VpnService" />
             </intent-filter>
         </service>
-
+        <receiver android:name=".Controller.MessageController"></receiver>
     </application>
 
 </manifest>
