@@ -149,7 +149,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         setProfilePic();
 
-        Cursor c = database.getBacgroundImage();
+        Cursor c = database.getBackgroundImage();
         if (c != null && c.getCount() > 0) {
             c.moveToLast();
             String imagePath = c.getString(0);
@@ -616,7 +616,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     profilePics.setImageTintList(null);
                     profilePics.setImageDrawable(draw);
                 } else {
-                    database.setBacgroundImage(imagePath);
+                    database.setBackgroundImage(imagePath);
                     String string[] = imagePath.split("/");
                     wallpaperOptionDescription.setText(string[string.length - 1]);
                 }

@@ -103,6 +103,9 @@ public class Database extends SQLiteOpenHelper {
     }
 
     //CHAT-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Add a message in the database
+     */
     public void addMsg(String msg, String idSender, String idChat) {
         if (idSender.equals("0")) setRequest(idChat, "false");
         db = this.getWritableDatabase();
@@ -115,6 +118,9 @@ public class Database extends SQLiteOpenHelper {
         lastMessageChat(msg, idChat);
     }
 
+    /**
+     * Add a imagePath in the database
+     */
     public void addImage(String paths, String idSender, String idChat) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ID_CHAT, idChat);
@@ -125,6 +131,9 @@ public class Database extends SQLiteOpenHelper {
         lastMessageChat(paths, idChat);
     }
 
+    /**
+     * Update the last message of a specified chat
+     */
     private void lastMessageChat(String msg, String idChat) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -133,6 +142,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.CHAT, msgValues, Task.TaskEntry.ID_CHAT + "=" + idChat, null);
     }
 
+    /**
+     * Get the last message of the specified chat
+     */
     public Cursor getLastMessageChat(String idChat) {
         String query = "SELECT last_message, datetime " +
                 " FROM " + Task.TaskEntry.CHAT +
@@ -142,18 +154,9 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
-    private String retrieveIdChat(String idChat) {
-        String query = "SELECT id_chat" +
-                " FROM CHAT" +
-                " WHERE id_chat='" + idChat + "'";
-        Cursor c = db.rawQuery(query, null);
-        if (c != null) {
-            c.moveToFirst();
-        }
-        return c.getString(0);
-
-    }
-
+    /**
+     * Create a chat in the db
+     */
     public void createChat(String idChat, String name, String symmetric) {
         db = this.getWritableDatabase();
         ContentValues chatValues = new ContentValues();
@@ -164,14 +167,9 @@ public class Database extends SQLiteOpenHelper {
         db.insert(Task.TaskEntry.CHAT, null, chatValues);
     }
 
-    public boolean checkChatExist(String idChat) {
-        String query = "SELECT id_chat" +
-                " FROM CHAT" +
-                " WHERE id_chat='" + idChat + "'";
-        Cursor c = db.rawQuery(query, null);
-        return c != null;
-    }
-
+    /**
+     * Get all msg from a specified chat
+     */
     public Cursor getAllMsg(String idChat) {
         String query = " SELECT id_sender,msg,path,datetime " +
                 " FROM MESSAGE " +
@@ -184,6 +182,11 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
+    /**
+     * Get all chat saved in the db retrieving:
+     * last message, date and time, and other person name of every chat
+     * that i accepted or which i sent the first message and are who i not blocked
+     */
     public Cursor getAllChat() {
         String query = "SELECT " + Task.TaskEntry.ID_CHAT + ", " + Task.TaskEntry.NAME + ", " + Task.TaskEntry.LAST_MESSAGE + ", " + Task.TaskEntry.DATETIME +
                 " FROM " + Task.TaskEntry.CHAT + " ORDER BY " + Task.TaskEntry.DATETIME + " DESC ";
@@ -194,6 +197,9 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
+    /**
+     * Get all chat who i already accepted and which i accept the localization
+     */
     public Cursor getAllRequestChat() {
         String query = " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.birth, u.gender " +
                 " FROM CHAT c INNER JOIN USER u on c.id_chat = u.id_user" +
@@ -206,6 +212,9 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
+    /**
+     * Get all chat who i already accepted and which i not accept the localization
+     */
     public Cursor getAllNoRequestChat() {
         String query = " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.birth, u.gender" +
                 " FROM CHAT c INNER JOIN USER u on c.id_chat = u.id_user" +
@@ -218,6 +227,9 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
+    /**
+     * Set request true if i accept the localization dialog, else false
+     */
     public void setRequest(String id, String value) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -225,7 +237,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.CHAT, msgValues, Task.TaskEntry.ID_CHAT + "=" + id, null);
     }
 
-
+    /**
+     * Get symmetricKey of a specified chat
+     */
     public String getSymmetricKey(String idChat) {
         db = this.getWritableDatabase();
         String query = "SELECT " + Task.TaskEntry.SYMMETRIC_KEY +
@@ -246,7 +260,10 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
-    public Cursor getBacgroundImage() {
+    /**
+     * Get the background image of the chat
+     */
+    public Cursor getBackgroundImage() {
         db = this.getWritableDatabase();
         String query = "SELECT " + Task.TaskEntry.BACKGROUND_IMAGE +
                 " FROM " + Task.TaskEntry.BACKGROUND_CHAT_IMAGES;
@@ -259,7 +276,10 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
-    public void setBacgroundImage(String bgImage) {
+    /**
+     * Set the background image of the chat
+     */
+    public void setBackgroundImage(String bgImage) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.BACKGROUND_IMAGE, bgImage);
@@ -267,6 +287,9 @@ public class Database extends SQLiteOpenHelper {
     }
 
     //globale
+    /**
+     * Add a global message
+     */
     public void addGlobalMsg(String msg, String idSender) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ID_SENDER, idSender);
@@ -275,16 +298,9 @@ public class Database extends SQLiteOpenHelper {
         lastGlobalMessageChat(msg, idSender);
     }
 
-    public Cursor getGlobalMessage() {
-        String query = "SELECT *" +
-                " FROM " + Task.TaskEntry.GLOBAL_MESSAGE;
-        Cursor c = db.rawQuery(query, null);
-        if (c != null) {
-            c.moveToFirst();
-        }
-        return c;
-    }
-
+    /**
+     * Get last global message chat
+     */
     private void lastGlobalMessageChat(String msg, String idSender) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -293,6 +309,9 @@ public class Database extends SQLiteOpenHelper {
     }
 
     //USER
+    /**
+     * Get my user information
+     */
     public String[] getMyInformation() {
         String[] user = new String[11];
         String query = "SELECT *" +
@@ -315,11 +334,14 @@ public class Database extends SQLiteOpenHelper {
         return user;
     }
 
-    public Cursor getProfilePic() {
+    /**
+     * Get the profile pic of a specified user
+     */
+    public Cursor getProfilePic(String id) {
         db = this.getWritableDatabase();
         String query = "SELECT " + Task.TaskEntry.PROFILE_PIC +
                 " FROM " + Task.TaskEntry.USER +
-                " WHERE " + Task.TaskEntry.ID_USER + "= 0";
+                " WHERE " + Task.TaskEntry.ID_USER + "= "+id;
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
@@ -329,12 +351,18 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
+    /**
+     * Set the profile pic of a user
+     */
     public void setProfilePic(String id, String profilePic) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.PROFILE_PIC, profilePic);
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * Set my public key
+     */
     public void setPublicKey(String publicKey) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -342,6 +370,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues,Task.TaskEntry.ID_USER + " = " + ConnectionController.myUser.getIdUser(), null);
     }
 
+    /**
+     * Get my public key
+     */
     public String getPublicKey(String id) {
         db = this.getWritableDatabase();
         String query = "SELECT " + Task.TaskEntry.PUBLIC_KEY +
@@ -356,6 +387,9 @@ public class Database extends SQLiteOpenHelper {
         return c.getString(0);
     }
 
+    /**
+     * Add a user in the db
+     */
     public void addUser(String idUser, String inetAddress, String username, String mail, String gender, String name, String surname, String country, String city, String birth, String profilePic, String publicKey) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -377,6 +411,9 @@ public class Database extends SQLiteOpenHelper {
         ContentValues ipValues = new ContentValues();
     }
 
+    /**
+     * Get the information of every person which are connected to me
+     */
     public String getAllMyGroupInfo() {
         Cursor allUser = getAllUsers();
         String allMyGroupInfo = ConnectionController.myUser.getAll();
@@ -388,6 +425,9 @@ public class Database extends SQLiteOpenHelper {
         return allMyGroupInfo;
     }
 
+    /**
+     * Set my information, we usually use add user anyway because are the same
+     */
     public void SetMyInformation(String inetAddress, String username, String mail, String gender, String name, String surname, String country, String city, String birth, String number, String profilePic) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -407,6 +447,9 @@ public class Database extends SQLiteOpenHelper {
         ContentValues ipValues = new ContentValues();
     }
 
+    /**
+     * Add the number of the specified user
+     */
     public void addNumber(String number, String idUser) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -414,6 +457,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + idUser, null);
     }
 
+    /**
+     * Return all user who got an ip
+     */
     public Cursor getAllUsers() {
         db = this.getWritableDatabase();
         String query = "SELECT *" +
@@ -428,6 +474,9 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
+    /**
+     * Return the ip of a specified user
+     */
     public String findIp(String id_user) {
         String query = "SELECT " + Task.TaskEntry.IP +
                 " FROM " + Task.TaskEntry.USER +
@@ -439,6 +488,9 @@ public class Database extends SQLiteOpenHelper {
         return c.getString(0);
     }
 
+    /**
+     * Return the user of the specified ip
+     */
     public String findId_user(String ip) {
 
         String query = "SELECT " + Task.TaskEntry.ID_USER +
@@ -451,6 +503,9 @@ public class Database extends SQLiteOpenHelper {
         return c.getString(1);
     }
 
+    /**
+     * Return the specified user
+     */
     public Cursor getUser(String id) {
         String query = "SELECT * " +
                 " FROM " + Task.TaskEntry.USER +
@@ -462,6 +517,10 @@ public class Database extends SQLiteOpenHelper {
         return c;
     }
 
+    /**
+     * Delete the specified user, if i have a chat with him
+     * this method will cancel only his ip
+     */
     public void deleteUser(String idUser) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -482,6 +541,10 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Delete all user, if a user has a chat with me
+     * this method will delete only his ip
+     */
     public void deleteAllUser() {
         db = this.getWritableDatabase();
         String query = "DELETE FROM USER " +
@@ -495,6 +558,9 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Return the max id from the user of my group
+     */
     public String getMaxId() {
         String query = " SELECT MAX( " + Task.TaskEntry.ID_USER + " ) " +
                 " FROM " + Task.TaskEntry.USER +
@@ -509,6 +575,7 @@ public class Database extends SQLiteOpenHelper {
         return c.getString(0);
     }
 
+
     public String getAccept(String idUser) {
         String query = "SELECT " + Task.TaskEntry.ACCEPT +
                 " FROM " + Task.TaskEntry.USER +
@@ -520,18 +587,25 @@ public class Database extends SQLiteOpenHelper {
         return c.getString(0);
     }
 
+
     public void setAccept(String idUser, String value) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ACCEPT, value);
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + idUser, null);
     }
 
+    /**
+     * Set the number of the specified user
+     */
     public void setNumber(String idUser, String value) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.NUMBER, value);
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + idUser, null);
     }
 
+    /**
+     * Return my email
+     */
     public String getMyEmail() {
         String query = "SELECT " + Task.TaskEntry.MAIL +
                 " FROM " + Task.TaskEntry.USER +
@@ -549,6 +623,9 @@ public class Database extends SQLiteOpenHelper {
         return data;
     }
 
+    /**
+     * Return an array with my email and my password
+     */
     public String[] getMyEmailAndPassword() {
         String query = "SELECT " + Task.TaskEntry.PASSWORD +
                 " FROM " + Task.TaskEntry.USER +
@@ -561,12 +638,18 @@ public class Database extends SQLiteOpenHelper {
         return data;
     }
 
+    /**
+     * Discard the chat with the specified user
+     */
     public void discard(String id) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED, "false");
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * Return if i accept or not the specified chat
+     */
     public String getMessageAccepted(String id) {
         String query = "SELECT " + Task.TaskEntry.MESSAGES_ACCEPTED +
                 " FROM " + Task.TaskEntry.USER +
@@ -578,6 +661,9 @@ public class Database extends SQLiteOpenHelper {
         return c.getString(0);
     }
 
+    /**
+     * Set my password
+     */
     public void setMyPassword(String password) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -585,6 +671,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + "0", null);
     }
 
+    /**
+     * Set the city of the specified user
+     */
     public void setCity(String id, String city) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -592,6 +681,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * Set the ip of the specified user
+     */
     public void setIp(String id, String ip) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -599,6 +691,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * Set the username of the specified user
+     */
     public void setUsername(String id, String username) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -606,6 +701,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * Set the name of the specified user
+     */
     public void setName(String id, String name) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -613,6 +711,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * Set the email of the specified user
+     */
     public void setMail(String id, String mail) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -620,6 +721,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * Set the surname of the specified user
+     */
     public void setSurname(String id, String surname) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -627,6 +731,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * Set the gender of the specified user
+     */
     public void setGender(String id, String gender) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -634,6 +741,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * Set the country of the specified user
+     */
     public void setCountry(String id, String country) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -641,6 +751,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * Set 1 if i'm connected to the specified user, else 0
+     */
     public void setOtherGroup(String id) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
@@ -648,6 +761,9 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
     }
 
+    /**
+     * return true if i'm connected to him
+     */
     public boolean isOtherGroup(String id) {
         String query = "SELECT " + Task.TaskEntry.OTHER_GROUP +
                 " FROM " + Task.TaskEntry.USER +
@@ -661,6 +777,9 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Return all the id which i'm connected to
+     */
     public String detectAllOtherGroupClient() {
         String query = "SELECT " + Task.TaskEntry.ID_USER +
                 " FROM " + Task.TaskEntry.USER +
@@ -676,6 +795,9 @@ public class Database extends SQLiteOpenHelper {
         return idToBeDeleted;
     }
 
+    /**
+     *  Return all the id which the specified id
+     */
     public String detectAllOtherGroupClientByIp(String ip) {
         String query = "SELECT " + Task.TaskEntry.ID_USER +
                 " FROM " + Task.TaskEntry.USER +
@@ -691,6 +813,10 @@ public class Database extends SQLiteOpenHelper {
         return idToBeDeleted;
     }
 
+    /**
+     *  Delete all user, if i have a chat with one,
+     *  whis method will delete only his ip
+     */
     public void deleteAllIdUser(String idsToBeDeleted) {
         db = this.getWritableDatabase();
         String query = "DELETE FROM USER " +
@@ -703,6 +829,10 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " IN(" + idsToBeDeleted + " )", null);
 
     }
+
+    /**
+     *  Return the username of the specified user
+     */
     public String getUserName(String id){
         String query = "SELECT " + Task.TaskEntry.NAME +
                 " FROM " + Task.TaskEntry.USER +
