@@ -194,8 +194,6 @@ public class   TcpClient {
                         if (received.split("£€")[1].equals("handShake")) {
                             database.createChat(oldId, database.getUserName(oldId), oldSecretKey);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
-                            for(int i=0;i<100;i++)
-                                System.out.println(i);
                             System.out.println(database.getAllChat().getString(0));
                             intent.putExtra("intentType","messageController");
                             intent.putExtra("communicationType","tcp");

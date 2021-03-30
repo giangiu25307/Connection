@@ -87,20 +87,34 @@ public class Connection extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
         loadFragment(false);
+        requestPermissions();
+        xiamoiWifiPermission();
 
-        //PROBABILE CASO MULTIGRUPPO, IL TUO ID è IL MAGGIORE NEL GRUPPO, MODIFICARE QUINDI IL GETMAXID DEL DB
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
 
       database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
       //database.addUser("1",null,"test1","test1@gmail.com","male","test1","test1","test1","test1","01-01-2001","nothingToseehere",null);//xiaomia2litemio
         //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
         //database.addUser("3",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
+        createCountDowntimer();
+        countDownTimer.start();
+        foregroundService = new MyForegroundService();
+        Intent notificationIntent = new Intent(this, foregroundService.getClass());
+        this.startForegroundService(notificationIntent);
+       MessageController.newInstance(database);
+
+    }
+
+    private void requestPermissions(){
         //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW
         final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.FOREGROUND_SERVICE};
         ActivityCompat.requestPermissions(this, permissions, 101);
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         }
+        //ENDS PERMISSIONS REQUEST
+    }
 
+    private void xiamoiWifiPermission(){
         try {
             String manufacturer = "xiaomi";
             if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
@@ -112,15 +126,6 @@ public class Connection extends AppCompatActivity {
         } catch (ActivityNotFoundException e) {
             System.out.println("Not MIUI device");
         }
-
-        //ENDS PERMISSIONS REQUEST
-        createCountDowntimer();
-        countDownTimer.start();
-        foregroundService = new MyForegroundService();
-        Intent notificationIntent = new Intent(this, foregroundService.getClass());
-        this.startForegroundService(notificationIntent);
-       MessageController.newInstance(database);
-
     }
 
     private void loadTheme() {
@@ -264,14 +269,6 @@ public class Connection extends AppCompatActivity {
 
         }
         return accessibilityFound;
-    }
-
-    private void requestStoragePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(Objects.requireNonNull(this), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            ActivityCompat.requestPermissions(Objects.requireNonNull(this), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        }
     }
 
     public boolean firstLogin() {
