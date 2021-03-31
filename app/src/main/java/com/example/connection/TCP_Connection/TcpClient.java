@@ -46,6 +46,7 @@ public class   TcpClient {
     private Connection connection;
 
 
+
     public TcpClient(Database database, Encryption encryption,Connection connection) {
         this.connection=connection;
         this.database = database;
@@ -185,27 +186,29 @@ public class   TcpClient {
             public void onDataAvailable(DataEmitter emitter, ByteBufferList bb) {
                 String received = new String(bb.getAllByteArray());
                 System.out.println("[Client] Received Message " + received);
+
                 if (!received.split("£€")[0].equals("messageConfirmed"))
                     sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
                 else {
                     if(!noKey) {
-                        checkDate(oldId);
                         Intent intent = new Intent(connection.getApplicationContext(), MessageController.getIstance().getClass());
                         if (received.split("£€")[1].equals("handShake")) {
                             database.createChat(oldId, database.getUserName(oldId), oldSecretKey);
+                            checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
-                            System.out.println(database.getAllChat().getString(0));
                             intent.putExtra("intentType","messageController");
                             intent.putExtra("communicationType","tcp");
                             intent.putExtra("msg",oldClearMsg);
                             intent.putExtra("id",oldId);
                         } else if (received.split("£€")[1].equals("message")) {
+                            checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
                             intent.putExtra("intentType","messageController");
                             intent.putExtra("communicationType","tcp");
                             intent.putExtra("msg",oldClearMsg);
                             intent.putExtra("id",oldId);
                         } else {
+                            checkDate(oldId);
                             database.addImage(oldImage, ConnectionController.myUser.getIdUser(), oldId);
                             intent.putExtra("intentType","messageController");
                             intent.putExtra("communicationType","tcp");

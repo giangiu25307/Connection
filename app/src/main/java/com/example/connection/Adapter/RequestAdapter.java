@@ -190,15 +190,12 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
         private ImageView profilePic, answer, cancel;
         private TextView information, information2, lastMessage, timeLastMessage;
-        private Database database;
         private Cursor chatCursor;
 
         private ViewHolder(View itemView, RequestAdapter.ViewHolder.OnChatClickListener listener, Context context, Cursor chatCursor) {
             super(itemView);
             this.listener = listener;
             this.chatCursor = chatCursor;
-
-            database = new Database(context);
             profilePic = itemView.findViewById(R.id.profilePic);
             information = itemView.findViewById(R.id.textViewInformation);
             information2 = itemView.findViewById(R.id.textViewInformation2);

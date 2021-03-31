@@ -89,12 +89,12 @@ ConnectionController {
                 .build();
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+        /*Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
                 disconnectToGroup();
             }
-        }));
+        }));*/
 
     }
 

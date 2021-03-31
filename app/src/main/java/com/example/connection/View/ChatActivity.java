@@ -27,7 +27,6 @@ import android.widget.TextView;
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.MessageController;
-import com.example.connection.Database.Database;
 import com.example.connection.R;
 
 public class ChatActivity extends AppCompatActivity {
@@ -39,7 +38,6 @@ public class ChatActivity extends AppCompatActivity {
     private ImageView sendView;
     private RecyclerView recyclerView;
     private MessageAdapter chatAdapter;
-    private Database database;
     private ConstraintLayout chatBackground;
 
     @Override
@@ -51,7 +49,6 @@ public class ChatActivity extends AppCompatActivity {
         id = getIntent().getStringExtra("idChat");
         Connection.idChatOpen = id;
         String name = getIntent().getStringExtra("name");
-        database = new Database(this);
         TextView nameTextView = findViewById(R.id.nameUser);
         nameTextView.setText(name);
         ImageView imageView = findViewById(R.id.backImageView);
@@ -97,7 +94,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        //Database database = (Database) getIntent().getParcelableExtra("database");
+        //Connection.database Connection.database = (Connection.database) getIntent().getParcelableExtra("Connection.database");
 
     }
 
@@ -150,17 +147,17 @@ public class ChatActivity extends AppCompatActivity {
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        chatAdapter = new MessageAdapter(this, database, id, messageCursor, linearLayoutManager);
+        chatAdapter = new MessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.scrollToPosition(messageCursor.getCount() - 1);
     }
 
     private Cursor getAllMessage(){
-        return database.getAllMsg(id);
+        return Connection.database.getAllMsg(id);
     }
 
     private void setBackgroundImage(){
-        Cursor c=database.getBackgroundImage();
+        Cursor c=Connection.database.getBackgroundImage();
         if(c==null||c.getCount()==0)return;
         c.moveToLast();
         Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));

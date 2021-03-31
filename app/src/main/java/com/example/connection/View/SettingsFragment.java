@@ -643,7 +643,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setProfilePic() {
-        Cursor c = database.getProfilePic();
+        Cursor c = database.getProfilePic(ConnectionController.myUser.getIdUser());
         if (c == null || c.getCount() == 0) {
             profilePic.setImageTintList(ColorStateList.valueOf(android.R.attr.iconTint));
             return;

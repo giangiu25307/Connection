@@ -1,8 +1,10 @@
 package com.example.connection.TCP_Connection;
 
+import android.content.Intent;
 import android.database.Cursor;
 
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.MessageController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.UDP_Connection.Multicast;
@@ -116,6 +118,7 @@ public class TcpServer {
 
     public String messageIdentifier(String msg) {
         try {
+            Intent intent = new Intent(connection.getApplicationContext(), MessageController.getIstance().getClass());
             String[] splittedR = msg.split("£€");
             switch (splittedR[0]) {
                 case "image":
@@ -127,6 +130,10 @@ public class TcpServer {
                         fos.write(msg.getBytes());
                         fos.close();
                         database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", splittedR[1], splittedR[1]);
+                        intent.putExtra("intentType","messageController");
+                        intent.putExtra("communicationType","tcp");
+                      //  intent.putExtra("msg",message); da finire la parte delle immagini
+                        intent.putExtra("id",splittedR[1]);
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, database.findIp(ConnectionController.myUser.getIdUser()));
                     }
@@ -160,8 +167,14 @@ public class TcpServer {
                             if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
                                 database.addMsg("", splittedR[1], splittedR[1]);
                             }
-                            database.addMsg(encryption.decryptAES(msg, encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1]))), splittedR[1], splittedR[1]);
+                            String message=encryption.decryptAES(msg, encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1])));
+                            database.addMsg(message, splittedR[1], splittedR[1]);
                             System.out.println(encryption.decryptAES(msg, encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1]))));
+                            intent.putExtra("intentType","messageController");
+                            intent.putExtra("communicationType","tcp");
+                            intent.putExtra("msg",message);
+                            intent.putExtra("id",splittedR[1]);
+                            connection.getApplicationContext().sendBroadcast(intent);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         } catch (GeneralSecurityException e) {
@@ -174,11 +187,15 @@ public class TcpServer {
                     return "message";
                 case "handShake":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
-
                         database.createChat(splittedR[1], database.getUserName(splittedR[1]), encryption.decrypt(splittedR[2]).split("£€")[0]);
                         database.addMsg("", splittedR[1], splittedR[1]);
-
-                        database.addMsg(encryption.decrypt(splittedR[2]).split("£€")[1], splittedR[1], splittedR[1]);
+                        String message=encryption.decrypt(splittedR[2]).split("£€")[1];
+                        database.addMsg(message, splittedR[1], splittedR[1]);
+                        intent.putExtra("intentType","messageController");
+                        intent.putExtra("communicationType","tcp");
+                        intent.putExtra("msg",message);
+                        intent.putExtra("id",splittedR[1]);
+                        connection.getApplicationContext().sendBroadcast(intent);
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, database.findIp(ConnectionController.myUser.getIdUser()));
                     }

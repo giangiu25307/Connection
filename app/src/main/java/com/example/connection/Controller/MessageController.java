@@ -14,15 +14,12 @@ import com.example.connection.View.Connection;
 
 public class MessageController extends BroadcastReceiver {
 
-    private MessageAdapter messageAdapter;
+    public MessageAdapter messageAdapter;
     private static MessageController messageController;
-    private Database database;
     private ChatAdapter chatAdapter;
 
-    public static MessageController newInstance(Database database) {
+    public static MessageController newInstance() {
         messageController = new MessageController();
-        messageController.setDatabase(database);
-        System.out.println(database);
         return messageController;
     }
 
@@ -38,14 +35,6 @@ public class MessageController extends BroadcastReceiver {
         this.chatAdapter = chatAdapter;
     }
 
-    public void setDatabase(Database database) {
-        this.database = database;
-    }
-
-    public Database getDatabase() {
-        return database;
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -53,15 +42,14 @@ public class MessageController extends BroadcastReceiver {
             switch (intent.getStringExtra("communicationType")) {
                 case "tcp":
                     if (Connection.idChatOpen.equals(intent.getStringExtra("id"))) {
-                        System.out.println(messageController.getDatabase().getAllMsg("0"));
-                        messageAdapter.swapCursor(messageController.getDatabase().getAllMsg(intent.getStringExtra("id")));
+                        messageController.messageAdapter.swapCursor(Connection.database.getAllMsg(intent.getStringExtra("id")));
                     } else {
-                        Cursor user = messageController.getDatabase().getUser(intent.getStringExtra("id"));
+                        Cursor user = Connection.database.getUser(intent.getStringExtra("id"));
                         MyNotificationService myNotificationService = new MyNotificationService(user.getString(user.getColumnIndex(Task.TaskEntry.NAME)),intent.getStringExtra("msg"),user.getString(user.getColumnIndex(Task.TaskEntry.PROFILE_PIC)));
                         Intent notificationIntent = new Intent(context, myNotificationService.getClass());
                         context.startForegroundService(notificationIntent);
                         if (Connection.fragmentName.equals("chat")) {
-                            chatAdapter.swapCursor(messageController.getDatabase().getAllChat());//chiedere a bergo se sto aggiornando col cursore giusto
+                           messageController.chatAdapter.swapCursor(Connection.database.getAllChat());//chiedere a bergo se sto aggiornando col cursore giusto
                         }
                     }
                     break;
