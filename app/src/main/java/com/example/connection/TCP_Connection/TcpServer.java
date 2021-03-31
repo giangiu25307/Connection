@@ -187,14 +187,14 @@ public class TcpServer {
                     return "message";
                 case "handShake":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
-                        database.createChat(splittedR[1], database.getUserName(splittedR[1]), encryption.decrypt(splittedR[2]).split("£€")[0]);
-                        database.addMsg("", splittedR[1], splittedR[1]);
-                        String message=encryption.decrypt(splittedR[2]).split("£€")[1];
-                        database.addMsg(message, splittedR[1], splittedR[1]);
+                        String message[]=encryption.decrypt(splittedR[2]).split("£€");
+                        database.createChat(message[2], database.getUserName(message[2]),message[0]);
+                        database.addMsg("",message[2], message[2]);
+                        database.addMsg(message[1], message[2], message[2]);
                         intent.putExtra("intentType","messageController");
                         intent.putExtra("communicationType","tcp");
-                        intent.putExtra("msg",message);
-                        intent.putExtra("id",splittedR[1]);
+                        intent.putExtra("msg",message[1]);
+                        intent.putExtra("id",message[2]);
                         connection.getApplicationContext().sendBroadcast(intent);
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, database.findIp(ConnectionController.myUser.getIdUser()));
