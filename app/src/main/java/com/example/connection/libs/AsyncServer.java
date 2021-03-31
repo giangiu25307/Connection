@@ -362,8 +362,7 @@ public void setLocalAddress(String local){
                         isa = new InetSocketAddress(port);
                     else
                         isa = new InetSocketAddress(host, port);
-                    //ConnectionController.mWifiNetwork.getSocketFactory();
-                    server.socket();//
+                    server.socket();
                     server.socket().bind(isa);
                     server.configureBlocking(false);
                     final SelectionKey key = wrapper.register(mSelector.getSelector());
