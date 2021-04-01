@@ -58,7 +58,7 @@ public class   TcpClient {
         oldIp = ip;
         oldMsg = text;
         oldId = id;
-        //checkInterface(id);
+        checkInterface(id);
         AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
             @Override
             public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
