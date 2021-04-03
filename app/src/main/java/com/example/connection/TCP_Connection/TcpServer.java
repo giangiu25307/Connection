@@ -144,7 +144,7 @@ public class TcpServer {
                         if (i == 1) {
                             database.addUser(splittedR[i], "192.168.49.1", splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
-                            database.isOtherGroup(splittedR[i]);
+                            System.out.println( database.isOtherGroup(splittedR[i]));
                         }else {
                             database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);

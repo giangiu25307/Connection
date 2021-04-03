@@ -13,6 +13,7 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Task;
 
 import java.nio.file.Paths;
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 
 public class Database extends SQLiteOpenHelper {
@@ -767,9 +768,10 @@ public class Database extends SQLiteOpenHelper {
     public boolean isOtherGroup(String id) {
         String query = "SELECT " + Task.TaskEntry.OTHER_GROUP +
                 " FROM " + Task.TaskEntry.USER +
-                " WHERE " + Task.TaskEntry.OTHER_GROUP + "=" + "1 AND " + Task.TaskEntry.ID_USER + "=" + id;
+                " WHERE " + Task.TaskEntry.OTHER_GROUP + " = " + " 1 AND " + Task.TaskEntry.ID_USER + " = " + id;
         Cursor c = db.rawQuery(query, null);
         try {
+            c.moveToFirst();
             c.getString(0);
             return true;
         } catch (CursorIndexOutOfBoundsException e) {
