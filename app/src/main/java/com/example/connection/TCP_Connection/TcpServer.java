@@ -141,18 +141,20 @@ public class TcpServer {
                 case "sendInfo":
                     //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
                     for (int i = 1; i < splittedR.length; i = i + 12) {
-                        if (i == 1)
-
+                        if (i == 1) {
                             database.addUser(splittedR[i], "192.168.49.1", splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
-                        else
+                            database.setOtherGroup(splittedR[i]);
+                            database.isOtherGroup(splittedR[i]);
+                        }else {
                             database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                            database.setOtherGroup(splittedR[i]);
+                        }
                     }
                     Multicast.dbUserEvent = false;
                     return "sendInfo";
                 case "message":
                     //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
-                        msg = splittedR[2];
                         Date date = new Date();
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
                         String datetime = "";
@@ -163,17 +165,16 @@ public class TcpServer {
                             datetime = String.valueOf(LocalDateTime.now());
                         }
                         try {
+                            String[] message=encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1]))).split("£€");
                             date = format.parse(datetime);
                             if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
-                                database.addMsg("", splittedR[1], splittedR[1]);
+                                database.addMsg("", message[1], message[1]);
                             }
-                            String message=encryption.decryptAES(msg, encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1])));
-                            database.addMsg(message, splittedR[1], splittedR[1]);
-                            System.out.println(encryption.decryptAES(msg, encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1]))));
+                            database.addMsg(message[0], message[1], message[1]);
                             intent.putExtra("intentType","messageController");
                             intent.putExtra("communicationType","tcp");
-                            intent.putExtra("msg",message);
-                            intent.putExtra("id",splittedR[1]);
+                            intent.putExtra("msg",message[0]);
+                            intent.putExtra("id",message[1]);
                             connection.getApplicationContext().sendBroadcast(intent);
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -182,7 +183,6 @@ public class TcpServer {
                         }
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, database.findIp(ConnectionController.myUser.getIdUser()));
-
                     }
                     return "message";
                 case "handShake":

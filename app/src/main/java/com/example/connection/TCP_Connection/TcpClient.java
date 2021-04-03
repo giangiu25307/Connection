@@ -36,7 +36,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Random;
 
-public class   TcpClient {
+public class TcpClient {
 
     private int port = 50000;
     private Database database;
@@ -46,15 +46,14 @@ public class   TcpClient {
     private Connection connection;
 
 
-
-    public TcpClient(Database database, Encryption encryption,Connection connection) {
-        this.connection=connection;
+    public TcpClient(Database database, Encryption encryption, Connection connection) {
+        this.connection = connection;
         this.database = database;
         this.encryption = encryption;
     }
 
     public void sendMessageNoKey(String ip, String text, String id) {
-        noKey=true;
+        noKey = true;
         oldIp = ip;
         oldMsg = text;
         oldId = id;
@@ -69,7 +68,7 @@ public class   TcpClient {
     }
 
     public void handShake(String id, String publicKey, String msg) {
-        noKey=false;
+        noKey = false;
         oldClearMsg = msg;
         oldIp = database.findIp(id);
         oldId = id;
@@ -80,7 +79,7 @@ public class   TcpClient {
         try {
             secretKey = encryption.convertSecretKeyToString(encryption.getSecretKey());
             oldSecretKey = secretKey;
-            shake += encryption.encrypt(secretKey + "£€" + msg+ "£€" +ConnectionController.myUser.getIdUser(), encryption.convertStringToPublicKey(publicKey));
+            shake += encryption.encrypt(secretKey + "£€" + msg + "£€" + ConnectionController.myUser.getIdUser(), encryption.convertStringToPublicKey(publicKey));
             oldMsg = shake;
             AsyncServer.getDefault().connectSocket(new InetSocketAddress(database.findIp(id), port), new ConnectCallback() {
                 @Override
@@ -97,15 +96,14 @@ public class   TcpClient {
     }
 
     public void sendMessage(String message, String id) {
-        noKey=false;
+        noKey = false;
         oldClearMsg = message;
         oldIp = database.findIp(id);
         oldId = id;
         checkInterface(id);
         String msg = "message£€" + id + "£€";
         try {
-            msg +=encryption.encryptAES(message, encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
-
+            msg += encryption.encryptAES(message+ "£€"+ ConnectionController.myUser.getIdUser(), encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
             oldMsg = msg;
             AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
                 @Override
@@ -120,13 +118,13 @@ public class   TcpClient {
     }
 
     public void sendImage(String imagePath, String id) throws IOException {
-        noKey=false;
+        noKey = false;
         Bitmap bmp = BitmapFactory.decodeFile(imagePath);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         String imageString = "image£€" + id + "£€";
         oldImage = imagePath;
         try {
-            imageString += encryption.encryptAES( new String(bos.toByteArray(), StandardCharsets.UTF_8),encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
+            imageString += encryption.encryptAES(new String(bos.toByteArray(), StandardCharsets.UTF_8), encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
@@ -142,9 +140,11 @@ public class   TcpClient {
 
     private void checkInterface(String id) {
         if (database.isOtherGroup(id)) {
+            System.out.println("altro gruppo");
             oldLocalAddress = database.findIp(ConnectionController.myUser.getIdUser());
             AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
         } else {
+            System.out.println("mio gruppo");
             oldLocalAddress = "192.168.49.1";
             AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
         }
@@ -191,33 +191,34 @@ public class   TcpClient {
                 if (!received.split("£€")[0].equals("messageConfirmed"))
                     sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
                 else {
-                    if(!noKey) {
+                    if (!noKey) {
                         Intent intent = new Intent(connection.getApplicationContext(), MessageController.getIstance().getClass());
                         if (received.split("£€")[1].equals("handShake")) {
                             database.createChat(oldId, database.getUserName(oldId), oldSecretKey);
                             checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
-                            intent.putExtra("intentType","messageController");
-                            intent.putExtra("communicationType","tcp");
-                            intent.putExtra("msg",oldClearMsg);
-                            intent.putExtra("id",oldId);
+                            intent.putExtra("intentType", "messageController");
+                            intent.putExtra("communicationType", "tcp");
+                            intent.putExtra("msg", oldClearMsg);
+                            intent.putExtra("id", oldId);
+                            connection.getApplicationContext().sendBroadcast(intent);
                         } else if (received.split("£€")[1].equals("message")) {
                             checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
-                            intent.putExtra("intentType","messageController");
-                            intent.putExtra("communicationType","tcp");
-                            intent.putExtra("msg",oldClearMsg);
-                            intent.putExtra("id",oldId);
+                            intent.putExtra("intentType", "messageController");
+                            intent.putExtra("communicationType", "tcp");
+                            intent.putExtra("msg", oldClearMsg);
+                            intent.putExtra("id", oldId);
+                            connection.getApplicationContext().sendBroadcast(intent);
                         } else {
                             checkDate(oldId);
                             database.addImage(oldImage, ConnectionController.myUser.getIdUser(), oldId);
-                            intent.putExtra("intentType","messageController");
-                            intent.putExtra("communicationType","tcp");
-                            intent.putExtra("msg",oldImage);
-                            intent.putExtra("id",oldId);
-
+                            intent.putExtra("intentType", "messageController");
+                            intent.putExtra("communicationType", "tcp");
+                            intent.putExtra("msg", oldImage);
+                            intent.putExtra("id", oldId);
+                            connection.getApplicationContext().sendBroadcast(intent);
                         }
-                        connection.getApplicationContext().sendBroadcast(intent);
                     }
                 }
             }

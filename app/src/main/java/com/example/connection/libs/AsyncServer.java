@@ -429,7 +429,9 @@ public void setLocalAddress(String local){
                 try {
                     socket = cancel.socket = SocketChannel.open();
                     socket.configureBlocking(false);
+                    System.out.println(local.getAddress()+address.getAddress().getHostAddress());
                     socket.bind(local);
+                    System.out.println(socket.socket().getLocalSocketAddress());
                     //Connection.localVPNService.protect(socket.socket());
                     ckey = socket.register(mSelector.getSelector(), SelectionKey.OP_CONNECT);
                     ckey.attach(cancel);

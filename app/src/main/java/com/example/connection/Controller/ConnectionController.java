@@ -171,7 +171,7 @@ ConnectionController {
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
-    public void connectToGroup(String id) {//GroupOwner groupOwner){//
+    public void connectToGroup(final String id) {//GroupOwner groupOwner){//
         wifiConnection(id);
         bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
@@ -179,15 +179,6 @@ ConnectionController {
         connManager.requestNetwork(networkRequest, new NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
-                try {
-                    String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
-                    System.out.println(ip);
-                    myUser.setInetAddress(ip);
-                    database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
-
-                } catch (UnknownHostException e) {
-                    System.out.println("connect to group failed " + e);
-                }
 
                 new CountDownTimer(5000, 1000) {
                     @Override
@@ -197,6 +188,15 @@ ConnectionController {
 
                     @Override
                     public void onFinish() {
+                        try {
+                            if(!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))wifiConnection(id);
+                            String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
+                            System.out.println(ip);
+                            myUser.setInetAddress(ip);
+                            database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
+                        } catch (UnknownHostException e) {
+                            System.out.println("connect to group failed " + e);
+                        }
                         tcpServer.setup();
                         try {
                             MyNetworkInterface.setNetworkInterfacesNames();
@@ -298,12 +298,12 @@ ConnectionController {
         WifiConfiguration wifiConfig = new WifiConfiguration();
         wifiConfig.SSID = String.format("\"%s\"", SSID + id);
         wifiConfig.preSharedKey = String.format("\"%s\"", networkPassword);
+        wifiConfig.priority = 999999999;
 //remember id
         System.out.println(id);
         netId = wifiManager.addNetwork(wifiConfig);
         wifiManager.disconnect();
         wifiManager.enableNetwork(netId, true);
-        wifiManager.reconnect();
     }
 
     public String getSSID() {
