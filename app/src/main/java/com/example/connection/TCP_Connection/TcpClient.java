@@ -79,7 +79,7 @@ public class TcpClient {
         try {
             secretKey = encryption.convertSecretKeyToString(encryption.getSecretKey());
             oldSecretKey = secretKey;
-            shake += encryption.encrypt(secretKey + "£€" + msg + "£€" + ConnectionController.myUser.getIdUser(), encryption.convertStringToPublicKey(publicKey));
+            shake += encryption.encrypt(secretKey + "£€" + msg+"£€" + ConnectionController.myUser.getIdUser(), encryption.convertStringToPublicKey(publicKey));
             oldMsg = shake;
             AsyncServer.getDefault().connectSocket(new InetSocketAddress(database.findIp(id), port), new ConnectCallback() {
                 @Override
@@ -103,8 +103,8 @@ public class TcpClient {
         checkInterface(id);
         String msg = "message£€" + id + "£€";
         try {
-            msg += encryption.encryptAES(message+ "£€"+ ConnectionController.myUser.getIdUser(), encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
-            oldMsg = msg;
+            msg += encryption.encryptAES(message, encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
+            oldMsg = msg+"£€" + ConnectionController.myUser.getIdUser();
             AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
                 @Override
                 public void onConnectCompleted(Exception ex, final AsyncSocket socket) {

@@ -165,16 +165,16 @@ public class TcpServer {
                             datetime = String.valueOf(LocalDateTime.now());
                         }
                         try {
-                            String[] message=encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[1]))).split("£€");
+                            String message=encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3])));
                             date = format.parse(datetime);
                             if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
-                                database.addMsg("", message[1], message[1]);
+                                database.addMsg("",splittedR[3], splittedR[3]);
                             }
-                            database.addMsg(message[0], message[1], message[1]);
+                            database.addMsg(message, splittedR[3], splittedR[3]);
                             intent.putExtra("intentType","messageController");
                             intent.putExtra("communicationType","tcp");
-                            intent.putExtra("msg",message[0]);
-                            intent.putExtra("id",message[1]);
+                            intent.putExtra("msg",message);
+                            intent.putExtra("id",splittedR[3]);
                             connection.getApplicationContext().sendBroadcast(intent);
                         } catch (ParseException e) {
                             e.printStackTrace();
