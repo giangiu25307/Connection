@@ -28,7 +28,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import com.example.connection.Controller.Database;
+import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 
@@ -306,7 +307,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void setProfilePic() {
-        Cursor c = database.getProfilePic();
+        Cursor c = database.getProfilePic(ConnectionController.myUser.getIdUser());
         if (c == null || c.getCount() == 0) {
             profilePic.setImageTintList(ColorStateList.valueOf(android.R.attr.iconTint));
             return;

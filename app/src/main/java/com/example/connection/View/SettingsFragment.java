@@ -449,7 +449,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 if (cursor == null) return;
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-                database.setBacgroundImage(imagePath);
+                database.setBackgroundImage(imagePath);
                 String string[] = imagePath.split("/");
                 wallpaperOptionDescription.setText(string[string.length - 1]);
                 cursor.close();
