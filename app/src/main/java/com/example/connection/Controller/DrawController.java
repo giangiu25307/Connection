@@ -9,22 +9,29 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.connection.Model.MapUsers;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.ChatActivity;
+import com.example.connection.View.BottomSheetNewChat;
 import com.example.connection.View.Connection;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DrawController extends View {
 
@@ -32,9 +39,9 @@ public class DrawController extends View {
     private ArrayList<User> userList;
     private int x, y;
     private AbsoluteLayout mapLayout;
-    private int widthHeight = 200;
+    private int widthHeight = 126;
     private ArrayList<Integer> previousX, previousY;
-    private ArrayList<ImageView> images;
+    private ArrayList<CircleImageView> images;
 
     public DrawController(Context context, ArrayList<User> userList, AbsoluteLayout mapLayout) {
         super(context);
@@ -44,13 +51,12 @@ public class DrawController extends View {
         this.setWillNotDraw(false);
         this.postInvalidate();
         this.previousY = this.previousX = new ArrayList<Integer>();
-        this.images = new ArrayList<ImageView>();
-
+        this.images = new ArrayList<>();
     }
 
     @Override
-    protected void dispatchDraw(final Canvas canvas) {
-        super.dispatchDraw(canvas);
+    protected void onDraw(final Canvas canvas) {
+        super.onDraw(canvas);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5);
         if (Connection.boot) createCoordinates(canvas);
@@ -115,7 +121,7 @@ public class DrawController extends View {
             if(userList.get(i).getIdUser()==id) n=i;
         }
         final User user = userList.get(n);
-        final ImageView image = new ImageView(mapLayout.getContext());
+        final CircleImageView image = new CircleImageView(mapLayout.getContext());
         Bitmap bitmap = BitmapFactory.decodeFile(user.getProfilePic());
         if (bitmap != null) {
             image.setImageBitmap(bitmap);
@@ -126,7 +132,7 @@ public class DrawController extends View {
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 image.getViewTreeObserver().removeOnPreDrawListener(this);
-                AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(widthHeight, widthHeight, x - 100, y - 100);
+                AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(widthHeight, widthHeight, x - 63, y - 63);
                 image.setLayoutParams(params);
                 int finalWidth = image.getLayoutParams().width;
                 int finalHeight = image.getLayoutParams().height;
@@ -134,33 +140,16 @@ public class DrawController extends View {
                 return true;
             }
         });
+
         image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                dialogBuilder.setView(R.layout.person_found_alert_dialog);
-                final AlertDialog alertDialog = dialogBuilder.create();
-                alertDialog.show();
-                ImageView profilePic = alertDialog.findViewById(R.id.profilePicMapAlertDialog);
-                TextView name = alertDialog.findViewById(R.id.nameMapAlertDialog);
-                TextView information = alertDialog.findViewById(R.id.informationMapAlertDialog);
-                TextView send = alertDialog.findViewById(R.id.sendMessageMapAlertDialog);
-                Bitmap bitmap = BitmapFactory.decodeFile(user.getProfilePic());
-                Drawable draw = new BitmapDrawable(getResources(), bitmap);
-                profilePic.setImageTintList(null);
-                profilePic.setImageDrawable(draw);
-                name.setText(user.getUsername());
-                String ageGender = user.getAge() + ", " + user.getGender();
-                information.setText(ageGender);
-                send.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent myIntent = new Intent(getContext(), ChatActivity.class);
-                        myIntent.putExtra("idChat", user.getIdUser());
-                        myIntent.putExtra("name", user.getName());
-                        getContext().startActivity(myIntent);
-                    }
-                });
+                /*BottomSheetDialog bottomSheet = new BottomSheetDialog(getContext(), R.style.customBottomSheet);
+                View bottomSheetView = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.lyt_bs_new_chat, (LinearLayout)findViewById(R.id.bottomSheetContainer));
+                bottomSheet.setContentView(bottomSheetView);
+                bottomSheet.show();*/
+                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(user);
+                bottomSheet.show(((AppCompatActivity)getContext()).getSupportFragmentManager(), "ModalBottomSheet");
             }
         });
         images.add(image);
@@ -189,9 +178,7 @@ public class DrawController extends View {
 
     private boolean mapContainsId(String id) {
         for (int i = 0; i < Connection.mapUsers.size(); i++) {
-            if (Connection.mapUsers.get(i).getId().equals(id)){
-                return true;
-            }
+            if (Connection.mapUsers.get(i).getId().equals(id)) return true;
         }
         return false;
     }
@@ -209,7 +196,7 @@ public class DrawController extends View {
 
     private void addToMap() {
         previousX = previousY = new ArrayList<Integer>();
-        images = new ArrayList<ImageView>();
+        images = new ArrayList<>();
         for (int i = 0; i < Connection.mapUsers.size(); i++) {
             previousX.add(Connection.mapUsers.get(i).getX());
             previousY.add(Connection.mapUsers.get(i).getY());

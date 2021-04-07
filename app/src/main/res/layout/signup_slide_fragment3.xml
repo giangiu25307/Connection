@@ -8,6 +8,7 @@
 
     <Spinner
         android:id="@+id/country"
+        style="@style/inputDataStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0" />
@@ -36,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="3"
-            android:background="@drawable/input_data_background"
+            android:background="@drawable/bg_input_data"
             android:clickable="false"
             android:gravity="center"
             android:hint="+39" />

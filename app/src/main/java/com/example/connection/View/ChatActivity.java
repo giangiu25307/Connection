@@ -1,5 +1,6 @@
 package com.example.connection.View;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -39,13 +41,16 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MessageAdapter chatAdapter;
     private ConstraintLayout chatBackground;
+    private int receivedMessageTextColor;
+    private int lastPosition;
+    private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         loadTheme();
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.lyt_chat_activity);
         id = getIntent().getStringExtra("idChat");
         Connection.idChatOpen = id;
         String name = getIntent().getStringExtra("name");
@@ -61,6 +66,14 @@ public class ChatActivity extends AppCompatActivity {
         message_input = findViewById(R.id.message_input);
         sendView = findViewById(R.id.sendView);
         chatBackground = findViewById(R.id.chatBackground);
+        message_input.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+                return false;
+            }
+        });
         message_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -89,13 +102,12 @@ public class ChatActivity extends AppCompatActivity {
         sendView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 chatController.sendTCPMsg(message_input.getText().toString(), id);
                 MessageController.getIstance().setMessageAdapter(chatAdapter);
             }
         });
 
-        //Connection.database Connection.database = (Connection.database) getIntent().getParcelableExtra("Connection.database");
+        //Database database = (Database) getIntent().getParcelableExtra("database");
 
     }
 
@@ -105,24 +117,21 @@ public class ChatActivity extends AppCompatActivity {
         if (theme.equals("light")) {
             setTheme(R.style.AppTheme);
             setStatusAndNavbarColor(true);
+            receivedMessageTextColor = getColor(android.R.color.black);
         } else if (theme.equals("dark")) {
             setTheme(R.style.DarkTheme);
             setStatusAndNavbarColor(false);
-            System.out.println("Dark");
+            receivedMessageTextColor = getColor(android.R.color.white);
         } else {
             int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            switch (nightModeFlags) {
-                case Configuration.UI_MODE_NIGHT_NO:
-                case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                    setTheme(R.style.AppTheme);
-                    setStatusAndNavbarColor(true);
-                    break;
-                case Configuration.UI_MODE_NIGHT_YES:
-                    setTheme(R.style.DarkTheme);
-                    setStatusAndNavbarColor(false);
-                    break;
-                default:
-                    break;
+            if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                setTheme(R.style.DarkTheme);
+                setStatusAndNavbarColor(false);
+                receivedMessageTextColor = getColor(android.R.color.white);
+            } else {
+                setTheme(R.style.AppTheme);
+                setStatusAndNavbarColor(true);
+                receivedMessageTextColor = getColor(android.R.color.black);
             }
         }
 
@@ -130,13 +139,12 @@ public class ChatActivity extends AppCompatActivity {
 
     private void setStatusAndNavbarColor(boolean light) {
         Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         if (light) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.WHITE);
-            window.setNavigationBarColor(Color.WHITE);
+            window.setStatusBarColor(getColor(R.color.colorPrimary));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
-            window.setStatusBarColor(getColor(R.color.black2));
+            window.setStatusBarColor(getColor(R.color.darkColorPrimary));
         }
         window.setNavigationBarColor(Color.BLACK);
     }
@@ -146,11 +154,23 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.messageRecyclerView);
         setBackgroundImage();
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        chatAdapter = new MessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager);
+        chatAdapter = new MessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager, receivedMessageTextColor);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.scrollToPosition(messageCursor.getCount() - 1);
+        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v,
+                                       int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                //int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+                int count = recyclerView.getAdapter().getItemCount() - 1;
+                if (lastPosition == count) {
+                    recyclerView.smoothScrollToPosition(lastPosition);
+                    lastPosition = 0;
+                }
+            }
+        });
     }
 
     private Cursor getAllMessage(){

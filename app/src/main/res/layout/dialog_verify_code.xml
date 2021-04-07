@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/blackWhiteLayoutBackground"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/textView39"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/opensans_bold"
+        android:text="Verify code"
+        android:textColor="?attr/textColor"
+        android:textSize="21sp" />
+
+    <TextView
+        android:id="@+id/textView40"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/opensans_regular"
+        android:text="Code sent by email" />
+
+    <EditText
+        android:id="@+id/editTextNumber7"
+        style="@style/inputDataStyle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="0"
+        android:inputType="number"
+        tools:layout_editor_absoluteX="120dp"
+        tools:layout_editor_absoluteY="10dp" />
+
+    <include layout="@layout/lyt_cancel_confirm_buttons"/>
+
+</LinearLayout>

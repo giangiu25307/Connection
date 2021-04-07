@@ -18,14 +18,12 @@
 
             <TextView
                 android:id="@+id/textView5"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="20dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Profile"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:text="Profile" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
@@ -34,8 +32,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/groupSettingsBackground"
-                app:cardCornerRadius="10dp"
+                app:cardBackgroundColor="?attr/settingsCardColor"
+                app:cardCornerRadius="12.5dp"
                 app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -49,11 +47,18 @@
                     android:layout_height="wrap_content"
                     android:paddingVertical="10dp">
 
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline7"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.5" />
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
-                        android:background="@drawable/bg_gray_settings_option"
+                        android:background="@drawable/bg_settings_profile_button"
                         android:orientation="vertical"
                         android:padding="7.5dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -68,7 +73,7 @@
                             android:layout_height="20dp"
                             android:layout_weight="0"
                             app:srcCompat="@drawable/ic_edit"
-                            app:tint="?attr/iconTint" />
+                            app:tint="?attr/settingsCardIconColor" />
 
                         <ImageView
                             android:id="@+id/imageView15"
@@ -84,37 +89,44 @@
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginBottom="8dp"
                         android:fontFamily="sans-serif"
                         android:text="Name"
                         android:textColor="?attr/textColor"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline7"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/profilePic"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/profilePic"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0" />
 
                     <TextView
                         android:id="@+id/textView6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginBottom="16dp"
                         android:fontFamily="sans-serif-light"
                         android:text="Age"
                         android:textColor="?attr/textColor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/profilePic"
+                        app:layout_constraintTop_toTopOf="@+id/guideline7"
+                        app:layout_constraintVertical_bias="0.0" />
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profilePic"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.0"
@@ -126,14 +138,12 @@
 
             <TextView
                 android:id="@+id/textView8"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="20dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Personalize"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:text="Personalize" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/wallpaperSettings"
@@ -141,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/bg_white_settings_option"
+                android:background="@drawable/bg_settings_card"
                 android:clickable="true"
                 android:paddingVertical="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -150,50 +160,57 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView8"
                 app:layout_constraintVertical_bias="0.0">
 
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.5" />
+
                 <ImageView
                     android:id="@+id/wallpaperIcon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_wallpaper"
-                    app:tint="?attr/iconTint" />
+                    app:tint="?attr/settingsCardIconColor" />
 
                 <TextView
                     android:id="@+id/wallpaperOption"
+                    style="@style/titleSettingsCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:fontFamily="sans-serif"
+                    android:layout_marginBottom="2dp"
                     android:text="Chat background"
-                    android:textColor="?attr/textColor"
-                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/wallpaperIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <TextView
+                    android:id="@+id/textView21"
+                    style="@style/subTitleSettingsCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="2dp"
+                    android:text="Change the background of your chats"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/wallpaperIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/wallpaperOptionDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Wallpaper"
-                    android:textColor="?attr/textColor"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/wallpaperOption"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline2"
+                    app:layout_constraintVertical_bias="0.0" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -203,70 +220,75 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/bg_white_settings_option"
+                android:background="@drawable/bg_settings_card"
                 android:paddingVertical="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/wallpaperSettings">
 
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.5" />
+
                 <ImageView
                     android:id="@+id/themeIcon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_brightness"
-                    app:tint="?attr/iconTint" />
+                    app:srcCompat="@drawable/ic_theme"
+                    app:tint="?attr/settingsCardIconColor" />
 
                 <TextView
                     android:id="@+id/themeOption"
+                    style="@style/titleSettingsCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:fontFamily="sans-serif"
+                    android:layout_marginBottom="2dp"
                     android:text="App theme"
-                    android:textColor="?attr/textColor"
-                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/themeIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <TextView
+                    android:id="@+id/textView41"
+                    style="@style/subTitleSettingsCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="2dp"
+                    android:text="Change the app theme"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/themeIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/themeOptionDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Light"
-                    android:textColor="?attr/textColor"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/themeOption"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline3"
+                    app:layout_constraintVertical_bias="0.0" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/textView9"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="20dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Security"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:text="Security" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/changePasswordSettings"
@@ -274,66 +296,71 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/bg_white_settings_option"
+                android:background="@drawable/bg_settings_card"
                 android:paddingVertical="5dp">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.5" />
 
                 <ImageView
                     android:id="@+id/passwordIcon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_lock"
-                    app:tint="?attr/iconTint" />
+                    app:srcCompat="@drawable/ic_password"
+                    app:tint="?attr/settingsCardIconColor" />
 
                 <TextView
                     android:id="@+id/passwordOption"
+                    style="@style/titleSettingsCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:fontFamily="sans-serif"
+                    android:layout_marginBottom="2dp"
                     android:text="Password"
-                    android:textColor="?attr/textColor"
-                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/passwordIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <TextView
+                    android:id="@+id/textView43"
+                    style="@style/subTitleSettingsCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="2dp"
+                    android:text="Change or retrieve your account password"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/passwordIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/passwordOptionDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Last modify: 11/05/20"
-                    android:textColor="?attr/textColor"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/passwordIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline4"
+                    app:layout_constraintVertical_bias="0.0" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/textView10"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="20dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Other"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
+                android:text="Other" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/information"
@@ -341,53 +368,63 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/bg_white_settings_option"
+                android:background="@drawable/bg_settings_card"
                 android:paddingVertical="5dp">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.5" />
 
                 <ImageView
                     android:id="@+id/informationIcon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_info"
-                    app:tint="?attr/iconTint" />
+                    app:srcCompat="@drawable/ic_information"
+                    app:tint="?attr/settingsCardIconColor" />
 
                 <TextView
                     android:id="@+id/informationOption"
+                    style="@style/titleSettingsCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:fontFamily="sans-serif"
+                    android:layout_marginBottom="2dp"
                     android:text="Information"
-                    android:textColor="?attr/textColor"
-                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/informationIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <TextView
+                    android:id="@+id/informationDescription"
+                    style="@style/subTitleSettingsCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="2dp"
+                    android:text="Look at the app version, the project on GitHub and more"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/informationIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/informationOptionDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Version 1.0"
-                    android:textColor="?attr/textColor"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/informationIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline5"
+                    app:layout_constraintVertical_bias="0.0" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -397,53 +434,60 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:layout_marginVertical="12dp"
-                android:background="@drawable/bg_white_settings_option"
+                android:background="@drawable/bg_settings_card"
                 android:paddingVertical="5dp">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.5" />
 
                 <ImageView
                     android:id="@+id/bugReportIcon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_bug_report"
-                    app:tint="?attr/iconTint" />
+                    app:tint="?attr/settingsCardIconColor" />
 
                 <TextView
                     android:id="@+id/burReportOption"
+                    style="@style/titleSettingsCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:fontFamily="sans-serif"
+                    android:layout_marginBottom="2dp"
                     android:text="Bug report"
-                    android:textColor="?attr/textColor"
-                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/bugReportIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <TextView
+                    android:id="@+id/textView62"
+                    style="@style/subTitleSettingsCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="2dp"
+                    android:text="Send us a report of a bug found"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/bugReportIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/bugReportOptionDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Last report: never"
-                    android:textColor="?attr/textColor"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/bugReportIcon"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/guideline6"
+                    app:layout_constraintVertical_bias="0.0" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

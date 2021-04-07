@@ -1,20 +1,15 @@
 package com.example.connection.View;
 
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,19 +29,10 @@ import com.example.connection.R;
 
 public class ChatFragment extends Fragment implements View.OnClickListener {
 
-    private ImageView globalButton;
-    private int textColor;
-    private SharedPreferences sharedPreferences;
     private Database database;
-    private LinearLayout linearLayout;
-    private TextView requestTextView2,numberRequest;
-    private int currentWidth;
-    private int currentHeight;
+    private Button requestButton;
     private ChatController chatController;
     private TextView totalChat;
-    private long secondsRemaining = 1500;
-    private CountDownTimer countDownTimer;
-    private Boolean startTimer = false,startTimer2 = true;
     private Toolbar toolbar;
 
     public ChatFragment() {
@@ -57,7 +43,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         chatFragment.setDatabase(database);
         chatFragment.setChatController(chatController);
         chatFragment.setToolbar(toolbar);
-        chatFragment.createCountDowntimer();
         return chatFragment;
     }
 
@@ -72,7 +57,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.chat_fragment, null);
+        @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_chat_fragment, null);
 
         setHasOptionsMenu(true);
 
@@ -93,29 +78,13 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.left_to_right);
         textView.startAnimation(animation);
         */
-        linearLayout = view.findViewById(R.id.requestLinearLayout);
-        requestTextView2 = view.findViewById(R.id.requestTextView2);
-        numberRequest = view.findViewById(R.id.numberRequest);
+        requestButton = view.findViewById(R.id.requestLinearLayout);
         int totalRequest = database.getAllRequestChat().getCount();
-        numberRequest.setText(String.valueOf(totalRequest));//(totalRequest==0 ? "No" : ""+totalRequest);
+        requestButton.setText(totalRequest == 1 ? totalRequest + " request" : totalRequest + " requests");//(totalRequest==0 ? "No" : ""+totalRequest);
         totalChat = toolbar.findViewById(R.id.toolbarTitle);
         int totalChatNumber = database.getAllNoRequestChat().getCount();
         totalChat.setText(totalChatNumber == 0 ? "Chat (0)" : "Chat (" + totalChatNumber + ")");
-        final ViewTreeObserver viewTreeObserver = requestTextView2.getViewTreeObserver();
-        if (viewTreeObserver.isAlive()) {
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    currentWidth = requestTextView2.getWidth();
-                    currentHeight = requestTextView2.getHeight();
-                    if (currentWidth != 0 && currentHeight != 0) {
-                        countDownTimer.start();
-                        requestTextView2.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-                }
-            });
-        }
-        linearLayout.setOnClickListener(new View.OnClickListener() {
+        requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
@@ -124,21 +93,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         });
         setupRecyclerView(view);
         return view;
-    }
-
-    private void createCountDowntimer() {
-        countDownTimer = new CountDownTimer(secondsRemaining, 1500) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                secondsRemaining = millisUntilFinished;
-            }
-
-            @Override
-            public void onFinish() {
-                //animRequestButton(currentWidth, currentHeight);
-                startTimer = false;
-            }
-        };
     }
 
     private void setupRecyclerView(View view){
@@ -154,53 +108,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         MessageController.getIstance().setChatAdapter(chatAdapter);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (startTimer&&startTimer2) {
-            createCountDowntimer();
-            countDownTimer.start();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        countDownTimer.cancel();
-        startTimer2 = false;
-    }
-
-    private void animRequestButton(int startWidth, final int currentHeight){
-        //int startWidth2 = requestTextView.getWidth();
-        //System.out.println("Width value: " + startWidth2);
-        /*
-        view.getLayoutParams().height = (int) (startWidth + endWidth * interpolatedTime);
-        view.requestLayout();
-        textView.startAnimation();
-        TextAnimation a = new TextAnimation(textView);
-        a.setDuration(3000);
-        a.setParams(startWidth, 0);
-        textView.startAnimation(a);
-        */
-
-
-        ValueAnimator anim = ValueAnimator.ofInt(startWidth, 1);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                int val = (Integer) valueAnimator.getAnimatedValue();
-                ViewGroup.LayoutParams layoutParams = requestTextView2.getLayoutParams();
-                layoutParams.width = val;
-                requestTextView2.setLayoutParams(layoutParams);
-                requestTextView2.setHeight(currentHeight);
-                currentWidth=val;
-            }
-        });
-        anim.setDuration(2000);
-        anim.start();
-
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -211,9 +118,15 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     }
 
     private void crossToRequestDialog(AlertDialog.Builder dialogBuilder){
-        dialogBuilder.setView(R.layout.request_alert_dialog);
+        dialogBuilder.setView(R.layout.dialog_request);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
+        alertDialog.findViewById(R.id.closeRequestDialog).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
         setupRequestRecyclerView(alertDialog);
 
     }
@@ -222,7 +135,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         RecyclerView recyclerView = view.findViewById(R.id.requestRecycleView);
         //System.out.println(database);
         Cursor cursor = database.getAllRequestChat();
-        RequestAdapter requestAdapter = new RequestAdapter(getContext(), cursor, database, chatController, numberRequest);
+        RequestAdapter requestAdapter = new RequestAdapter(getContext(), cursor, database, chatController, requestButton);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(requestAdapter);
         /*if(cursor.getCount() == 0){                                    //THERE IS NOTHING HERE

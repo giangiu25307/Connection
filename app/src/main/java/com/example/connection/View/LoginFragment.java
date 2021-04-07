@@ -80,16 +80,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 if (checker()) {
                     fragment = new HomeFragment().newInstance(connection, database);
                     loadFragment(fragment);
-                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
-                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     try {
                         System.out.println(accountController.login(email.getText().toString(),password.getText().toString()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
-                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                 }
                 break;
             default:
