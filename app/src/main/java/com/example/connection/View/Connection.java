@@ -144,20 +144,13 @@ public class Connection extends AppCompatActivity {
             setStatusAndNavbarColor(false);
         } else {
             int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            switch (nightModeFlags) {
-                case Configuration.UI_MODE_NIGHT_NO:
-                case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                    lightOrDark = "Follow System";
-                    setTheme(R.style.AppTheme);
-                    setStatusAndNavbarColor(true);
-                    break;
-                case Configuration.UI_MODE_NIGHT_YES:
-                    lightOrDark = "Follow System";
-                    setTheme(R.style.DarkTheme);
-                    setStatusAndNavbarColor(false);
-                    break;
-                default:
-                    break;
+            lightOrDark = "Follow System";
+            if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                setTheme(R.style.DarkTheme);
+                setStatusAndNavbarColor(false);
+            } else {
+                setTheme(R.style.AppTheme);
+                setStatusAndNavbarColor(true);
             }
         }
 

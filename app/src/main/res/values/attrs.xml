@@ -32,6 +32,9 @@
         <attr name="messageInputColor" format="color"/>
         <attr name="messageInputBorder" format="color"/>
         <attr name="messageInputElevation" format="dimension"/>
+        <attr name="messageReceivedBackground" format="color"/>
+        <attr name="messageReceivedColor" format="color"/>
+        <attr name="remainingCharactersMessageSeparatorColor" format="color"/>
 
         <!-- Settings -->
         <attr name="groupSettingsBackground" format="color"/>

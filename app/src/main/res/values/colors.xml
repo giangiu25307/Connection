@@ -80,5 +80,9 @@
     <color name="settingsGroupTitleLight">#404040</color>
     <color name="settingsGroupTitleDark">#E4E4E4</color>
     <color name="settingsProfileButtonBackgroundLight">#F2F2F2</color>
+    <color name="messageReceivedLight">#F2F2F2</color>
+    <color name="messageReceivedDark">#282828</color>
+    <color name="remainingCharactersMessageSeparatorLight">#DEDEDE</color>
+    <color name="remainingCharactersMessageSeparatorDark">#565656</color>
 
 </resources>

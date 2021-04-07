@@ -3,14 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/messageLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical|end"
+    android:paddingStart="125dp">
 
     <LinearLayout
         android:id="@+id/textLayout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        android:background="@drawable/message_rounded_white_background"
+        android:background="@drawable/bg_message_sent"
+        android:elevation="1dp"
         android:orientation="horizontal"
         android:paddingVertical="5dp"
         android:paddingStart="10dp"
@@ -20,17 +23,19 @@
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/opensans_regular"
             android:gravity="left"
             android:paddingEnd="10dp"
             android:text="TextView"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/messageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/opensans_light"
             android:text="TextView"
-            android:textColor="#D5D5D5"
+            android:textColor="@android:color/white"
             android:textSize="8sp" />
     </LinearLayout>
 

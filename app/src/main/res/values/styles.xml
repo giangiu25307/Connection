@@ -36,6 +36,9 @@
         <item name="messageInputColor">@android:color/white</item>
         <item name="messageInputBorder">@color/black2</item>
         <item name="messageInputElevation">0dp</item>
+        <item name="messageReceivedBackground">@color/messageReceivedLight</item>
+        <item name="messageReceivedColor">@android:color/black</item>
+        <item name="remainingCharactersMessageSeparatorColor">@color/remainingCharactersMessageSeparatorLight</item>
 
         <!-- Settings -->
         <item name="groupSettingsBackground">@android:color/white</item>
@@ -94,6 +97,9 @@
         <item name="messageInputColor">@color/black2</item>
         <item name="messageInputBorder">@color/black2</item>
         <item name="messageInputElevation">1dp</item>
+        <item name="messageReceivedBackground">@color/messageReceivedDark</item>
+        <item name="messageReceivedColor">@android:color/white</item>
+        <item name="remainingCharactersMessageSeparatorColor">@color/remainingCharactersMessageSeparatorDark</item>
 
         <!-- Settings -->
         <item name="groupSettingsBackground">@color/lightGray</item>

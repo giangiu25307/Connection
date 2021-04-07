@@ -32,63 +32,74 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private Cursor messageCursor, userCursor;
     private Database database;
     private String idChat;
     private Bitmap bitmap;
+    private int receivedMessageTextColor;
     SimpleDateFormat format = new SimpleDateFormat();
     Date date = new Date();
     int counter;
     LinearLayoutManager linearLayoutManager;
     int previousCount = 0;
     TextView dateMessageLayout;
+    private static final int VIEW_TYPE_MESSAGE_SENT = 1;
+    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
-    public MessageAdapter(Context context, Database database, String id, Cursor messageCursor, LinearLayoutManager linearLayoutManager) {
+    public MessageAdapter(Context context, Database database, String id, Cursor messageCursor, LinearLayoutManager linearLayoutManager, int receivedMessageTextColor) {
         this.context = context;
         this.database = database;
         this.idChat = id;
         this.messageCursor = messageCursor;
         this.linearLayoutManager = linearLayoutManager;
+        this.receivedMessageTextColor = receivedMessageTextColor;
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(messageCursor));
     }
 
     @NonNull
     @Override
-    public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.message_layout, parent, false);
-        dateMessageLayout = view.findViewById(R.id.dateMessageLayout);
-        ViewHolder holder = new ViewHolder(view, new ViewHolder.OnChatClickListener() {
-
-            @Override
-            public void openChat(int p) {
-                messageCursor.moveToPosition(p);
-                //final long id = messageCursor.getLong(messageCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-            }
-        });
-
-        return holder;
-
+        View view = null;
+        if (viewType == VIEW_TYPE_MESSAGE_SENT) {
+            view = inflater.inflate(R.layout.lyt_message_sent, parent, false);
+            return new SentViewHolder(view, new SentViewHolder.OnChatClickListener() {
+                @Override
+                public void openChat(int p) {
+                    messageCursor.moveToPosition(p);
+                    //final long id = messageCursor.getLong(messageCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+                }
+            });
+        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
+            view = inflater.inflate(R.layout.lyt_message_received, parent, false);
+            return new ReceivedViewHolder(view, new ReceivedViewHolder.OnChatClickListener() {
+                @Override
+                public void openChat(int p) {
+                    messageCursor.moveToPosition(p);
+                    //final long id = messageCursor.getLong(messageCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+                }
+            });
+        }
+        //dateMessageLayout = view.findViewById(R.id.dateMessageLayout);
+        return null;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (!messageCursor.moveToPosition(position)) {
             return;
         }
+
+        TextView message = null;
+        TextView messageTime = null;
+
         String datetime = messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.DATETIME));
         if (datetime.split("£€")[0].equals("date")) if (checkDate()) return;
-        LinearLayout messageLayout = holder.messageLayout;
-        LinearLayout textLayout = holder.textLayout;
-        TextView message = holder.message;
 
-        message.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG)));
-        if (message.getText().toString().length() > 400)setMessageWithClickableLink(message);
-        TextView messageTime = holder.messageTime;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         Date date = new Date();
         try {
@@ -96,37 +107,31 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        messageTime.setText(String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes());
 
-
-        if (!messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)).equals(database.getMyInformation()[0])) {
-            textLayout.setBackgroundResource(R.drawable.message_rounded_black_background);
-            message.setTextColor(Color.WHITE);
-            messageLayout.setGravity(Gravity.START);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            params.setMargins(0, 0, 150, 0);
-            messageLayout.setLayoutParams(params);
-
-
-        } else {
-            textLayout.setBackgroundResource(R.drawable.message_rounded_white_background);
-            message.setTextColor(Color.BLACK);
-            messageLayout.setGravity(Gravity.END);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-            params.setMargins(150, 0, 0, 0);
-            messageLayout.setLayoutParams(params);
-
+        if ((holder.getItemViewType() == VIEW_TYPE_MESSAGE_SENT)) {
+            message = ((SentViewHolder) holder).message;
+            messageTime = ((SentViewHolder) holder).messageTime;
+        } else if ((holder.getItemViewType() == VIEW_TYPE_MESSAGE_RECEIVED)) {
+            message = ((ReceivedViewHolder) holder).message;
+            messageTime = ((ReceivedViewHolder) holder).messageTime;
         }
+
+        message.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG)));
+        if (message.getText().toString().length() > 400) setMessageWithClickableLink(message);
+        messageTime.setText(String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes());
 
         holder.itemView.setTag(idChat);
 
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        messageCursor.moveToPosition(position);
+        if (!messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)).equals(database.getMyInformation()[0])) {
+            return VIEW_TYPE_MESSAGE_RECEIVED;
+        } else {
+            return VIEW_TYPE_MESSAGE_SENT;
+        }
     }
 
     @Override
@@ -147,14 +152,51 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ReceivedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         OnChatClickListener listener;
 
         private LinearLayout messageLayout, textLayout;
         private TextView message, messageTime;
 
-        private ViewHolder(View itemView, OnChatClickListener listener) {
+        private ReceivedViewHolder(View itemView, OnChatClickListener listener) {
+            super(itemView);
+            this.listener = listener;
+
+            messageLayout = itemView.findViewById(R.id.messageLayout);
+            textLayout = itemView.findViewById(R.id.textLayout);
+            messageTime = itemView.findViewById(R.id.messageTime);
+            messageLayout.setOnClickListener(this);
+            message = itemView.findViewById(R.id.message);
+
+        }
+
+        @Override
+        public void onClick(View view) {
+
+            switch (view.getId()) {
+                case R.id.messageLayout:
+                    listener.openChat(this.getLayoutPosition());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public interface OnChatClickListener {
+            void openChat(int p);
+        }
+
+    }
+
+    public static class SentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        OnChatClickListener listener;
+
+        private LinearLayout messageLayout, textLayout;
+        private TextView message, messageTime;
+
+        private SentViewHolder(View itemView, OnChatClickListener listener) {
             super(itemView);
             this.listener = listener;
 
@@ -224,13 +266,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public void setMessageWithClickableLink(final TextView textViewOriginal) {
         final String fullText = textViewOriginal.getText().toString();
-        String spannable = fullText.substring(0,400)+"... continue reading";
+        String spannable = fullText.substring(0, 400) + "... continue reading";
         SpannableString ss = new SpannableString(spannable);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View textView) {
                 textViewOriginal.setText(fullText);
             }
+
             @Override
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
