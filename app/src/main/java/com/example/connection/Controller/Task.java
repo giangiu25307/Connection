@@ -26,7 +26,7 @@ public class Task {
         public static final String CHAT = "CHAT";
         public static final String ID_SENDER = "id_sender";
         public static final String IP = "ip";
-        public static final String GLOBAL_MESSAGE = "GROUPS_MESSAGE";
+        public static final String GLOBAL_MESSAGE = "GLOBAL_MESSAGE";
         public static final String DATETIME = "datetime";
         public static final String LAST_MESSAGE = "last_message";
         public static final String NOT_READ_MESSAGE = "not_read_message";

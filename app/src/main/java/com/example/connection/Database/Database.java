@@ -73,8 +73,8 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
                 + Task.TaskEntry.MSG + " TEXT NOT NULL, "
                 + Task.TaskEntry.DATETIME + " TEXT, "
-                + Task.TaskEntry.LAST_MESSAGE + "TEXT, "
-                + Task.TaskEntry.NOT_READ_MESSAGE + "INTEGER "
+                + Task.TaskEntry.LAST_MESSAGE + " TEXT, "
+                + Task.TaskEntry.NOT_READ_MESSAGE + " INTEGER "
                 + ")";
 
         String BACKGROUND_CHAT_IMAGES = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.BACKGROUND_CHAT_IMAGES + " ( "

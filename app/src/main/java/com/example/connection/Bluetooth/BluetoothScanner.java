@@ -54,7 +54,6 @@ public class BluetoothScanner {
                     countDownTimer = new CountDownTimer(SCAN_PERIOD, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
-                            System.out.println(millisUntilFinished);
                         }
                         @Override
                         public void onFinish() {

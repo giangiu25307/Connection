@@ -59,6 +59,7 @@ ConnectionController {
     private Encryption encryption;
     private TcpClient tcpClient;
     private TcpServer tcpServer;
+    public static boolean GO_leave=false;
 
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
@@ -106,6 +107,7 @@ ConnectionController {
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     @SuppressLint("MissingPermission")
     public void createGroup() {
+        GO_leave=false;
         mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
 
             @Override
@@ -145,7 +147,7 @@ ConnectionController {
                 System.out.println("create group error" + reason);
 
                 resetWifi();
-                new CountDownTimer(5000, 2000) {
+                new CountDownTimer(3000, 3000) {
 
                     public void onTick(long millisUntilFinished) {
                     }
@@ -179,7 +181,7 @@ ConnectionController {
             @Override
             public void onAvailable(Network network) {
 
-                new CountDownTimer(5000, 1000) {
+                new CountDownTimer(100, 10) {
                     @Override
                     public void onTick(long millisUntilFinished) {
 
@@ -206,6 +208,8 @@ ConnectionController {
                                 e.printStackTrace();
                             }
                             multicastWLAN.createMulticastSocketWlan0();
+                            Thread t1 = new Thread(multicastWLAN);
+                            t1.start();
                             multicastWLAN.sendInfo();
                             bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
                             new Thread(new Runnable() {
@@ -245,7 +249,7 @@ ConnectionController {
         int numberOfLevels = 5;
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), numberOfLevels);
-        if (level <= 2) {
+        if (level <= 2 && !GO_leave) {
             disconnectToGroup();
         }
     }
@@ -286,6 +290,7 @@ ConnectionController {
 
     //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
     public void connectToGroupOwnerId(String id) {
+        GO_leave=false;
         bluetoothScanner.setClientToRequestGroupId(id);
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithSpecifiedId);
     }

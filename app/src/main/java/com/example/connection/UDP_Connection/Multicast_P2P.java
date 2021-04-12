@@ -15,6 +15,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Enumeration;
 
 public class
@@ -47,12 +48,10 @@ Multicast_P2P extends Multicast {
                             }
                             dbUserEvent=false;
                             break;
-                        case "message":
+                        case "globalMessage":
                             //receiving a message -----------------------------------------------------------------------------------------------------------------------------------------------
-                            for (int i = 3; i < splittedR.length; i++) {
-                                received += splittedR[i];
-                            }
-                            database.addGlobalMsg(received, splittedR[1]);
+
+                            database.addGlobalMsg(splittedR[3], splittedR[1]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
@@ -121,6 +120,7 @@ Multicast_P2P extends Multicast {
         try {
             multicastSocketGroupP2p = new MulticastSocket(6789);
             NetworkInterface networkInterface = MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName);
+            System.out.println("network"+networkInterface);
             multicastSocketGroupP2p.setNetworkInterface(networkInterface);
             multicastSocketGroupP2p.joinGroup(sa,networkInterface);
         } catch (UnknownHostException e) {
@@ -133,7 +133,7 @@ Multicast_P2P extends Multicast {
     //Send a global message ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendGlobalMsg(String msg) {
         try {
-            msg = "globalmessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
+            msg = "globalMessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
             byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupP2p.setTimeToLive(255);
