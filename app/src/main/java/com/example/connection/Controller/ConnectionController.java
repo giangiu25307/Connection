@@ -16,6 +16,8 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.format.Formatter;
 
+import androidx.annotation.NonNull;
+
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Database.Database;
@@ -132,6 +134,7 @@ ConnectionController {
                         Thread t1 = new Thread(multicastP2P);
                         t1.start();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
+                        tcpServer.setMulticastP2p(multicastP2P);
                         tcpServer.setup();
 
                     }
@@ -165,8 +168,33 @@ ConnectionController {
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
     public void connectToGroupWhenGroupOwner(String id) {//GroupOwner groupOwner){//
         wifiConnection(id);
-        multicastWLAN.createMulticastSocketWlan0();
-        multicastWLAN.sendAllMyGroupInfo();
+        connManager.requestNetwork(networkRequest, new NetworkCallback(){
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                super.onAvailable(network);
+                if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
+                    wifiConnection(id);
+                else{
+                    new CountDownTimer(5000,1000){
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            try {
+                                MyNetworkInterface.setNetworkInterfacesNames();
+                            } catch (SocketException e) {
+                                e.printStackTrace();
+                            }
+                            multicastWLAN.createMulticastSocketWlan0();
+                            multicastWLAN.sendAllMyGroupInfo();
+                        }
+                    }.start();
+                }
+            }
+        });
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
@@ -261,9 +289,10 @@ ConnectionController {
     }
 
     public void initProcess() {
-        bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
+        /*bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
-        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);*/
+        createGroup();
     }
 
     public void active4G() {

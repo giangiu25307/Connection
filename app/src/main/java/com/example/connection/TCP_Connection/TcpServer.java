@@ -8,6 +8,7 @@ import com.example.connection.Controller.MessageController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.UDP_Connection.Multicast;
+import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.View.Connection;
 import com.example.connection.libs.AsyncServer;
 import com.example.connection.libs.AsyncServerSocket;
@@ -38,13 +39,19 @@ public class TcpServer {
     private Connection connection;
     private SimpleDateFormat sdf;
     private TcpClient tcpClient;
+    private Multicast_P2P multicastP2p;
 
     public TcpServer(Connection connection, Database database, Encryption encryption, TcpClient tcpClient) {
         this.connection = connection;
         this.database = database;
         this.encryption = encryption;
         this.tcpClient = tcpClient;
+        this.multicastP2p=null;
         port = 50000;
+    }
+
+    public void setMulticastP2p(Multicast_P2P multicastP2p){
+        this.multicastP2p = multicastP2p;
     }
 
     public void close(){
@@ -200,6 +207,14 @@ public class TcpServer {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, database.findIp(ConnectionController.myUser.getIdUser()));
                     }
                     return "handShake";
+                case "groupInfo":
+                    for (int i = 1; i < splittedR.length - 1; i = i + 12) {
+                        database.addUser(splittedR[i], splittedR[2], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                        database.setOtherGroup(splittedR[i]);
+                    }
+                    multicastP2p.sendGlobalMsg(msg);
+                    Multicast_P2P.dbUserEvent=false;
+                    return "groupInfo";
                     /*case "REQUEST-MEET":
                         //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
                         //database.setAccept(valore ritornato da bergo);

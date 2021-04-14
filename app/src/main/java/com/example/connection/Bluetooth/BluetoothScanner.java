@@ -104,7 +104,7 @@ public class BluetoothScanner {
                         public void onFinish() {
                             mScanning = false;
                             bluetoothLeScanner.stopScan(scanCallbackClientListeningOtherClient);
-                            new CountDownTimer(60000, 1000) {
+                            new CountDownTimer(20000, 1000) {
 
                                 public void onTick(long millisUntilFinished) {
                                 }
@@ -157,7 +157,7 @@ public class BluetoothScanner {
                         public void onFinish() {
                             mScanning = false;
                             bluetoothLeScanner.stopScan(scanCallbackLookingForGroupOwnerWithGreaterId);
-                            new CountDownTimer(60000, 1000) {
+                            new CountDownTimer(20000, 1000) {
 
                                 public void onTick(long millisUntilFinished) {
                                 }

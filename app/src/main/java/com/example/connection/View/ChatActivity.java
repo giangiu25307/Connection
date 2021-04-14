@@ -70,7 +70,11 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+                try {
+                    lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+                }catch(IllegalArgumentException e){
+                    System.out.println("errore nella chat; solitamente vuota");
+                }
                 return false;
             }
         });
@@ -166,7 +170,11 @@ public class ChatActivity extends AppCompatActivity {
                 //int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
                 int count = recyclerView.getAdapter().getItemCount() - 1;
                 if (lastPosition == count) {
-                    recyclerView.smoothScrollToPosition(lastPosition);
+                    try {
+                        recyclerView.smoothScrollToPosition(lastPosition);
+                    }catch(IllegalArgumentException e){
+                        System.out.println("Errore nella chat solitamente nulla");
+                    }
                     lastPosition = 0;
                 }
             }
