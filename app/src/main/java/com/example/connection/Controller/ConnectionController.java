@@ -306,8 +306,7 @@ ConnectionController {
     public void initProcess() {
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
-        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
-        //createGroup();
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);//createGroup();
     }
 
     public void active4G() {

@@ -29,7 +29,7 @@ public class Multicast_WLAN extends Multicast {
                 if(!splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                     switch (splittedR[0]) {
                         case "info":
-                            database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
+                            database.addUser(splittedR[1], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.wlanName, splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
@@ -84,7 +84,7 @@ public class Multicast_WLAN extends Multicast {
                         case "groupInfo":
                             //I'll add the user with the ip of my GO instead
                             for (int i = 1; i < splittedR.length - 14; i = i + 12) {
-                                database.addUser(splittedR[i], "192.168.49.1", splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                                database.addUser(splittedR[i], database.findGOIp(), splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                                 database.setOtherGroup(splittedR[i]);
                             }
                             //Check for the other group owner

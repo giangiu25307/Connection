@@ -128,7 +128,8 @@ public class Connection extends AppCompatActivity {
             database.createChat("33", "Andrew345", null);
             database.addMsg("wee", "33", "33");
         }
-
+        //database.addUser("0",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);
+        database.addUser("4",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);
         createCountDowntimer();
         countDownTimer.start();
         foregroundService = new MyForegroundService();
@@ -151,13 +152,13 @@ public class Connection extends AppCompatActivity {
         try {
             String manufacturer = "xiaomi";
             if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
-                database.addUser("0",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);
+
                 //this will open auto start screen where user can enable permission for your app
                 Intent intent1 = new Intent();
                 intent1.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsTabActivity"));
                 startActivity(intent1);
             }else{
-                database.addUser("4",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
+//redminote7
             }
         } catch (ActivityNotFoundException e) {
             System.out.println("Not MIUI device");

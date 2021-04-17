@@ -59,7 +59,7 @@ public class TcpClient {
         oldMsg = text;
         oldId = id;
         checkInterface(id);
-        AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
+        AsyncServer.getDefault().connectSocket(new InetSocketAddress("oldIp", port), new ConnectCallback() {
             @Override
             public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
                 System.out.println("Done");
