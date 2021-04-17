@@ -12,7 +12,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +22,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.connection.Database.Database;
 import com.example.connection.Controller.Task;
+import com.example.connection.Database.Database;
 import com.example.connection.R;
 
 import java.text.ParseException;
@@ -32,13 +31,14 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private Cursor messageCursor, userCursor;
     private Database database;
     private String idChat;
     private Bitmap bitmap;
+    private int receivedMessageTextColor;
     SimpleDateFormat format = new SimpleDateFormat();
     Date date = new Date();
     int counter;
@@ -48,12 +48,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
-    public MessageAdapter(Context context, Database database, String id, Cursor messageCursor, LinearLayoutManager linearLayoutManager) {
+    public GlobalMessageAdapter(Context context, Database database, String id, Cursor messageCursor, LinearLayoutManager linearLayoutManager, int receivedMessageTextColor) {
         this.context = context;
         this.database = database;
         this.idChat = id;
         this.messageCursor = messageCursor;
         this.linearLayoutManager = linearLayoutManager;
+        this.receivedMessageTextColor = receivedMessageTextColor;
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(messageCursor));
     }
 
@@ -110,6 +111,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             message = ((SentViewHolder) holder).message;
             messageTime = ((SentViewHolder) holder).messageTime;
         } else if ((holder.getItemViewType() == VIEW_TYPE_MESSAGE_RECEIVED)) {
+            ((ReceivedViewHolder) holder).username.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.USERNAME)));
             message = ((ReceivedViewHolder) holder).message;
             messageTime = ((ReceivedViewHolder) holder).messageTime;
         }
@@ -155,7 +157,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         OnChatClickListener listener;
 
         private LinearLayout messageLayout, textLayout;
-        private TextView message, messageTime;
+        private TextView username, message, messageTime;
 
         private ReceivedViewHolder(View itemView, OnChatClickListener listener) {
             super(itemView);
@@ -165,6 +167,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             textLayout = itemView.findViewById(R.id.textLayout);
             messageTime = itemView.findViewById(R.id.messageTime);
             messageLayout.setOnClickListener(this);
+            username = itemView.findViewById(R.id.usernameTextView);
             message = itemView.findViewById(R.id.message);
 
         }

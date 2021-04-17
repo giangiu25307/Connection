@@ -1,6 +1,7 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -153,11 +154,9 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.globalIcon:
-                break;
-            default:
-                break;
+        if (item.getItemId() == R.id.globalIcon) {
+            Intent intent = new Intent(getContext(), ChatGlobalActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

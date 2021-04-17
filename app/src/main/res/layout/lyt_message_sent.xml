@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_margin="8dp"
         android:background="@drawable/bg_message_sent"
-        android:elevation="1dp"
+        android:elevation="0.5dp"
         android:orientation="horizontal"
         android:paddingVertical="5dp"
         android:paddingStart="10dp"
