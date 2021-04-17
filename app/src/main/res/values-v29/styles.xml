@@ -1,119 +1,275 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:forceDarkAllowed">false</item>
+<!-- App theme -->
 
-        <!-- SplashScreen -->
-        <item name="splashScreenLayoutBackground">@color/colorPrimary</item>
+<style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <item name="android:forceDarkAllowed">false</item>
+    <!-- SplashScreen -->
+    <item name="splashScreenLayoutBackground">@color/colorPrimary</item>
 
-        <!-- Login -->
-        <item name="inputData">@color/inputDataLight</item>
-        <item name="inputDataHintColor">@color/darkHintcolor</item>
-        <item name="nextButton">@color/black2</item>
+    <!-- Login -->
+    <item name="inputData">@color/inputDataLight</item>
+    <item name="inputDataHintColor">@color/darkHintcolor</item>
+    <item name="nextButton">@color/black2</item>
 
-        <!-- Toolbar -->
-        <item name="toolbarBackground">@color/colorPrimary</item>
-        <item name="toolbarIcon">@color/toolbarIconColorLight</item>
+    <!-- Toolbar -->
+    <item name="toolbarBackground">@color/colorPrimary</item>
+    <item name="toolbarIcon">@color/toolbarIconColorLight</item>
 
-        <!-- BottomNavigation -->
-        <item name="bottomMenuBackground">@android:color/white</item>
-        <item name="bottomMenuIcon">@color/lightGray</item>
-        <item name="bottomUnselectedIcon">@color/bottomUnselectedColorLight</item>
+    <!-- BottomNavigation -->
+    <item name="bottomMenuBackground">@android:color/white</item>
+    <item name="bottomMenuIcon">@color/lightGray</item>
+    <item name="bottomUnselectedIcon">@color/bottomUnselectedColorLight</item>
 
-        <!-- General layout -->
-        <item name="layoutBackground">@color/colorPrimary</item>
-        <item name="blackWhiteLayoutBackground">@android:color/white</item>
+    <!-- General layout -->
+    <item name="layoutBackground">@color/colorPrimary</item>
+    <item name="blackWhiteLayoutBackground">@android:color/white</item>
 
-        <!-- Map -->
-        <item name="mapFilterCardBackground">@color/mapFilterCardBackgroundLight</item>
-        <item name="topLineBottomSheet">@color/topLineBottomSheetLight</item>
+    <!-- Map -->
+    <item name="mapFilterCardBackground">@color/mapFilterCardBackgroundLight</item>
+    <item name="topLineBottomSheet">@color/topLineBottomSheetLight</item>
 
-        <!-- Chat -->
-        <item name="dateMessageLayoutBackgroundColor">@android:color/white</item>
-        <item name="messageInputColor">@android:color/white</item>
-        <item name="messageInputBorder">@color/black2</item>
-        <item name="messageInputElevation">0dp</item>
+    <!-- Chat -->
+    <item name="requestCardBackground">@color/requestCard</item>
+    <item name="chatCardBackground">@color/chatCard</item>
+    <item name="dateMessageLayoutBackgroundColor">@android:color/white</item>
+    <item name="messageInputColor">@android:color/white</item>
+    <item name="messageInputBorder">@color/black2</item>
+    <item name="messageInputElevation">0dp</item>
+    <item name="messageReceivedBackground">@color/messageReceivedLight</item>
+    <item name="messageReceivedColor">@android:color/black</item>
+    <item name="remainingCharactersMessageSeparatorColor">@color/remainingCharactersMessageSeparatorLight</item>
 
-        <!-- Settings -->
-        <item name="groupSettingsBackground">@android:color/white</item>
-        <item name="groupOptionSettingsBackground">@color/mediumWhite</item>
-        <item name="settingsProfileButtonBackground">@color/settingsProfileButtonBackgroundLight
-        </item>
-        <item name="settingsGroupTitleColor">@color/settingsGroupTitleLight</item>
-        <item name="settingsCardColor">@color/settingsCardLight</item>
-        <item name="settingsCardIconColor">@color/settingsCardIconLight</item>
+    <!-- Settings -->
+    <item name="groupSettingsBackground">@android:color/white</item>
+    <item name="groupOptionSettingsBackground">@color/mediumWhite</item>
+    <item name="settingsProfileButtonBackground">@color/settingsProfileButtonBackgroundLight</item>
+    <item name="settingsGroupTitleColor">@color/settingsGroupTitleLight</item>
+    <item name="settingsCardColor">@color/settingsCardLight</item>
+    <item name="settingsCardIconColor">@color/settingsCardIconLight</item>
 
-        <!-- Text -->
-        <item name="textColor">@android:color/black</item>
-        <item name="invertedTextColor">@android:color/white</item>
-        <item name="subTitleGroup">@color/subTitleGroupLight</item>
+    <!-- Text -->
+    <item name="textColor">@android:color/black</item>
+    <item name="invertedTextColor">@android:color/white</item>
+    <item name="subTitleGroup">@color/subTitleGroupLight</item>
 
-        <!-- Icon -->
-        <item name="iconTint">@android:color/black</item>
-        <item name="invertedIconTint">@android:color/white</item>
+    <!-- Icon -->
+    <item name="iconTint">@android:color/black</item>
+    <item name="invertedIconTint">@android:color/white</item>
 
-        <!-- Dialog -->
-        <item name="cancelDialogColor">@color/cancelDialogColorLight</item>
-        <item name="cancelButtonBackground">@color/cancelButtonLight</item>
-        <item name="cancelButtonText">@color/cancelButtonTextLight</item>
-    </style>
+    <!-- Dialog -->
+    <item name="cancelDialogColor">@color/cancelDialogColorLight</item>
+    <item name="cancelButtonBackground">@color/cancelButtonLight</item>
+    <item name="cancelButtonText">@color/cancelButtonTextLight</item>
+</style>
 
-    <style name="DarkTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:forceDarkAllowed">false</item>
+<style name="DarkTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <item name="android:forceDarkAllowed">false</item>
+    <!-- SplashScreen -->
+    <item name="splashScreenLayoutBackground">@color/darkColorPrimary</item>
 
-        <!-- SplashScreen -->
-        <item name="splashScreenLayoutBackground">@color/darkColorPrimary</item>
+    <!-- Login -->
+    <item name="inputData">@color/inputDataDark</item>
+    <item name="inputDataHintColor">@color/lightHintColor</item>
+    <item name="nextButton">@android:color/white</item>
 
-        <!-- Login -->
-        <item name="inputData">@color/inputDataDark</item>
-        <item name="inputDataHintColor">@color/lightHintColor</item>
-        <item name="nextButton">@android:color/white</item>
+    <!-- Toolbar -->
+    <item name="toolbarBackground">@color/darkColorPrimary</item>
+    <item name="toolbarIcon">@color/toolbarIconColorDark</item>
 
-        <!-- Toolbar -->
-        <item name="toolbarBackground">@color/darkColorPrimary</item>
-        <item name="toolbarIcon">@color/toolbarIconColorDark</item>
+    <!-- BottomNavigation -->
+    <item name="bottomMenuBackground">@android:color/black</item>
+    <item name="bottomMenuIcon">@color/darkGray</item>
+    <item name="bottomUnselectedIcon">@color/bottomUnselectedColorDark</item>
 
-        <!-- BottomNavigation -->
-        <item name="bottomMenuBackground">@android:color/black</item>
-        <item name="bottomMenuIcon">@color/darkGray</item>
-        <item name="bottomUnselectedIcon">@color/bottomUnselectedColorDark</item>
+    <!-- General layout -->
+    <item name="layoutBackground">@color/darkColorPrimary</item>
+    <item name="blackWhiteLayoutBackground">@android:color/black</item>
 
-        <!-- General layout -->
-        <item name="layoutBackground">@color/darkColorPrimary</item>
-        <item name="blackWhiteLayoutBackground">@android:color/black</item>
+    <!-- Map -->
+    <item name="mapFilterCardBackground">@color/mapFilterCardBackgroundDark</item>
+    <item name="topLineBottomSheet">@color/topLineBottomSheetDark</item>
 
-        <!-- Map -->
-        <item name="mapFilterCardBackground">@color/mapFilterCardBackgroundDark</item>
-        <item name="topLineBottomSheet">@color/topLineBottomSheetDark</item>
+    <!-- Chat -->
+    <item name="requestCardBackground">@color/requestCardDark</item>
+    <item name="chatCardBackground">@color/chatCardDark</item>
+    <item name="dateMessageLayoutBackgroundColor">@color/black3</item>
+    <item name="messageInputColor">@color/black2</item>
+    <item name="messageInputBorder">@color/black2</item>
+    <item name="messageInputElevation">1dp</item>
+    <item name="messageReceivedBackground">@color/messageReceivedDark</item>
+    <item name="messageReceivedColor">@android:color/white</item>
+    <item name="remainingCharactersMessageSeparatorColor">@color/remainingCharactersMessageSeparatorDark</item>
 
-        <!-- Chat -->
-        <item name="dateMessageLayoutBackgroundColor">@color/black3</item>
-        <item name="messageInputColor">@color/black2</item>
-        <item name="messageInputBorder">@color/black2</item>
-        <item name="messageInputElevation">1dp</item>
+    <!-- Settings -->
+    <item name="groupSettingsBackground">@color/lightGray</item>
+    <item name="groupOptionSettingsBackground">@color/black4</item>
+    <item name="settingsProfileButtonBackground">@color/settingsProfileButtonBackgroundDark</item>
+    <item name="settingsGroupTitleColor">@color/settingsGroupTitleDark</item>
+    <item name="settingsCardColor">@color/settingsCardDark</item>
+    <item name="settingsCardIconColor">@color/settingsCardIconDark</item>
 
-        <!-- Settings -->
-        <item name="groupSettingsBackground">@color/lightGray</item>
-        <item name="groupOptionSettingsBackground">@color/black4</item>
-        <item name="settingsProfileButtonBackground">@color/settingsProfileButtonBackgroundDark
-        </item>
-        <item name="settingsGroupTitleColor">@color/settingsGroupTitleDark</item>
-        <item name="settingsCardColor">@color/settingsCardDark</item>
-        <item name="settingsCardIconColor">@color/settingsCardIconDark</item>
+    <!-- Text -->
+    <item name="textColor">@android:color/white</item>
+    <item name="invertedTextColor">@android:color/black</item>
+    <item name="subTitleGroup">@color/subTitleGroupDark</item>
 
-        <!-- Text -->
-        <item name="textColor">@android:color/white</item>
-        <item name="invertedTextColor">@android:color/black</item>
-        <item name="subTitleGroup">@color/subTitleGroupDark</item>
+    <!-- Icon -->
+    <item name="iconTint">@android:color/white</item>
+    <item name="invertedIconTint">@android:color/black</item>
 
-        <!-- Icon -->
-        <item name="iconTint">@android:color/white</item>
-        <item name="invertedIconTint">@android:color/black</item>
+    <!-- Dialog -->
+    <item name="cancelDialogColor">@color/cancelDialogColorDark</item>
+    <item name="cancelButtonBackground">@color/cancelButtonDark</item>
+    <item name="cancelButtonText">@color/cancelButtonTextDark</item>
+</style>
 
-        <!-- Dialog -->
-        <item name="cancelDialogColor">@color/cancelDialogColorDark</item>
-        <item name="cancelButtonBackground">@color/cancelButtonDark</item>
-        <item name="cancelButtonText">@color/cancelButtonTextDark</item>
-    </style>
+<!-- Screen title -->
+<style name="screenTitle" parent="Widget.MaterialComponents.TextView">
+    <item name="android:textColor">?attr/textColor</item>
+    <item name="android:fontFamily">@font/opensans_bold</item>
+    <item name="android:textSize">28sp</item>
+</style>
+
+<!-- Gender in map's filter -->
+<style name="genderUnselected" parent="Widget.MaterialComponents.TextView">
+    <item name="android:background">@drawable/bg_gender_filter_unselected</item>
+    <item name="android:textColor">?attr/textColor</item>
+    <item name="android:textSize">13sp</item>
+    <item name="android:paddingHorizontal">17.5dp</item>
+    <item name="android:paddingVertical">7.5dp</item>
+</style>
+
+<style name="genderSelected" parent="Widget.MaterialComponents.TextView">
+    <item name="android:background">@drawable/bg_gender_filter_selected</item>
+    <item name="android:textColor">?attr/invertedTextColor</item>
+    <item name="android:textSize">13sp</item>
+    <item name="android:paddingHorizontal">17.5dp</item>
+    <item name="android:paddingVertical">7.5dp</item>
+</style>
+
+<!-- Age in map's filter -->
+<style name="ageInputStyle" parent="Widget.MaterialComponents.TextView">
+    <item name="android:background">@drawable/bg_age_input</item>
+    <item name="android:textColor">?attr/textColor</item>
+    <item name="android:textColorHint">?attr/inputDataHintColor</item>
+    <item name="android:textSize">13sp</item>
+    <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
+    <item name="android:paddingHorizontal">15dp</item>
+    <item name="android:paddingVertical">7.5dp</item>
+</style>
+
+<!-- Cancel and apply/confirm dialog's buttons -->
+<style name="cancelButton" parent="Widget.MaterialComponents.TextView">
+    <item name="android:background">@drawable/bg_cancel_button</item>
+    <item name="android:textColor">?attr/cancelButtonText</item>
+    <item name="android:fontFamily">@font/opensans_semibold</item>
+    <item name="android:paddingVertical">12dp</item>
+    <item name="android:gravity">center</item>
+</style>
+
+<style name="applyConfirmButton" parent="Widget.MaterialComponents.TextView">
+    <item name="android:background">@drawable/bg_apply_confirm_buttons</item>
+    <item name="android:textColor">@android:color/white</item>
+    <item name="android:fontFamily">@font/opensans_semibold</item>
+    <item name="android:paddingVertical">12dp</item>
+    <item name="android:gravity">center</item>
+</style>
+
+<!-- Settings card -->
+<style name="settingsGroupTitle" parent="Widget.MaterialComponents.TextView">
+    <item name="android:textColor">?attr/settingsGroupTitleColor</item>
+    <item name="android:fontFamily">@font/opensans_regular</item>
+    <item name="android:textSize">14sp</item>
+</style>
+
+<style name="titleSettingsCard" parent="Widget.MaterialComponents.TextView">
+    <item name="android:textColor">?attr/textColor</item>
+    <item name="android:fontFamily">@font/opensans_semibold</item>
+    <item name="android:textSize">15sp</item>
+</style>
+
+<style name="subTitleSettingsCard" parent="Widget.MaterialComponents.TextView">
+    <item name="android:textColor">?attr/textColor</item>
+    <item name="android:fontFamily">@font/opensans_light</item>
+    <item name="android:textSize">13sp</item>
+</style>
+
+
+
+<style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="android:windowBackground">@drawable/rounded_20dp_background</item>
+</style>
+
+<style name="customBottomSheet" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+    <item name="bottomSheetStyle">@style/bottomSheetBackground</item>
+</style>
+
+<style name="bottomSheetBackground" parent="Widget.Design.BottomSheet.Modal">
+    <item name="android:background">@drawable/bg_bs_new_chat</item>
+</style>
+
+<style name="confirmAlertButton" parent="Widget.AppCompat.TextView">
+    <item name="android:background">@drawable/confirm_alert_button_background</item>
+    <item name="android:textColor">?attr/invertedTextColor</item>
+    <item name="android:textSize">15sp</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:paddingVertical">5dp</item>
+    <item name="android:paddingHorizontal">10dp</item>
+</style>
+
+<style name="inputDataStyle" parent="Widget.Design.TextInputLayout">
+    <item name="android:background">@drawable/bg_input_data</item>
+    <item name="android:textColor">?attr/textColor</item>
+    <item name="android:textColorHint">?attr/inputDataHintColor</item>
+    <item name="android:textSize">15sp</item>
+    <item name="android:fontFamily">@font/opensans_light</item>
+    <item name="android:padding">12.5dp</item>
+    <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
+</style>
+
+<style name="showHidepasswordImageStyle">
+    <item name="android:background">@drawable/show_hide_password_background</item>
+    <item name="android:tint">?attr/inputDataHintColor</item>
+    <item name="android:padding">4dp</item>
+</style>
+
+<style name="nextButtonStyle" parent="Widget.AppCompat.Button">
+    <item name="android:background">@drawable/next_button_background</item>
+    <item name="android:textColor">?attr/invertedTextColor</item>
+    <item name="android:textSize">15sp</item>
+</style>
+
+<style name="signupButtonStyle" parent="Widget.AppCompat.Button">
+    <item name="android:background">@drawable/signup_button_background</item>
+    <item name="android:textColor">?attr/textColor</item>
+    <item name="android:textSize">15sp</item>
+</style>
+
+<style name="permissionButtonStyle" parent="Widget.AppCompat.Button">
+    <item name="android:background">@drawable/bg_permission_button</item>
+    <item name="android:textColor">?attr/invertedTextColor</item>
+    <item name="android:textSize">15sp</item>
+    <item name="android:minHeight">0dp</item>
+    <item name="android:minWidth">0dp</item>
+</style>
+
+<style name="selectedChatSelectorButton" parent="Widget.AppCompat.Button.Borderless">
+    <item name="android:background">@drawable/chat_selector_btn_background</item>
+    <item name="android:textColor">@android:color/white</item>
+</style>
+
+<style name="unselectedChatSelectorButton" parent="Widget.AppCompat.Button.Borderless">
+    <item name="android:background">@android:color/transparent</item>
+    <item name="android:textColor">?attr/textColor</item>
+</style>
+
+<style name="dateMessageStyle" parent="Widget.AppCompat.TextView">
+    <item name="android:background">@drawable/date_message_layout_background</item>
+    <item name="android:paddingHorizontal">10dp</item>
+    <item name="android:paddingVertical">2.5dp</item>
+    <item name="android:textColor">?attr/textColor</item>
+</style>
+
 </resources>

@@ -309,6 +309,22 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.GLOBAL_MESSAGE, msgValues, Task.TaskEntry.ID_SENDER + " = " + idSender, null);
     }
 
+    /**
+     * Get all msg from global chat
+     */
+    public Cursor getAllGlobalMsg() {
+        String query = " SELECT m.id_sender,m.msg,m.datetime, u.username  " +
+                " FROM " + Task.TaskEntry.GLOBAL_MESSAGE +
+                " m INNER JOIN " + Task.TaskEntry.USER + " u ON u." + Task.TaskEntry.ID_USER + " = m." + Task.TaskEntry.ID_SENDER +
+                " ORDER BY m." + Task.TaskEntry.DATETIME + " ASC ";
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c;
+    }
+
+
     //USER
     /**
      * Get my user information
