@@ -82,11 +82,8 @@ public class Multicast_WLAN extends Multicast {
                             dbUserEvent=false;
                             break;
                         case "groupInfo":
-                            //The first user id directly connected to me, so i'll add him with his ip
-                            database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
-                            database.setOtherGroup(splittedR[1]);
-                            //I'll add the other user with the ip of my GO instead
-                            for (int i = 13; i < splittedR.length - 14; i = i + 12) {
+                            //I'll add the user with the ip of my GO instead
+                            for (int i = 1; i < splittedR.length - 14; i = i + 12) {
                                 database.addUser(splittedR[i], "192.168.49.1", splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                                 database.setOtherGroup(splittedR[i]);
                             }
@@ -131,7 +128,8 @@ public class Multicast_WLAN extends Multicast {
     //send all group info ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendAllMyGroupInfo() {
         try {
-            String info = "groupInfo£€" + database.getAllMyGroupInfo();
+            String info = "firstGroupInfo£€" + database.getAllMyGroupInfo();
+            System.out.println(info);
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupwlan0.send(message);
@@ -159,6 +157,7 @@ public class Multicast_WLAN extends Multicast {
             System.out.println("wlan creato");
             multicastSocketGroupwlan0 = new MulticastSocket(6789);
             NetworkInterface networkInterface = MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName);
+            System.out.println(networkInterface.getDisplayName());
             multicastSocketGroupwlan0.setNetworkInterface(networkInterface);
             multicastSocketGroupwlan0.joinGroup(sa, networkInterface);
         } catch (IOException e) {
