@@ -15,6 +15,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Enumeration;
 
 public class
@@ -89,6 +90,17 @@ Multicast_P2P extends Multicast {
                             dbUserEvent=false;
                             break;
                         case "groupInfo":
+                            for (int i = 1; i < splittedR.length - 1; i = i + 12) {
+                                database.addUser(splittedR[i], splittedR[2], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                            }
+                            //Check for the other group owner
+                            if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
+                                DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
+                                multicastSocketGroupwlan0.send(message);
+                            }
+                            dbUserEvent=false;
+                            break;
+                        case "firstGroupInfo":
                             String info = "groupInfo£€" + database.getAllMyGroupInfo();
                             for (int i = 1; i < splittedR.length - 1; i = i + 12) {
                                 database.addUser(splittedR[i], splittedR[2], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);

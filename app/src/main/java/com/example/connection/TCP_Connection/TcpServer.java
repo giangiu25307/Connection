@@ -56,12 +56,14 @@ public class TcpServer {
 
     public void close(){
         AsyncServer.getDefault().kill();
+        System.out.println("[Server] Server close socket");
+
     }
 
     public void setup() {
         try {
 
-            AsyncServer.getDefault().listen(InetAddress.getByName("0.0.0.0"), port, new ListenCallback() {
+            AsyncServer.getDefault().listen(InetAddress.getByName("::"), port, new ListenCallback() {
 
                 @Override
                 public void onAccepted(final AsyncSocket socket) {

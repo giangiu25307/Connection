@@ -27,7 +27,8 @@
             android:fontFamily="@font/opensans_regular"
             android:gravity="left"
             android:paddingEnd="10dp"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="?attr/messageReceivedColor"/>
 
         <TextView
             android:id="@+id/messageTime"
@@ -35,7 +36,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/opensans_light"
             android:text="TextView"
-            android:textSize="8sp" />
+            android:textSize="8sp"
+            android:textColor="?attr/messageReceivedColor"/>
     </LinearLayout>
 
 </LinearLayout>

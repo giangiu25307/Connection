@@ -109,7 +109,7 @@ public void setLocalAddress(String local){
         try {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.FROYO) {
                 System.setProperty("java.net.preferIPv4Stack", "true");
-                System.setProperty("java.net.preferIPv6Addresses", "false");
+                System.setProperty("java.net.preferIPv6Addresses", "true");
             }
         }
         catch (Throwable ex) {
@@ -154,6 +154,7 @@ public void setLocalAddress(String local){
         synchronized (this) {
             killed = true;
         }
+
         stop(false);
     }
 
@@ -293,7 +294,7 @@ public void setLocalAddress(String local){
     }
 
     public void stop(boolean wait) {
-//        Log.i(LOGTAG, "****AsyncServer is shutting down.****");
+        Log.i(LOGTAG, "****AsyncServer is shutting down.****");
         final SelectorWrapper currentSelector;
         final Semaphore semaphore;
         final boolean isAffinityThread;
@@ -326,6 +327,7 @@ public void setLocalAddress(String local){
             mQueue = new PriorityQueue<>(1, Scheduler.INSTANCE);
             mSelector = null;
             mAffinity = null;
+            mInstance = new AsyncServer();
         }
         try {
             if (!isAffinityThread && wait)
@@ -429,9 +431,8 @@ public void setLocalAddress(String local){
                 try {
                     socket = cancel.socket = SocketChannel.open();
                     socket.configureBlocking(false);
-                    System.out.println(local.getAddress()+address.getAddress().getHostAddress());
+                    System.out.println("io: "+local.getAddress()+ " altro: "+address.getAddress().getHostAddress());
                     socket.bind(local);
-                    System.out.println(socket.socket().getLocalSocketAddress());
                     //Connection.localVPNService.protect(socket.socket());
                     ckey = socket.register(mSelector.getSelector(), SelectionKey.OP_CONNECT);
                     ckey.attach(cancel);
