@@ -45,6 +45,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.PROFILE_PIC + " TEXT NOT NULL, "
                 + Task.TaskEntry.PUBLIC_KEY + " TEXT, "
                 + Task.TaskEntry.IP + " TEXT, "
+                + Task.TaskEntry.IP_GROUP_OWNER + " TEXT, "
                 + Task.TaskEntry.ACCEPT + " TEXT, "
                 + Task.TaskEntry.MESSAGES_ACCEPTED + " TEXT, "
                 + Task.TaskEntry.OTHER_GROUP + " TEXT DEFAULT 0 "
@@ -864,5 +865,36 @@ public class Database extends SQLiteOpenHelper {
         return c.getString(0);
     }
 
+    /**
+     *  Return my Group Owner ip
+     */
+    public String findGroupOwnerIp(){
+        String query = "SELECT " + Task.TaskEntry.IP_GROUP_OWNER +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE NOT " + Task.TaskEntry.ID_USER + " = " + ConnectionController.myUser.getIdUser();
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }else{
+            return null;
+        }
+        return c.getString(0);
+    }
+
+    /**
+     *  Return my client ip
+     */
+    public String getMyGroupOwnerIp(){
+        String query = "SELECT " + Task.TaskEntry.IP_GROUP_OWNER +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.ID_USER + " = " + ConnectionController.myUser.getIdUser();
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }else{
+            return null;
+        }
+        return c.getString(0);
+    }
 
 }

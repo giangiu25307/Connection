@@ -152,9 +152,8 @@ public class TcpServer {
                     //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
                     for (int i = 1; i < splittedR.length; i = i + 12) {
                         if (i == 1) {
-                            database.addUser(splittedR[i], database.findGOIp(), splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                            database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+ MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
-                            System.out.println( database.isOtherGroup(splittedR[i]));
                         }else {
                             database.addUser(splittedR[i], splittedR[i + 1].split("%")[0]+"%"+ MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
