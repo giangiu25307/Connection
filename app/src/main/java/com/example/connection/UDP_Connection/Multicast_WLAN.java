@@ -86,8 +86,10 @@ public class Multicast_WLAN extends Multicast {
                             dbUserEvent=false;
                             break;
                         case "groupInfo":
-                            //I'll add the user with the ip of my GO instead
+                            //I'll add the user with the ip of the GO instead
                             for (int i = 1; i < splittedR.length - 14; i = i + 12) {
+                                if (i == 1)
+                                    database.setMyGroupOwnerIp(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i]);
                                 database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                                 database.setOtherGroup(splittedR[i]);
                             }

@@ -5,15 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Task;
 
-import java.nio.file.Paths;
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 
 public class Database extends SQLiteOpenHelper {
@@ -891,10 +888,19 @@ public class Database extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
-        }else{
+        } else {
             return null;
         }
         return c.getString(0);
     }
 
+    /**
+     * Set request true if i accept the localization dialog, else false
+     */
+    public void setMyGroupOwnerIp(String ip, String id) {
+        db = this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.IP_GROUP_OWNER, ip);
+        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + "=" + id, null);
+    }
 }
