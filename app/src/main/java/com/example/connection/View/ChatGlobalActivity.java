@@ -1,11 +1,5 @@
 package com.example.connection.View;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -26,12 +20,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.R;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatGlobalActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     private ChatController chatController = ChatController.getInstance();
@@ -49,12 +48,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         loadTheme();
-        setContentView(R.layout.lyt_chat_activity);
-        id = getIntent().getStringExtra("idChat");
-        Connection.idChatOpen = id;
-        String name = getIntent().getStringExtra("name");
-        TextView nameTextView = findViewById(R.id.nameUser);
-        nameTextView.setText(name);
+        setContentView(R.layout.lyt_chat_global);
         ImageView imageView = findViewById(R.id.backImageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,9 +65,10 @@ public class ChatActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 try {
                     lastPosition = linearLayoutManager.findLastVisibleItemPosition();
-                }catch(IllegalArgumentException e){
-                    System.out.println("errore nella chat; solitamente vuota");
+                }catch (IllegalArgumentException e){
+                    System.out.println(e);
                 }
+
                 return false;
             }
         });
@@ -167,17 +162,18 @@ public class ChatActivity extends AppCompatActivity {
                 if (lastPosition == count) {
                     try {
                         recyclerView.smoothScrollToPosition(lastPosition);
-                    }catch(IllegalArgumentException e){
-                        System.out.println("Errore nella chat solitamente nulla");
+                        lastPosition = 0;
+                    }catch (IllegalArgumentException e){
+                        System.out.println(e);
                     }
-                    lastPosition = 0;
+
                 }
             }
         });
     }
 
     private Cursor getAllMessage(){
-        return Connection.database.getAllMsg(id);
+        return Connection.database.getAllGlobalMsg();
     }
 
     private void setBackgroundImage(){
@@ -188,29 +184,5 @@ public class ChatActivity extends AppCompatActivity {
         Drawable draw = new BitmapDrawable(getResources(), bitmap);
         chatBackground.setBackground(draw);
         c.close();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Connection.idChatOpen = "";
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Connection.idChatOpen = "";
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Connection.idChatOpen = "";
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Connection.idChatOpen = id;
     }
 }

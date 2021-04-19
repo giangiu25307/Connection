@@ -8,7 +8,9 @@ import java.util.Enumeration;
 public class MyNetworkInterface extends java.net.SocketAddress {
 
     public static String p2pName = "";
+    public static String p2pIpv6Address = "";
     public static String wlanName = "";
+    public static String wlanIpv6Address = "";
 
     // MyNetworkInterface.p2pName name of the wi-fi direct interface
     public static NetworkInterface getMyP2pNetworkInterface(String nicName) {
@@ -41,7 +43,6 @@ public class MyNetworkInterface extends java.net.SocketAddress {
         }
 
         NetworkInterface interfaces = null;
-        int i = 0;
         while (enumeration.hasMoreElements()) {
 
             interfaces = enumeration.nextElement();
@@ -53,6 +54,26 @@ public class MyNetworkInterface extends java.net.SocketAddress {
                 }
                 if (inetAddress.getHostAddress().contains("192.168.49") && !inetAddress.getHostAddress().equals("192.168.49.1")) {
                     wlanName = interfaces.getName();
+                }
+            }
+        }
+
+        try {
+            enumeration = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        while (enumeration.hasMoreElements()) {
+
+            interfaces = enumeration.nextElement();
+            Enumeration<InetAddress> addresses = interfaces.getInetAddresses();
+            while (addresses.hasMoreElements()) {
+                InetAddress inetAddress = addresses.nextElement();
+                if (inetAddress.getHostAddress().contains("%"+p2pName)&& !p2pName.isEmpty()) {
+                    p2pIpv6Address = inetAddress.getHostAddress();
+                }
+                if (inetAddress.getHostAddress().contains("%"+wlanName) && !wlanName.isEmpty()) {
+                    wlanIpv6Address = inetAddress.getHostAddress();
                 }
             }
         }

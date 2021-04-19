@@ -16,6 +16,8 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.format.Formatter;
 
+import androidx.annotation.NonNull;
+
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Database.Database;
@@ -116,29 +118,30 @@ ConnectionController {
                 bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
                 bluetoothAdvertiser.startAdvertising();
                 wifiManager.disconnect();
-                try {
+                /*try {
                     myUser.setInetAddress("192.168.49.1");
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
-                }
+                }*/
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             MyNetworkInterface.setNetworkInterfacesNames();
-                        } catch (SocketException e) {
+                            myUser.setInetAddress(MyNetworkInterface.p2pIpv6Address);
+                            System.out.println(myUser.getInetAddress().getHostAddress());
+                        } catch (SocketException | UnknownHostException e) {
                             e.printStackTrace();
                         }
                         multicastP2P.createMultigroupP2P();
                         Thread t1 = new Thread(multicastP2P);
                         t1.start();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
+                        tcpServer.setMulticastP2p(multicastP2P);
                         tcpServer.setup();
-
                     }
                 }, 3000);
-
 
             }
 
@@ -166,9 +169,47 @@ ConnectionController {
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
     public void connectToGroupWhenGroupOwner(String id) {//GroupOwner groupOwner){//
+        tcpServer.close();
+        tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         wifiConnection(id);
-        multicastWLAN.createMulticastSocketWlan0();
-        multicastWLAN.sendAllMyGroupInfo();
+        connManager.requestNetwork(networkRequest, new NetworkCallback(){
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                super.onAvailable(network);
+                if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
+                    wifiConnection(id);
+                else{
+                    new CountDownTimer(5000,1000){
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            /*try {
+                                String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
+                                System.out.println(ip);
+                                myUser.setInetAddress(ip);
+                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
+                            } catch (UnknownHostException e) {
+                                System.out.println("connect to group failed " + e);
+                            }*/
+                            try {
+                                MyNetworkInterface.setNetworkInterfacesNames();
+                                myUser.setInetAddress(MyNetworkInterface.wlanIpv6Address);
+                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
+                            } catch (SocketException | UnknownHostException e) {
+                                e.printStackTrace();
+                            }
+                            tcpServer.setup();
+                            multicastWLAN.createMulticastSocketWlan0();
+                            multicastWLAN.sendAllMyGroupInfo();
+                        }
+                    }.start();
+                }
+            }
+        });
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
@@ -193,18 +234,20 @@ ConnectionController {
                         if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
                             wifiConnection(id);
                         else {
-                            try {
+                            /*try {
                                 String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
                                 System.out.println(ip);
                                 myUser.setInetAddress(ip);
                                 database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
                             } catch (UnknownHostException e) {
                                 System.out.println("connect to group failed " + e);
-                            }
+                            }*/
                             tcpServer.setup();
                             try {
                                 MyNetworkInterface.setNetworkInterfacesNames();
-                            } catch (SocketException e) {
+                                myUser.setInetAddress(MyNetworkInterface.wlanIpv6Address);
+                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
+                            } catch (SocketException | UnknownHostException e) {
                                 e.printStackTrace();
                             }
                             multicastWLAN.createMulticastSocketWlan0();
@@ -267,7 +310,7 @@ ConnectionController {
     public void initProcess() {
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
-        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);//createGroup();
     }
 
     public void active4G() {

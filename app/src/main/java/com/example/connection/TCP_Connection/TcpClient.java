@@ -14,6 +14,7 @@ import com.example.connection.Controller.MessageController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.Encryption;
+import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
 import com.example.connection.libs.AsyncServer;
 import com.example.connection.libs.AsyncSocket;
@@ -58,7 +59,7 @@ public class TcpClient {
         oldMsg = text;
         oldId = id;
         checkInterface(id);
-        AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
+        AsyncServer.getDefault().connectSocket(new InetSocketAddress("oldIp", port), new ConnectCallback() {
             @Override
             public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
                 System.out.println("Done");
@@ -141,11 +142,14 @@ public class TcpClient {
     private void checkInterface(String id) {
         if (database.isOtherGroup(id)) {
             System.out.println("altro gruppo");
-            oldLocalAddress = database.findIp(ConnectionController.myUser.getIdUser());
+            //oldLocalAddress = database.findIp(ConnectionController.myUser.getIdUser());
+            //AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
+            oldLocalAddress = MyNetworkInterface.wlanIpv6Address;
             AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
         } else {
             System.out.println("mio gruppo");
-            oldLocalAddress = "192.168.49.1";
+            //oldLocalAddress = "192.168.49.1";
+            oldLocalAddress = MyNetworkInterface.p2pIpv6Address;
             AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
         }
     }
