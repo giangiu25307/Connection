@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Task;
+import com.example.connection.Model.User;
 
 import java.time.LocalDateTime;
 
@@ -103,7 +104,10 @@ public class Database extends SQLiteOpenHelper {
 
     //CHAT-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     /**
-     * Add a message in the database
+     * Add the received message in the database
+     * @param msg textual message received
+     * @param idSender id of the person who sent this message
+     * @param idChat id of the person i'm speaking to
      */
     public void addMsg(String msg, String idSender, String idChat) {
         if (idSender.equals("0")) setRequest(idChat, "false");
@@ -119,6 +123,9 @@ public class Database extends SQLiteOpenHelper {
 
     /**
      * Add a imagePath in the database
+     * @param paths path of the image received
+     * @param idSender id of the person who sent this message
+     * @param idChat id of the person i'm speaking to
      */
     public void addImage(String paths, String idSender, String idChat) {
         ContentValues msgValues = new ContentValues();
@@ -132,6 +139,8 @@ public class Database extends SQLiteOpenHelper {
 
     /**
      * Update the last message of a specified chat
+     * @param msg last textual message received
+     * @param idChat id of the person i'm speaking to
      */
     private void lastMessageChat(String msg, String idChat) {
         db = this.getWritableDatabase();
@@ -143,6 +152,7 @@ public class Database extends SQLiteOpenHelper {
 
     /**
      * Get the last message of the specified chat
+     * @param idChat id of the person i'm speaking to
      */
     public Cursor getLastMessageChat(String idChat) {
         String query = "SELECT last_message, datetime " +
@@ -347,6 +357,55 @@ public class Database extends SQLiteOpenHelper {
         user[9] = c.getString(9);
         user[10] = c.getString(10);
         return user;
+    }
+
+    /**
+     * Get all user information
+     */
+    public User getAllUserInformation(String id) {
+        String[] user = new String[11];
+        String query = "SELECT *" +
+                " FROM " + Task.TaskEntry.USER
+                +" WHERE "+ Task.TaskEntry.ID_USER + " = "+ id ;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return new User(c.getString(0),c.getString(1),c.getString(2),c.getString(3),c.getString(4),c.getString(5),c.getString(6),c.getString(7),c.getString(8),c.getString(9),c.getString(10));
+    }
+
+    /**
+     * Get the birth of a specified user
+     */
+    public Cursor getBirth(String id) {
+        db = this.getWritableDatabase();
+        String query = "SELECT " + Task.TaskEntry.BIRTH +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.ID_USER + "= "+id;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        } else {
+            return null;
+        }
+        return c;
+    }
+
+    /**
+     * Get the gender of a specified user
+     */
+    public Cursor getGender(String id) {
+        db = this.getWritableDatabase();
+        String query = "SELECT " + Task.TaskEntry.GENDER +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.ID_USER + "= "+id;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        } else {
+            return null;
+        }
+        return c;
     }
 
     /**

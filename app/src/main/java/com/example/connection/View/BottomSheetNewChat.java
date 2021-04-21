@@ -24,6 +24,14 @@ public class BottomSheetNewChat extends BottomSheetDialogFragment {
 
     private User user;
 
+    public BottomSheetNewChat(String username, String birth,String gender,String profilePic){
+        this.user =  new User();
+        user.setUsername(username);
+        user.setBirth(birth);
+        user.setGender(gender);
+        user.setProfilePic(profilePic);
+    }
+
     public BottomSheetNewChat(User user){
         this.user = user;
     }

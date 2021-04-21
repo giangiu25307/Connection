@@ -19,12 +19,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
+import com.example.connection.View.BottomSheetNewChat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,20 +68,15 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
         View view = null;
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {
             view = inflater.inflate(R.layout.lyt_message_sent, parent, false);
-            return new SentViewHolder(view, new SentViewHolder.OnChatClickListener() {
-                @Override
-                public void openChat(int p) {
-                    messageCursor.moveToPosition(p);
-                    //final long id = messageCursor.getLong(messageCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-                }
-            });
+            return new SentViewHolder(view);
         } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
             view = inflater.inflate(R.layout.lyt_message_received, parent, false);
             return new ReceivedViewHolder(view, new ReceivedViewHolder.OnChatClickListener() {
                 @Override
                 public void openChat(int p) {
                     messageCursor.moveToPosition(p);
-                    //final long id = messageCursor.getLong(messageCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+                    BottomSheetNewChat bottomSheet = new BottomSheetNewChat(database.getAllUserInformation(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_USER))));
+                    bottomSheet.show(((AppCompatActivity)context).getSupportFragmentManager(), "ModalBottomSheet");
                 }
             });
         }
@@ -190,39 +187,20 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     }
 
-    public static class SentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class SentViewHolder extends RecyclerView.ViewHolder {
 
-        OnChatClickListener listener;
 
         private LinearLayout messageLayout, textLayout;
         private TextView message, messageTime;
 
-        private SentViewHolder(View itemView, OnChatClickListener listener) {
+        private SentViewHolder(View itemView) {
             super(itemView);
-            this.listener = listener;
 
             messageLayout = itemView.findViewById(R.id.messageLayout);
             textLayout = itemView.findViewById(R.id.textLayout);
             messageTime = itemView.findViewById(R.id.messageTime);
-            messageLayout.setOnClickListener(this);
             message = itemView.findViewById(R.id.message);
 
-        }
-
-        @Override
-        public void onClick(View view) {
-
-            switch (view.getId()) {
-                case R.id.messageLayout:
-                    listener.openChat(this.getLayoutPosition());
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        public interface OnChatClickListener {
-            void openChat(int p);
         }
 
     }

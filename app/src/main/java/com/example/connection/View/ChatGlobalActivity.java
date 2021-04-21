@@ -1,5 +1,6 @@
 package com.example.connection.View;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -43,6 +44,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
     private int lastPosition;
     private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,27 +52,17 @@ public class ChatGlobalActivity extends AppCompatActivity {
         loadTheme();
         setContentView(R.layout.lyt_chat_global);
         ImageView imageView = findViewById(R.id.backImageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        imageView.setOnClickListener(view -> finish());
         message_input = findViewById(R.id.message_input);
         sendView = findViewById(R.id.sendView);
         chatBackground = findViewById(R.id.chatBackground);
-        message_input.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                try {
-                    lastPosition = linearLayoutManager.findLastVisibleItemPosition();
-                }catch (IllegalArgumentException e){
-                    System.out.println(e);
-                }
-
-                return false;
+        message_input.setOnTouchListener((view, event) -> {
+            try {
+                lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+            }catch (IllegalArgumentException e){
+                System.out.println(e);
             }
+            return false;
         });
         message_input.addTextChangedListener(new TextWatcher() {
             @Override
@@ -97,12 +89,9 @@ public class ChatGlobalActivity extends AppCompatActivity {
 
         setupRecyclerView();
 
-        sendView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chatController.sendTCPMsg(message_input.getText().toString(), id);
-                MessageController.getIstance().setMessageAdapter(chatAdapter);
-            }
+        sendView.setOnClickListener(view -> {
+            chatController.sendTCPMsg(message_input.getText().toString(), id);
+            MessageController.getIstance().setMessageAdapter(chatAdapter);
         });
 
         //Database database = (Database) getIntent().getParcelableExtra("database");
