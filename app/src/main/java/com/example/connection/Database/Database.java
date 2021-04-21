@@ -44,8 +44,8 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.PUBLIC_KEY + " TEXT, "
                 + Task.TaskEntry.IP + " TEXT, "
                 + Task.TaskEntry.IP_GROUP_OWNER + " TEXT, "
-                + Task.TaskEntry.ACCEPT + " TEXT, "
-                + Task.TaskEntry.MESSAGES_ACCEPTED + " TEXT, "
+                + Task.TaskEntry.ACCEPT + " TEXT DEFAULT 'false', "
+                + Task.TaskEntry.MESSAGES_ACCEPTED + " TEXT DEFAULT 'true', "
                 + Task.TaskEntry.OTHER_GROUP + " TEXT DEFAULT 0 "
                 + ")";
 
@@ -64,7 +64,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NAME + " TEXT, "
                 + Task.TaskEntry.DATETIME + " TEXT, "
                 + Task.TaskEntry.NOT_READ_MESSAGE + " INTEGER, "
-                + Task.TaskEntry.REQUEST + " TEXT, "
+                + Task.TaskEntry.REQUEST + " TEXT DEFAULT 'true', "
                 + Task.TaskEntry.SYMMETRIC_KEY + " TEXT"
                 + ")";
 
@@ -110,7 +110,7 @@ public class Database extends SQLiteOpenHelper {
      * @param idChat id of the person i'm speaking to
      */
     public void addMsg(String msg, String idSender, String idChat) {
-        if (idSender.equals("0")) setRequest(idChat, "false");
+        //if (idSender.equals("0")) setRequest(idChat, "false");
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.ID_CHAT, idChat);
@@ -171,7 +171,7 @@ public class Database extends SQLiteOpenHelper {
         ContentValues chatValues = new ContentValues();
         chatValues.put(Task.TaskEntry.ID_CHAT, idChat);
         chatValues.put(Task.TaskEntry.NAME, name);
-        chatValues.put(Task.TaskEntry.REQUEST, "true");
+        //chatValues.put(Task.TaskEntry.REQUEST, "true");
         chatValues.put(Task.TaskEntry.SYMMETRIC_KEY, symmetric);
         db.insert(Task.TaskEntry.CHAT, null, chatValues);
     }
@@ -207,7 +207,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
-     * Get all chat who i already accepted and which i accept the localization
+     * Get all chat who i not already accepted and not blocked
      */
     public Cursor getAllRequestChat() {
         String query = " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.birth, u.gender " +
@@ -222,7 +222,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
-     * Get all chat who i already accepted and which i not accept the localization
+     * Get all chat who i already accepted and not blocked
      */
     public Cursor getAllNoRequestChat() {
         String query = " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.birth, u.gender" +
@@ -237,7 +237,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
-     * Set request true if i accept the localization dialog, else false
+     * Set request false if i accept the person to write me
      */
     public void setRequest(String id, String value) {
         db = this.getWritableDatabase();
@@ -478,8 +478,6 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.BIRTH, birth);
         msgValues.put(Task.TaskEntry.IP, inetAddress);
         msgValues.put(Task.TaskEntry.PROFILE_PIC, profilePic);
-        msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED, "true");
-        msgValues.put(Task.TaskEntry.ACCEPT, "false");
         msgValues.put(Task.TaskEntry.PUBLIC_KEY, publicKey);
         db.insert(Task.TaskEntry.USER, null, msgValues);
         ContentValues ipValues = new ContentValues();
@@ -954,7 +952,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
-     * Set request true if i accept the localization dialog, else false
+     * Set the ip of my group owner
      */
     public void setMyGroupOwnerIp(String ip, String id) {
         db = this.getWritableDatabase();

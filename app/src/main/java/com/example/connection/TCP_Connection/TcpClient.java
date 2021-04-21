@@ -217,6 +217,7 @@ public class TcpClient {
                             intent.putExtra("id", oldId);
                             connection.getApplicationContext().sendBroadcast(intent);
                         }
+                        database.setRequest(oldId,"false");
                     }
                 }
             }

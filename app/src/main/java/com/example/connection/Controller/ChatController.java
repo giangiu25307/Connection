@@ -67,7 +67,6 @@ public class ChatController {
     //send a direct message -------------------------------------------------------------------------------------------------------------------------------
     public void sendTCPMsg(String msg, String idReceiver) {
         if (database.getSymmetricKey(idReceiver) != null) {
-
             tcp.sendMessage(msg, idReceiver);
         } else {
             tcp.handShake(idReceiver, database.getPublicKey(idReceiver), msg);
