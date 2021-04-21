@@ -1,27 +1,18 @@
 package com.example.connection.View;
 
 import android.Manifest;
-import android.app.Notification;
 import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.net.VpnService;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -36,20 +27,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.AccountController;
-import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.MapUsers;
 import com.example.connection.R;
 import com.example.connection.Services.MyForegroundService;
-import com.example.connection.UDP_Connection.Multicast;
-import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.vpn.LocalVPNService;
 
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Connection extends AppCompatActivity {
     private Fragment fragment;
@@ -91,7 +76,7 @@ public class Connection extends AppCompatActivity {
         xiamoiWifiPermission();
 
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
-        boolean createSample = true;
+        boolean createSample = false;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
             database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo","");
@@ -119,22 +104,26 @@ public class Connection extends AppCompatActivity {
             database.addMsg("wee", "29", "29");
             database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
 
-            database.addUser("31", "192.168.49.20", "Andrew132", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("31", "192.168.49.20", "Andrew132", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo", "");
             database.createChat("31", "Andrew345", null);
             database.addMsg("wee", "31", "31");
             database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
 
-            database.addUser("33", "192.168.49.20", "Andrew847", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("33", "192.168.49.20", "Andrew847", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo", "");
             database.createChat("33", "Andrew345", null);
             database.addMsg("wee", "33", "33");
         }
 
+        //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
+        database.addUser("1", null, "test1", "test1@gmail.com", "male", "test1", "test1", "test1", "test1", "01-01-2001", "nothingToseehere", null);//xiaomia2litemio
+        //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
+        //database.addUser("3",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
         createCountDowntimer();
         countDownTimer.start();
         foregroundService = new MyForegroundService();
         Intent notificationIntent = new Intent(this, foregroundService.getClass());
         this.startForegroundService(notificationIntent);
-       MessageController.newInstance();
+        MessageController.newInstance();
 
     }
 
@@ -151,13 +140,10 @@ public class Connection extends AppCompatActivity {
         try {
             String manufacturer = "xiaomi";
             if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
-                database.addUser("0",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);
                 //this will open auto start screen where user can enable permission for your app
                 Intent intent1 = new Intent();
                 intent1.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsTabActivity"));
                 startActivity(intent1);
-            }else{
-                database.addUser("4",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
             }
         } catch (ActivityNotFoundException e) {
             System.out.println("Not MIUI device");

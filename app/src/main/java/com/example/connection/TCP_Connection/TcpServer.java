@@ -9,6 +9,7 @@ import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.UDP_Connection.Multicast_P2P;
+import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
 import com.example.connection.libs.AsyncServer;
 import com.example.connection.libs.AsyncServerSocket;
@@ -151,11 +152,11 @@ public class TcpServer {
                     //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
                     for (int i = 1; i < splittedR.length; i = i + 12) {
                         if (i == 1) {
-                            database.addUser(splittedR[i], "192.168.49.1", splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                            database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+ MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
-                            System.out.println( database.isOtherGroup(splittedR[i]));
+                            database.setMyGroupOwnerIp(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i]);
                         }else {
-                            database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                            database.addUser(splittedR[i], splittedR[i + 1].split("%")[0]+"%"+ MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
                         }
                     }
@@ -211,7 +212,9 @@ public class TcpServer {
                     return "handShake";
                 case "groupInfo":
                     for (int i = 1; i < splittedR.length - 1; i = i + 12) {
-                        database.addUser(splittedR[i], splittedR[2], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                        if (i == 1)
+                            database.setMyGroupOwnerIp(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i]);
+                        database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                         database.setOtherGroup(splittedR[i]);
                     }
                     multicastP2p.sendGlobalMsg(msg);

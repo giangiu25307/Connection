@@ -1,19 +1,14 @@
 package com.example.connection.TCP_Connection;
 
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.widget.ImageView;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
-import com.example.connection.TCP_Connection.Encryption;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
 import com.example.connection.libs.AsyncServer;
@@ -29,13 +24,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Random;
 
 public class TcpClient {
 
@@ -150,6 +143,7 @@ public class TcpClient {
             System.out.println("mio gruppo");
             //oldLocalAddress = "192.168.49.1";
             oldLocalAddress = MyNetworkInterface.p2pIpv6Address;
+            System.out.println(oldLocalAddress);
             AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
         }
     }

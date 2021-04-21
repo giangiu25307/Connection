@@ -2,7 +2,6 @@ package com.example.connection.Controller;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -14,7 +13,6 @@ import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.text.format.Formatter;
 
 import androidx.annotation.NonNull;
 
@@ -22,21 +20,19 @@ import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
-import com.example.connection.R;
 import com.example.connection.TCP_Connection.Encryption;
+import com.example.connection.TCP_Connection.TcpClient;
 import com.example.connection.TCP_Connection.TcpServer;
 import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.Multicast_WLAN;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
-import com.example.connection.TCP_Connection.TcpClient;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
-import static android.net.ConnectivityManager.*;
+import static android.net.ConnectivityManager.NetworkCallback;
 
 public class
 ConnectionController {
@@ -61,6 +57,7 @@ ConnectionController {
     private Encryption encryption;
     private TcpClient tcpClient;
     private TcpServer tcpServer;
+    public static boolean GO_leave=false;
 
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
@@ -108,6 +105,7 @@ ConnectionController {
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     @SuppressLint("MissingPermission")
     public void createGroup() {
+        GO_leave=false;
         mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
 
             @Override
@@ -128,6 +126,7 @@ ConnectionController {
                         try {
                             MyNetworkInterface.setNetworkInterfacesNames();
                             myUser.setInetAddress(MyNetworkInterface.p2pIpv6Address);
+                            database.setMyGroupOwnerIp(MyNetworkInterface.p2pIpv6Address, myUser.getIdUser());
                             System.out.println(myUser.getInetAddress().getHostAddress());
                         } catch (SocketException | UnknownHostException e) {
                             e.printStackTrace();
@@ -148,7 +147,7 @@ ConnectionController {
                 System.out.println("create group error" + reason);
 
                 resetWifi();
-                new CountDownTimer(5000, 2000) {
+                new CountDownTimer(3000, 3000) {
 
                     public void onTick(long millisUntilFinished) {
                     }
@@ -220,7 +219,7 @@ ConnectionController {
             @Override
             public void onAvailable(Network network) {
 
-                new CountDownTimer(5000, 1000) {
+                new CountDownTimer(100, 10) {
                     @Override
                     public void onTick(long millisUntilFinished) {
 
@@ -249,6 +248,8 @@ ConnectionController {
                                 e.printStackTrace();
                             }
                             multicastWLAN.createMulticastSocketWlan0();
+                            Thread t1 = new Thread(multicastWLAN);
+                            t1.start();
                             multicastWLAN.sendInfo();
                             bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
                             new Thread(new Runnable() {
@@ -288,7 +289,7 @@ ConnectionController {
         int numberOfLevels = 5;
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), numberOfLevels);
-        if (level <= 2) {
+        if (level <= 2 && !GO_leave) {
             disconnectToGroup();
         }
     }
@@ -306,8 +307,7 @@ ConnectionController {
     public void initProcess() {
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
-        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
-        //createGroup();
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);//createGroup();
     }
 
     public void active4G() {
@@ -330,6 +330,7 @@ ConnectionController {
 
     //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
     public void connectToGroupOwnerId(String id) {
+        GO_leave=false;
         bluetoothScanner.setClientToRequestGroupId(id);
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithSpecifiedId);
     }
