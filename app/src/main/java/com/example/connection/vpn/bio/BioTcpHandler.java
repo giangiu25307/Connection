@@ -129,7 +129,7 @@ public class BioTcpHandler implements Runnable {
 
                 SocketChannel remote = SocketChannel.open();
                 ConnectionController.mMobileNetwork.bindSocket(remote.socket());
-                tunnel.vpnService.protect(remote.socket());
+                tunnel.vpnService.protect(remote.socket());//protect c'è perchè fa funzionare la l'handshake della socket server
                 InetSocketAddress address = tunnel.destinationAddress;
                 Long ts = System.currentTimeMillis();
                 remote.socket().connect(address, 5000);

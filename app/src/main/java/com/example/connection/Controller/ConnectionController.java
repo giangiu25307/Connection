@@ -1,106 +1,163 @@
 package com.example.connection.Controller;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.IntentFilter;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pGroup;
+import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.CountDownTimer;
+import android.os.Handler;
 
-import com.example.connection.Device_Connection.ServiceConnections;
-import com.example.connection.Model.GroupOwner;
+import androidx.annotation.NonNull;
+
+import com.example.connection.Bluetooth.BluetoothAdvertiser;
+import com.example.connection.Bluetooth.BluetoothScanner;
+import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
-import com.example.connection.Model.WifiConnection;
-import com.example.connection.TCP_Connection.TCP_Client;
-import com.example.connection.UDP_Connection.Multicast;
+import com.example.connection.TCP_Connection.Encryption;
+import com.example.connection.TCP_Connection.TcpClient;
+import com.example.connection.TCP_Connection.TcpServer;
+import com.example.connection.UDP_Connection.Multicast_P2P;
+import com.example.connection.UDP_Connection.Multicast_WLAN;
+import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
-import com.example.connection.View.WiFiDirectBroadcastReceiver;
 
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+
+import static android.net.ConnectivityManager.NetworkCallback;
 
 public class
 ConnectionController {
 
-    private String SSID, networkPassword;
+    private String SSID = "DIRECT-CONNEXION", networkPassword = "12345678";
     private WifiManager wifiManager;
     private Connection connection;
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
-    private Multicast udpClient;
-    private TCP_Client tcpClient;
-    private BroadcastReceiver wifiScanReceiver;
-    private IntentFilter intentFilter;
-    private User user;
+    private WifiP2pConfig mConfig;
+    private Multicast_P2P multicastP2P;
+    private Multicast_WLAN multicastWLAN;
+    public static User myUser;
     private Database database;
-    private HashMap<String, String> macAdresses;
-    private WifiP2pManager.PeerListListener peerListListener;
-    private BroadcastReceiver mReceiver;
-    private IntentFilter mIntentFilter;
-    private WifiP2pManager.ConnectionInfoListener connectionInfoListener;
-    private ServiceConnections serviceConnection;
+    private BluetoothScanner bluetoothScanner;
+    private BluetoothAdvertiser bluetoothAdvertiser;
+    private int netId;
+    private String myId;
+    private ConnectivityManager connManager;
+    private NetworkRequest networkRequest;
+    public static Network mMobileNetwork, mWifiNetwork, mWifiP2pNetwork;
+    private Encryption encryption;
+    private TcpClient tcpClient;
+    private TcpServer tcpServer;
+    public static boolean GO_leave=false;
 
-    public static Network mMobileNetwork;
-
-    public ConnectionController(Connection connection, Database database, User user) {
+    public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
+        encryption = new Encryption(connection);
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
         this.database = database;
-        this.user = user;
+        setUser();
+        myId = myUser.getIdUser();
+        myUser.setPublicKey(encryption.convertPublicKeyToString());
+        database.setPublicKey(encryption.convertPublicKeyToString());
+        tcpClient = new TcpClient(database, encryption, connection);
+        multicastP2P = new Multicast_P2P(database, this, tcpClient);
+        multicastWLAN = new Multicast_WLAN(database, this, tcpClient);
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        connection.registerReceiver(wifiScanReceiver, intentFilter);
-        macAdresses = new HashMap<>();
-        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, peerListListener, connectionInfoListener);
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        serviceConnection = new ServiceConnections(mManager,mChannel,database);
+        bluetoothAdvertiser = new BluetoothAdvertiser();
+        bluetoothScanner = new BluetoothScanner(connection, this, bluetoothAdvertiser);
+        mConfig = new WifiP2pConfig.Builder()
+                .setNetworkName(SSID + myId)
+                .setPassphrase(networkPassword)
+                .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
+                .enablePersistentMode(false)
+                .build();
+        connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkRequest = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build();
+        tcpServer = new TcpServer(connection, database, encryption, tcpClient);
+        ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                disconnectToGroup();
+            }
+        }));
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
-    private void removeGroup() {
+    public void removeGroup() {
+        bluetoothAdvertiser.stopAdvertising();
         mManager.removeGroup(mChannel, null);
     }
 
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
     @SuppressLint("MissingPermission")
     public void createGroup() {
-        mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
+        GO_leave=false;
+        mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
+
             @Override
             public void onSuccess() {
-                mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
+                bluetoothAdvertiser.stopAdvertising();
+                bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
+                bluetoothAdvertiser.startAdvertising();
+                wifiManager.disconnect();
+                /*try {
+                    myUser.setInetAddress("192.168.49.1");
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }*/
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
                     @Override
-                    public void onGroupInfoAvailable(WifiP2pGroup group) {
-                        SSID=group.getNetworkName();
-                        networkPassword =group.getPassphrase();
+                    public void run() {
+                        try {
+                            MyNetworkInterface.setNetworkInterfacesNames();
+                            myUser.setInetAddress(MyNetworkInterface.p2pIpv6Address);
+                            database.setMyGroupOwnerIp(MyNetworkInterface.p2pIpv6Address, myUser.getIdUser());
+                            System.out.println(myUser.getInetAddress().getHostAddress());
+                        } catch (SocketException | UnknownHostException e) {
+                            e.printStackTrace();
+                        }
+                        multicastP2P.createMultigroupP2P();
+                        Thread t1 = new Thread(multicastP2P);
+                        t1.start();
+                        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
+                        tcpServer.setMulticastP2p(multicastP2P);
+                        tcpServer.setup();
                     }
-                });
-                serviceConnection.registerService(Task.ServiceEntry.serviceGroupOwner,database.getMyInformation()[0],SSID,networkPassword);
-                connectToGroup(serviceConnection.findOtherGroupOwner());
-                udpClient.createMulticastSocketWlan0();//TO SEE IF IT WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                }, 3000);
+
             }
+
             @Override
             public void onFailure(int reason) {
-                System.out.println(reason);
+                System.out.println("create group error" + reason);
+
+                resetWifi();
+                new CountDownTimer(3000, 3000) {
+
+                    public void onTick(long millisUntilFinished) {
+                    }
+
+                    public void onFinish() {
+                        createGroup();
+                    }
+                }.start();
+
+
             }
         });
 
@@ -108,91 +165,163 @@ ConnectionController {
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
-    public void connectToGroup(GroupOwner groupOwner){
-        new WifiConnection(groupOwner.getSSID(),groupOwner.getPassword(),wifiManager);
-        serviceConnection.registerService(Task.ServiceEntry.serviceClientConnectedToGroupOwner,database.getMyInformation()[0],groupOwner.getId());
-        udpClient.sendInfo();
-        if(serviceConnection.clientListeningOtherClient())createGroup();
+    public void connectToGroupWhenGroupOwner(String id) {//GroupOwner groupOwner){//
+        tcpServer.close();
+        tcpServer = new TcpServer(connection, database, encryption, tcpClient);
+        wifiConnection(id);
+        connManager.requestNetwork(networkRequest, new NetworkCallback(){
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                super.onAvailable(network);
+                if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
+                    wifiConnection(id);
+                else{
+                    new CountDownTimer(5000,1000){
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            /*try {
+                                String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
+                                System.out.println(ip);
+                                myUser.setInetAddress(ip);
+                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
+                            } catch (UnknownHostException e) {
+                                System.out.println("connect to group failed " + e);
+                            }*/
+                            try {
+                                MyNetworkInterface.setNetworkInterfacesNames();
+                                myUser.setInetAddress(MyNetworkInterface.wlanIpv6Address);
+                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
+                            } catch (SocketException | UnknownHostException e) {
+                                e.printStackTrace();
+                            }
+                            tcpServer.setup();
+                            multicastWLAN.createMulticastSocketWlan0();
+                            multicastWLAN.sendAllMyGroupInfo();
+                        }
+                    }.start();
+                }
+            }
+        });
     }
+
+    //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
+    public void connectToGroup(final String id) {//GroupOwner groupOwner){//
+        wifiConnection(id);
+        bluetoothAdvertiser.stopAdvertising();
+        bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
+        bluetoothAdvertiser.stopAdvertising();
+        connManager.requestNetwork(networkRequest, new NetworkCallback() {
+            @Override
+            public void onAvailable(Network network) {
+
+                new CountDownTimer(100, 10) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        System.out.println(wifiManager.getConnectionInfo().getSSID() + " " + !wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"));
+                        if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
+                            wifiConnection(id);
+                        else {
+                            /*try {
+                                String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
+                                System.out.println(ip);
+                                myUser.setInetAddress(ip);
+                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
+                            } catch (UnknownHostException e) {
+                                System.out.println("connect to group failed " + e);
+                            }*/
+                            tcpServer.setup();
+                            try {
+                                MyNetworkInterface.setNetworkInterfacesNames();
+                                myUser.setInetAddress(MyNetworkInterface.wlanIpv6Address);
+                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
+                            } catch (SocketException | UnknownHostException e) {
+                                e.printStackTrace();
+                            }
+                            multicastWLAN.createMulticastSocketWlan0();
+                            Thread t1 = new Thread(multicastWLAN);
+                            t1.start();
+                            multicastWLAN.sendInfo();
+                            bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    while (true) {
+                                        autoDisconnect();
+                                    }
+                                }
+                            }).start();
+                        }
+                    }
+                }.start();
+
+
+            }
+        });
+    }
+
 
     //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
     public void disconnectToGroup() {
+        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null) {
+            GOLeaves();
+        }
+        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null) {
+            multicastWLAN.imLeaving();
+        }
         wifiManager.disconnect();
-        udpClient.imLeaving();
+        wifiManager.removeNetwork(netId);
+        bluetoothAdvertiser.stopAdvertising();
+        tcpServer.close();
     }
 
     //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
-    public void clientList() {
+    public void autoDisconnect() {
         int numberOfLevels = 5;
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), numberOfLevels);
-        if (level <= 2) {
+        if (level <= 2 && !GO_leave) {
             disconnectToGroup();
         }
     }
 
     //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
-    public void GOLeaves() {
-        final String maxId = database.getMaxId();
-
-        tcpClient.startConnection(database.findIp(maxId), 50000);
-        tcpClient.sendMessage("GO_LEAVES_BY£€", "");
-        new CountDownTimer(10000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-            }
-
-            public void onFinish() {
-            }
-        }.start();
+    private void GOLeaves() {
+        multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
+        final boolean[] finish = {false};
+        int prec = LocalDateTime.now().getSecond();
+        while (LocalDateTime.now().getSecond() - prec < 10) ;
         this.removeGroup();
-
+        multicastP2P.closeMultigroupP2p();
     }
-
-    public void broadcastNewGroupOwnerId(){
-        udpClient.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMyInformation()[0]));
-    }
-
-    //return the all client list --------------------------------------------------------------------------------------------------------------------------------
-    public Optional<Cursor> getAllClientList() {
-
-        return Optional.of(database.getAllUsers());
-
-    }
-
-    public BroadcastReceiver getmReceiver() {
-        return mReceiver;
-    }
-
-    public IntentFilter getmIntentFilter() {
-        return mIntentFilter;
-    }
-
 
     public void initProcess() {
-        active4G();
-        Optional<GroupOwner> optionalGroupOwner = serviceConnection.lookingForGroupOwner();
-        if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
-        else {
-            optionalGroupOwner = serviceConnection.searchAndRequestForIdNetwork();
-            if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
-            else createGroup();
-        }
+        bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
+        bluetoothAdvertiser.startAdvertising();
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);//createGroup();
     }
 
-    public void active4G(){
-        final ConnectivityManager connectivityManager= (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public void active4G() {
+        final ConnectivityManager connectivityManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkRequest.Builder req = new NetworkRequest.Builder();
         req.addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR);
         req.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
-        NetworkRequest networkRequest=req.build();
-        ConnectivityManager.NetworkCallback networkCallback = new
-                ConnectivityManager.NetworkCallback() {
-
+        NetworkRequest networkRequest = req.build();
+        NetworkCallback networkCallback = new
+                NetworkCallback() {
                     @Override
                     public void onAvailable(Network network) {
-                        mMobileNetwork=network;
-                        connectivityManager.bindProcessToNetwork(network);
+                        mMobileNetwork = network;
+                        //connectivityManager.bindProcessToNetwork(network);
                         connection.startVpn();
                     }
                 };
@@ -200,41 +329,42 @@ ConnectionController {
     }
 
     //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
-    public void connectToGroupOwnerId(String id){
-        Optional<GroupOwner> optionalGroupOwner=serviceConnection.lookingForGroupOwner(id);
-        if(optionalGroupOwner.isPresent())connectToGroup(optionalGroupOwner.get());
+    public void connectToGroupOwnerId(String id) {
+        GO_leave=false;
+        bluetoothScanner.setClientToRequestGroupId(id);
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithSpecifiedId);
     }
 
+    //TESTING DISCONNECTION
+
+    private void setUser() {
+        String[] info = database.getMyInformation();
+        myUser = new User(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9], info[10]);
+    }
+
+    public void wifiConnection(String id) {
+        WifiConfiguration wifiConfig = new WifiConfiguration();
+        wifiConfig.SSID = String.format("\"%s\"", SSID + id);
+        wifiConfig.preSharedKey = String.format("\"%s\"", networkPassword);
+        wifiConfig.priority = 999999999;
+//remember id
+        System.out.println(id);
+        netId = wifiManager.addNetwork(wifiConfig);
+        wifiManager.disconnect();
+        wifiManager.enableNetwork(netId, true);
+    }
+
+    public String getSSID() {
+        return wifiManager.getConnectionInfo().getSSID();
+    }
+
+    public WifiManager getWifiManager() {
+        return wifiManager;
+    }
+
+    public void resetWifi() {
+        wifiManager.setWifiEnabled(false);
+        wifiManager.setWifiEnabled(true);
+
+    }
 }
-
-/*
-    public String getMacAddr() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("p2p0")) continue;
-
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return null;
-                }
-
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-                    res1.append(Integer.toHexString(b & 0xFF) + ":");
-                }
-
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
-            }
-        } catch (Exception ex) {
-            //handle exception
-        }
-        return null;
-    }
-
-    public void MACSender(){
-        udpClient.sendGlobalMsg("GO_LEAVES_BYE£€".concat(getMacAddr()));
-    }*/

@@ -1,5 +1,6 @@
 package com.example.connection.View;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -26,7 +28,7 @@ import android.widget.TextView;
 
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Controller.MessageController;
 import com.example.connection.R;
 
 public class ChatActivity extends AppCompatActivity {
@@ -37,18 +39,20 @@ public class ChatActivity extends AppCompatActivity {
     private EditText message_input;
     private ImageView sendView;
     private RecyclerView recyclerView;
-    private Database database;
+    private MessageAdapter chatAdapter;
     private ConstraintLayout chatBackground;
+    private int lastPosition;
+    private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         loadTheme();
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.lyt_chat_activity);
         id = getIntent().getStringExtra("idChat");
+        Connection.idChatOpen = id;
         String name = getIntent().getStringExtra("name");
-        database = new Database(this);
         TextView nameTextView = findViewById(R.id.nameUser);
         nameTextView.setText(name);
         ImageView imageView = findViewById(R.id.backImageView);
@@ -61,6 +65,18 @@ public class ChatActivity extends AppCompatActivity {
         message_input = findViewById(R.id.message_input);
         sendView = findViewById(R.id.sendView);
         chatBackground = findViewById(R.id.chatBackground);
+        message_input.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                try {
+                    lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+                }catch(IllegalArgumentException e){
+                    System.out.println("errore nella chat; solitamente vuota");
+                }
+                return false;
+            }
+        });
         message_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -84,16 +100,17 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        setupRecyclerView();
+
         sendView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 chatController.sendTCPMsg(message_input.getText().toString(), id);
-
+                MessageController.getIstance().setMessageAdapter(chatAdapter);
             }
         });
+
         //Database database = (Database) getIntent().getParcelableExtra("database");
-        setupRecyclerView(database, id);
 
     }
 
@@ -106,21 +123,14 @@ public class ChatActivity extends AppCompatActivity {
         } else if (theme.equals("dark")) {
             setTheme(R.style.DarkTheme);
             setStatusAndNavbarColor(false);
-            System.out.println("Dark");
         } else {
             int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            switch (nightModeFlags) {
-                case Configuration.UI_MODE_NIGHT_NO:
-                case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                    setTheme(R.style.AppTheme);
-                    setStatusAndNavbarColor(true);
-                    break;
-                case Configuration.UI_MODE_NIGHT_YES:
-                    setTheme(R.style.DarkTheme);
-                    setStatusAndNavbarColor(false);
-                    break;
-                default:
-                    break;
+            if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                setTheme(R.style.DarkTheme);
+                setStatusAndNavbarColor(false);
+            } else {
+                setTheme(R.style.AppTheme);
+                setStatusAndNavbarColor(true);
             }
         }
 
@@ -128,31 +138,50 @@ public class ChatActivity extends AppCompatActivity {
 
     private void setStatusAndNavbarColor(boolean light) {
         Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         if (light) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.WHITE);
-            window.setNavigationBarColor(Color.WHITE);
+            window.setStatusBarColor(getColor(R.color.colorPrimary));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
-            window.setStatusBarColor(getColor(R.color.black2));
+            window.setStatusBarColor(getColor(R.color.darkColorPrimary));
         }
         window.setNavigationBarColor(Color.BLACK);
     }
 
-    private void setupRecyclerView(Database database, String id) {
-        Cursor messageCursor = database.getAllMsg(id);
+    private void setupRecyclerView() {
+        Cursor messageCursor = getAllMessage();
         recyclerView = findViewById(R.id.messageRecyclerView);
         setBackgroundImage();
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        MessageAdapter chatAdapter = new MessageAdapter(this, database, id, messageCursor, linearLayoutManager);
+        chatAdapter = new MessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.scrollToPosition(messageCursor.getCount() - 1);
+        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v,
+                                       int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                //int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+                int count = recyclerView.getAdapter().getItemCount() - 1;
+                if (lastPosition == count) {
+                    try {
+                        recyclerView.smoothScrollToPosition(lastPosition);
+                    }catch(IllegalArgumentException e){
+                        System.out.println("Errore nella chat solitamente nulla");
+                    }
+                    lastPosition = 0;
+                }
+            }
+        });
+    }
+
+    private Cursor getAllMessage(){
+        return Connection.database.getAllMsg(id);
     }
 
     private void setBackgroundImage(){
-        Cursor c=database.getBacgroundImage();
+        Cursor c=Connection.database.getBackgroundImage();
         if(c==null||c.getCount()==0)return;
         c.moveToLast();
         Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
@@ -161,4 +190,27 @@ public class ChatActivity extends AppCompatActivity {
         c.close();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Connection.idChatOpen = "";
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Connection.idChatOpen = "";
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Connection.idChatOpen = "";
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Connection.idChatOpen = id;
+    }
 }

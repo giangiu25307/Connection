@@ -24,6 +24,7 @@ public class User {
     String idUser;
     String password;
     String birth;
+    String publicKey;
     InetAddress inetAddress;
 
     public User() {
@@ -39,6 +40,7 @@ public class User {
         this.profilePic = "";
         this.password = "";
         this.birth = "";
+        this.publicKey = "";
     }
 
     public User(String idUser, String username, String mail, String gender, String name, String surname, String country, String city, String number, String birth, String profilePic) {
@@ -56,6 +58,14 @@ public class User {
         this.password = "";
     }
 
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
     public InetAddress getInetAddress() {
         return inetAddress;
     }
@@ -65,7 +75,7 @@ public class User {
     }
 
     public String getAll() {
-        return idUser + "£€" + inetAddress + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic;
+        return idUser + "£€" + inetAddress.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic+ "£€" +publicKey;
     }
 
     public String getIdUser() {
@@ -193,4 +203,5 @@ public class User {
                 ", age='" + getAge() + '\'' +
                 '}';
     }
+
 }

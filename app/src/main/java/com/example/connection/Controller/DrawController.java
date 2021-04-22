@@ -9,22 +9,29 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.connection.Model.MapUsers;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.ChatActivity;
+import com.example.connection.View.BottomSheetNewChat;
 import com.example.connection.View.Connection;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DrawController extends View {
 
@@ -32,18 +39,19 @@ public class DrawController extends View {
     private ArrayList<User> userList;
     private int x, y;
     private AbsoluteLayout mapLayout;
-    private int widthHeight = 200;
+    private int widthHeight = 126;
     private ArrayList<Integer> previousX, previousY;
-    private ArrayList<ImageView> images;
+    private ArrayList<CircleImageView> images;
 
     public DrawController(Context context, ArrayList<User> userList, AbsoluteLayout mapLayout) {
         super(context);
         this.paint = new Paint();
         this.userList = userList;
         this.mapLayout = mapLayout;
+        this.setWillNotDraw(false);
         this.postInvalidate();
         this.previousY = this.previousX = new ArrayList<Integer>();
-        this.images = new ArrayList<ImageView>();
+        this.images = new ArrayList<>();
     }
 
     @Override
@@ -83,8 +91,10 @@ public class DrawController extends View {
         int tempX = 0, tempY = 0;
         for (int i = 0; i < userList.size(); i++) {
             if (i == 0) {
-                createUserPoint(getWidth() / 2, getHeight() / 2, i);
+                createUserPoint(getWidth() / 2, getHeight() / 2, userList.get(i).getIdUser());
                 Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), getWidth() / 2, getHeight() / 2, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
+                previousX.add(getWidth()/2);
+                previousY.add(getHeight()/2);
             } else {
                 tempX = (int) (Math.random() * getWidth());
                 tempY = (int) (Math.random() * getHeight());
@@ -97,7 +107,7 @@ public class DrawController extends View {
                 canvas.drawLine(x, y, tempX, tempY, paint);
                 x = tempX;
                 y = tempY;
-                createUserPoint(x, y, i);
+                createUserPoint(x, y, userList.get(i).getIdUser());
                 Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
             }
         }
@@ -105,9 +115,14 @@ public class DrawController extends View {
     }
 
     //create a clickable item who refers to a user at the coordinates x,y
-    private void createUserPoint(final int x, final int y, final int id) {
-        final ImageView image = new ImageView(mapLayout.getContext());
-        Bitmap bitmap = BitmapFactory.decodeFile(userList.get(id).getProfilePic());
+    private void createUserPoint(final int x, final int y, final String id) {
+        int n=0;
+        for (int i=0;i<userList.size();i++){
+            if(userList.get(i).getIdUser()==id) n=i;
+        }
+        final User user = userList.get(n);
+        final CircleImageView image = new CircleImageView(mapLayout.getContext());
+        Bitmap bitmap = BitmapFactory.decodeFile(user.getProfilePic());
         if (bitmap != null) {
             image.setImageBitmap(bitmap);
         }
@@ -117,7 +132,7 @@ public class DrawController extends View {
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 image.getViewTreeObserver().removeOnPreDrawListener(this);
-                AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(widthHeight, widthHeight, x - 100, y - 100);
+                AbsoluteLayout.LayoutParams params = new AbsoluteLayout.LayoutParams(widthHeight, widthHeight, x - 63, y - 63);
                 image.setLayoutParams(params);
                 int finalWidth = image.getLayoutParams().width;
                 int finalHeight = image.getLayoutParams().height;
@@ -125,34 +140,16 @@ public class DrawController extends View {
                 return true;
             }
         });
+
         image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                dialogBuilder.setView(R.layout.person_found_alert_dialog);
-                final AlertDialog alertDialog = dialogBuilder.create();
-                alertDialog.show();
-                final User user = userList.get(id);
-                ImageView profilePic = alertDialog.findViewById(R.id.profilePicMapAlertDialog);
-                TextView name = alertDialog.findViewById(R.id.nameMapAlertDialog);
-                TextView information = alertDialog.findViewById(R.id.informationMapAlertDialog);
-                TextView send = alertDialog.findViewById(R.id.sendMessageMapAlertDialog);
-                Bitmap bitmap = BitmapFactory.decodeFile(user.getProfilePic());
-                Drawable draw = new BitmapDrawable(getResources(), bitmap);
-                profilePic.setImageTintList(null);
-                profilePic.setImageDrawable(draw);
-                name.setText(user.getUsername());
-                String ageGender = user.getAge() + ", " + user.getGender();
-                information.setText(ageGender);
-                send.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent myIntent = new Intent(getContext(), ChatActivity.class);
-                        myIntent.putExtra("idChat", user.getIdUser());
-                        myIntent.putExtra("name", user.getName());
-                        getContext().startActivity(myIntent);
-                    }
-                });
+                /*BottomSheetDialog bottomSheet = new BottomSheetDialog(getContext(), R.style.customBottomSheet);
+                View bottomSheetView = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.lyt_bs_new_chat, (LinearLayout)findViewById(R.id.bottomSheetContainer));
+                bottomSheet.setContentView(bottomSheetView);
+                bottomSheet.show();*/
+                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(user);
+                bottomSheet.show(((AppCompatActivity)getContext()).getSupportFragmentManager(), "ModalBottomSheet");
             }
         });
         images.add(image);
@@ -161,11 +158,12 @@ public class DrawController extends View {
 
     //check coordinates distances
     private boolean check(ArrayList<Integer> previousCoordinates, int coordinates) {
+        int count=0;
         for (int i = 0; i < previousCoordinates.size(); i++) {
-            if (previousCoordinates.get(i) - (widthHeight) < coordinates && coordinates < previousCoordinates.get(i) + (widthHeight))
-                return true;
+            if(coordinates < previousCoordinates.get(i)-200 || coordinates > previousCoordinates.get(i)+200) count++;
         }
-        return false;
+        if(count==previousCoordinates.size())return true;
+        else return false;
     }
 
     //ADDING NEW USERS TO THE MAP
@@ -190,10 +188,7 @@ public class DrawController extends View {
         ArrayList<User> userList = new ArrayList<User>();
         for (int i = 0; i < ids.size(); i++) {
             if (!mapContainsId(ids.get(i))) {
-                for (int j = 0; j < userList.size(); j++) {
-                    if (userList.get(j).getIdUser().equals(ids.get(i)))
-                        userList.add(userList.get(j));
-                }
+                userList.add(this.userList.get(i));
             }
         }
         return userList;
@@ -201,7 +196,7 @@ public class DrawController extends View {
 
     private void addToMap() {
         previousX = previousY = new ArrayList<Integer>();
-        images = new ArrayList<ImageView>();
+        images = new ArrayList<>();
         for (int i = 0; i < Connection.mapUsers.size(); i++) {
             previousX.add(Connection.mapUsers.get(i).getX());
             previousY.add(Connection.mapUsers.get(i).getY());
@@ -216,7 +211,7 @@ public class DrawController extends View {
                 y = (int) (Math.random() * getHeight());
             previousX.add(x);
             previousY.add(y);
-            createUserPoint(x, y, i);
+            createUserPoint(x, y, userList.get(i).getIdUser());
             Connection.mapUsers.add(new MapUsers(userList.get(i).getIdUser(), x, y, images.get(i), userList.get(i).getAge(), userList.get(i).getGender()));
         }
 
@@ -284,7 +279,6 @@ public class DrawController extends View {
             if (!genders[2].equals("")){
                 for (int i = 1; i < Connection.mapUsers.size(); i++)if (Connection.mapUsers.get(i).getGender().equals(genders[2]))Connection.mapUsers.get(i).setVisibility(true);
             }
-
         }
     }
 

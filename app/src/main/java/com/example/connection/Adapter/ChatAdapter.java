@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.View.ChatActivity;
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.Controller.Task;
 import com.example.connection.R;
 
@@ -57,7 +57,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public ChatAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.chat_layout, parent, false);
+        View view = inflater.inflate(R.layout.lyt_chat, parent, false);
         ViewHolder holder = new ViewHolder(view, new ViewHolder.OnChatClickListener() {
 
             @Override
@@ -117,14 +117,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         TextView userNameTextView = holder.name;
         TextView lastMessageTextView = holder.lastMessage;
-        TextView lastMessageTimeTextView = holder.name;
         TextView timeLastMessageTextView = holder.timeLastMessage;
         userNameTextView.setText(userName);
         lastMessageTextView.setText(lastMessage);
-        if(lastMessageTextView.getText().toString().length() > 34){
-            String lastMsg =lastMessageTextView.getText().toString().substring(0, 32)+"...";
-            lastMessageTextView.setText(lastMsg);
-        }
         try {
             date = format.parse(datetime);
         } catch (ParseException e) {

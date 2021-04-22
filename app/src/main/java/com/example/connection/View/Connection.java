@@ -1,6 +1,9 @@
 package com.example.connection.View;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,17 +26,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.connection.Controller.AutoClicker;
-import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Controller.AccountController;
+import com.example.connection.Controller.MessageController;
+import com.example.connection.Database.Database;
 import com.example.connection.Model.MapUsers;
-import com.example.connection.Model.User;
 import com.example.connection.R;
+import com.example.connection.Services.MyForegroundService;
 import com.example.connection.vpn.LocalVPNService;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Connection extends AppCompatActivity {
     private Fragment fragment;
@@ -42,71 +43,111 @@ public class Connection extends AppCompatActivity {
     private Boolean startTimer2 = true;
     private long secondsRemaining = 1000;
     private SharedPreferences sharedPreferences;
-    public static boolean boot = true;
-    Database database;
-    User user;
-    ChatController chatController;
-    AutoClicker autoClicker;
+    public static boolean boot = true,isGlobalChatOpen=false;
+    public static Database database;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
-    ConnectionController connectionController;
-    public static String fragmentName = "MAP";
+    public static String fragmentName = "MAP",idChatOpen="";
     public static String lightOrDark = "light";
     public static ArrayList<MapUsers> mapUsers = new ArrayList<MapUsers>();
-    public static String minAge = "", maxAge = "";
-    public static String[] genders = {"", "", ""};
-    private Fragment map, chat, settings;
+    public static String minAge = "16", maxAge = "100";
+    public static String[] genders = {"male", "female", "other"};
     private static final int VPN_REQUEST_CODE = 0x0F;
+    private AccountController accountController;
+    public static LocalVPNService localVPNService;
+    private NotificationChannel channel;
+    public static MyForegroundService foregroundService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        deleteDatabase("Connection");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
-        boolean createSample = true;
-        if (createSample) {
-            database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo");
-            database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo");
-            database.createChat("2", "Andrew2");
-            database.addMsg("Ciao", "2", "2");
-            database.addMsg("Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "0", "2");
-            database.addUser("23", "192.168.49.20", "Andrew123", "andrew@12gmail.com", "ma123le", "Andr1ew2", "Wa131nd", "England", "London", "23-03-1997", "/photo");
-            database.createChat("23", "Andrew123");
-            database.addMsg("Ciao", "23", "23");
-            database.addUser("25", "192.168.49.20", "Andrew345", "andrew@12gmail.com", "ma123le", "Andr1ew2", "Wa131nd", "England", "London", "23-03-1997", "/photo");
-            database.createChat("25", "Andrew345");
-            database.addMsg("Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "25", "25");
-        }
-        connectionController = new ConnectionController(this, database, user);
-        chatController = new ChatController();
-        chatController = chatController.newIstance(this, connectionController);
-        //LocalizationController localizationController=null;
-        // localizationController=new LocalizationController(database,this);
-        autoClicker=new AutoClicker();
+        accountController = new AccountController();
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
         loadFragment(false);
+        requestPermissions();
+        xiamoiWifiPermission();
 
-        //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW
-        final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
-        ActivityCompat.requestPermissions(this, permissions, 101);
-       if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED ) {
+        //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
+        boolean createSample = false;
+        if (createSample) {
+            database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("2", "Andrew2", null);
+            database.addMsg("Ciao", "2", "2");
+            database.addMsg("WeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeWeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "0", "2");
+            database.addMsg("we", "0", "2");
+
+            database.addUser("23", "192.168.49.20", "Andrew123", "andrew@12gmail.com", "male", "Andrewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("23", "Andrew123", null);
+            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
+
+            database.addUser("25", "192.168.49.20", "Andrew345", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("25", "Andrew345", null);
+            database.addMsg("wee", "25", "25");
+            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
+
+            database.addUser("27", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("27", "Andrew345", null);
+            database.addMsg("wee", "27", "27");
+            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
+
+            database.addUser("29", "192.168.49.20", "Andrew980", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("29", "Andrew345", null);
+            database.addMsg("wee", "29", "29");
+            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
+
+            database.addUser("31", "192.168.49.20", "Andrew132", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo", "");
+            database.createChat("31", "Andrew345", null);
+            database.addMsg("wee", "31", "31");
+            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
+
+            database.addUser("33", "192.168.49.20", "Andrew847", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo", "");
+            database.createChat("33", "Andrew345", null);
+            database.addMsg("wee", "33", "33");
         }
-        //ENDS PERMISSIONS REQUEST
+
+        //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
+        database.addUser("1", null, "test1", "test1@gmail.com", "male", "test1", "test1", "test1", "test1", "01-01-2001", "nothingToseehere", null);//xiaomia2litemio
+        //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
+        //database.addUser("3",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
         createCountDowntimer();
         countDownTimer.start();
-        map = new MapFragment().newInstance(connectionController, database);
-        chat = new ChatFragment().newInstance(database, chatController);
-        settings = new SettingsFragment().newInstance(connectionController, database, chatController, map, chat);
-        connectionController.active4G();
+        foregroundService = new MyForegroundService();
+        Intent notificationIntent = new Intent(this, foregroundService.getClass());
+        this.startForegroundService(notificationIntent);
+        MessageController.newInstance();
 
+    }
 
+    private void requestPermissions(){
+        //ADD PERMISSIONS THAT WILL BE REQUIRED ON THE ARRAY BELOW
+        final String[] permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.FOREGROUND_SERVICE};
+        ActivityCompat.requestPermissions(this, permissions, 101);
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        }
+        //ENDS PERMISSIONS REQUEST
+    }
 
-        //connectionController.initProcess();
+    private void xiamoiWifiPermission(){
+        try {
+            String manufacturer = "xiaomi";
+            if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
+                //this will open auto start screen where user can enable permission for your app
+                Intent intent1 = new Intent();
+                intent1.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsTabActivity"));
+                startActivity(intent1);
+            }
+        } catch (ActivityNotFoundException e) {
+            System.out.println("Not MIUI device");
+        }
     }
 
     private void loadTheme() {
@@ -121,35 +162,26 @@ public class Connection extends AppCompatActivity {
             setStatusAndNavbarColor(false);
         } else {
             int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            switch (nightModeFlags) {
-                case Configuration.UI_MODE_NIGHT_NO:
-                case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                    lightOrDark = "Follow System";
-                    setTheme(R.style.AppTheme);
-                    setStatusAndNavbarColor(true);
-                    break;
-                case Configuration.UI_MODE_NIGHT_YES:
-                    lightOrDark = "Follow System";
-                    setTheme(R.style.DarkTheme);
-                    setStatusAndNavbarColor(false);
-                    break;
-                default:
-                    break;
+            lightOrDark = "Follow System";
+            if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                setTheme(R.style.DarkTheme);
+                setStatusAndNavbarColor(false);
+            } else {
+                setTheme(R.style.AppTheme);
+                setStatusAndNavbarColor(true);
             }
         }
 
     }
 
     private void setStatusAndNavbarColor(boolean light) {
-
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         if (light) {
-            window.setStatusBarColor(Color.WHITE);
-            window.setNavigationBarColor(Color.WHITE);
+            window.setStatusBarColor(getColor(R.color.colorPrimary));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
-            window.setStatusBarColor(getColor(R.color.black2));
+            window.setStatusBarColor(getColor(R.color.darkColorPrimary));
         }
         window.setNavigationBarColor(Color.BLACK);
     }
@@ -172,10 +204,10 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                if(firstLogin()) {
-                    fragment = new LoginFragment().newInstance(connectionController, database, chatController, map, chat, settings);
-                }else {
-                    fragment = new HomeFragment().newInstance(connectionController, database, chatController,map,chat);
+                if (firstLogin()) {
+                    fragment = createLoginFragment();
+                } else {
+                    fragment = createHomeFragment();
                 }
                 loadFragment(true);
                 startTimer2 = false;
@@ -183,6 +215,13 @@ public class Connection extends AppCompatActivity {
         };
     }
 
+    private HomeFragment createHomeFragment() {
+        return new HomeFragment().newInstance(this, database);
+    }
+
+    private LoginFragment createLoginFragment() {
+        return new LoginFragment().newInstance(this, database, accountController);
+    }
 
     @Override
     protected void onResume() {
@@ -191,13 +230,11 @@ public class Connection extends AppCompatActivity {
             createCountDowntimer();
             countDownTimer.start();
         }
-        registerReceiver(connectionController.getmReceiver(), connectionController.getmIntentFilter());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(connectionController.getmReceiver());
     }
 
     @Override
@@ -211,7 +248,8 @@ public class Connection extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        System.out.println("Activity distrutta");
+        System.out.println("distrutta");
+        System.exit(1);
     }
 
     public boolean isAccessibilityEnabled() {
@@ -247,19 +285,11 @@ public class Connection extends AppCompatActivity {
         return accessibilityFound;
     }
 
-    private void requestStoragePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(Objects.requireNonNull(this), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            ActivityCompat.requestPermissions(Objects.requireNonNull(this), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        }
-    }
-
-    public boolean firstLogin(){
-        String myid="";
+    public boolean firstLogin() {
+        String myid = "";
         try {
             myid = database.getUser("0").getString(0);
-        }catch(IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             System.out.println("Utente non trovato");
             return true;
         }
@@ -271,11 +301,13 @@ public class Connection extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == VPN_REQUEST_CODE && resultCode == RESULT_OK) {
             //waitingForVPNStart = true;
-            this.startService(new Intent(this, LocalVPNService.class));
+            localVPNService = new LocalVPNService();
+            this.startService(new Intent(this, localVPNService.getClass()));
             //enableButton(false);
         }
     }
-    public  void startVpn() {
+
+    public void startVpn() {
 
         Intent vpnIntent = VpnService.prepare(this);
 

@@ -25,8 +25,9 @@ public class Task {
         public static final String PATH = "path";
         public static final String CHAT = "CHAT";
         public static final String ID_SENDER = "id_sender";
-        public static final String IP = "ip";
-        public static final String GLOBAL_MESSAGE = "GROUPS_MESSAGE";
+        public static final String IP= "ip";
+        public static final String IP_GROUP_OWNER = "ip_group_owner";
+        public static final String GLOBAL_MESSAGE = "GLOBAL_MESSAGE";
         public static final String DATETIME = "datetime";
         public static final String LAST_MESSAGE = "last_message";
         public static final String NOT_READ_MESSAGE = "not_read_message";
@@ -35,6 +36,9 @@ public class Task {
         public static final String BACKGROUND_CHAT_IMAGES = "background_chat_images";
         public static final String BACKGROUND_IMAGE = "background_image";
         public static final String REQUEST = "request";
+        public static final String PUBLIC_KEY = "public_key";
+        public static final String SYMMETRIC_KEY = "symmetric_key";
+        public static final String OTHER_GROUP = "other_group";
         /*public static final String GROUPS = "GROUPS";
         public static final String GROUP_NAME = "GROUP_NAME";
         public static final String USERS_GROUP = "USER_GROUP";
@@ -43,10 +47,12 @@ public class Task {
     }
 
     public class ServiceEntry implements BaseColumns{
-        public static final String serviceGroupOwner = "serviceGroupOwner"; //fatto
-        public static final String serviceClientConnectedToGroupOwner = "serviceClientConnectedToGroupOwner";//fatto
-        public static final String serviceRequestClientBecomeGroupOwner = "serviceRequestClientBecomeGroupOwner";//fatto
-        public static final String serviceLookingForGroupOwner = "serviceLookingForGroupOwner";//fatto
+        public static final String serviceGroupOwner = "SGO"; //fatto
+        public static final String serviceClientConnectedToGroupOwner = "CTG";//fatto
+        public static final String serviceRequestClientBecomeGroupOwner = "CBG";//fatto
+        public static final String serviceLookingForGroupOwner = "LFG";//fatto
+        public static final String serviceLookingForGroupOwnerWithSpecifiedId = "LGS";//fatto
+        public static final String serviceLookingForGroupOwnerWithGreaterId = "LGG";//fatto
 
     }
 

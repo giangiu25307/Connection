@@ -15,10 +15,13 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
 import com.example.connection.R;
+
+import java.io.IOException;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
@@ -27,21 +30,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private ConnectionController connectionController;
     private Database database;
     private ChatController chatController;
-    private EditText email,password;
-    private Fragment map, chat, settings;
+    private EditText email, password;
+    private Connection connection;
+    private AccountController accountController;
 
     public LoginFragment() {
 
     }
 
-    public LoginFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat, Fragment settings) {
+    public LoginFragment newInstance(Connection connection, Database database, AccountController accountController) {
         LoginFragment loginFragment = new LoginFragment();
-        loginFragment.setConnectionController(connectionController);
+        loginFragment.setConnection(connection);
         loginFragment.setDatabase(database);
-        loginFragment.setChatController(chatController);
-        loginFragment.setChat(chat);
-        loginFragment.setMap(map);
-        loginFragment.setSettings(settings);
+        loginFragment.setAccountController(accountController);
         return loginFragment;
     }
 
@@ -56,8 +57,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         skipButton.setOnClickListener(this);
         loginButton = view.findViewById(R.id.loginButton);
         loginButton.setOnClickListener(this);
-        email=view.findViewById(R.id.editTextEmail);
-        password=view.findViewById(R.id.editTextNewPassword);
+        email = view.findViewById(R.id.editTextEmail);
+        password = view.findViewById(R.id.editTextNewPassword);
 
         return view;
     }
@@ -67,23 +68,28 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Fragment fragment;
         switch (v.getId()) {
             case R.id.signupButton:
-                fragment = new SignupFragment().newInstance(connectionController, database, chatController, map, chat, settings);
+                fragment = new SignupFragment().newInstance(connection, database,accountController);
                 loadFragment(fragment);
                 break;
             case R.id.skipButton:
                 //connectionController.startServiceDiscovery();
-                fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat);
+                fragment = new HomeFragment().newInstance(connection, database);
                 loadFragment(fragment);
                 break;
             case R.id.loginButton:
-                if(checker()){
-                    fragment = new HomeFragment().newInstance(connectionController, database, chatController, map, chat);
+                if (checker()) {
+                    fragment = new HomeFragment().newInstance(connection, database);
                     loadFragment(fragment);
-                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
-                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background));
-                }else{
-                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
-                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.input_data_background_wrong));
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
+                    try {
+                        System.out.println(accountController.login(email.getText().toString(),password.getText().toString()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
+                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                 }
                 break;
             default:
@@ -97,34 +103,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         transaction.commit();
     }
 
-    public void setConnectionController(ConnectionController connectionController) {
-        this.connectionController = connectionController;
-    }
-
     public void setDatabase(Database database) {
         this.database = database;
     }
 
-    public void setChatController(ChatController chatController) {
-        this.chatController = chatController;
-    }
-
     private boolean checker() {
         String data = database.getMyEmail();
-        if(data.equals(email.getText())&&data.equals(password.getText()))return true;
+        if (data.equals(email.getText()) && data.equals(password.getText())) return true;
         else return false;
     }
 
-    public void setMap(Fragment map) {
-        this.map = map;
+    private void setConnection(Connection connection) {
+        this.connection = connection;
     }
 
-    public void setChat(Fragment chat) {
-        this.chat = chat;
+    public void setAccountController(AccountController accountController) {
+        this.accountController = accountController;
     }
-
-    public void setSettings(Fragment settings) {
-        this.settings = settings;
-    }
-
 }

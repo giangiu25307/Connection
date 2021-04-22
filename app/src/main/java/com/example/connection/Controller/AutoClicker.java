@@ -31,7 +31,6 @@ public class AutoClicker extends AccessibilityService {
     public AutoClicker() {
     }
 
-
     @Override
     public void onServiceConnected() {
         super.onServiceConnected();

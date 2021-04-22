@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +30,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.bumptech.glide.Glide;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.Database;
+import com.example.connection.Database.Database;
+import com.example.connection.Model.User;
 import com.example.connection.R;
 
 import java.util.regex.Pattern;
@@ -49,16 +51,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private Database database;
     private ChatController chatController;
     private int theme = R.style.AppTheme;
-    private TextView themeOptionDescription, wallpaperOptionDescription;
+    private TextView themeOptionDescription, wallpaperOptionDescription, informationDescription;
     private ImageView editProfileButton;
     private int bgColor = R.color.mediumWhite;
-    private int PICK_IMAGE = 1;
+    private int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic, profilePics;
     private String previousProfilePic = "";
-    private boolean isBg = false;
     private ConstraintLayout wallpaperSettings;
-    private Fragment map, chat;
+    private MapFragment map;
+    private ChatFragment chat;
     private SettingsFragment settingsFragment;
+    private Connection connection;
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
             "(?=.*[a-z])" + //at least 1 lower case
@@ -68,6 +71,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             ".{8,}" + //at least length of 8 character
             "$");
 
+    private static final Pattern regexName = Pattern.compile("^" +
+            "(?=.*[a-z])" + //at least 1 lower case
+            ".{2,26}" +
+            "$");
+
+    private static final Pattern regexPhoneNumber = Pattern.compile("^" +
+            "[0-9]*" +
+            ".{9,11}" +
+            "$");
 
     public SettingsFragment() {
     }
@@ -80,11 +92,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         this.database = database;
     }
 
-    public void setMap(Fragment map) {
+    public void setMap(MapFragment map) {
         this.map = map;
     }
 
-    public void setChat(Fragment chat) {
+    public void setChat(ChatFragment chat) {
         this.chat = chat;
     }
 
@@ -92,8 +104,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         this.chatController = chatController;
     }
 
-    public SettingsFragment newInstance(ConnectionController connectionController, Database database, ChatController chatController, Fragment map, Fragment chat) {
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
+    public SettingsFragment newInstance(Connection connection, ConnectionController connectionController, Database database, ChatController chatController, MapFragment map, ChatFragment chat) {
         settingsFragment = new SettingsFragment();
+        settingsFragment.setConnection(connection);
         settingsFragment.setChatController(chatController);
         settingsFragment.setConnectionController(connectionController);
         settingsFragment.setDatabase(database);
@@ -105,7 +122,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        @SuppressLint("inflateParams") final View view = inflater.inflate(R.layout.settings_fragment, null);
+        @SuppressLint("inflateParams") final View view = inflater.inflate(R.layout.lyt_settings, null);
+
+        setHasOptionsMenu(false);
+
         sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         editProfileButton = view.findViewById(R.id.editProfileButton);
@@ -113,8 +133,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         themeSettings = view.findViewById(R.id.themeSettings);
         themeSettings.setOnClickListener(this);
-        themeOptionDescription = view.findViewById(R.id.themeOptionDescription);
-        themeOptionDescription.setText(Connection.lightOrDark);
+        //themeOptionDescription = view.findViewById(R.id.themeOptionDescription);
+        //themeOptionDescription.setText(Connection.lightOrDark);
 
         changePasswordSettings = view.findViewById(R.id.changePasswordSettings);
         changePasswordSettings.setOnClickListener(this);
@@ -124,11 +144,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         profilePic = view.findViewById(R.id.profilePic);
 
-        wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
+        //wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
+
+        view.findViewById(R.id.informationDescription).setSelected(true);
 
         setProfilePic();
 
-        Cursor c = database.getBacgroundImage();
+        Cursor c = database.getBackgroundImage();
         if (c != null && c.getCount() > 0) {
             c.moveToLast();
             String imagePath = c.getString(0);
@@ -143,7 +165,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
         switch (v.getId()) {
             case R.id.editProfileButton:
-                editProfile(dialogBuilder);
+                //editProfile(dialogBuilder);
+                Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+                startActivity(intent);
                 break;
             case R.id.themeSettings:
                 manageTheme(dialogBuilder);
@@ -175,49 +199,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void editProfile(AlertDialog.Builder dialogBuilder) {
-        //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-        dialogBuilder.setView(R.layout.edit_profile_alert_dialog);
-        final AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
-
-        final TextView cancelTextView, applyTextView;
-        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-        applyTextView = alertDialog.findViewById(R.id.applyTextView);
-        profilePics = alertDialog.findViewById(R.id.profilePic);
-        if (!previousProfilePic.equals("")) {
-            Bitmap bitmap = BitmapFactory.decodeFile(previousProfilePic);
-            Drawable draw = new BitmapDrawable(getResources(), bitmap);
-            profilePics.setImageTintList(null);
-            profilePics.setImageDrawable(draw);
-        }
-        profilePics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseImage();
-            }
-        });
-
-        cancelTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                database.setProfilePic(previousProfilePic);
-                alertDialog.dismiss();
-            }
-        });
-
-        applyTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setProfilePic();
-                alertDialog.dismiss();
-            }
-        });
-    }
-
     private void changePassword(AlertDialog.Builder dialogBuilder) {
         //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-        dialogBuilder.setView(R.layout.change_password_alert_dialog);
+        dialogBuilder.setView(R.layout.dialog_change_password);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
@@ -237,7 +221,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 alertDialog.dismiss();
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                dialogBuilder.setView(R.layout.forgotten_password_alert_dialog);
+                dialogBuilder.setView(R.layout.dialog_forgotten_password);
                 final AlertDialog alertDialog2 = dialogBuilder.create();
                 alertDialog2.show();
 
@@ -258,16 +242,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         String data = database.getMyEmail();
-                        if(emailEditText.getText().toString().equals(data)){
-                            emailEditText.setBackgroundResource(R.drawable.input_data_background);
+                        if (emailEditText.getText().toString().equals(data)) {
+                            emailEditText.setBackgroundResource(R.drawable.bg_input_data);
                             alertDialog2.dismiss();
                             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                            dialogBuilder.setView(R.layout.verify_code_alert_dialog);
+                            dialogBuilder.setView(R.layout.dialog_verify_code);
                             final AlertDialog alertDialog3 = dialogBuilder.create();
                             alertDialog3.show();
                             //SEND REQUEST TO MAKE VERIFICATION FROM THE SERVER AND TAKE BACK THE CODE
-                        }else{
-                            emailEditText.setBackgroundResource(R.drawable.input_data_background_wrong);
+                        } else {
+                            emailEditText.setBackgroundResource(R.drawable.bg_input_data_wrong);
                         }
                     }
                 });
@@ -317,7 +301,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     private void manageTheme(AlertDialog.Builder dialogBuilder) {
         //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-        dialogBuilder.setView(R.layout.select_theme_alert_dialog);
+        dialogBuilder.setView(R.layout.dialog_app_theme);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
@@ -337,7 +321,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             newTheme = "dark";
             Connection.lightOrDark = "Dark";
             bgColor = R.color.black4;
-            darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
+            darkButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
         } else if (currentTheme.equals("auto")) {
             getCurrentSystemTheme();
             newTheme = "auto";
@@ -347,12 +331,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             } else {
                 bgColor = R.color.mediumWhite;
             }
-            followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
+            followSystemButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
         } else {
             theme = R.style.AppTheme;
             newTheme = "light";
             Connection.lightOrDark = "Light";
-            lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
+            lightButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
         }
                 /*
                 if (currentTheme.equals("light")) {
@@ -370,9 +354,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 theme = R.style.AppTheme;
                 newTheme = "light";
                 Connection.lightOrDark = "Light";
-                lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
-                darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
-                followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
+                lightButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
+                darkButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
+                followSystemButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
             }
         });
 
@@ -382,9 +366,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 theme = R.style.DarkTheme;
                 newTheme = "dark";
                 Connection.lightOrDark = "Dark";
-                lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
-                darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
-                followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
+                lightButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
+                darkButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
+                followSystemButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
             }
         });
 
@@ -394,9 +378,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 getCurrentSystemTheme();
                 newTheme = "auto";
                 Connection.lightOrDark = "Follow System";
-                lightButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
-                darkButton.setBackgroundResource(R.drawable.set_current_theme_background_borderless);
-                followSystemButton.setBackgroundResource(R.drawable.set_current_theme_background_borderline);
+                lightButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
+                darkButton.setBackgroundResource(R.drawable.bg_theme_card_borderless);
+                followSystemButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
             }
         });
 
@@ -426,30 +410,27 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         if (this.theme == R.style.AppTheme) {
 
-            window.setStatusBarColor(getContext().getColor(R.color.mediumWhite));
+            window.setStatusBarColor(getContext().getColor(R.color.colorPrimary));
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         } else {
             window.getDecorView().setSystemUiVisibility(0);
             //window.clearFlags(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-            window.setStatusBarColor(getContext().getColor(R.color.black2));
+            window.setStatusBarColor(getContext().getColor(R.color.darkColorPrimary));
         }
         HomeFragment homeFragment = new HomeFragment();
-        settingsFragment = this;
-        Fragment fragment = homeFragment.newInstance(connectionController, database, chatController, map, chat);
+        settingsFragment = newInstance(connection, connectionController, database, chatController, map, chat);
+        Fragment fragment = homeFragment.newInstance(connection, connectionController, database, chatController, map, chat, settingsFragment);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();
     }
 
-    private void chooseImage() {
-        isBg = false;
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-
+    private void captureImage() {
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        startActivityForResult(intent, CAPTURE_IMAGE);
     }
 
     private void chooseBackgroundImage() {
-        isBg = true;
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
@@ -468,19 +449,25 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 if (cursor == null) return;
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-                if (!isBg) {
-                    database.setProfilePic(imagePath);
-                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-                    Drawable draw = new BitmapDrawable(getResources(), bitmap);
-                    profilePics.setImageTintList(null);
-                    profilePics.setImageDrawable(draw);
-                } else {
-                    database.setBacgroundImage(imagePath);
-                    String string[] = imagePath.split("/");
-                    wallpaperOptionDescription.setText(string[string.length - 1]);
-                }
+                database.setBackgroundImage(imagePath);
+                String string[] = imagePath.split("/");
+                wallpaperOptionDescription.setText(string[string.length - 1]);
                 cursor.close();
             }
+        } else if (requestCode == CAPTURE_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
+                Uri tempUri = getImageUri(getContext(), photo);
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                String imagePath = getRealPathFromURI(tempUri);
+                database.setProfilePic("0", imagePath);
+                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                Drawable draw = new BitmapDrawable(getResources(), bitmap);
+                profilePic.setImageTintList(null);
+                profilePic.setImageDrawable(draw);
+            }
+
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
@@ -488,7 +475,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setProfilePic() {
-        Cursor c = database.getProfilePic();
+        Cursor c = database.getProfilePic(ConnectionController.myUser.getIdUser());
         if (c == null || c.getCount() == 0) {
             profilePic.setImageTintList(ColorStateList.valueOf(android.R.attr.iconTint));
             return;
@@ -500,6 +487,26 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         profilePic.setImageTintList(null);
         profilePic.setImageDrawable(draw);
         c.close();
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        Bitmap OutImage = Bitmap.createScaledBitmap(inImage, 1000, 1000, true);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), OutImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        String path = "";
+        if (getContext().getContentResolver() != null) {
+            Cursor cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                path = cursor.getString(idx);
+                cursor.close();
+            }
+        }
+        return path;
     }
 
 }

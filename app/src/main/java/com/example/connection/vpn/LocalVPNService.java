@@ -69,6 +69,7 @@ public class LocalVPNService extends VpnService {
                 builder.addAddress(VPN_ADDRESS, 32);
                 builder.addRoute(VPN_ROUTE, 0);
                 builder.addDnsServer(Config.dns);
+                //builder.allowBypass();
                 vpnInterface = builder.setSession("connection").setConfigureIntent(pendingIntent).establish();
 
             }

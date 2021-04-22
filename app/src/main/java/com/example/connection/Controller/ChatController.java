@@ -1,62 +1,56 @@
 package com.example.connection.Controller;
 
-import com.example.connection.Model.User;
-import com.example.connection.TCP_Connection.MultiThreadedServer;
-import com.example.connection.TCP_Connection.TCP_Client;
-import com.example.connection.UDP_Connection.Multicast;
-import com.example.connection.View.Connection;
+import com.example.connection.Database.Database;
+import com.example.connection.TCP_Connection.TcpClient;
+import com.example.connection.UDP_Connection.Multicast_P2P;
+import com.example.connection.UDP_Connection.Multicast_WLAN;
+import com.example.connection.UDP_Connection.MyNetworkInterface;
 
 import java.nio.file.Paths;
 
 public class ChatController {
 
-    TCP_Client tcp;
-    Multicast udp;
-    MultiThreadedServer tcpServer;
-    Database database;
-    User user;
-    ConnectionController connectionController;
+    private TcpClient tcp;
+    private Multicast_P2P udpP2p;
+    private Multicast_WLAN udpWlan;
+    private Database database;
     public static ChatController istance = null;
+    private ConnectionController connectionController;
 
     public static ChatController getInstance() {
         return istance;
     }
 
-    public ChatController newIstance(Connection connection, ConnectionController connectionController) {
+    public ChatController newIstance(Database database, TcpClient tcp, Multicast_P2P udpP2p, Multicast_WLAN udpWlan, ConnectionController connectionController) {
         istance = new ChatController();
-        setConnectionController(connectionController);
-        istance.setDatabase(new Database(connection.getApplicationContext()));
-        //String userInfo[]=database.getMyInformation();
-        //user=new User(userInfo[0],userInfo[1],userInfo[2],userInfo[3],userInfo[4],userInfo[5],userInfo[6],userInfo[7],userInfo[8],userInfo[9],userInfo[10]);
-        istance.setUser(user);
-        istance.setTcp(new TCP_Client());
-        istance.setUdp(new Multicast(user, database, connectionController));
+        istance.setDatabase(database);
+        istance.setTcp(tcp);
+        istance.setUdpP2p(udpP2p);
+        istance.setUdpWlan(udpWlan);
+        istance.setConnectionController(connectionController);
         return istance;
     }
 
-    public void setTcp(TCP_Client tcp) {
+    public void setTcp(TcpClient tcp) {
         this.tcp = tcp;
     }
 
-    public void setUdp(Multicast udp) {
-        this.udp = udp;
+    public void setUdpP2p(Multicast_P2P udpP2p) {
+        this.udpP2p = udpP2p;
     }
 
-    public void setTcpServer(MultiThreadedServer tcpServer) {
-        this.tcpServer = tcpServer;
-    }
-
-    public void setDatabase(Database database) {
-        this.database = database;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setUdpWlan(Multicast_WLAN udpWlan) {
+        this.udpWlan = udpWlan;
     }
 
     public void setConnectionController(ConnectionController connectionController) {
         this.connectionController = connectionController;
     }
+
+    private void setDatabase(Database database) {
+        this.database = database;
+    }
+
 
     public ChatController() {
     }
@@ -64,25 +58,27 @@ public class ChatController {
 
     //Send a global message -------------------------------------------------------------------------------------------------------------------------------
     public void sendGlobalMsg(String msg) {
-        udp.sendGlobalMsg(msg);
+        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION"))
+            udpWlan.sendGlobalMsg(msg);
+        if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null)
+            udpP2p.sendGlobalMsg(msg);
     }
 
     //send a direct message -------------------------------------------------------------------------------------------------------------------------------
     public void sendTCPMsg(String msg, String idReceiver) {
+        if (database.getSymmetricKey(idReceiver) != null) {
+            tcp.sendMessage(msg, idReceiver);
+        } else {
+            tcp.handShake(idReceiver, database.getPublicKey(idReceiver), msg);
+        }
 
-            String ip = database.findIp(idReceiver);
-                tcp.startConnection("192.168.49.1", 50000);
-            tcp.sendMessage(msg,"");
-            database.addMsg(msg, user.getIdUser(), idReceiver);
     }
 
     //send a direct image -------------------------------------------------------------------------------------------------------------------------------
     public void sendTCPPath(Paths path, String idReceiver) {
-
-            String ip = database.findIp(idReceiver);
-                tcp.startConnection(ip, 50000);
-            tcp.sendMessage(path.toString(),"");//encoding to byte DA FARE
-            database.addMsg(path, idReceiver, user.getIdUser(), idReceiver);
+        //DA FARE PER BENE
+        /*tcp.sendMessage(path.toString(), idReceiver);//encoding to byte DA FARE
+        database.addMsg(path, idReceiver, ConnectionController.myUser.getIdUser(), idReceiver);*/
 
     }
 }

@@ -1,17 +1,25 @@
 package com.example.connection.Controller;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.ConnectionSpec;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.Buffer;
 
 public class AccountController {
+
+
+
 
     OkHttpClient client;
     public AccountController() {
@@ -20,16 +28,24 @@ public class AccountController {
                 .build();
     }
 
-    public String login(String username,String password) throws IOException {
+    public String login(String email,String password) throws IOException {
 
-        RequestBody formBody = new FormBody.Builder()
-                .add("username", username)
-                .add("password", password)
-                .build();
+        // create your json here
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("email", email);
+            jsonObject.put("password", password);
+        } catch (
+                JSONException e) {
+            e.printStackTrace();
+        }
+
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(jsonObject.toString(),mediaType);
 
         Request request = new Request.Builder()
-                .url("www.connection.it" + "/login")
-                .post(formBody)
+                .url("https://connexionauth.herokuapp.com/auth/login/")
+                .post(body)
                 .build();
 
 
@@ -43,26 +59,34 @@ public class AccountController {
         return null;
     }
 
-    public String register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number) throws IOException {
+    public String register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number,String profilePic) throws IOException {
 
-        RequestBody formBody = new FormBody.Builder()
-                .add("username", username)
-                .add("password", password)
-                .add("mail", mail)
-                .add("gender", gender)
-                .add("name", name)
-                .add("surname", surname)
-                .add("country", country)
-                .add("city", city)
-                .add("birth", birth)
-                .add("number", number)
-                .build();
+        // create your json here
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("name", name);
+            jsonObject.put("username", username);
+            jsonObject.put("password", password);
+            jsonObject.put("email", mail);
+            jsonObject.put("gender", gender);
+            jsonObject.put("surname", surname);
+            jsonObject.put("country", country);
+           // jsonObject.put("city", city);
+            jsonObject.put("birth", birth);
+            jsonObject.put("number", number);
+            jsonObject.put("porfilePic",profilePic);
+        } catch (
+                JSONException e) {
+            e.printStackTrace();
+        }
+
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(jsonObject.toString(),mediaType);
 
         Request request = new Request.Builder()
-                .url("www.connection.it" + "/register")
-                .post(formBody)
+                .url("https://connexionauth.herokuapp.com/auth/signup/")
+                .post(body)
                 .build();
-
 
         Call call = client.newCall(request);
         try {
@@ -72,6 +96,18 @@ public class AccountController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static String bodyToString(final Request request){
+
+        try {
+            final Request copy = request.newBuilder().build();
+            final Buffer buffer = new Buffer();
+            copy.body().writeTo(buffer);
+            return buffer.readUtf8();
+        } catch (final IOException e) {
+            return "did not work";
+        }
     }
 
 }
