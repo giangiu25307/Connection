@@ -114,11 +114,6 @@ ConnectionController {
                 bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
                 bluetoothAdvertiser.startAdvertising();
                 wifiManager.disconnect();
-                /*try {
-                    myUser.setInetAddress("192.168.49.1");
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }*/
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -132,11 +127,15 @@ ConnectionController {
                             e.printStackTrace();
                         }
                         multicastP2P.createMultigroupP2P();
+                        if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION")){
+                            multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
+                            multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
+                        }
                         Thread t1 = new Thread(multicastP2P);
                         t1.start();
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
-                        tcpServer.setMulticastP2p(multicastP2P);
                         tcpServer.setup();
+                        tcpServer.setMulticastP2p(multicastP2P);
                     }
                 }, 3000);
 
@@ -184,14 +183,6 @@ ConnectionController {
 
                         @Override
                         public void onFinish() {
-                            /*try {
-                                String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
-                                System.out.println(ip);
-                                myUser.setInetAddress(ip);
-                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
-                            } catch (UnknownHostException e) {
-                                System.out.println("connect to group failed " + e);
-                            }*/
                             try {
                                 MyNetworkInterface.setNetworkInterfacesNames();
                                 myUser.setInetAddress(MyNetworkInterface.wlanIpv6Address);
@@ -200,7 +191,12 @@ ConnectionController {
                                 e.printStackTrace();
                             }
                             tcpServer.setup();
+                            tcpServer.setMulticastP2p(multicastP2P);
                             multicastWLAN.createMulticastSocketWlan0();
+                            multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
+                            multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
+                            Thread t1 = new Thread(multicastWLAN);
+                            t1.start();
                             multicastWLAN.sendAllMyGroupInfo();
                         }
                     }.start();
@@ -227,18 +223,9 @@ ConnectionController {
 
                     @Override
                     public void onFinish() {
-                        System.out.println(wifiManager.getConnectionInfo().getSSID() + " " + !wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"));
                         if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
                             wifiConnection(id);
                         else {
-                            /*try {
-                                String ip = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
-                                System.out.println(ip);
-                                myUser.setInetAddress(ip);
-                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
-                            } catch (UnknownHostException e) {
-                                System.out.println("connect to group failed " + e);
-                            }*/
                             tcpServer.setup();
                             try {
                                 MyNetworkInterface.setNetworkInterfacesNames();
@@ -307,7 +294,7 @@ ConnectionController {
     public void initProcess() {
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
-        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);//createGroup();
+        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
     }
 
     public void active4G() {

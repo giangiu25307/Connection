@@ -47,6 +47,14 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         return null;
     }
 
+    protected String arrayToString(String[] array){
+        String string="";
+        for (int i=0;i<array.length;i++){
+            string+=array[i]+"£€";
+        }
+        return string;
+    }
+
     //MAYBE WE NEED TO ADD MULTICAST LOCK !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     /*public void sendGroupMsg(String idGroup, String msg) {

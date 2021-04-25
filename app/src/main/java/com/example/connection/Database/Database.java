@@ -491,8 +491,11 @@ public class Database extends SQLiteOpenHelper {
         String allMyGroupInfo = ConnectionController.myUser.getAll();
         for (int i = 0; i < allUser.getCount(); i++) {
             if (i == 0) ;
+            else if(i==allUser.getCount()-1)
+                allMyGroupInfo += "£€"+allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€" + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€" + allUser.getString(7) + "£€" + allUser.getString(8) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€" + allUser.getString(11);
             else
-                allMyGroupInfo += allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€" + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€" + allUser.getString(7) + "£€" + allUser.getString(8) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€" + allUser.getString(11);
+                allMyGroupInfo += "£€"+allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€" + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€" + allUser.getString(7) + "£€" + allUser.getString(8) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€" + allUser.getString(11)+ "£€" ;
+             allUser.moveToNext();
         }
         return allMyGroupInfo;
     }
