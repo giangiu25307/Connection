@@ -37,17 +37,18 @@ public class Multicast_WLAN extends Multicast {
                 if(!splittedR[1].equals(ConnectionController.myUser.getIdUser())&&!iSentIt) {
                     switch (splittedR[0]) {
                         case "info":
-                            database.addUser(splittedR[1], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.wlanName, splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
+                            splittedR[2] = splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName;
+                            database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
                             database.setOtherGroup(splittedR[1]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
-                                splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
-                                splittedR[2]= database.getMyGroupOwnerIp();
+                                splittedR[1] += "€€" + ConnectionController.myUser.getIdUser();
+                                splittedR[2] = database.getMyGroupOwnerIp();
                                 String string = this.arrayToString(splittedR);
                                 DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
                                 multicastSocketGroupP2p.send(message);
                             }
-                            dbUserEvent=false;
+                            dbUserEvent = false;
                             break;
                         case "globalMessage":
                             //receiving a message -----------------------------------------------------------------------------------------------------------------------------------------------
