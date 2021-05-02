@@ -487,15 +487,15 @@ public class Database extends SQLiteOpenHelper {
      * Get the information of every person which are connected to me
      */
     public String getAllMyGroupInfo() {
-        Cursor allUser = getAllUsers();
+        Cursor allUser = getAllUsersWithoutME();
         String allMyGroupInfo = ConnectionController.myUser.getAll();
         for (int i = 0; i < allUser.getCount(); i++) {
-            if (i == 0) ;
-            else if(i==allUser.getCount()-1)
-                allMyGroupInfo += "£€"+allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€" + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€" + allUser.getString(7) + "£€" + allUser.getString(8) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€" + allUser.getString(11);
-            else
-                allMyGroupInfo += "£€"+allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€" + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€" + allUser.getString(7) + "£€" + allUser.getString(8) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€" + allUser.getString(11)+ "£€" ;
-             allUser.moveToNext();
+                allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
+                        + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€"
+                        + allUser.getString(11);
+            System.out.println(allMyGroupInfo);
+            allUser.moveToNext();
         }
         return allMyGroupInfo;
     }
@@ -540,6 +540,23 @@ public class Database extends SQLiteOpenHelper {
         String query = "SELECT *" +
                 " FROM " + Task.TaskEntry.USER +
                 " WHERE " + Task.TaskEntry.IP + " IS NOT NULL";
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        } else {
+            return null;
+        }
+        return c;
+    }
+
+    /**
+     * Return all user who got an ip and not myself
+     */
+    public Cursor getAllUsersWithoutME() {
+        db = this.getWritableDatabase();
+        String query = "SELECT *" +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.IP + " IS NOT NULL AND NOT "+ Task.TaskEntry.ID_USER + " = " + ConnectionController.myUser.getIdUser();
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();

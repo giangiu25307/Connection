@@ -25,7 +25,7 @@ public class Multicast_WLAN extends Multicast {
 
                 multicastSocketGroupwlan0.receive(recv);
                 String received = new String(recv.getData(), 0, recv.getLength());
-                System.out.println("[ WLAN ] "+received);
+                System.out.println("[WLAN] "+received);
                 String[] splittedR = received.split("£€");
                 boolean iSentIt = false;
                 if (splittedR[1].contains("€€")) {
@@ -38,6 +38,7 @@ public class Multicast_WLAN extends Multicast {
                     switch (splittedR[0]) {
                         case "info":
                             database.addUser(splittedR[1], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.wlanName, splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
+                            database.setOtherGroup(splittedR[1]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();

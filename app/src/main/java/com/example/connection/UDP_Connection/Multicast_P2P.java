@@ -25,7 +25,7 @@ Multicast_P2P extends Multicast {
             while (true) {
                 multicastSocketGroupP2p.receive(recv);
                 String received = new String(recv.getData(), 0, recv.getLength());
-                System.out.println("[ P2P ] "+received);
+                System.out.println("[P2P] "+received);
                 String[] splittedR = received.split("£€");//splittedR = splittedResponse if you want change it :P
                 boolean iSentIt=false;
                 if (splittedR[1].contains("€€")) {

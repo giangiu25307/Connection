@@ -22,6 +22,7 @@ import com.example.connection.libs.callback.DataCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
@@ -73,7 +74,7 @@ public class TcpClient {
         try {
             secretKey = encryption.convertSecretKeyToString(encryption.getSecretKey());
             oldSecretKey = secretKey;
-            shake += encryption.encrypt(secretKey + "£€" + msg+"£€" + ConnectionController.myUser.getIdUser(), encryption.convertStringToPublicKey(publicKey));
+            shake += encryption.encrypt(secretKey + "£€" + msg + "£€" + ConnectionController.myUser.getIdUser(), encryption.convertStringToPublicKey(publicKey));
             oldMsg = shake;
             AsyncServer.getDefault().connectSocket(new InetSocketAddress(database.findIp(id), port), new ConnectCallback() {
                 @Override
@@ -82,7 +83,7 @@ public class TcpClient {
                     handleConnectCompleted(ex, socket, oldMsg);
                 }
             });
-        } catch (GeneralSecurityException e) {
+        } catch (GeneralSecurityException | ConnectException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,7 +99,7 @@ public class TcpClient {
         String msg = "message£€" + id + "£€";
         try {
             msg += encryption.encryptAES(message, encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
-            oldMsg = msg+"£€" + ConnectionController.myUser.getIdUser();
+            oldMsg = msg + "£€" + ConnectionController.myUser.getIdUser();
             AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
                 @Override
                 public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
@@ -217,7 +218,7 @@ public class TcpClient {
                             intent.putExtra("id", oldId);
                             connection.getApplicationContext().sendBroadcast(intent);
                         }
-                        database.setRequest(oldId,"false");
+                        database.setRequest(oldId, "false");
                     }
                 }
             }
