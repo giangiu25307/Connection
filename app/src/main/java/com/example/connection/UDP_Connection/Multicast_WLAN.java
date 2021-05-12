@@ -154,6 +154,7 @@ public class Multicast_WLAN extends Multicast {
     public void sendAllMyGroupInfo() {
         try {
             String info = "firstGroupInfo£€" + database.getAllMyGroupInfo();
+            System.out.println(info);
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupwlan0.send(message);

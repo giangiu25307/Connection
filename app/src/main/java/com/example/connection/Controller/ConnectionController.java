@@ -11,10 +11,12 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
@@ -59,6 +61,7 @@ ConnectionController {
     private TcpServer tcpServer;
     public static boolean GO_leave=false;
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
         encryption = new Encryption(connection);
@@ -103,6 +106,7 @@ ConnectionController {
     }
 
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @SuppressLint("MissingPermission")
     public void createGroup() {
         GO_leave=false;
@@ -292,9 +296,11 @@ ConnectionController {
     }
 
     public void initProcess() {
+
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
+        //createGroup();
     }
 
     public void active4G() {
@@ -330,15 +336,21 @@ ConnectionController {
     }
 
     public void wifiConnection(String id) {
+        wifiManager.disconnect();
         WifiConfiguration wifiConfig = new WifiConfiguration();
-        wifiConfig.SSID = String.format("\"%s\"", SSID + id);
+        String SSID1 = SSID + id;
+        wifiConfig.SSID = String.format("\"%s\"", SSID1);
         wifiConfig.preSharedKey = String.format("\"%s\"", networkPassword);
         wifiConfig.priority = 999999999;
 //remember id
         System.out.println(id);
+        wifiManager.startScan();
+        wifiManager.startScan();
+        wifiManager.startScan();
         netId = wifiManager.addNetwork(wifiConfig);
-        wifiManager.disconnect();
         wifiManager.enableNetwork(netId, true);
+
+
     }
 
     public String getSSID() {

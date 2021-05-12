@@ -490,10 +490,18 @@ public class Database extends SQLiteOpenHelper {
         Cursor allUser = getAllUsersWithoutME();
         String allMyGroupInfo = ConnectionController.myUser.getAll();
         for (int i = 0; i < allUser.getCount(); i++) {
+            if (allUser.getString(16).equals("1")) {
+                allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + ConnectionController.myUser.getInetAddress().getHostName() + "%" + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
+                        + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€"
+                        + allUser.getString(11);
+            } else {
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
                         + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€"
                         + allUser.getString(11);
+
+            }
             System.out.println(allMyGroupInfo);
             allUser.moveToNext();
         }
