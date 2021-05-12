@@ -38,7 +38,7 @@ Multicast_P2P extends Multicast {
                     switch (splittedR[0]) {
                         case "info":
                             //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
-                            String groupInfo = "sendInfo£€" + database.getAllMyGroupInfo();
+                            String groupInfo = "sendInfo£€" + database.getAllMyGroupInfoP2P();
                             splittedR[2] = splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName;
                             database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
                             tcp_client.sendMessageNoKey(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, groupInfo, splittedR[1]);
@@ -112,7 +112,7 @@ Multicast_P2P extends Multicast {
                             dbUserEvent=false;
                             break;
                         case "firstGroupInfo":
-                            String info = "groupInfo£€" + database.getAllMyGroupInfo();
+                            String info = "groupInfo£€" + database.getAllMyGroupInfoP2P();
                             for (int i = 1; i < splittedR.length - 1; i = i + 12) {
                                 if (i == 1)
                                     database.setMyGroupOwnerIp(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, splittedR[i]);

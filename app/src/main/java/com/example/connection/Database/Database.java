@@ -486,12 +486,34 @@ public class Database extends SQLiteOpenHelper {
     /**
      * Get the information of every person which are connected to me
      */
-    public String getAllMyGroupInfo() {
+    public String getAllMyGroupInfoWlan() {
         Cursor allUser = getAllUsersWithoutME();
-        String allMyGroupInfo = ConnectionController.myUser.getAll();
+        String allMyGroupInfo = ConnectionController.myUser.getAllWlan();
         for (int i = 0; i < allUser.getCount(); i++) {
             if (allUser.getString(16).equals("1")) {
-                allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + ConnectionController.myUser.getInetAddress().getHostName() + "%" + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
+                allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + ConnectionController.myUser.getInetAddressWlan().getHostName() + "%" + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
+                        + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€"
+                        + allUser.getString(11);
+            } else {
+                allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
+                        + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€"
+                        + allUser.getString(11);
+
+            }
+            System.out.println(allMyGroupInfo);
+            allUser.moveToNext();
+        }
+        return allMyGroupInfo;
+    }
+
+    public String getAllMyGroupInfoP2P() {
+        Cursor allUser = getAllUsersWithoutME();
+        String allMyGroupInfo = ConnectionController.myUser.getAllP2P();
+        for (int i = 0; i < allUser.getCount(); i++) {
+            if (allUser.getString(16).equals("1")) {
+                allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + ConnectionController.myUser.getInetAddressP2P().getHostName() + "%" + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
                         + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€"
                         + allUser.getString(11);

@@ -141,7 +141,7 @@ public class Multicast_WLAN extends Multicast {
     //send my info ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendInfo() {
         try {
-            String info = "info£€" + ConnectionController.myUser.getAll();
+            String info = "info£€" + ConnectionController.myUser.getAllWlan();
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupwlan0.send(message);
@@ -153,7 +153,7 @@ public class Multicast_WLAN extends Multicast {
     //send all group info ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void sendAllMyGroupInfo() {
         try {
-            String info = "firstGroupInfo£€" + database.getAllMyGroupInfo();
+            String info = "firstGroupInfo£€" + database.getAllMyGroupInfoWlan();
             System.out.println(info);
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);

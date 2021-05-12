@@ -124,9 +124,9 @@ ConnectionController {
                     public void run() {
                         try {
                             MyNetworkInterface.setNetworkInterfacesNames();
-                            myUser.setInetAddress(MyNetworkInterface.p2pIpv6Address);
+                            myUser.setInetAddressP2P(MyNetworkInterface.p2pIpv6Address);
                             database.setMyGroupOwnerIp(MyNetworkInterface.p2pIpv6Address, myUser.getIdUser());
-                            System.out.println(myUser.getInetAddress().getHostAddress());
+                            System.out.println(myUser.getInetAddressP2P().getHostAddress());
                         } catch (SocketException | UnknownHostException e) {
                             e.printStackTrace();
                         }
@@ -189,8 +189,8 @@ ConnectionController {
                         public void onFinish() {
                             try {
                                 MyNetworkInterface.setNetworkInterfacesNames();
-                                myUser.setInetAddress(MyNetworkInterface.wlanIpv6Address);
-                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
+                                myUser.setInetAddressWlan(MyNetworkInterface.wlanIpv6Address);
+                                database.setIp(myUser.getIdUser(), myUser.getInetAddressWlan().getHostAddress());
                             } catch (SocketException | UnknownHostException e) {
                                 e.printStackTrace();
                             }
@@ -233,8 +233,8 @@ ConnectionController {
                             tcpServer.setup();
                             try {
                                 MyNetworkInterface.setNetworkInterfacesNames();
-                                myUser.setInetAddress(MyNetworkInterface.wlanIpv6Address);
-                                database.setIp(myUser.getIdUser(), myUser.getInetAddress().getHostAddress());
+                                myUser.setInetAddressWlan(MyNetworkInterface.wlanIpv6Address);
+                                database.setIp(myUser.getIdUser(), myUser.getInetAddressWlan().getHostAddress());
                             } catch (SocketException | UnknownHostException e) {
                                 e.printStackTrace();
                             }
@@ -300,7 +300,7 @@ ConnectionController {
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
-        //createGroup();
+        // createGroup();
     }
 
     public void active4G() {
@@ -338,7 +338,7 @@ ConnectionController {
     public void wifiConnection(String id) {
         wifiManager.disconnect();
         WifiConfiguration wifiConfig = new WifiConfiguration();
-        String SSID1 = SSID + id;
+        String SSID1 = SSID + 0;
         wifiConfig.SSID = String.format("\"%s\"", SSID1);
         wifiConfig.preSharedKey = String.format("\"%s\"", networkPassword);
         wifiConfig.priority = 999999999;
