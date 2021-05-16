@@ -59,7 +59,8 @@ ConnectionController {
     private Encryption encryption;
     private TcpClient tcpClient;
     private TcpServer tcpServer;
-    public static boolean GO_leave=false;
+    public static boolean GO_leave = false;
+    private WifiManager.WifiLock wifiLock;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public ConnectionController(Connection connection, Database database) {
@@ -81,7 +82,7 @@ ConnectionController {
         mConfig = new WifiP2pConfig.Builder()
                 .setNetworkName(SSID + myId)
                 .setPassphrase(networkPassword)
-                .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
+                .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_AUTO)
                 .enablePersistentMode(false)
                 .build();
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -91,6 +92,7 @@ ConnectionController {
                 .build();
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
+        wifiLock = wifiManager.createWifiLock(1, "testLock");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
@@ -102,6 +104,7 @@ ConnectionController {
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
     public void removeGroup() {
         bluetoothAdvertiser.stopAdvertising();
+        wifiLock.release();
         mManager.removeGroup(mChannel, null);
     }
 
@@ -109,7 +112,7 @@ ConnectionController {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @SuppressLint("MissingPermission")
     public void createGroup() {
-        GO_leave=false;
+        GO_leave = false;
         mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
 
             @Override
@@ -131,7 +134,7 @@ ConnectionController {
                             e.printStackTrace();
                         }
                         multicastP2P.createMultigroupP2P();
-                        if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION")){
+                        if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION")) {
                             multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
                             multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
                         }
@@ -163,8 +166,7 @@ ConnectionController {
 
             }
         });
-
-
+        wifiLock.acquire();
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
@@ -172,14 +174,14 @@ ConnectionController {
         tcpServer.close();
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         wifiConnection(id);
-        connManager.requestNetwork(networkRequest, new NetworkCallback(){
+        connManager.requestNetwork(networkRequest, new NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
                 if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
                     wifiConnection(id);
-                else{
-                    new CountDownTimer(5000,1000){
+                else {
+                    new CountDownTimer(5000, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
 
@@ -296,11 +298,9 @@ ConnectionController {
     }
 
     public void initProcess() {
-
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
-        // createGroup();
     }
 
     public void active4G() {
@@ -323,7 +323,7 @@ ConnectionController {
 
     //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
     public void connectToGroupOwnerId(String id) {
-        GO_leave=false;
+        GO_leave = false;
         bluetoothScanner.setClientToRequestGroupId(id);
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithSpecifiedId);
     }
