@@ -49,6 +49,21 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.OTHER_GROUP + " TEXT DEFAULT 0 "
                 + ")";
 
+        String CREATE_USER_PLUS_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.Company.USER_PLUS + " ( "
+                + Task.Company.ID_PLUS + " TEXT PRIMARY KEY, "
+                + Task.Company.MAIL + " TEXT NOT NULL, "
+                + Task.Company.COMPANY_NAME + " TEXT NOT NULL, "
+                + Task.Company.NAME + " TEXT NOT NULL, "
+                + Task.Company.SURNAME + " TEXT NOT NULL, "
+                + Task.Company.COUNTRY + " TEXT NOT NULL, "
+                + Task.Company.CITY + " TEXT NOT NULL,"
+                + Task.Company.STREET + " TEXT NOT NULL, "
+                + Task.Company.NUMBER + " TEXT  DEFAULT 0, "
+                + Task.Company.SDI + " TEXT NOT NULL, "
+                + Task.Company.VAT_NUMBER + " TEXT NOT NULL, "
+                + Task.Company.PROMOTION_PAGE + " TEXT NOT NULL, "
+                + Task.Company.PROMOTION_MESSAGE + " TEXT NOT NULL, "
+                + ")";
         String CREATE_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.MESSAGE + " ( "
                 + Task.TaskEntry.ID_CHAT + " TEXT NOT NULL, "
                 + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
