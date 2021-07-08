@@ -349,8 +349,6 @@ ConnectionController {
         wifiManager.startScan();
         netId = wifiManager.addNetwork(wifiConfig);
         wifiManager.enableNetwork(netId, true);
-
-
     }
 
     public String getSSID() {

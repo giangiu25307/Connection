@@ -1,8 +1,10 @@
 package com.example.connection.UDP_Connection;
 
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.PlusController;
 import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.TcpClient;
 
@@ -21,10 +23,23 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     protected ConnectionController connectionController;
     protected Database database;
     public static boolean dbUserEvent;
+    protected PlusController plusController;
 
     public Multicast(Database database, ConnectionController connectionController, TcpClient tcp_client) {
         this.connectionController = connectionController;
         this.tcp_client = tcp_client;
+        this.database = database;
+        dbUserEvent=true;
+        try {
+            group = InetAddress.getByName("234.0.0.0");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        this.sa = new InetSocketAddress(group, 6789);
+    }
+
+    public Multicast(Database database, PlusController plusController){
+        this.plusController = plusController;
         this.database = database;
         dbUserEvent=true;
         try {

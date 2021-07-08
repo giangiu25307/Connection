@@ -70,7 +70,8 @@ public class Task {
         public static final String serviceLookingForGroupOwner = "LFG";//fatto
         public static final String serviceLookingForGroupOwnerWithSpecifiedId = "LGS";//fatto
         public static final String serviceLookingForGroupOwnerWithGreaterId = "LGG";//fatto
-        public static final String serviceUserPlus = "SUP";
+        public static final String servicePlusSearchingNetwork = "PSN";//fatto
+        //public static final String serviceUserPlus = "SUP"; IT NEEDS TO BE CREATED ONLY IF WE WANT TO KNOW THE DISTANCE BETWEEN THE USER AND THE COMPANY NEXT TO YOU (NOT DONE)
     }
 
 }
