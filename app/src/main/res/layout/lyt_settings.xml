@@ -8,7 +8,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/layoutBackground">
+        android:background="?attr/layoutBackground"
+        android:overScrollMode="never">
 
         <LinearLayout
             android:id="@+id/settingsLayout"
@@ -32,7 +33,7 @@
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/settingsCardColor"
+                app:cardBackgroundColor="?attr/itemBackground"
                 app:cardCornerRadius="12.5dp"
                 app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -73,7 +74,7 @@
                             android:layout_height="20dp"
                             android:layout_weight="0"
                             app:srcCompat="@drawable/ic_edit"
-                            app:tint="?attr/settingsCardIconColor" />
+                            app:tint="?attr/toolbarAndSettingsCardIconColor" />
 
                         <ImageView
                             android:id="@+id/imageView15"
@@ -91,7 +92,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_marginBottom="8dp"
-                        android:fontFamily="sans-serif"
+                        android:fontFamily="@font/opensans_regular_custom"
                         android:text="Name"
                         android:textColor="?attr/textColor"
                         app:layout_constraintBottom_toTopOf="@+id/guideline7"
@@ -107,7 +108,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="sans-serif-light"
+                        android:fontFamily="@font/opensans_light_custom"
                         android:text="Age"
                         android:textColor="?attr/textColor"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -180,7 +181,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_wallpaper"
-                    app:tint="?attr/settingsCardIconColor" />
+                    app:tint="?attr/toolbarAndSettingsCardIconColor" />
 
                 <TextView
                     android:id="@+id/wallpaperOption"
@@ -247,7 +248,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_theme"
-                    app:tint="?attr/settingsCardIconColor" />
+                    app:tint="?attr/toolbarAndSettingsCardIconColor" />
 
                 <TextView
                     android:id="@+id/themeOption"
@@ -319,7 +320,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_password"
-                    app:tint="?attr/settingsCardIconColor" />
+                    app:tint="?attr/toolbarAndSettingsCardIconColor" />
 
                 <TextView
                     android:id="@+id/passwordOption"
@@ -391,7 +392,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_information"
-                    app:tint="?attr/settingsCardIconColor" />
+                    app:tint="?attr/toolbarAndSettingsCardIconColor" />
 
                 <TextView
                     android:id="@+id/informationOption"
@@ -415,9 +416,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="2dp"
-                    android:text="Look at the app version, the project on GitHub and more"
-                    android:singleLine="true"
                     android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text="Look at the app version, the project on GitHub and more"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -457,7 +458,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_bug_report"
-                    app:tint="?attr/settingsCardIconColor" />
+                    app:tint="?attr/toolbarAndSettingsCardIconColor" />
 
                 <TextView
                     android:id="@+id/burReportOption"

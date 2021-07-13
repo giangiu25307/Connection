@@ -3,6 +3,6 @@
 
     <solid android:color="@color/transparent"/>
     <stroke android:color="?attr/textColor" android:width="0.6dp"/>
-    <corners android:radius="7.5dp" />
+    <corners android:radius="@dimen/login_signup_showhidepassword_attachment_permission_button_corner" />
 
 </shape>

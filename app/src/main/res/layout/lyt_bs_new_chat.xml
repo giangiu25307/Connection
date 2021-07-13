@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="4dp"
-        android:fontFamily="@font/opensans_bold"
+        android:fontFamily="@font/opensans_semibold_custom"
         android:text="Start new chat"
         android:textColor="?attr/textColor"
         android:textSize="21sp"

@@ -79,12 +79,12 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.left_to_right);
         textView.startAnimation(animation);
         */
-        requestButton = view.findViewById(R.id.requestLinearLayout);
+        requestButton = view.findViewById(R.id.requestButton);
         int totalRequest = database.getAllRequestChat().getCount();
         requestButton.setText(totalRequest == 1 ? totalRequest + " request" : totalRequest + " requests");//(totalRequest==0 ? "No" : ""+totalRequest);
         totalChat = toolbar.findViewById(R.id.toolbarTitle);
         int totalChatNumber = database.getAllNoRequestChat().getCount();
-        totalChat.setText(totalChatNumber == 0 ? "Chat (0)" : "Chat (" + totalChatNumber + ")");
+        totalChat.setText(totalChatNumber == 0 ? "Chat (0)" : "Chats (" + totalChatNumber + ")");
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,10 +102,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         ChatAdapter chatAdapter = new ChatAdapter(getContext(), cursor, database, chatController);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        if(cursor.getCount() == 0){
-            TextView textView = view.findViewById(R.id.textView0Chat);
+        /*if(cursor.getCount() == 0){
+            TextView textView = view.findViewById(R.id.textViewChat);
             textView.setVisibility(View.VISIBLE);
-        }
+        }*/
         MessageController.getIstance().setChatAdapter(chatAdapter);
     }
 

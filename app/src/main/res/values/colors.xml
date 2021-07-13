@@ -1,88 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary color -->
+
+    <!-- Default colors (Light Theme)-->
     <color name="colorPrimary">#FAFAFA</color>
+    <color name="colorPrimaryDark">#FAFAFA</color>
+    <color name="backgroundColor">#FAFAFA</color>
+    <color name="surfaceColor">#F5F5F5</color>
+    <color name="secondSurfaceColor">#EEEEEE</color>
+    <color name="secondaryTextColor">#7E7E7E</color>
+    <color name="hintColor">#B5B5B5</color>
+    <color name="toolbarAndSettingsCardIconColor">#4B4B4B</color>
+    <color name="cancelDialogColor">#F8F8F8</color>
+    <color name="bottomUnselectedColor">#9F9F9F</color>
+    <color name="topLineBottomSheetColor">#A8A8A8</color>
+    <color name="messageReceivedColor">#F2F2F2</color>
+    <color name="sendImageMessageSeparatorColor">#DEDEDE</color>
 
-    <!-- Dark color primary -->
-    <color name="darkColorPrimary">#191919</color>
+    <!-- Dark colors -->
+    <color name="darkColorPrimary">#111111</color>
+    <color name="darkColorPrimaryDark">#111111</color>
+    <color name="darkBackgroundColor">#111111</color>
+    <color name="darkSurfaceColor">#181818</color>
+    <color name="darkSecondSurfaceColor">#212121</color>
+    <color name="darkSecondaryTextColor">#9A9A9A</color>
+    <color name="darkHintColor">#747474</color>
+    <color name="darkToolbarAndSettingsCardIconColor">#F4F4F4</color>
+    <color name="darkCancelDialogColor">#181818</color>
+    <color name="darkBottomUnselectedColor">#6F6F6F</color>
+    <color name="darkTopLineBottomSheetColor">#282828</color>
+    <color name="darkMessageReceived">#282828</color>
+    <color name="darkSendImageMessageSeparator">#565656</color>
 
-    <!-- Accent colors and variants -->
-    <color name="colorAccent">#FF5722</color>
-    <color name="semiTransparentColorAccent">#26FF5722</color>
-    <color name="darkColorAccent">#E53935</color>
+    <!-- TODO Da Guardare su material color come viene gestito il color secondario -->
+    <!-- Second color and its variants -->
+    <color name="secondaryColor">#FF5722</color>
+    <color name="secondaryColorDark">#E53935</color>
+    <color name="secondaryColorSemiTransparent">#26FF5722</color>
 
-    <!-- Reversed color primary -->
-    <color name="reversedColorPrimary">#282828</color>
-    <color name="reversedColorPrimaryDark">#282828</color>
-    <color name="reversedColorAccent">#ffffff</color>
-
-    <!-- Main color -->
-    <color name="pink">#E91E63</color>
-    <color name="green">#4CAF50</color>
-    <color name="orange">#FF9800</color>
-
-    <!-- Secondary main color -->
-    <color name="gray">#D0D0D0</color>
+    <!-- Util colors -->
     <color name="red">#C62828</color>
-
-    <!-- Light color -->
-    <color name="lightWhite">#F7F7F7</color>
-    <color name="mediumWhite">#F9F9F9</color>
-    <color name="darkWhite">#F1F1F1</color>
-
-    <!-- Black color -->
-    <color name="black4">#272727</color>
-    <color name="black3">#202020</color>
-    <color name="black2">#131313</color>
-    <color name="black1">#111111</color>
-    <color name="mapFilterCardBackgroundDark">#212121</color>
-    <color name="cancelButtonDark">#212121</color>
-    <color name="inputDataDark">#2A2A2A</color>
-    <color name="requestCardDark">#212121</color>
-    <color name="chatCardDark">#212121</color>
-    <color name="topLineBottomSheetDark">#282828</color>
-    <color name="settingsCardDark">#212121</color>
-    <color name="settingsProfileButtonBackgroundDark">#282828</color>
-
-    <!-- Gray color -->
-    <color name="lightGray">#CDCDCD</color>
-    <color name="darkGray">#5C5C5C</color>
-
-    <!-- Hint color -->
-    <color name="lightHintColor">#D2D2D2</color>
-    <color name="darkHintcolor">#848486</color>
-
-    <!-- Utils color -->
-    <color name="cancelDialogColorLight">#5D5D5D</color>
-    <color name="cancelDialogColorDark">#8F8F8F</color>
-    <color name="regularGray">#EFEFEF</color>
-    <color name="blue">#1565C0</color>
     <color name="transparent">#00ffffff</color>
-
-    <!-- Elements colors  -->
-    <color name="inputDataLight">#F8F8F8</color>
-    <color name="toolbarIconColorLight">#4B4B4B</color>
-    <color name="toolbarIconColorDark">#F4F4F4</color>
-    <color name="bottomUnselectedColorLight">#9F9F9F</color>
-    <color name="bottomUnselectedColorDark">#6F6F6F</color>
-    <color name="mapFilterCardBackgroundLight">#FAFAFA</color>
-    <color name="cancelButtonLight">#F8F8F8</color>
-    <color name="cancelButtonTextLight">#7E7E7E</color>
-    <color name="cancelButtonTextDark">#9A9A9A</color>
-    <color name="requestCard">#F8F8F8</color>
-    <color name="chatCard">#F8F8F8</color>
-    <color name="subTitleGroupLight">#404040</color>
-    <color name="subTitleGroupDark">#E4E4E4</color>
-    <color name="topLineBottomSheetLight">#A8A8A8</color>
-    <color name="settingsCardLight">#F8F8F8</color>
-    <color name="settingsCardIconLight">#4B4B4B</color>
-    <color name="settingsCardIconDark">#F4F4F4</color>
-    <color name="settingsGroupTitleLight">#404040</color>
-    <color name="settingsGroupTitleDark">#E4E4E4</color>
-    <color name="settingsProfileButtonBackgroundLight">#F2F2F2</color>
-    <color name="messageReceivedLight">#F2F2F2</color>
-    <color name="messageReceivedDark">#282828</color>
-    <color name="remainingCharactersMessageSeparatorLight">#DEDEDE</color>
-    <color name="remainingCharactersMessageSeparatorDark">#565656</color>
+    <color name="blue">#2979FF</color>
 
 </resources>

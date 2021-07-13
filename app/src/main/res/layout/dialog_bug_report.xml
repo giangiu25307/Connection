@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:fontFamily="@font/opensans_bold"
+        android:fontFamily="@font/opensans_semibold_custom"
         android:text="Report bug"
         android:textColor="?attr/textColor"
         android:textSize="21sp" />
