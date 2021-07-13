@@ -90,7 +90,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
         setupRecyclerView();
 
         sendView.setOnClickListener(view -> {
-            chatController.sendTCPMsg(message_input.getText().toString(), id);
+            chatController.sendGlobalMsg(message_input.getText().toString());
             MessageController.getIstance().setMessageAdapter(chatAdapter);
         });
 

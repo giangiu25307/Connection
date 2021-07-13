@@ -146,7 +146,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     } else viewPager.setCurrentItem(currentPage);
                 } else {
                     //send user info to server
-                    System.out.println(user.getAll());
+                    System.out.println(user.getAllWlan());
                     try {
                         System.out.println(accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePic()));
                     } catch (IOException e) {

@@ -25,7 +25,8 @@ public class User {
     String password;
     String birth;
     String publicKey;
-    InetAddress inetAddress;
+    InetAddress inetAddressWlan;
+    InetAddress inetAddressP2P;
 
     public User() {
         this.idUser = "";
@@ -66,16 +67,28 @@ public class User {
         return publicKey;
     }
 
-    public InetAddress getInetAddress() {
-        return inetAddress;
+    public InetAddress getInetAddressWlan() {
+        return inetAddressWlan;
     }
 
-    public void setInetAddress(String inetAddress) throws UnknownHostException {
-        this.inetAddress = InetAddress.getByName(inetAddress);
+    public void setInetAddressWlan(String inetAddressWlan) throws UnknownHostException {
+        this.inetAddressWlan = InetAddress.getByName(inetAddressWlan);
     }
 
-    public String getAll() {
-        return idUser + "£€" + inetAddress.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic+ "£€" +publicKey;
+    public InetAddress getInetAddressP2P() {
+        return inetAddressP2P;
+    }
+
+    public void setInetAddressP2P(String inetAddressP2P) throws UnknownHostException {
+        this.inetAddressP2P = InetAddress.getByName(inetAddressP2P);
+    }
+
+    public String getAllWlan() {
+        return idUser + "£€" + inetAddressWlan.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic + "£€" + publicKey;
+    }
+
+    public String getAllP2P() {
+        return idUser + "£€" + inetAddressP2P.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic + "£€" + publicKey;
     }
 
     public String getIdUser() {

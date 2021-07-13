@@ -25,22 +25,32 @@ Multicast_P2P extends Multicast {
             while (true) {
                 multicastSocketGroupP2p.receive(recv);
                 String received = new String(recv.getData(), 0, recv.getLength());
-                System.out.println(received);
+                System.out.println("[P2P] "+received);
                 String[] splittedR = received.split("£€");//splittedR = splittedResponse if you want change it :P
-                if (!splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
+                boolean iSentIt=false;
+                if (splittedR[1].contains("€€")) {
+                    if (splittedR[1].split("€€")[1].equals(ConnectionController.myUser.getIdUser())) {
+                        iSentIt = true;
+                    }
+                    splittedR[1] = splittedR[1].split("€€")[0];
+                }
+                if (!splittedR[1].equals(ConnectionController.myUser.getIdUser())&&!iSentIt) {
                     switch (splittedR[0]) {
                         case "info":
                             //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
-                            String groupInfo= "sendInfo£€"+database.getAllMyGroupInfo();
-                            database.addUser(splittedR[1], splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
+                            String groupInfo = "sendInfo£€" + database.getAllMyGroupInfoP2P();
+                            splittedR[2] = splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName;
+                            database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
                             tcp_client.sendMessageNoKey(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, groupInfo, splittedR[1]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
-                                splittedR[2]= database.findIp(ConnectionController.myUser.getIdUser());
-                                DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
+                                splittedR[2] = database.findIp(ConnectionController.myUser.getIdUser());
+                                splittedR[1] += "€€" + ConnectionController.myUser.getIdUser();
+                                String string = this.arrayToString(splittedR);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
-                            dbUserEvent=false;
+                            dbUserEvent = false;
                             break;
                         case "globalMessage":
                             //receiving a message -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -49,7 +59,9 @@ Multicast_P2P extends Multicast {
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
                                 splittedR[2]= database.findIp(ConnectionController.myUser.getIdUser());
-                                DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
+                                splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
+                                String string = this.arrayToString(splittedR);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             /*} else if (database.checkGroupId(splittedR[0])) {
@@ -63,7 +75,9 @@ Multicast_P2P extends Multicast {
                             //A user is leaving the group :( ------------------------------------------------------------------------------------------------------------------------------------
                             database.deleteUser(splittedR[1]);
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
-                                DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
+                                splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
+                                String string = this.arrayToString(splittedR);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             dbUserEvent=false;
@@ -83,29 +97,34 @@ Multicast_P2P extends Multicast {
                             dbUserEvent=false;
                             break;
                         case "groupInfo":
+
                             for (int i = 1; i < splittedR.length - 1; i = i + 12) {
                                 database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.p2pName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             }
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
+                                splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
                                 splittedR[2]= database.findIp(ConnectionController.myUser.getIdUser());
-                                DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
+                                String string = this.arrayToString(splittedR);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             dbUserEvent=false;
                             break;
                         case "firstGroupInfo":
-                            String info = "groupInfo£€" + database.getAllMyGroupInfo();
+                            String info = "groupInfo£€" + database.getAllMyGroupInfoP2P();
                             for (int i = 1; i < splittedR.length - 1; i = i + 12) {
                                 if (i == 1)
                                     database.setMyGroupOwnerIp(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, splittedR[i]);
-                                database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.p2pName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                                database.addUser(splittedR[i], splittedR[i + 1].split("%")[0] + "%" + MyNetworkInterface.p2pName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             }
                             tcp_client.sendMessageNoKey(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, info, splittedR[1]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
-                                splittedR[2]= database.findIp(ConnectionController.myUser.getIdUser());
-                                DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
+                                splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
+                                // splittedR[2]= database.findIp(ConnectionController.myUser.getIdUser());
+                                String string = this.arrayToString(splittedR);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             dbUserEvent=false;
@@ -113,7 +132,9 @@ Multicast_P2P extends Multicast {
                         case "userToDelete":
                             database.deleteAllIdUser(splittedR[1]);
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNEXION")) {
-                                DatagramPacket message = new DatagramPacket(splittedR.toString().getBytes(), splittedR.toString().getBytes().length, group, 6789);
+                                splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
+                                String string = this.arrayToString(splittedR);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             dbUserEvent=false;
@@ -132,7 +153,6 @@ Multicast_P2P extends Multicast {
         try {
             multicastSocketGroupP2p = new MulticastSocket(6789);
             NetworkInterface networkInterface = MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName);
-            System.out.println("network"+networkInterface);
             multicastSocketGroupP2p.setNetworkInterface(networkInterface);
             multicastSocketGroupP2p.joinGroup(sa,networkInterface);
         } catch (UnknownHostException e) {
@@ -158,4 +178,13 @@ Multicast_P2P extends Multicast {
     public void closeMultigroupP2p(){
         multicastSocketGroupP2p.close();
     }
+
+    public void setMulticastWlan(MulticastSocket multicastWlan){
+        multicastSocketGroupwlan0 = multicastWlan;
+    }
+
+    public MulticastSocket getMulticastP2P(){
+        return multicastSocketGroupP2p;
+    }
+
 }

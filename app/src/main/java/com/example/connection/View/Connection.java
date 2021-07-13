@@ -114,10 +114,12 @@ public class Connection extends AppCompatActivity {
             database.addMsg("wee", "33", "33");
         }
 
-        //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
-        database.addUser("1", null, "test1", "test1@gmail.com", "male", "test1", "test1", "test1", "test1", "01-01-2001", "nothingToseehere", null);//xiaomia2litemio
-        //database.addUser("2",null,"test2","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
-        //database.addUser("3",null,"test3","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
+       // database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
+        //database.addUser("2", null, "test2", "test1@gmail.com", "male", "test1", "test1", "test1", "test1", "01-01-2001", "nothingToseehere", null);//xiaomia2litemio
+        // database.addUser("3",null,"test4","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
+        //database.addUser("9",null,"test8","test9@gmail.com","other","test9","test9","test3","test3","01-01-2003","azz",null);
+        // database.addUser("5",null,"test4","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
+        // database.addUser("11",null,"test10","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
         createCountDowntimer();
         countDownTimer.start();
         foregroundService = new MyForegroundService();
@@ -140,14 +142,17 @@ public class Connection extends AppCompatActivity {
         try {
             String manufacturer = "xiaomi";
             if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
+                //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);
                 //this will open auto start screen where user can enable permission for your app
                 Intent intent1 = new Intent();
                 intent1.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsTabActivity"));
                 startActivity(intent1);
+            }else{
+                //database.addUser("1", null, "test1", "test1@gmail.com", "male", "test1", "test1", "test1", "test1", "01-01-2001", "nothingToseehere", null);
             }
         } catch (ActivityNotFoundException e) {
             System.out.println("Not MIUI device");
-        }
+         }
     }
 
     private void loadTheme() {

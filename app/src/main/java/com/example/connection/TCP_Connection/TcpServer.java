@@ -24,6 +24,7 @@ import com.example.connection.libs.callback.ListenCallback;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
@@ -47,7 +48,6 @@ public class TcpServer {
         this.database = database;
         this.encryption = encryption;
         this.tcpClient = tcpClient;
-        this.multicastP2p=null;
         port = 50000;
     }
 
@@ -145,18 +145,20 @@ public class TcpServer {
                       //  intent.putExtra("msg",message); da finire la parte delle immagini
                         intent.putExtra("id",splittedR[1]);
                     } else {
-                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, database.findIp(ConnectionController.myUser.getIdUser()));
+                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
                     }
                     return "image";
                 case "sendInfo":
                     //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
-                    for (int i = 1; i < splittedR.length; i = i + 12) {
+                    for (int i = 1; i < splittedR.length-1; i = i + 12) {
                         if (i == 1) {
-                            database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+ MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                            splittedR[2] = splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName;
+                            database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
-                            database.setMyGroupOwnerIp(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i]);
+                            database.setMyGroupOwnerIp(splittedR[i + 1], splittedR[i]);
                         }else {
-                            database.addUser(splittedR[i], splittedR[i + 1].split("%")[0]+"%"+ MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                            splittedR[i + 1] = splittedR[i + 1].split("%")[0] + "%" + MyNetworkInterface.wlanName;
+                            database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
                         }
                     }
@@ -192,7 +194,7 @@ public class TcpServer {
                             e.printStackTrace();
                         }
                     } else {
-                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, database.findIp(ConnectionController.myUser.getIdUser()));
+                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
                     }
                     return "message";
                 case "handShake":
@@ -207,7 +209,7 @@ public class TcpServer {
                         intent.putExtra("id",message[2]);
                         connection.getApplicationContext().sendBroadcast(intent);
                     } else {
-                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, database.findIp(ConnectionController.myUser.getIdUser()));
+                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
                     }
                     return "handShake";
                 case "groupInfo":
@@ -217,7 +219,11 @@ public class TcpServer {
                         database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                         database.setOtherGroup(splittedR[i]);
                     }
-                    multicastP2p.sendGlobalMsg(msg);
+                    splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
+                    splittedR[2]=database.getMyGroupOwnerIp();
+                    String string = this.arrayToString(splittedR);
+                    DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, InetAddress.getByName("234.0.0.0"), 6789);
+                    multicastP2p.getMulticastP2P().send(message);
                     Multicast_P2P.dbUserEvent=false;
                     return "groupInfo";
                     /*case "REQUEST-MEET":
@@ -250,5 +256,13 @@ public class TcpServer {
             e.printStackTrace();
         }
         return "";
+    }
+
+    private String arrayToString(String[] array){
+        String string="";
+        for (int i=0;i<array.length;i++){
+            string+=array[i]+"£€";
+        }
+        return string;
     }
 }
