@@ -42,15 +42,13 @@ public class MyNotificationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        CharSequence name = "Connection";
-        String description = "ConnectionNotificationService";
+        CharSequence name = "Chat message";
         person = new Person.Builder()
                 .setName(this.name)
                 .setIcon(IconCompat.createFromIcon(Icon.createWithFilePath(path)))
                 .build();
-        int importance = NotificationManager.IMPORTANCE_LOW;
-        NotificationChannel channel = new NotificationChannel("ConnectionNotificationService", name, importance);
-        channel.setDescription(description);
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel("chatMessageNotification", name, importance);
         // Register the channel with the system; you can't change the importance
         // or other notification behaviors after this
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
@@ -60,16 +58,6 @@ public class MyNotificationService extends Service {
                 new NotificationCompat.MessagingStyle.Message(msg,
                         System.currentTimeMillis(),
                         person);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "ConnectionForegroundService");
-        Notification notification = notificationBuilder.setOngoing(true)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("App is running in background")
-                .setPriority(NotificationManager.IMPORTANCE_MIN)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .setStyle(new NotificationCompat.MessagingStyle(person).addMessage(message))
-                .build();
-        notificationManager.notify(3,notification);
-        System.out.println("notifica creata");
     }
 
 }
