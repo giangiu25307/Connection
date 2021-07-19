@@ -76,7 +76,7 @@ public class Connection extends AppCompatActivity {
         xiamoiWifiPermission();
 
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
-        boolean createSample = false;
+        boolean createSample = true;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
             database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo","");
@@ -114,7 +114,7 @@ public class Connection extends AppCompatActivity {
             database.addMsg("wee", "33", "33");
         }
 
-       // database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
+        //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
         //database.addUser("2", null, "test2", "test1@gmail.com", "male", "test1", "test1", "test1", "test1", "01-01-2001", "nothingToseehere", null);//xiaomia2litemio
         // database.addUser("3",null,"test4","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
         //database.addUser("9",null,"test8","test9@gmail.com","other","test9","test9","test3","test3","01-01-2003","azz",null);
@@ -125,7 +125,7 @@ public class Connection extends AppCompatActivity {
         foregroundService = new MyForegroundService();
         Intent notificationIntent = new Intent(this, foregroundService.getClass());
         this.startForegroundService(notificationIntent);
-        MessageController.newInstance();
+        MessageController.newInstance(this);
 
     }
 

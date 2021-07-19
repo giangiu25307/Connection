@@ -2,6 +2,7 @@ package com.example.connection.View;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.DrawController;
+import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
@@ -203,6 +205,12 @@ public class MapFragment extends Fragment {
                 });
                 break;
             case R.id.gpsIcon:
+                Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
+                intent.putExtra("intentType", "messageController");
+                intent.putExtra("communicationType", "tcp");
+                intent.putExtra("msg", "porco dio");
+                intent.putExtra("idChat", "2");
+                getContext().sendBroadcast(intent);
                 break;
             default:
                 break;

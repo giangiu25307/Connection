@@ -10,6 +10,7 @@ import com.example.connection.Controller.MessageController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
+import com.example.connection.View.ChatActivity;
 import com.example.connection.View.Connection;
 import com.example.connection.libs.AsyncServer;
 import com.example.connection.libs.AsyncSocket;
@@ -191,7 +192,7 @@ public class TcpClient {
                     sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
                 else {
                     if (!noKey) {
-                        Intent intent = new Intent(connection.getApplicationContext(), MessageController.getIstance().getClass());
+                        Intent intent = new Intent(connection.getApplicationContext(), ChatActivity.class);
                         if (received.split("£€")[1].equals("handShake")) {
                             database.createChat(oldId, database.getUserName(oldId), oldSecretKey);
                             checkDate(oldId);
@@ -199,7 +200,7 @@ public class TcpClient {
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", oldClearMsg);
-                            intent.putExtra("id", oldId);
+                            intent.putExtra("idChat", oldId);
                             connection.getApplicationContext().sendBroadcast(intent);
                         } else if (received.split("£€")[1].equals("message")) {
                             checkDate(oldId);
@@ -207,7 +208,7 @@ public class TcpClient {
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", oldClearMsg);
-                            intent.putExtra("id", oldId);
+                            intent.putExtra("idChat", oldId);
                             connection.getApplicationContext().sendBroadcast(intent);
                         } else {
                             checkDate(oldId);
@@ -215,7 +216,7 @@ public class TcpClient {
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", oldImage);
-                            intent.putExtra("id", oldId);
+                            intent.putExtra("idChat", oldId);
                             connection.getApplicationContext().sendBroadcast(intent);
                         }
                         database.setRequest(oldId, "false");
