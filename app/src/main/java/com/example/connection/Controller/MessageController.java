@@ -31,7 +31,7 @@ public class MessageController extends BroadcastReceiver {
     private Context context;
     private HashMap<String, NotificationCompat.MessagingStyle> messagingStyleHashMap;
     private HashMap<String, Integer> pendingIds;
-    private int counter=1;
+    private int counter=2;
 
     public static MessageController newInstance(Context context) {
         messageController = new MessageController();
@@ -121,10 +121,11 @@ public class MessageController extends BroadcastReceiver {
                                 //.addAction(R.drawable.ic_snooze, getString(R.string.snooze), snoozePendingIntent)
                                 .setAutoCancel(true);
 
-                        Notification summaryNotification = new NotificationCompat.Builder(context, "chatMessageNotification")
+                        Notification summaryNotification = new NotificationCompat.Builder(messageController.getContext(), "chatMessageNotification")
                                         .setSmallIcon(R.mipmap.ic_launcher)
                                         .setGroup("CHAT_GROUP")
                                         .setGroupSummary(true)
+                                        .setAutoCancel(true)
                                         .build();
                         System.out.println(messageController.getPendingIds().get(intent.getStringExtra("idChat")));
                         notificationManager.notify(messageController.getPendingIds().get(intent.getStringExtra("idChat")), notificationBuilder.build());
