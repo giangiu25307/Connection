@@ -30,6 +30,7 @@ public class MessageController extends BroadcastReceiver {
     private Context context;
     private HashMap<String, NotificationCompat.MessagingStyle> messagingStyleHashMap;
     private HashMap<String, Integer> pendingIds;
+    private int counter=1;
 
     public static MessageController newInstance(Context context) {
         messageController = new MessageController();
@@ -103,12 +104,9 @@ public class MessageController extends BroadcastReceiver {
                         try {
                              chatIntent=PendingIntent.getActivity(messageController.getContext(), messageController.getPendingIds().get(intent.getStringExtra("idChat")), chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
                         }catch(NullPointerException e){
-                            int id=0;
-                            for (int i=0;i<intent.getStringExtra("idChat").length();i++){
-                                id+=intent.getStringExtra("idChat").charAt(i);
-                            }
-                            messageController.getPendingIds().put(intent.getStringExtra("idChat"),id);
-                            chatIntent=PendingIntent.getActivity(messageController.getContext(), id, chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            messageController.getPendingIds().put(intent.getStringExtra("idChat"),messageController.counter);
+                            chatIntent=PendingIntent.getActivity(messageController.getContext(), messageController.counter, chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            messageController.counter++;
                         }
                         Bitmap bitmap = BitmapFactory.decodeFile(user.getString(user.getColumnIndex(Task.TaskEntry.PROFILE_PIC)));
                         Drawable draw = new BitmapDrawable(messageController.getContext().getResources(), bitmap);
