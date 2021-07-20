@@ -1,5 +1,6 @@
 package com.example.connection.Controller;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -117,11 +118,19 @@ public class MessageController extends BroadcastReceiver {
                                 .setStyle(messagingStyle)
                                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                                 .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                                .setGroup("CHAT_GROUP")
                                 .setContentIntent(chatIntent)
                                 //.addAction(R.drawable.ic_snooze, getString(R.string.snooze), snoozePendingIntent)
                                 .setAutoCancel(true);
+
+                        Notification summaryNotification = new NotificationCompat.Builder(context, "chatMessageNotification")
+                                        .setSmallIcon(R.mipmap.ic_launcher)
+                                        .setGroup("CHAT_GROUP")
+                                        .setGroupSummary(true)
+                                        .build();
                         System.out.println(messageController.getPendingIds().get(intent.getStringExtra("idChat")));
                         notificationManager.notify(messageController.getPendingIds().get(intent.getStringExtra("idChat")), notificationBuilder.build());
+                        notificationManager.notify(0, summaryNotification);
                         if (Connection.fragmentName.equals("chat")) {
                            messageController.chatAdapter.swapCursor(Connection.database.getAllChat());
                         }
