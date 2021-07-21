@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Model.User;
+import com.example.connection.Model.UserPlus;
 
 import java.time.LocalDateTime;
 
@@ -49,6 +50,22 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.OTHER_GROUP + " TEXT DEFAULT 0 "
                 + ")";
 
+        String CREATE_USER_PLUS_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.Company.USER_PLUS + " ( "
+                + Task.Company.ID_PLUS + " TEXT PRIMARY KEY, "
+                + Task.Company.MAIL + " TEXT NOT NULL, "
+                + Task.Company.COMPANY_NAME + " TEXT NOT NULL, "
+                + Task.Company.NAME + " TEXT NOT NULL, "
+                + Task.Company.SURNAME + " TEXT NOT NULL, "
+                + Task.Company.COUNTRY + " TEXT NOT NULL, "
+                + Task.Company.CITY + " TEXT NOT NULL,"
+                + Task.Company.STREET + " TEXT NOT NULL, "
+                + Task.Company.NUMBER + " TEXT  DEFAULT 0, "
+                + Task.Company.SDI + " TEXT NOT NULL, "
+                + Task.Company.VAT_NUMBER + " TEXT NOT NULL, "
+                + Task.Company.PROMOTION_PAGE + " TEXT NOT NULL, "
+                + Task.Company.PROMOTION_MESSAGE + " TEXT NOT NULL "
+                + ")";
+        
         String CREATE_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.MESSAGE + " ( "
                 + Task.TaskEntry.ID_CHAT + " TEXT NOT NULL, "
                 + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
@@ -85,6 +102,7 @@ public class Database extends SQLiteOpenHelper {
         database.execSQL(CREATE_CHAT_TABLE);
         database.execSQL(CREATE_GLOBAL_MESSAGE_TABLE);
         database.execSQL(BACKGROUND_CHAT_IMAGES);
+        database.execSQL(CREATE_USER_PLUS_TABLE);
     }
 
     @Override
@@ -1009,5 +1027,18 @@ public class Database extends SQLiteOpenHelper {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.IP_GROUP_OWNER, ip);
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + "=" + id, null);
+    }
+
+    // PLUS USERS -------------------------------------------------------------------------------------------------------------------------
+    public UserPlus getMyPlusUser(){
+        String query = "SELECT *"  +
+                " FROM " + Task.Company.USER_PLUS;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        } else {
+            return null;
+        }
+        return new UserPlus(c.getString(0),c.getString(1),c.getString(2),c.getString(3),c.getString(4),c.getString(5),c.getString(6),c.getString(7),c.getString(8),c.getString(9),c.getString(10),c.getString(11),c.getString(12));
     }
 }

@@ -1,7 +1,9 @@
 package com.example.connection.UDP_Connection;
 
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.PlusController;
 import com.example.connection.Database.Database;
+import com.example.connection.Model.UserPlus;
 import com.example.connection.TCP_Connection.TcpClient;
 
 import java.io.IOException;
@@ -61,9 +63,9 @@ public class Multicast_WLAN extends Multicast {
                                 DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
                                 multicastSocketGroupP2p.send(message);
                             }
-                /*} else if (database.checkGroupId(splittedR[0])) {
-                    database.addGroupMsg(received, Integer.parseInt(splittedR[1]), Integer.parseInt(splittedR[0]));
-                */
+                            /*} else if (database.checkGroupId(splittedR[0])) {
+                                database.addGroupMsg(received, Integer.parseInt(splittedR[1]), Integer.parseInt(splittedR[0]));
+                            */
                             break;
                         case "localization":
                             //implementare la localizzazione

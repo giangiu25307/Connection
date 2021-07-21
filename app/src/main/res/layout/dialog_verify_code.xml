@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/blackWhiteLayoutBackground"
+    android:background="?attr/layoutBackground"
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:paddingHorizontal="20dp"
@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:fontFamily="@font/opensans_bold"
+        android:fontFamily="@font/opensans_semibold_custom"
         android:text="Verify code"
         android:textColor="?attr/textColor"
         android:textSize="21sp" />

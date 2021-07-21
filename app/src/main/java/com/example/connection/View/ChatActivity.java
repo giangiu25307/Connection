@@ -3,6 +3,7 @@ package com.example.connection.View;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,8 @@ import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.R;
 
+import java.util.HashMap;
+
 public class ChatActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
@@ -52,9 +55,13 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.lyt_chat_activity);
         id = getIntent().getStringExtra("idChat");
         Connection.idChatOpen = id;
-        String name = getIntent().getStringExtra("name");
+        String username = getIntent().getStringExtra("username");
+        if(MessageController.getIstance().getMessagingStyleHashMap().get(id) != null){
+            MessageController.getIstance().getMessagingStyleHashMap().replace(id, new NotificationCompat.MessagingStyle(username));
+        }
+        MessageController.getIstance().getMessagingStyleHashMap();
         TextView nameTextView = findViewById(R.id.nameUser);
-        nameTextView.setText(name);
+        nameTextView.setText(username);
         ImageView imageView = findViewById(R.id.backImageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

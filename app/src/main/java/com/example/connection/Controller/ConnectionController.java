@@ -79,12 +79,12 @@ ConnectionController {
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection, this, bluetoothAdvertiser);
-        mConfig = new WifiP2pConfig.Builder()
+        /*mConfig = new WifiP2pConfig.Builder()
                 .setNetworkName(SSID + myId)
                 .setPassphrase(networkPassword)
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_AUTO)
                 .enablePersistentMode(false)
-                .build();
+                .build();*/
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         networkRequest = new NetworkRequest.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
@@ -113,7 +113,7 @@ ConnectionController {
     @SuppressLint("MissingPermission")
     public void createGroup() {
         GO_leave = false;
-        mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
+        /*mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
 
             @Override
             public void onSuccess() {
@@ -166,7 +166,7 @@ ConnectionController {
 
             }
         });
-        wifiLock.acquire();
+        wifiLock.acquire();*/
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
@@ -349,8 +349,6 @@ ConnectionController {
         wifiManager.startScan();
         netId = wifiManager.addNetwork(wifiConfig);
         wifiManager.enableNetwork(netId, true);
-
-
     }
 
     public String getSSID() {

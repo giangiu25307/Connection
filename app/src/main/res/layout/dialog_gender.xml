@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/blackWhiteLayoutBackground"
+    android:background="?attr/layoutBackground"
     android:orientation="vertical"
     android:paddingHorizontal="20dp"
     android:paddingVertical="15dp">
@@ -13,7 +13,7 @@
         android:id="@+id/textView23"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="@font/opensans_semibold_custom"
         android:text="Select gender"
         android:textColor="?attr/textColor"
         android:textSize="21sp" />

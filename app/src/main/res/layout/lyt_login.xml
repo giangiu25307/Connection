@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/blackWhiteLayoutBackground">
+    android:background="?attr/layoutBackground">
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="@font/opensans_semibold_custom"
         android:text="LOG IN"
         android:textColor="?attr/textColor"
         android:textSize="36sp"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:ems="10"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/opensans_regular_custom"
         android:hint="Email"
         android:inputType="textEmailAddress"
         android:textSize="16sp"
@@ -57,7 +57,7 @@
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:ems="10"
-            android:fontFamily="sans-serif"
+            android:fontFamily="@font/opensans_regular_custom"
             android:hint="Password"
             android:inputType="textPassword"
             android:textSize="16sp" />
@@ -105,7 +105,7 @@
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/next_button_background"
+        android:background="@drawable/bg_next_button"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingHorizontal="30dp"
@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:fontFamily="sans-serif"
+            android:fontFamily="@font/opensans_regular_custom"
             android:text="LOG IN"
             android:textColor="?attr/invertedTextColor"
             android:textSize="17sp" />
@@ -135,14 +135,14 @@
             android:layout_gravity="center"
             android:layout_weight="0"
             app:srcCompat="@drawable/ic_arrow_right"
-            app:tint="?attr/invertedIconTint" />
+            app:tint="?attr/whiteBlack" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/textView55"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/opensans_regular_custom"
         android:text="Don't have an account?"
         android:textColor="?attr/textColor"
         android:textSize="17sp"
@@ -172,7 +172,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="@font/opensans_semibold_custom"
             android:text="SIGN UP"
             android:textColor="?attr/textColor"
             android:textSize="17sp" />

@@ -42,10 +42,6 @@ public class HomeFragment extends Fragment {
     private HomeFragment homeFragment;
     private MapFragment map;
     private ChatFragment chat;
-    private int currentColor;
-    private int[][] states;
-    private int[] colors;
-    private ColorStateList navigationViewColorStateList;
     private Toolbar toolbar;
     private TextView toolbarTitle;
     private SettingsFragment settings;
@@ -94,24 +90,18 @@ public class HomeFragment extends Fragment {
         bottomNavigationMenu.setOnNavigationItemSelectedListener(bottomNavigationMenuListener);
         bottomNavigationMenu.setItemIconTintList(null);
 
-        states = new int[][]{new int[]{-android.R.attr.state_checked}, new int[]{android.R.attr.state_checked}, new int[]{}};
-        currentColor = getContext().getColor(R.color.pink);
-
         if (savedInstanceState == null && Connection.fragmentName.equals("MAP")) {
             bottomNavigationMenu.getMenu().getItem(0).setChecked(true);
             fragment = map;
-            currentColor = getContext().getColor(R.color.colorAccent);
             toolbarTitle.setText("Explore");
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("CHAT")) {
             bottomNavigationMenu.getMenu().getItem(1).setChecked(true);
             fragment = new ChatFragment().newInstance(database, chatController, toolbar);
-            currentColor = getContext().getColor(R.color.colorAccent);
             loadFragment();
         } else if (savedInstanceState == null && Connection.fragmentName.equals("SETTINGS")) {
             bottomNavigationMenu.getMenu().getItem(2).setChecked(true);
             fragment = new SettingsFragment().newInstance(connection, connectionController, database, chatController, map, chat);
-            currentColor = getContext().getColor(R.color.colorAccent);
             toolbarTitle.setText("Settings");
             loadFragment();
         }
@@ -130,20 +120,17 @@ public class HomeFragment extends Fragment {
                     Connection.fragmentName = "MAP";
                     toolbarTitle.setText("Explore");
                     fragment = map;
-                    currentColor = getContext().getColor(R.color.colorAccent);
                     break;
                 case R.id.chat:
                     //if (Connection.fragmentName.equals("CHAT")) break;
                     Connection.fragmentName = "CHAT";
                     fragment = new ChatFragment().newInstance(database, chatController, toolbar);
-                    currentColor = getContext().getColor(R.color.colorAccent);
                     break;
                 case R.id.settings:
                     //if (Connection.fragmentName.equals("SETTINGS")) break;
                     Connection.fragmentName = "SETTINGS";
                     toolbarTitle.setText("Settings");
                     fragment = new SettingsFragment().newInstance(connection, connectionController, database, chatController, map, chat);
-                    currentColor = getContext().getColor(R.color.colorAccent);
                     break;
                 default:
                     break;
@@ -158,9 +145,6 @@ public class HomeFragment extends Fragment {
     private void loadFragment() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
-        colors = new int[]{getContext().getColor(R.color.darkHintcolor), currentColor, getContext().getColor(R.color.darkHintcolor)};
-        navigationViewColorStateList = new ColorStateList(states, colors);
-        bottomNavigationMenu.setItemTextColor(navigationViewColorStateList);
     }
 
     public void setChatController() {
@@ -194,7 +178,7 @@ public class HomeFragment extends Fragment {
     public void setConnectionController() {
        this.connectionController = new ConnectionController(connection, database);
        //connectionController.active4G();
-       connectionController.initProcess();
+       //connectionController.initProcess();
     }
 
     public void setChatController(ChatController chatController) {

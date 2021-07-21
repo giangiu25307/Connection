@@ -67,7 +67,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 Intent myIntent = new Intent(context, ChatActivity.class);
                 // myIntent.putExtra("chatController", chatController); //Optional parameters\
                 myIntent.putExtra("idChat", id);
-                myIntent.putExtra("name", chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.NAME)));
+                myIntent.putExtra("username", chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.USERNAME)));
                 context.startActivity(myIntent);
 
             }
