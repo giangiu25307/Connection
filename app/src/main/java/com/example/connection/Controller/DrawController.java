@@ -2,6 +2,7 @@ package com.example.connection.Controller;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -125,6 +126,7 @@ public class DrawController extends View {
         Bitmap bitmap = BitmapFactory.decodeFile(user.getProfilePic());
         if (bitmap != null) {
             image.setImageBitmap(bitmap);
+
         }
 
         image.requestLayout();

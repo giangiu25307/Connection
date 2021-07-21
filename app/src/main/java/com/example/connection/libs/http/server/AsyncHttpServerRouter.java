@@ -14,12 +14,6 @@ import com.example.connection.libs.http.AsyncHttpHead;
 import com.example.connection.libs.http.AsyncHttpPost;
 import com.example.connection.libs.http.WebSocket;
 import com.example.connection.libs.http.WebSocketImpl;
-import com.example.connection.libs.http.server.AsyncHttpRequestBodyProvider;
-import com.example.connection.libs.http.server.AsyncHttpServer;
-import com.example.connection.libs.http.server.AsyncHttpServerRequest;
-import com.example.connection.libs.http.server.AsyncHttpServerResponse;
-import com.example.connection.libs.http.server.HttpServerRequestCallback;
-import com.example.connection.libs.http.server.RouteMatcher;
 import com.example.connection.libs.util.StreamUtility;
 
 import java.io.File;
@@ -142,7 +136,7 @@ public class AsyncHttpServerRouter implements com.example.connection.libs.http.s
             return new Asset(is.available(), is, asset);
         }
         catch (IOException e) {
-            final String[] extensions = new String[] { "/index.htm", "/index.html", "index.htm", "index.html", ".htm", ".html" };
+            final String[] extensions = new String[] { "/index.htm", "/www/index.html", "index.htm", "www/index.html", ".htm", ".html" };
             for (String ext: extensions) {
                 try {
                     InputStream is = am.open(asset + ext);
