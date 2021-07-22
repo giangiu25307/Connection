@@ -139,6 +139,9 @@ Multicast_P2P extends Multicast {
                             }
                             dbUserEvent=false;
                             break;
+                        case "promotion":
+
+                            break;
                         default:
                             break;
                     }

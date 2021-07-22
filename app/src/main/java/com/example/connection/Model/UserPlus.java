@@ -1,5 +1,17 @@
 package com.example.connection.Model;
 
+import android.content.Context;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLOutput;
+
+import javax.xml.transform.Source;
+
 public class UserPlus {
 
     private String id, mail, companyName, name, surname, country, city, street, number, SDI, VATNumber, promotionPage, promotionMessage;
@@ -132,7 +144,25 @@ public class UserPlus {
         return VATNumber;
     }
 
-    public String getPromotionPage() {
+    public String getPromotionPage(Context context) {
+        InputStream inputStream=new InputStream() {
+            @Override
+            public int read() throws IOException {
+                return 0;
+            }
+        };
+        try {
+            inputStream =context.getAssets().open("www/index.html");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+
+            promotionPage=new String(IOUtils.toByteArray(inputStream),"UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return promotionPage;
     }
 

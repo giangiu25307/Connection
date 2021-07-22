@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -32,10 +33,15 @@ import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.MapUsers;
+import com.example.connection.Model.UserPlus;
 import com.example.connection.R;
 import com.example.connection.Services.MyForegroundService;
 import com.example.connection.vpn.LocalVPNService;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Connection extends AppCompatActivity {
@@ -78,7 +84,7 @@ public class Connection extends AppCompatActivity {
         xiamoiWifiPermission();
 
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
-        boolean createSample = true;
+        boolean createSample = false;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
             database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo","");

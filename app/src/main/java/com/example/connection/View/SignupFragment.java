@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -42,6 +43,9 @@ import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -146,9 +150,22 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     } else viewPager.setCurrentItem(currentPage);
                 } else {
                     //send user info to server
-                    System.out.println(user.getAllWlan());
                     try {
-                        System.out.println(accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePic()));
+                        String response=accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePic());
+                        System.out.println(response);
+                        ContextWrapper contextWrapper = new ContextWrapper(getContext());
+                        File directory = contextWrapper.getDir(getContext().getFilesDir().getName(), Context.MODE_PRIVATE);
+                        File file =  new File(directory,"response");
+                        String data = "ciao";
+                        try {
+                            FileOutputStream fos = new FileOutputStream(file, true); // save
+                            fos.write(data.getBytes());
+                            fos.close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

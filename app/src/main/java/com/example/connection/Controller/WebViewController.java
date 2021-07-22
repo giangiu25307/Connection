@@ -1,5 +1,6 @@
 package com.example.connection.Controller;
 
+import android.content.Context;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -9,12 +10,20 @@ import android.webkit.WebViewClient;
 import androidx.annotation.RequiresApi;
 import androidx.webkit.WebViewAssetLoader;
 
+import com.example.connection.View.Connection;
+
 public class WebViewController {
    // WebView webView = (WebView) findViewById(R.id.webview);
     WebView webView;
     WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
             .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this.webView.getContext()))
             .build();
+    Context context;
+
+    public WebViewController(Context context) {
+        this.context = context;
+    }
+
     public void SetWebView(String id) {
         webView.setWebViewClient(new WebViewClient() {
             @Override

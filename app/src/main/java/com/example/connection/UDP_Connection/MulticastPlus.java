@@ -37,7 +37,7 @@ public class MulticastPlus extends Multicast {
 
     public void sendPromotion() {
         try {
-            String info = "promotion£€" + userPlus.getId() + "£€" + userPlus.getPromotionPage() + "£€" + userPlus.getPromotionMessage();
+            String info = "promotion£€" + userPlus.getId() + "£€" /*+ userPlus.getPromotionPage() */+ "£€" + userPlus.getPromotionMessage();
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupwlan0.send(message);

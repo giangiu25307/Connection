@@ -61,9 +61,11 @@ ConnectionController {
     private TcpServer tcpServer;
     public static boolean GO_leave = false;
     private WifiManager.WifiLock wifiLock;
+    private PlusController plusController;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public ConnectionController(Connection connection, Database database) {
+        
         this.connection = connection;
         encryption = new Encryption(connection);
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
@@ -79,12 +81,6 @@ ConnectionController {
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection, this, bluetoothAdvertiser);
-        /*mConfig = new WifiP2pConfig.Builder()
-                .setNetworkName(SSID + myId)
-                .setPassphrase(networkPassword)
-                .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_AUTO)
-                .enablePersistentMode(false)
-                .build();*/
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         networkRequest = new NetworkRequest.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
