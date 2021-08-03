@@ -46,14 +46,32 @@ public class Task {
         public static final String GROUP_MESSAGE = "GROUP_MESSAGE";*/
     }
 
-    public class ServiceEntry implements BaseColumns{
+    public class Company implements BaseColumns {
+        public static final String USER_PLUS = "USER_PLUS";
+        public static final String ID_PLUS = "id_plus";
+        public static final String NAME = "name";
+        public static final String SURNAME = "surname";
+        public static final String VAT_NUMBER = "vat_number";
+        public static final String SDI = "sdi";
+        public static final String NUMBER = "number";
+        public static final String MAIL = "mail";
+        public static final String COUNTRY = "country";
+        public static final String CITY = "city";
+        public static final String STREET = "street";
+        public static final String COMPANY_NAME = "company_name";
+        public static final String PROMOTION_MESSAGE = "promotion_message";
+        public static final String PROMOTION_PAGE = "promotion_page";
+    }
+
+    public class ServiceEntry implements BaseColumns {
         public static final String serviceGroupOwner = "SGO"; //fatto
         public static final String serviceClientConnectedToGroupOwner = "CTG";//fatto
         public static final String serviceRequestClientBecomeGroupOwner = "CBG";//fatto
         public static final String serviceLookingForGroupOwner = "LFG";//fatto
         public static final String serviceLookingForGroupOwnerWithSpecifiedId = "LGS";//fatto
         public static final String serviceLookingForGroupOwnerWithGreaterId = "LGG";//fatto
-
+        public static final String servicePlusSearchingNetwork = "PSN";//fatto
+        //public static final String serviceUserPlus = "SUP"; IT NEEDS TO BE CREATED ONLY IF WE WANT TO KNOW THE DISTANCE BETWEEN THE USER AND THE COMPANY NEXT TO YOU (NOT DONE)
     }
 
 }

@@ -53,7 +53,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private int theme = R.style.AppTheme;
     private TextView themeOptionDescription, wallpaperOptionDescription, informationDescription;
     private ImageView editProfileButton;
-    private int bgColor = R.color.mediumWhite;
     private int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic, profilePics;
     private String previousProfilePic = "";
@@ -320,17 +319,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             theme = R.style.DarkTheme;
             newTheme = "dark";
             Connection.lightOrDark = "Dark";
-            bgColor = R.color.black4;
             darkButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
         } else if (currentTheme.equals("auto")) {
             getCurrentSystemTheme();
             newTheme = "auto";
             Connection.lightOrDark = "Follow System";
-            if (theme == R.style.DarkTheme) {
-                bgColor = R.color.black4;
-            } else {
-                bgColor = R.color.mediumWhite;
-            }
             followSystemButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
         } else {
             theme = R.style.AppTheme;

@@ -1,10 +1,10 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
+import android.app.Notification;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,30 +12,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.Person;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Database.Database;
 import com.example.connection.Controller.DrawController;
+import com.example.connection.Controller.MessageController;
+import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
-import java.util.Map;
 
-public class MapFragment extends Fragment implements View.OnClickListener {
+public class MapFragment extends Fragment {
 
     private ConnectionController connectionController;
     private User user;
@@ -77,7 +80,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     if(!Multicast.dbUserEvent){
                         Multicast.dbUserEvent=true;
                         MapFragment fragment = new MapFragment().newInstance(connectionController,database);
-                        fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
+                        fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commitAllowingStateLoss();
                     }
                 }
             }
@@ -113,18 +116,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         AbsoluteLayout mapLayout = view.findViewById(R.id.mapLayout);
         drawController = new DrawController(mapLayout.getContext(), userList, mapLayout);
         mapLayout.addView(drawController);
-    }
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.filterIcon:
-
-                break;
-            case R.id.gpsIcon:
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -214,6 +205,12 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 });
                 break;
             case R.id.gpsIcon:
+                Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
+                intent.putExtra("intentType", "messageController");
+                intent.putExtra("communicationType", "tcp");
+                intent.putExtra("msg", "porco dio");
+                intent.putExtra("idChat", "2");
+                getContext().sendBroadcast(intent);
                 break;
             default:
                 break;

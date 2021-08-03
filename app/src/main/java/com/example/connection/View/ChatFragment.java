@@ -25,6 +25,7 @@ import com.example.connection.Adapter.ChatAdapter;
 import com.example.connection.Adapter.RequestAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.MessageController;
+import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
 
@@ -79,18 +80,15 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.left_to_right);
         textView.startAnimation(animation);
         */
-        requestButton = view.findViewById(R.id.requestLinearLayout);
+        requestButton = view.findViewById(R.id.requestButton);
         int totalRequest = database.getAllRequestChat().getCount();
-        requestButton.setText(totalRequest == 1 ? totalRequest + " request" : totalRequest + " requests");//(totalRequest==0 ? "No" : ""+totalRequest);
+        requestButton.setText(totalRequest <= 1 ? totalRequest + " request" : totalRequest + " requests");//(totalRequest==0 ? "No" : ""+totalRequest);
         totalChat = toolbar.findViewById(R.id.toolbarTitle);
         int totalChatNumber = database.getAllNoRequestChat().getCount();
-        totalChat.setText(totalChatNumber == 0 ? "Chat (0)" : "Chat (" + totalChatNumber + ")");
-        requestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                crossToRequestDialog(dialogBuilder);
-            }
+        totalChat.setText(totalChatNumber <= 1 ? "Chat ("+totalChatNumber+")" : "Chats (" + totalChatNumber + ")");
+        requestButton.setOnClickListener(view1 -> {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+            crossToRequestDialog(dialogBuilder,totalRequest);
         });
         setupRecyclerView(view);
         return view;
@@ -102,10 +100,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         ChatAdapter chatAdapter = new ChatAdapter(getContext(), cursor, database, chatController);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        if(cursor.getCount() == 0){
-            TextView textView = view.findViewById(R.id.textView0Chat);
+        /*if(cursor.getCount() == 0){
+            TextView textView = view.findViewById(R.id.textViewChat);
             textView.setVisibility(View.VISIBLE);
-        }
+        }*/
         MessageController.getIstance().setChatAdapter(chatAdapter);
     }
 
@@ -118,10 +116,12 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void crossToRequestDialog(AlertDialog.Builder dialogBuilder){
+    private void crossToRequestDialog(AlertDialog.Builder dialogBuilder,int totalRequest){
         dialogBuilder.setView(R.layout.dialog_request);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
+        TextView requestTextView = alertDialog.findViewById(R.id.requestTextView);
+        requestTextView.setText(totalRequest <= 1 ?  " Request ("+totalRequest +")" :  " Requests ("+totalRequest +")");
         alertDialog.findViewById(R.id.closeRequestDialog).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,7 +134,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
     private void setupRequestRecyclerView(AlertDialog view){
         RecyclerView recyclerView = view.findViewById(R.id.requestRecycleView);
-        //System.out.println(database);
         Cursor cursor = database.getAllRequestChat();
         RequestAdapter requestAdapter = new RequestAdapter(getContext(), cursor, database, chatController, requestButton);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

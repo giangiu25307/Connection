@@ -29,7 +29,7 @@ public class MyForegroundService extends Service {
         super.onCreate();
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        CharSequence name = "Connection";
+        CharSequence name = "ConnectionForeground";
         String description = "ConnectionForegroundService";
         int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationChannel channel = new NotificationChannel("ConnectionForegroundService", name, importance);
@@ -46,7 +46,7 @@ public class MyForegroundService extends Service {
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();
-        startForeground(2, notification);
+        startForeground(1, notification);
     }
 
     @Override

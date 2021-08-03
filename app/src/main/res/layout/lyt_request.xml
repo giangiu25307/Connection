@@ -84,7 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:fontFamily="@font/opensans_light"
+        android:fontFamily="@font/opensans_light_custom"
         android:text="TextView"
         android:textColor="?attr/textColor"
         android:textSize="13sp"
