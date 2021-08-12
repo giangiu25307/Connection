@@ -1,7 +1,9 @@
 package com.example.connection.View;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,8 +46,10 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MessageAdapter chatAdapter;
     private ConstraintLayout chatBackground;
+    private Toolbar toolbar;
     private int lastPosition;
     private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,7 @@ public class ChatActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         loadTheme();
         setContentView(R.layout.lyt_chat_activity);
+        context = this;
         id = getIntent().getStringExtra("idChat");
         Connection.idChatOpen = id;
         String username = getIntent().getStringExtra("username");
@@ -62,6 +67,22 @@ public class ChatActivity extends AppCompatActivity {
         MessageController.getIstance().getMessagingStyleHashMap();
         TextView nameTextView = findViewById(R.id.nameUser);
         nameTextView.setText(username);
+        toolbar = findViewById(R.id.toolbar2);
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.CustomAlertDialog);
+                dialogBuilder.setView(R.layout.dialog_chat_information);
+                final AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
+                alertDialog.findViewById(R.id.closeTextView).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+            }
+        });
         ImageView imageView = findViewById(R.id.backImageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

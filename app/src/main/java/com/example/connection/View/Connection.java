@@ -84,7 +84,7 @@ public class Connection extends AppCompatActivity {
         xiamoiWifiPermission();
 
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
-        boolean createSample = false;
+        boolean createSample = true;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
             database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo","");
@@ -101,26 +101,12 @@ public class Connection extends AppCompatActivity {
             database.addUser("25", "192.168.49.20", "Andrew345", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
             database.createChat("25", "Andrew345", null);
             database.addMsg("wee", "25", "25");
-            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
+            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "25", "25");
 
             database.addUser("27", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
             database.createChat("27", "Andrew345", null);
             database.addMsg("wee", "27", "27");
-            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
-
-            database.addUser("29", "192.168.49.20", "Andrew980", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
-            database.createChat("29", "Andrew345", null);
-            database.addMsg("wee", "29", "29");
-            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
-
-            database.addUser("31", "192.168.49.20", "Andrew132", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo", "");
-            database.createChat("31", "Andrew345", null);
-            database.addMsg("wee", "31", "31");
-            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
-
-            database.addUser("33", "192.168.49.20", "Andrew847", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo", "");
-            database.createChat("33", "Andrew345", null);
-            database.addMsg("wee", "33", "33");
+            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "27", "27");
         }
 
         // database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
