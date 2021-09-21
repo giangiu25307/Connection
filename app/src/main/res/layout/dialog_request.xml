@@ -9,7 +9,6 @@
     android:paddingTop="15dp"
     android:paddingBottom="20dp">
 
-    <!-- TODO Da cambiare in requests se più di una e aggiungere il numero es. (15) -->
     <TextView
         android:id="@+id/requestTextView"
         android:layout_width="wrap_content"
