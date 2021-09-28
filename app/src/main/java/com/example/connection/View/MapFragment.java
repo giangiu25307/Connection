@@ -1,9 +1,12 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
+import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,18 +16,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.app.Person;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.connection.Adapter.MapAdapter;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.DrawController;
 import com.example.connection.Controller.MessageController;
@@ -33,9 +38,8 @@ import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
+import com.google.android.material.internal.FlowLayout;
 
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 
 public class MapFragment extends Fragment {
@@ -72,7 +76,9 @@ public class MapFragment extends Fragment {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
-        drawing(view);
+        //View newView = LayoutInflater.from(getContext()).inflate(R.layout.lyt_map_user, view.findViewById(R.id.mapGridLayout), false);
+        addViewToLayout(view, initializeUserArray());
+        /*drawing(view);
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -85,7 +91,7 @@ public class MapFragment extends Fragment {
                 }
             }
         });
-        thread.start();
+        thread.start();*/
         return view;
     }
 
@@ -95,8 +101,8 @@ public class MapFragment extends Fragment {
         final ArrayList<User> userList = new ArrayList<>();
         String[] arrayName = new String[c.getCount() == 0 ? 1 : c.getCount()];
 
-        userList.add(ConnectionController.myUser);
-        arrayName[0] = ConnectionController.myUser.getName();
+        //userList.add(ConnectionController.myUser);
+        //arrayName[0] = ConnectionController.myUser.getName();
 
         for (int i = 0; i < c.getCount(); i++) {
             if (i == 0) {
@@ -216,6 +222,76 @@ public class MapFragment extends Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private ArrayList<User> initializeUserArray(){
+        Cursor c = database.getAllUsers();
+        c.moveToFirst();
+        final ArrayList<User> userList = new ArrayList<>();
+        String[] arrayName = new String[c.getCount() == 0 ? 1 : c.getCount()];
+
+        userList.add(ConnectionController.myUser);
+        arrayName[0] = ConnectionController.myUser.getName();
+
+        for (int i = 0; i < c.getCount(); i++) {
+            if (i == 0) {
+                if (MyNetworkInterface.getMyP2pNetworkInterface("p2p0") != null) {
+                    user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
+                    userList.add(user);
+                    arrayName[i] = c.getString(1);
+                }
+            }else {
+                user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
+                userList.add(user);
+                arrayName[i] = c.getString(1);
+            }
+            c.moveToNext();
+        }
+        return userList;
+    }
+
+    private void addViewToLayout(View view, ArrayList<User> userArrayList){
+        GridLayout parent = view.findViewById(R.id.mapGridLayout);
+        int size;
+        if(userArrayList.size() < 25){
+            size = userArrayList.size();
+        }else{
+            size = 25;
+        }
+
+        for(int i = 0; i < size; i++){
+            user = userArrayList.get(i);
+            createLayout(user);
+            parent.addView(createLayout(user));
+        }
+
+    }
+
+    private LinearLayout createLayout(User user){
+        //TODO Da cambiare con il FlowLayout per permettere ai figli di andare a capo
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        ImageView imageView = new ImageView(getContext());
+        imageView.setImageDrawable(Drawable.createFromPath(user.getProfilePic()));
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(75, 75));
+        imageView.getLayoutParams().width = dpToPx(75);
+        imageView.getLayoutParams().height = dpToPx(75);
+        TextView textView = new TextView(getContext());
+        TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f);
+        tableLayoutParams.setMargins(0, dpToPx(5), 0, 0);
+        textView.setLayoutParams(tableLayoutParams);
+        textView.setText(user.getUsername());
+        //TODO Da cambiare in base al tema
+        textView.setTextColor(Color.WHITE);
+        linearLayout.addView(imageView);
+        linearLayout.addView(textView);
+        return linearLayout;
+    }
+
+    private int dpToPx(int dp) {
+        float density = getContext().getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
     }
 
     @Override
