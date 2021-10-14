@@ -82,8 +82,8 @@ public class MapFragment extends Fragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         //View newView = LayoutInflater.from(getContext()).inflate(R.layout.lyt_map_user, view.findViewById(R.id.mapGridLayout), false);
-        getScreenDimension();
-        addViewToLayout(view, initializeUserArray());
+        //getScreenDimension();
+
         /*drawing(view);
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -104,6 +104,7 @@ public class MapFragment extends Fragment {
                 view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 layoutWidth = view.getWidth();
                 layoutHeight = view.getHeight();
+                addViewToLayout(view, initializeUserArray());
             }
         });
         return view;
@@ -271,6 +272,7 @@ public class MapFragment extends Fragment {
             user = userArrayList.get(i);
             //createLayout(user);
             parent.addView(createLayout(user));
+            System.out.println("Aggiungo layout: " + i);
         }
 
     }
@@ -279,24 +281,31 @@ public class MapFragment extends Fragment {
         LinearLayout linearLayout = new LinearLayout(getContext());
         //linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setBackgroundColor(R.color.red);
         ImageView imageView = new ImageView(getContext());
         imageView.setImageDrawable(Drawable.createFromPath(user.getProfilePic()));
         System.out.println("Misure di default: " + layoutWidth + " " + layoutHeight);
         System.out.println("Misure dpToPx: " + dpToPx((layoutWidth / 5) - 2) + " " + dpToPx((layoutHeight / 5) - 2));
         System.out.println("Misure px: " + ((layoutWidth / 5) - 2) + " " + ((layoutHeight / 5) - 2));
-        imageView.setLayoutParams(new ViewGroup.LayoutParams((layoutWidth / 5) - 2, (layoutHeight / 5) - 2));
-        //imageView.getLayoutParams().width = dpToPx(75);
-        //imageView.getLayoutParams().height = dpToPx(75);
+        //linearLayout.setLayoutParams(new FlowLayout.LayoutParams(layoutWidth / 5 - 2, layoutHeight / 5 - 2));
+        //imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        //imageView.setLayoutParams(new ViewGroup.LayoutParams(layoutWidth / 5 - 2, layoutHeight / 5 - 2 - textView.getHeight()));
+        System.out.println("Misure linear layout" + linearLayout.getWidth() + ", " + linearLayout.getHeight());
         TextView textView = new TextView(getContext());
         TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f);
-        tableLayoutParams.setMargins(0, dpToPx(5), 0, 0);
+        tableLayoutParams.setMargins(0, 5, 0, 0);
         textView.setLayoutParams(tableLayoutParams);
         textView.setText(user.getUsername());
+        textView.measure(0, 0);
+        System.out.println("Misure textview" + textView.getMeasuredHeight());
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(layoutWidth / 5 - 2, layoutHeight / 5 - 2 - textView.getMeasuredHeight() - 5));
         //TODO Da cambiare in base al tema
         textView.setTextColor(Color.WHITE);
         linearLayout.addView(imageView);
         linearLayout.addView(textView);
         return linearLayout;
+        //imageView.getLayoutParams().width = dpToPx(75);
+        //imageView.getLayoutParams().height = dpToPx(75);
     }
 
     private int dpToPx(int dp) {

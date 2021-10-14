@@ -56,7 +56,7 @@ public class FlowLayout extends ViewGroup {
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
-                final LayoutParams lp = new LayoutParams(dpToPx((getWidth() / 5) - 2), dpToPx((getHeight() / 5) - 2));
+                final LayoutParams lp = new LayoutParams(2, 2);
                 child.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), childHeightMeasureSpec);
                 final int childw = child.getMeasuredWidth();
                 line_height = Math.max(line_height, child.getMeasuredHeight() + lp.vertical_spacing);
@@ -113,13 +113,14 @@ public class FlowLayout extends ViewGroup {
             if (child.getVisibility() != GONE) {
                 final int childw = child.getMeasuredWidth();
                 final int childh = child.getMeasuredHeight();
-                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                //final LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 if (xpos + childw > width) {
                     xpos = getPaddingLeft();
                     ypos += line_height;
                 }
                 child.layout(xpos, ypos, xpos + childw, ypos + childh);
-                xpos += childw + lp.horizontal_spacing;
+                //xpos += childw + lp.horizontal_spacing;
+                xpos += childw + 2;
             }
         }
     }
