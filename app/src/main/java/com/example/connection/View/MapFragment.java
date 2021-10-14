@@ -6,14 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.AbsoluteLayout;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -38,7 +42,7 @@ import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
-import com.google.android.material.internal.FlowLayout;
+import com.example.connection.View.Layout.FlowLayout;
 
 import java.util.ArrayList;
 
@@ -49,7 +53,8 @@ public class MapFragment extends Fragment {
     private Database database;
     private ImageView filterImage;
     private DrawController drawController;
-
+    int layoutWidth;
+    int layoutHeight;
 
     public MapFragment() {
 
@@ -77,6 +82,7 @@ public class MapFragment extends Fragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         //View newView = LayoutInflater.from(getContext()).inflate(R.layout.lyt_map_user, view.findViewById(R.id.mapGridLayout), false);
+        getScreenDimension();
         addViewToLayout(view, initializeUserArray());
         /*drawing(view);
         Thread thread = new Thread(new Runnable() {
@@ -92,6 +98,14 @@ public class MapFragment extends Fragment {
             }
         });
         thread.start();*/
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                layoutWidth = view.getWidth();
+                layoutHeight = view.getHeight();
+            }
+        });
         return view;
     }
 
@@ -251,32 +265,28 @@ public class MapFragment extends Fragment {
     }
 
     private void addViewToLayout(View view, ArrayList<User> userArrayList){
-        GridLayout parent = view.findViewById(R.id.mapGridLayout);
-        int size;
-        if(userArrayList.size() < 25){
-            size = userArrayList.size();
-        }else{
-            size = 25;
-        }
+        FlowLayout parent = view.findViewById(R.id.mapGridLayout);
 
-        for(int i = 0; i < size; i++){
+        for(int i = 0; i < (Math.min(userArrayList.size(), 25)); i++){
             user = userArrayList.get(i);
-            createLayout(user);
+            //createLayout(user);
             parent.addView(createLayout(user));
         }
 
     }
 
     private LinearLayout createLayout(User user){
-        //TODO Da cambiare con il FlowLayout per permettere ai figli di andare a capo
         LinearLayout linearLayout = new LinearLayout(getContext());
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        //linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         ImageView imageView = new ImageView(getContext());
         imageView.setImageDrawable(Drawable.createFromPath(user.getProfilePic()));
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(75, 75));
-        imageView.getLayoutParams().width = dpToPx(75);
-        imageView.getLayoutParams().height = dpToPx(75);
+        System.out.println("Misure di default: " + layoutWidth + " " + layoutHeight);
+        System.out.println("Misure dpToPx: " + dpToPx((layoutWidth / 5) - 2) + " " + dpToPx((layoutHeight / 5) - 2));
+        System.out.println("Misure px: " + ((layoutWidth / 5) - 2) + " " + ((layoutHeight / 5) - 2));
+        imageView.setLayoutParams(new ViewGroup.LayoutParams((layoutWidth / 5) - 2, (layoutHeight / 5) - 2));
+        //imageView.getLayoutParams().width = dpToPx(75);
+        //imageView.getLayoutParams().height = dpToPx(75);
         TextView textView = new TextView(getContext());
         TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f);
         tableLayoutParams.setMargins(0, dpToPx(5), 0, 0);
@@ -292,6 +302,15 @@ public class MapFragment extends Fragment {
     private int dpToPx(int dp) {
         float density = getContext().getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
+    }
+
+    private void getScreenDimension(){
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        layoutWidth = size.x;
+        layoutHeight = size.y;
     }
 
     @Override
