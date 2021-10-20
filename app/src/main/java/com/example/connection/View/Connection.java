@@ -30,9 +30,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.AccountController;
+import com.example.connection.Controller.DrawController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.MapUsers;
+import com.example.connection.Model.User;
 import com.example.connection.Model.UserPlus;
 import com.example.connection.R;
 import com.example.connection.Services.MyForegroundService;
@@ -56,14 +58,16 @@ public class Connection extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     public static String fragmentName = "MAP",idChatOpen="";
     public static String lightOrDark = "light";
-    public static ArrayList<MapUsers> mapUsers = new ArrayList<MapUsers>();
-    public static String minAge = "16", maxAge = "100";
+    //public static ArrayList<User> mapUsers = new ArrayList<User>();
+    public static int minAge = 16, maxAge = 100;
     public static String[] genders = {"male", "female", "other"};
     private static final int VPN_REQUEST_CODE = 0x0F;
     private AccountController accountController;
     public static LocalVPNService localVPNService;
     private NotificationChannel channel;
     public static MyForegroundService foregroundService;
+    public static int page=0;
+    private DrawController drawController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +79,7 @@ public class Connection extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
         accountController = new AccountController();
+        drawController = new DrawController(database);
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -256,11 +261,11 @@ public class Connection extends AppCompatActivity {
     }
 
     private HomeFragment createHomeFragment() {
-        return new HomeFragment().newInstance(this, database);
+        return new HomeFragment().newInstance(this, database,drawController);
     }
 
     private LoginFragment createLoginFragment() {
-        return new LoginFragment().newInstance(this, database, accountController);
+        return new LoginFragment().newInstance(this, database, accountController,drawController);
     }
 
     @Override

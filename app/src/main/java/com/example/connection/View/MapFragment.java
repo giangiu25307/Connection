@@ -53,17 +53,16 @@ public class MapFragment extends Fragment {
     private Database database;
     private ImageView filterImage;
     private DrawController drawController;
-    int layoutWidth;
-    int layoutHeight;
 
     public MapFragment() {
 
     }
 
-    public MapFragment newInstance(ConnectionController connectionController, Database database) {
+    public MapFragment newInstance(ConnectionController connectionController, Database database, DrawController drawController) {
         MapFragment mapFragment = new MapFragment();
         mapFragment.setConnectionController(connectionController);
         mapFragment.setDatabase(database);
+        mapFragment.setDrawController(drawController);
         return mapFragment;
     }
 
@@ -75,68 +74,24 @@ public class MapFragment extends Fragment {
         this.database = database;
     }
 
+    public void setDrawController(DrawController drawController) {
+        this.drawController = drawController;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
-        //View newView = LayoutInflater.from(getContext()).inflate(R.layout.lyt_map_user, view.findViewById(R.id.mapGridLayout), false);
-        //getScreenDimension();
-
-        /*drawing(view);
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true){
-                    if(!Multicast.dbUserEvent){
-                        Multicast.dbUserEvent=true;
-                        MapFragment fragment = new MapFragment().newInstance(connectionController,database);
-                        fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commitAllowingStateLoss();
-                    }
-                }
-            }
-        });
-        thread.start();*/
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                layoutWidth = view.getWidth();
-                layoutHeight = view.getHeight();
-                addViewToLayout(view, initializeUserArray());
+                drawController.init(getContext(),view,view.getHeight(), view.getWidth());
             }
         });
         return view;
-    }
-
-    public void drawing(View view) {
-        Cursor c = database.getAllUsers();
-        c.moveToFirst();
-        final ArrayList<User> userList = new ArrayList<>();
-        String[] arrayName = new String[c.getCount() == 0 ? 1 : c.getCount()];
-
-        //userList.add(ConnectionController.myUser);
-        //arrayName[0] = ConnectionController.myUser.getName();
-
-        for (int i = 0; i < c.getCount(); i++) {
-            if (i == 0) {
-                if (MyNetworkInterface.getMyP2pNetworkInterface("p2p0") != null) {
-                    user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-                    userList.add(user);
-                    arrayName[i] = c.getString(1);
-                }
-            }else {
-                user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-                userList.add(user);
-                arrayName[i] = c.getString(1);
-            }
-            c.moveToNext();
-        }
-        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
-        AbsoluteLayout mapLayout = view.findViewById(R.id.mapLayout);
-        drawController = new DrawController(mapLayout.getContext(), userList, mapLayout);
-        mapLayout.addView(drawController);
     }
 
     @Override
@@ -215,11 +170,11 @@ public class MapFragment extends Fragment {
                 applyTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Connection.minAge = minAge.getText().toString();
-                        Connection.maxAge = maxAge.getText().toString();
+                        Connection.minAge = Integer.parseInt(minAge.getText().toString());
+                        Connection.maxAge = Integer.parseInt(maxAge.getText().toString());
                         drawController.applyFilters(Connection.minAge, Connection.maxAge, Connection.genders);
                         alertDialog.dismiss();
-                        Fragment fragment = new MapFragment().newInstance(connectionController, database);
+                        Fragment fragment = new MapFragment().newInstance(connectionController, database, drawController);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
                     }
@@ -237,89 +192,6 @@ public class MapFragment extends Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private ArrayList<User> initializeUserArray(){
-        Cursor c = database.getAllUsers();
-        c.moveToFirst();
-        final ArrayList<User> userList = new ArrayList<>();
-        String[] arrayName = new String[c.getCount() == 0 ? 1 : c.getCount()];
-
-        userList.add(ConnectionController.myUser);
-        arrayName[0] = ConnectionController.myUser.getName();
-
-        for (int i = 0; i < c.getCount(); i++) {
-            if (i == 0) {
-                if (MyNetworkInterface.getMyP2pNetworkInterface("p2p0") != null) {
-                    user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-                    userList.add(user);
-                    arrayName[i] = c.getString(1);
-                }
-            }else {
-                user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-                userList.add(user);
-                arrayName[i] = c.getString(1);
-            }
-            c.moveToNext();
-        }
-        return userList;
-    }
-
-    private void addViewToLayout(View view, ArrayList<User> userArrayList){
-        FlowLayout parent = view.findViewById(R.id.mapGridLayout);
-
-        for(int i = 0; i < (Math.min(userArrayList.size(), 25)); i++){
-            user = userArrayList.get(i);
-            //createLayout(user);
-            parent.addView(createLayout(user));
-            System.out.println("Aggiungo layout: " + i);
-        }
-
-    }
-
-    private LinearLayout createLayout(User user){
-        LinearLayout linearLayout = new LinearLayout(getContext());
-        //linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setBackgroundColor(R.color.red);
-        ImageView imageView = new ImageView(getContext());
-        imageView.setImageDrawable(Drawable.createFromPath(user.getProfilePic()));
-        System.out.println("Misure di default: " + layoutWidth + " " + layoutHeight);
-        System.out.println("Misure dpToPx: " + dpToPx((layoutWidth / 5) - 2) + " " + dpToPx((layoutHeight / 5) - 2));
-        System.out.println("Misure px: " + ((layoutWidth / 5) - 2) + " " + ((layoutHeight / 5) - 2));
-        //linearLayout.setLayoutParams(new FlowLayout.LayoutParams(layoutWidth / 5 - 2, layoutHeight / 5 - 2));
-        //imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        //imageView.setLayoutParams(new ViewGroup.LayoutParams(layoutWidth / 5 - 2, layoutHeight / 5 - 2 - textView.getHeight()));
-        System.out.println("Misure linear layout" + linearLayout.getWidth() + ", " + linearLayout.getHeight());
-        TextView textView = new TextView(getContext());
-        TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f);
-        tableLayoutParams.setMargins(0, 5, 0, 0);
-        textView.setLayoutParams(tableLayoutParams);
-        textView.setText(user.getUsername());
-        textView.measure(0, 0);
-        System.out.println("Misure textview" + textView.getMeasuredHeight());
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(layoutWidth / 5 - 2, layoutHeight / 5 - 2 - textView.getMeasuredHeight() - 5));
-        //TODO Da cambiare in base al tema
-        textView.setTextColor(Color.WHITE);
-        linearLayout.addView(imageView);
-        linearLayout.addView(textView);
-        return linearLayout;
-        //imageView.getLayoutParams().width = dpToPx(75);
-        //imageView.getLayoutParams().height = dpToPx(75);
-    }
-
-    private int dpToPx(int dp) {
-        float density = getContext().getResources().getDisplayMetrics().density;
-        return Math.round((float) dp * density);
-    }
-
-    private void getScreenDimension(){
-        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        layoutWidth = size.x;
-        layoutHeight = size.y;
     }
 
     @Override
