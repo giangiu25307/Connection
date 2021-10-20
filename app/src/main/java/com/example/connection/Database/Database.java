@@ -612,16 +612,16 @@ public class Database extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
         String query = "SELECT *" +
                 " FROM " + Task.TaskEntry.USER +
-                " WHERE " + Task.TaskEntry.IP + " IS NOT NULL " +
-                (!Connection.genders[0].equals("") && Connection.genders[1].equals("") && Connection.genders[2].equals("") ? "" : " AND " + Task.TaskEntry.GENDER + " == " + Connection.genders[0]) +
-                (Connection.genders[0].equals("") && !Connection.genders[1].equals("") && Connection.genders[2].equals("") ? "" : " AND " + Task.TaskEntry.GENDER + " == " + Connection.genders[1]) +
-                (Connection.genders[0].equals("") && Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? "" : " AND " + Task.TaskEntry.GENDER + " == " + Connection.genders[2]) +
+                " WHERE " + Task.TaskEntry.IP + " IS NOT NULL" +
+                (!Connection.genders[0].equals("") && Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "'": "") +
+                (Connection.genders[0].equals("") && !Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "'": "") +
+                (Connection.genders[0].equals("") && Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'": "") +
 
-                (!Connection.genders[0].equals("") && !Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? "" : " AND " + Task.TaskEntry.GENDER + " == " + Connection.genders[0] + " OR " + Task.TaskEntry.GENDER + " == " + Connection.genders[1] + " OR " + Task.TaskEntry.GENDER + " == " + Connection.genders[2]) +
+                (!Connection.genders[0].equals("") && !Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'": "") +
 
-                (!Connection.genders[0].equals("") && !Connection.genders[1].equals("") && Connection.genders[2].equals("") ? "" : " AND " + Task.TaskEntry.GENDER + " == " + Connection.genders[0] + " OR " + Task.TaskEntry.GENDER + " == " + Connection.genders[1]) +
-                (!Connection.genders[0].equals("") && Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? "" : " AND " + Task.TaskEntry.GENDER + " == " + Connection.genders[0] + " OR " + Task.TaskEntry.GENDER + " == " + Connection.genders[2]) +
-                (Connection.genders[0].equals("") && !Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? "" : " AND " + Task.TaskEntry.GENDER + " == " + Connection.genders[1] + " OR " + Task.TaskEntry.GENDER + " == " + Connection.genders[2]) +
+                (!Connection.genders[0].equals("") && Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'": "") +
+                (!Connection.genders[0].equals("") && !Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "'": "") +
+                (Connection.genders[0].equals("") && !Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'": "") +
                 ";";
 
 
@@ -645,6 +645,8 @@ public class Database extends SQLiteOpenHelper {
             }else if(Connection.minAge != 16){
                 if (Integer.parseInt(user.getAge()) > Connection.minAge)
                     userList.add(user);
+            }else{
+                userList.add(user);
             }
         }
         return userList;

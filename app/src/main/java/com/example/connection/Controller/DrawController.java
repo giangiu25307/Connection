@@ -35,6 +35,8 @@ import com.example.connection.View.Connection;
 import com.example.connection.View.Layout.FlowLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import org.intellij.lang.annotations.Flow;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -45,27 +47,19 @@ public class DrawController {
     private int layoutHeight;
     private Context context;
     private Database database;
-    private View view;
 
     public DrawController(Database database) {
         this.database = database;
     }
 
-    public void init(Context context, View view, int layoutHeight, int layoutWidth) {
+    public void init(Context context, FlowLayout parent, int layoutHeight, int layoutWidth) {
         this.context = context;
         this.layoutHeight = layoutHeight;
         this.layoutWidth = layoutWidth;
-        this.view = view;
-        applyFilters(Connection.minAge, Connection.maxAge, Connection.genders);
+        addViewToLayout(parent, database.getAllFilteredUsers());
     }
 
-    //APPLY FILTERS ON THE MAP
-    public void applyFilters(int minAge, int maxAge, String[] genders) {
-        addViewToLayout(view,database.getAllFilteredUsers());
-    }
-
-    private void addViewToLayout(View view, ArrayList<User> userList) {
-        FlowLayout parent = view.findViewById(R.id.mapGridLayout);
+    private void addViewToLayout(FlowLayout parent, ArrayList<User> userList) {
         for (int i = (Connection.page * 25), j = 0; i < userList.size() - (Connection.page * 25) && j < 25; i++, j++) {
             User user = userList.get(i);
             parent.addView(createLayout(user));

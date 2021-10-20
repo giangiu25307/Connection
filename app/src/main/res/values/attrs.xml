@@ -5,7 +5,9 @@
 
         <!-- General layout -->
         <attr name="layoutBackground" format="color"/>
+        <attr name="invertedItemBackground" format="color"/>
         <attr name="secondItemBackground" format="color"/>
+        <attr name="invertedSecondItemBackground" format="color"/>
         <attr name="blackWhite" format="color"/>
         <attr name="whiteBlack" format="color"/>
 

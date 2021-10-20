@@ -50,5 +50,6 @@
         android:textAllCaps="false"
         android:textColor="@color/secondaryColor"
         android:textSize="16sp"
-        app:backgroundTint="@null" />
+        app:backgroundTint="@null"
+        style="?android:attr/borderlessButtonStyle"/>
 </LinearLayout>

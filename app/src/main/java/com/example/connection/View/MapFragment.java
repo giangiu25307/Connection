@@ -53,6 +53,9 @@ public class MapFragment extends Fragment {
     private Database database;
     private ImageView filterImage;
     private DrawController drawController;
+    int layoutWidth;
+    int layoutHeight;
+    FlowLayout parent;
 
     public MapFragment() {
 
@@ -84,11 +87,12 @@ public class MapFragment extends Fragment {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
-        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        parent = view.findViewById(R.id.mapFlowLayout);
+        parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                drawController.init(getContext(),view,view.getHeight(), view.getWidth());
+                parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                drawController.init(getContext(), parent, parent.getHeight(), parent.getWidth());
             }
         });
         return view;
@@ -172,7 +176,6 @@ public class MapFragment extends Fragment {
                     public void onClick(View v) {
                         Connection.minAge = Integer.parseInt(minAge.getText().toString());
                         Connection.maxAge = Integer.parseInt(maxAge.getText().toString());
-                        drawController.applyFilters(Connection.minAge, Connection.maxAge, Connection.genders);
                         alertDialog.dismiss();
                         Fragment fragment = new MapFragment().newInstance(connectionController, database, drawController);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
