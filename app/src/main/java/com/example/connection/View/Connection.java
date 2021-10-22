@@ -86,7 +86,8 @@ public class Connection extends AppCompatActivity {
         fragment = new SplashScreenFragment();
         loadFragment(false);
         requestPermissions();
-        xiamoiWifiPermission();
+        createCountDowntimer();
+        countDownTimer.start();
 
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
         boolean createSample = true;
@@ -113,7 +114,7 @@ public class Connection extends AppCompatActivity {
             database.addMsg("wee", "27", "27");
             database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "27", "27");
 
-            database.addUser("27", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("28", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
             database.addUser("29", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
             database.addUser("30", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
             database.addUser("31", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
@@ -147,8 +148,6 @@ public class Connection extends AppCompatActivity {
         //database.addUser("9",null,"test8","test9@gmail.com","other","test9","test9","test3","test3","01-01-2003","azz",null);
         // database.addUser("5",null,"test4","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
         // database.addUser("11",null,"test10","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
-        createCountDowntimer();
-        countDownTimer.start();
         createNotificationChannels();
         foregroundService = new MyForegroundService();
         Intent notificationIntent = new Intent(this, foregroundService.getClass());
@@ -178,20 +177,18 @@ public class Connection extends AppCompatActivity {
         //ENDS PERMISSIONS REQUEST
     }
 
-    private void xiamoiWifiPermission(){
+    private boolean xiamoiWifiPermission(){
+
         try {
             String manufacturer = "xiaomi";
-            if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
-                //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);
-                //this will open auto start screen where user can enable permission for your app
-                Intent intent1 = new Intent();
-                intent1.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsTabActivity"));
-                startActivity(intent1);
+            if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER) && !sharedPreferences.getBoolean("DoNotShowXiaomiPermissionFragment",false)) {
+                return true;
             }else{
-                //database.addUser("1", null, "test1", "test1@gmail.com", "male", "test1", "test1", "test1", "test1", "01-01-2001", "nothingToseehere", null);
+                return false;
             }
         } catch (ActivityNotFoundException e) {
             System.out.println("Not MIUI device");
+            return false;
         }
     }
 
@@ -249,13 +246,19 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                if (firstLogin()) {
-                    fragment = createLoginFragment();
-                } else {
-                    fragment = createHomeFragment();
+                if(xiamoiWifiPermission()){
+                    fragment = createXiaomiPermissionFragment();
+                    loadFragment(true);
+                    startTimer2 = false;
+                }else {
+                    if (firstLogin()) {
+                        fragment = createLoginFragment();
+                    } else {
+                        fragment = createHomeFragment();
+                    }
+                    loadFragment(true);
+                    startTimer2 = false;
                 }
-                loadFragment(true);
-                startTimer2 = false;
             }
         };
     }
@@ -268,6 +271,9 @@ public class Connection extends AppCompatActivity {
         return new LoginFragment().newInstance(this, database, accountController,drawController);
     }
 
+    private XiaomiPermissionFragment createXiaomiPermissionFragment(){
+        return new XiaomiPermissionFragment().newInstance(this);
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -331,9 +337,8 @@ public class Connection extends AppCompatActivity {
     }
 
     public boolean firstLogin() {
-        String myid = "";
         try {
-            myid = database.getUser("0").getString(0);
+            database.getUser("0").getString(0);
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Utente non trovato");
             return true;

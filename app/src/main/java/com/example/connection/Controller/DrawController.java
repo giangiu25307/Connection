@@ -1,6 +1,7 @@
 package com.example.connection.Controller;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -83,22 +84,14 @@ public class DrawController {
         textView.setTextColor(Color.WHITE);
         linearLayout.addView(imageView);
         linearLayout.addView(textView);
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(user);
+                bottomSheet.show(((AppCompatActivity)context).getSupportFragmentManager(), "ModalBottomSheet");
+            }
+        });
         return linearLayout;
-    }
-
-    private ArrayList<User> initializeUserArray() {
-        Cursor c = database.getAllUsers();
-        c.moveToFirst();
-        final ArrayList<User> userList = new ArrayList<>();
-        String[] arrayName = new String[c.getCount() == 0 ? 1 : c.getCount()];
-        User user;
-        for (int i = 1; i < c.getCount(); i++) {
-            user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-            userList.add(user);
-            arrayName[i] = c.getString(1);
-            c.moveToNext();
-        }
-        return userList;
     }
 
 }

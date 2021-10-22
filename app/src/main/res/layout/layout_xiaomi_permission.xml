@@ -49,15 +49,15 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/ButtonOpenAppPermission"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_open_app_permission_for_xiaomi"
+        android:minHeight="30dp"
         android:text="Open app permission"
         android:textAllCaps="false"
         android:textColor="?attr/invertedTextColor"
         app:backgroundTint="@null"
-        android:minHeight="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4" />
+        app:layout_constraintTop_toTopOf="@+id/ButtonOpenAppPermission" />
 
     <ImageView
         android:id="@+id/imageView9"
@@ -87,4 +87,18 @@
         app:layout_constraintTop_toTopOf="@+id/textView27"
         app:srcCompat="@drawable/ic_help"
         app:tint="?attr/iconTint" />
+
+    <ImageView
+        android:id="@+id/imageView50"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toEndOf="@+id/checkBox"
+        app:layout_constraintTop_toBottomOf="@+id/ButtonOpenAppPermission"
+        app:layout_constraintVertical_bias="0.316"
+        app:srcCompat="@drawable/ic_arrow_right"
+        app:tint="?attr/iconTint" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
