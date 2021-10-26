@@ -44,9 +44,8 @@ public class XiaomiPermissionFragment extends Fragment {
         return xiaomiPermissionFragment;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_xiaomi_permission,null);
         Button openPermission = view.findViewById(R.id.ButtonOpenAppPermission);
         openPermission.setOnClickListener(new View.OnClickListener() {
