@@ -37,6 +37,7 @@ public class XiaomiPermissionFragment extends Fragment {
     }
 
     public XiaomiPermissionFragment newInstance(Connection connection, Database database, AccountController accountController, DrawController drawController) {
+        xiaomiPermissionFragment = new XiaomiPermissionFragment();
         xiaomiPermissionFragment.setConnection(connection);
         xiaomiPermissionFragment.setDatabase(database);
         xiaomiPermissionFragment.setAccountController(accountController);
@@ -73,15 +74,14 @@ public class XiaomiPermissionFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = connection.getSupportFragmentManager().beginTransaction();
+                FragmentTransaction transaction = xiaomiPermissionFragment.connection.getSupportFragmentManager().beginTransaction();
                 if (connection.firstLogin()) {
                     transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                    transaction.replace(R.id.main_fragment, new LoginFragment().newInstance(connection,database,accountController,drawController));
+                    transaction.replace(R.id.main_fragment, new LoginFragment().newInstance(xiaomiPermissionFragment.connection, xiaomiPermissionFragment.database, xiaomiPermissionFragment.accountController, xiaomiPermissionFragment.drawController));
                     transaction.commit();
                 } else {
                     transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                    transaction.replace(R.id.main_fragment, new HomeFragment().newInstance(connection,database,drawController));
-                    transaction.commit();
+                    transaction.replace(R.id.main_fragment, new HomeFragment().newInstance(xiaomiPermissionFragment.connection, xiaomiPermissionFragment.database, xiaomiPermissionFragment.drawController));
                 }
             }
         });
