@@ -88,7 +88,7 @@ public class XiaomiPermissionFragment extends Fragment {
         return view;
     }
 
-    private void setConnection(Connection connectiona){
+    private void setConnection(Connection connection){
         this.connection = connection;
     }
 
