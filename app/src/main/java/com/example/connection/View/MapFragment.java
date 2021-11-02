@@ -170,7 +170,7 @@ public class MapFragment extends Fragment {
                 Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
                 intent.putExtra("intentType", "messageController");
                 intent.putExtra("communicationType", "tcp");
-                intent.putExtra("msg", "porco dio");
+                intent.putExtra("msg", "hello surf shark");
                 intent.putExtra("idChat", "2");
                 getContext().sendBroadcast(intent);
                 break;
