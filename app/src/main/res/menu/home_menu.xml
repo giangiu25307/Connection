@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/filterIcon"
-        android:icon="@drawable/ic_filter"
-        android:title="Filter"
+        android:id="@+id/randomIcon"
+        android:icon="@drawable/ic_random"
+        android:title="Random chat"
         app:showAsAction="always"
         app:iconTint="?attr/toolbarAndSettingsCardIconColor"/>
 
     <item
-        android:id="@+id/gpsIcon"
-        android:icon="@drawable/ic_gps"
-        android:title="Gps"
+        android:id="@+id/filterIcon"
+        android:icon="@drawable/ic_filter"
+        android:title="Filter"
         app:showAsAction="always"
         app:iconTint="?attr/toolbarAndSettingsCardIconColor"/>
 

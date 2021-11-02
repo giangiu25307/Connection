@@ -1,15 +1,8 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,14 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
-import android.widget.AbsoluteLayout;
 import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,18 +20,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.connection.Adapter.MapAdapter;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.DrawController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.UDP_Connection.Multicast;
-import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Layout.FlowLayout;
-
-import java.util.ArrayList;
 
 public class MapFragment extends Fragment {
 
@@ -183,7 +165,8 @@ public class MapFragment extends Fragment {
                     }
                 });
                 break;
-            case R.id.gpsIcon:
+            case R.id.randomIcon:
+                //TODO Da generare un numero per aprire una chat a caso
                 Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
                 intent.putExtra("intentType", "messageController");
                 intent.putExtra("communicationType", "tcp");

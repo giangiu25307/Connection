@@ -272,7 +272,7 @@ public class Connection extends AppCompatActivity {
     }
 
     private XiaomiPermissionFragment createXiaomiPermissionFragment(){
-        return new XiaomiPermissionFragment().newInstance(this);
+        return new XiaomiPermissionFragment().newInstance(this, database, accountController, drawController);
     }
     @Override
     protected void onResume() {
