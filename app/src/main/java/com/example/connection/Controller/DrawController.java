@@ -53,11 +53,11 @@ public class DrawController {
         this.database = database;
     }
 
-    public void init(Context context, FlowLayout parent, int layoutHeight, int layoutWidth) {
+    public void init(Context context, FlowLayout parent, int layoutHeight, int layoutWidth, ArrayList<User> userList) {
         this.context = context;
         this.layoutHeight = layoutHeight;
         this.layoutWidth = layoutWidth;
-        addViewToLayout(parent, database.getAllFilteredUsers());
+        addViewToLayout(parent, userList);
     }
 
     private void addViewToLayout(FlowLayout parent, ArrayList<User> userList) {
@@ -65,7 +65,6 @@ public class DrawController {
             User user = userList.get(i);
             parent.addView(createLayout(user));
         }
-
     }
 
     private LinearLayout createLayout(User user) {
@@ -87,7 +86,7 @@ public class DrawController {
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(user);
+                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(user, false);
                 bottomSheet.show(((AppCompatActivity)context).getSupportFragmentManager(), "ModalBottomSheet");
             }
         });

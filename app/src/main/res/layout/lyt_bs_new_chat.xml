@@ -15,7 +15,7 @@
         android:background="@drawable/bg_top_line_bottom_sheet" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/bottomSheetTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
