@@ -13,10 +13,12 @@ import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -28,6 +30,8 @@ import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.Layout.FlowLayout;
 
+import java.util.ArrayList;
+
 public class MapFragment extends Fragment {
 
     private ConnectionController connectionController;
@@ -38,6 +42,7 @@ public class MapFragment extends Fragment {
     int layoutWidth;
     int layoutHeight;
     FlowLayout parent;
+    ArrayList<User> userList;
 
     public MapFragment() {
 
@@ -70,11 +75,12 @@ public class MapFragment extends Fragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         parent = view.findViewById(R.id.mapFlowLayout);
+        userList = database.getAllFilteredUsers();
         parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                drawController.init(getContext(), parent, parent.getHeight(), parent.getWidth());
+                drawController.init(getContext(), parent, parent.getHeight(), parent.getWidth(), userList);
             }
         });
         return view;
@@ -166,13 +172,20 @@ public class MapFragment extends Fragment {
                 });
                 break;
             case R.id.randomIcon:
-                //TODO Da generare un numero per aprire una chat a caso
-                Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
+                int number = (int) (Math.random() * userList.size());
+                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(userList.get(number), true);
+                if(getContext() != null){
+                    bottomSheet.show(((AppCompatActivity)getContext()).getSupportFragmentManager(), "ModalBottomSheet");
+                }else{
+                    Toast.makeText(getActivity(), "Unable to start a random chat, try again", Toast.LENGTH_SHORT).show();
+                }
+
+                /*Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
                 intent.putExtra("intentType", "messageController");
                 intent.putExtra("communicationType", "tcp");
                 intent.putExtra("msg", "hello surf shark");
                 intent.putExtra("idChat", "2");
-                getContext().sendBroadcast(intent);
+                getContext().sendBroadcast(intent);*/
                 break;
             default:
                 break;

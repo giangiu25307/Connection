@@ -23,17 +23,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class BottomSheetNewChat extends BottomSheetDialogFragment {
 
     private User user;
+    private boolean randomChat;
 
-    public BottomSheetNewChat(String username, String birth,String gender,String profilePic){
-        this.user =  new User();
-        user.setUsername(username);
-        user.setBirth(birth);
-        user.setGender(gender);
-        user.setProfilePic(profilePic);
-    }
-
-    public BottomSheetNewChat(User user){
+    public BottomSheetNewChat(User user, boolean randomChat){
         this.user = user;
+        this.randomChat = randomChat;
     }
 
     @Override
@@ -48,11 +42,15 @@ public class BottomSheetNewChat extends BottomSheetDialogFragment {
 
         View view = inflater.inflate(R.layout.lyt_bs_new_chat, container, false);
 
+        if(randomChat){
+            TextView bottomSheetTitle = view.findViewById(R.id.bottomSheetTitle);
+            bottomSheetTitle.setText("Start new random chat");
+        }
         CircleImageView profileImage = view.findViewById(R.id.profilePicMapAlertDialog2);
         profileImage.setImageBitmap(BitmapFactory.decodeFile(user.getProfilePic()));
         TextView name = view.findViewById(R.id.nameMapAlertDialog2),information = view.findViewById(R.id.informationMapAlertDialog2);
         name.setText(user.getUsername());
-        String info =user.getGender()+" "+user.getAge();
+        String info = user.getGender() + " " + user.getAge();
         information.setText(info);
         TextView send = view.findViewById(R.id.sendMessageTextView),cancel = view.findViewById(R.id.cancelTextView);
         send.setOnClickListener(new View.OnClickListener() {
