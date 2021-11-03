@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -79,8 +80,9 @@ public class DrawController {
         textView.setText(user.getUsername());
         textView.measure(0, 0);
         imageView.setLayoutParams(new ViewGroup.LayoutParams(layoutWidth / 5 - 2, layoutHeight / 5 - 2 - textView.getMeasuredHeight() - 5));
-        //TODO Da cambiare in base al tema
-        textView.setTextColor(Color.WHITE);
+
+        textView.setTextColor(context.getTheme().obtainStyledAttributes(R.styleable.themeAttrs).getColor(R.styleable.themeAttrs_textColor, Color.WHITE));
+
         linearLayout.addView(imageView);
         linearLayout.addView(textView);
         linearLayout.setOnClickListener(new View.OnClickListener() {
