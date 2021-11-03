@@ -19,6 +19,7 @@ import androidx.core.app.RemoteInput;
 
 import com.example.connection.Adapter.ChatAdapter;
 import com.example.connection.Adapter.MessageAdapter;
+import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.TCP_Connection.TcpClient;
 import com.example.connection.View.ChatActivity;
@@ -101,20 +102,19 @@ public class MessageController extends BroadcastReceiver {
                     if (Connection.idChatOpen.equals(intent.getStringExtra("idChat"))) {
                         messageController.messageAdapter.swapCursor(Connection.database.getAllMsg(intent.getStringExtra("idChat")));
                     } else {
-                        Cursor user = Connection.database.getUser(intent.getStringExtra("idChat"));
-                        user.moveToFirst();
-                        chatActivity.putExtra("idChat",user.getString(0));
-                        chatActivity.putExtra("username",user.getString(1));
+                        User user = Connection.database.getUser(intent.getStringExtra("idChat"));
+                        chatActivity.putExtra("idChat",user.getIdUser());
+                        chatActivity.putExtra("username",user.getUsername());
                         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(messageController.getContext());
                         NotificationCompat.MessagingStyle messagingStyle;
-                        if(messageController.getMessagingStyleHashMap().get(user.getString(0)) != null){
-                            messagingStyle = messageController.getMessagingStyleHashMap().get(user.getString(0));
+                        if(messageController.getMessagingStyleHashMap().get(user.getIdUser()) != null){
+                            messagingStyle = messageController.getMessagingStyleHashMap().get(user.getIdUser());
                             messagingStyle.addMessage(intent.getStringExtra("msg"), System.currentTimeMillis(), (Person) null);
-                            messageController.getMessagingStyleHashMap().replace(user.getString(0), messagingStyle);
+                            messageController.getMessagingStyleHashMap().replace(user.getIdUser(), messagingStyle);
                         }else{
-                            messagingStyle = new NotificationCompat.MessagingStyle(user.getString(1));
+                            messagingStyle = new NotificationCompat.MessagingStyle(user.getUsername());
                             messagingStyle.addMessage(intent.getStringExtra("msg"), System.currentTimeMillis(), (Person) null);
-                            messageController.getMessagingStyleHashMap().put(user.getString(0), messagingStyle);
+                            messageController.getMessagingStyleHashMap().put(user.getIdUser(), messagingStyle);
                         }
                         PendingIntent chatIntent;
                         try {
@@ -134,7 +134,7 @@ public class MessageController extends BroadcastReceiver {
                         replyIntent.putExtra("intentType","messageController");
                         replyIntent.putExtra("communicationType","reply");
                         replyIntent.putExtra("idChat",intent.getStringExtra("idChat"));
-                        replyIntent.putExtra("username",user.getString(1));
+                        replyIntent.putExtra("username",user.getUsername());
 
                         // Build a PendingIntent for the reply action to trigger.
                         PendingIntent replyPendingIntent =

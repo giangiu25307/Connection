@@ -1,6 +1,5 @@
 package com.example.connection.View;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,7 +8,11 @@ import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -18,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,62 +31,53 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.MessageController;
+import com.example.connection.Database.Database;
+import com.example.connection.Model.User;
 import com.example.connection.R;
 
-import java.util.HashMap;
 
 public class ChatActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     private ChatController chatController = ChatController.getInstance();
-    private String id;
     private EditText message_input;
     private ImageView sendView;
     private RecyclerView recyclerView;
     private MessageAdapter chatAdapter;
     private ConstraintLayout chatBackground;
     private Toolbar toolbar;
+    private User user;
     private int lastPosition;
     private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
     private Context context;
+    private Database database;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        database = new Database(this);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         loadTheme();
         setContentView(R.layout.lyt_chat_activity);
         context = this;
-        id = getIntent().getStringExtra("idChat");
-        Connection.idChatOpen = id;
+        user = database.getUser(getIntent().getStringExtra("idChat"));
+        Connection.idChatOpen = user.getIdUser();
         String username = getIntent().getStringExtra("username");
-        if(MessageController.getIstance().getMessagingStyleHashMap().get(id) != null){
-            MessageController.getIstance().getMessagingStyleHashMap().replace(id, new NotificationCompat.MessagingStyle(username));
+        if (MessageController.getIstance().getMessagingStyleHashMap().get(user.getIdUser()) != null) {
+            MessageController.getIstance().getMessagingStyleHashMap().replace(user.getIdUser(), new NotificationCompat.MessagingStyle(username));
         }
         MessageController.getIstance().getMessagingStyleHashMap();
         TextView nameTextView = findViewById(R.id.nameUser);
         nameTextView.setText(username);
         toolbar = findViewById(R.id.toolbar2);
-        toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.CustomAlertDialog);
-                dialogBuilder.setView(R.layout.dialog_chat_information);
-                final AlertDialog alertDialog = dialogBuilder.create();
-                alertDialog.show();
-                alertDialog.findViewById(R.id.closeTextView).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alertDialog.dismiss();
-                    }
-                });
-            }
-        });
+        createAlertDialogChatInformation(toolbar, user);
         ImageView imageView = findViewById(R.id.backImageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +94,7 @@ public class ChatActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 try {
                     lastPosition = linearLayoutManager.findLastVisibleItemPosition();
-                }catch(IllegalArgumentException e){
+                } catch (IllegalArgumentException e) {
                     System.out.println("errore nella chat; solitamente vuota");
                 }
                 return false;
@@ -133,7 +128,7 @@ public class ChatActivity extends AppCompatActivity {
         sendView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chatController.sendTCPMsg(message_input.getText().toString(), id);
+                chatController.sendTCPMsg(message_input.getText().toString(), user.getIdUser());
                 MessageController.getIstance().setMessageAdapter(chatAdapter);
             }
         });
@@ -182,7 +177,7 @@ public class ChatActivity extends AppCompatActivity {
         setBackgroundImage();
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setLayoutManager(linearLayoutManager);
-        chatAdapter = new MessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager);
+        chatAdapter = new MessageAdapter(this, Connection.database, user.getIdUser(), messageCursor, linearLayoutManager);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.scrollToPosition(messageCursor.getCount() - 1);
         recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -195,7 +190,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (lastPosition == count) {
                     try {
                         recyclerView.smoothScrollToPosition(lastPosition);
-                    }catch(IllegalArgumentException e){
+                    } catch (IllegalArgumentException e) {
                         System.out.println("Errore nella chat solitamente nulla");
                     }
                     lastPosition = 0;
@@ -204,19 +199,106 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private Cursor getAllMessage(){
-        return Connection.database.getAllMsg(id);
+    private Cursor getAllMessage() {
+        return Connection.database.getAllMsg(user.getIdUser());
     }
 
-    private void setBackgroundImage(){
-        Cursor c=Connection.database.getBackgroundImage();
-        if(c==null||c.getCount()==0)return;
+    private void setBackgroundImage() {
+        Cursor c = Connection.database.getBackgroundImage();
+        if (c == null || c.getCount() == 0) return;
         c.moveToLast();
         Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
         Drawable draw = new BitmapDrawable(getResources(), bitmap);
         chatBackground.setBackground(draw);
         c.close();
     }
+
+    private void createAlertDialogChatInformation(Toolbar toolbar, User user) {
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.CustomAlertDialog);
+                dialogBuilder.setView(R.layout.dialog_chat_information);
+                final AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
+                TextView usernameTextView = alertDialog.findViewById(R.id.dialogChatInformationUsernameTextView);
+                TextView ageAndGenderTextView = alertDialog.findViewById(R.id.dialogChatInformationAgeAndGenderTextView);
+                TextView textViewChatterNumber = alertDialog.findViewById(R.id.dialogChatInformationChatterNumberTextView);
+                TextView textViewChatterWhatsapp = alertDialog.findViewById(R.id.dialogChatInformationChatterWhatsappTextView);
+                TextView textViewChatterTelegram = alertDialog.findViewById(R.id.dialogChatInformationChatterTelegramTextView);
+
+                isSomethingShared(textViewChatterNumber, textViewChatterWhatsapp, textViewChatterTelegram);
+
+                usernameTextView.setText(user.getUsername());
+                String ageAndGender = user.getAge() + ", " + user.getGender();
+                ageAndGenderTextView.setText(ageAndGender);
+
+                LinearLayout number = alertDialog.findViewById(R.id.linearLayoutNumber);
+                LinearLayout whatsappNumber = alertDialog.findViewById(R.id.linearLayoutNumber);
+                LinearLayout telegramNumber = alertDialog.findViewById(R.id.linearLayoutNumber);
+
+                number.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showChatterNumber(textViewChatterNumber);
+                    }
+                });
+
+                whatsappNumber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openChatterWhatsapp(textViewChatterWhatsapp);
+                    }
+                });
+
+                telegramNumber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openChatterTelegram(textViewChatterTelegram);
+                    }
+                });
+                alertDialog.findViewById(R.id.closeTextView).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+            }
+        });
+    }
+
+    private void isSomethingShared(TextView number, TextView whatsapp, TextView telegram) {
+        if (database.isNumberShared(user.getIdUser(), "number")) {
+            number.setText(user.getNumber());
+        }
+        if (database.isNumberShared(user.getIdUser(), "whatsapp")) {
+            whatsapp.setText(user.getNumber());
+        }
+        if (database.isNumberShared(user.getIdUser(), "telegram")) {
+            telegram.setText(database.getTelegramNick(user.getIdUser()));
+        }
+    }
+
+    private void showChatterNumber(TextView chatterNumber) {
+        if (database.isNumberShared(user.getIdUser(), "number")) {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("number", user.getNumber());
+            clipboard.setPrimaryClip(clip);
+        }
+    }
+
+    private void openChatterWhatsapp(TextView whatsappNumber) {
+        if (database.isNumberShared(user.getIdUser(), "whatsapp")) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/" + user.getNumber())));
+        }
+    }
+
+    private void openChatterTelegram(TextView telegramUsername) {
+        if (database.isNumberShared(user.getIdUser(), "telegram")) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/" + database.getTelegramNick(user.getIdUser()))));
+        }
+    }
+
 
     @Override
     protected void onStop() {
@@ -239,6 +321,6 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Connection.idChatOpen = id;
+        Connection.idChatOpen = user.getIdUser();
     }
 }

@@ -26,7 +26,7 @@ public class PlusController {
     private int licenseDailyTimer = 86400000;
     private ConnectivityManager connectivityManager;
     private NetworkRequest mobileNetworkRequest, networkRequest;
-    private String SSID = "DIRECT-CONNEXION", networkPassword = "12345678";
+    private String SSID = "DIRECT-CONNECTION", networkPassword = "12345678";
     private WifiManager wifiManager;
     private int netId;
     private MulticastPlus multicastWLAN;
@@ -120,7 +120,7 @@ public class PlusController {
 
                     @Override
                     public void onFinish() {
-                        if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
+                        if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION"))
                             wifiConnection(id);
                         else {
                             multicastWLAN.createMulticastSocketPlus();

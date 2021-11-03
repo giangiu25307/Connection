@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Database.Database;
 import com.example.connection.Controller.Task;
+import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.ChatActivity;
 
@@ -38,7 +39,8 @@ import java.util.Date;
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> {
 
     private Context context;
-    private Cursor chatCursor, userCursor;
+    private Cursor chatCursor;
+    private User user;
     private Database database;
     private Bitmap bitmap, bitmap2;
     private Button button;
@@ -94,21 +96,14 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             return;
         }
         String nameUser = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-        userCursor = database.getUser(nameUser);
-        userCursor.moveToFirst();
+        user = database.getUser(nameUser);
         //Log.v("Request Cursor Object", DatabaseUtils.dumpCursorToString(userCursor));
         //Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
 
         long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-        String userName = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.USERNAME));
-        String name = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.NAME));
-        String gender = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.GENDER));
-        String birth = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.BIRTH));
-        String age = getAge(birth);
         String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
-        String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
         String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
-        File profilePic = new File(profilePicPosition);
+        File profilePic = new File(user.getProfilePic());
 
         if (profilePic.exists()) {
 
@@ -125,7 +120,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
         }
 
-        userCursor = database.getLastMessageChat(Task.TaskEntry.ID_CHAT);
         //String timeLastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATE));
 
         holder.itemView.setTag(id);
@@ -134,8 +128,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         TextView informationTextView2 = holder.information2;
         TextView lastMessageTextView = holder.lastMessage;
         TextView timeLastMessageTextView = holder.timeLastMessage;
-        informationTextView.setText(name);
-        String temp = age + ", " + gender;
+        informationTextView.setText(user.getName());
+        String temp = user.getAge() + ", " + user.getGender();
         informationTextView2.setText(temp);
         lastMessageTextView.setText(lastMessage);
         try {
@@ -227,26 +221,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             void deleteRequest(int p);
         }
 
-    }
-
-    public String getAge(String birth) {
-        if(birth.isEmpty())return "";
-        else{
-            String age="";
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-            try {
-                age  = ""+Period.between(convertToLocalDateViaInstant(formatter.parse(birth)), LocalDateTime.now().toLocalDate()).getYears();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return age;
-        }
-    }
-
-    public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
-        return dateToConvert.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
     }
 
 }

@@ -1,46 +1,26 @@
 package com.example.connection.Controller;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.provider.ContactsContract;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.connection.Database.Database;
-import com.example.connection.Model.MapUsers;
 import com.example.connection.Model.User;
-import com.example.connection.R;
-import com.example.connection.View.ChatActivity;
 import com.example.connection.View.BottomSheetNewChat;
 import com.example.connection.View.Connection;
 import com.example.connection.View.Layout.FlowLayout;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import org.intellij.lang.annotations.Flow;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DrawController {
 

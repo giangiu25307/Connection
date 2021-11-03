@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.connection.Model.User;
 import com.example.connection.View.ChatActivity;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Database.Database;
@@ -36,7 +37,8 @@ import java.util.Date;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private Context context;
-    private Cursor chatCursor, userCursor;
+    private Cursor chatCursor;
+    private User user;
     private Database database;
     private Bitmap bitmap, bitmap2;
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
@@ -82,19 +84,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         if (!chatCursor.moveToPosition(position)) {
             return;
         }
-        String nameUser = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-        userCursor = database.getUser(nameUser);
-        userCursor.moveToFirst();
+        String id= chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
+        user = database.getUser(id);
         //Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(userCursor));
         //Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
 
-        long id = chatCursor.getLong(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
         System.out.println(id);
-        String userName = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.USERNAME));
         String lastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE));
-        String profilePicPosition = userCursor.getString(userCursor.getColumnIndex(Task.TaskEntry.PROFILE_PIC));
         String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
-        File profilePic = new File(profilePicPosition);
+        File profilePic = new File(user.getProfilePic());
 
         if (profilePic.exists()) {
 
@@ -111,7 +109,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         }
 
-        userCursor = database.getLastMessageChat(Task.TaskEntry.ID_CHAT);
         //String timeLastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATE));
 
         holder.itemView.setTag(id);
@@ -119,7 +116,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         TextView userNameTextView = holder.name;
         TextView lastMessageTextView = holder.lastMessage;
         TextView timeLastMessageTextView = holder.timeLastMessage;
-        userNameTextView.setText(userName);
+        userNameTextView.setText(user.getUsername());
         lastMessageTextView.setText(lastMessage);
         try {
             date = format.parse(datetime);

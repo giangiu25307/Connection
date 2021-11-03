@@ -338,7 +338,7 @@ public class Connection extends AppCompatActivity {
 
     public boolean firstLogin() {
         try {
-            database.getUser("0").getString(0);
+            database.getUser("0");
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Utente non trovato");
             return true;

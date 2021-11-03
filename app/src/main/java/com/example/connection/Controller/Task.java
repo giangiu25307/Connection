@@ -39,6 +39,11 @@ public class Task {
         public static final String PUBLIC_KEY = "public_key";
         public static final String SYMMETRIC_KEY = "symmetric_key";
         public static final String OTHER_GROUP = "other_group";
+        public static final String NUMBER_SHARED = "number_shared";
+        public static final String TELEGRAM_SHARED = "telegram_shared";
+        public static final String WHATSAPP_SHARED = "whatsapp_shared";
+        public static final String TELEGRAM_NICK = "telegram_nick";
+
         /*public static final String GROUPS = "GROUPS";
         public static final String GROUP_NAME = "GROUP_NAME";
         public static final String USERS_GROUP = "USER_GROUP";

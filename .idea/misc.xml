@@ -28,6 +28,8 @@
         <entry key="..\:/Documenti/ProgettiAndroidStudio/Connection/app/src/main/res/layout/lyt_request_permission.xml" value="0.36666666666666664" />
         <entry key="..\:/Documenti/ProgettiAndroidStudio/Connection/app/src/main/res/layout/temp_person_chat_information_alert_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/Documenti/ProgettiAndroidStudio/Connection/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.23703703703703705" />
+        <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/dialog_chat_information.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_chat_activity.xml" value="0.36666666666666664" />
         <entry key="app/src/main/res/layout/layout_xiaomi_permission.xml" value="0.3692490351230567" />
         <entry key="app/src/main/res/layout/lyt_bs_new_chat.xml" value="0.18795289855072464" />
         <entry key="app/src/main/res/layout/lyt_cancel_confirm_buttons.xml" value="0.18795289855072464" />
@@ -36,7 +38,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

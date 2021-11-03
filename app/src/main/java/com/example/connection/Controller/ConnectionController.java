@@ -39,7 +39,7 @@ import static android.net.ConnectivityManager.NetworkCallback;
 public class
 ConnectionController {
 
-    private String SSID = "DIRECT-CONNEXION", networkPassword = "12345678";
+    private String SSID = "DIRECT-CONNECTION", networkPassword = "12345678";
     private WifiManager wifiManager;
     private Connection connection;
     private WifiP2pManager mManager;
@@ -109,7 +109,7 @@ ConnectionController {
     @SuppressLint("MissingPermission")
     public void createGroup() {
         GO_leave = false;
-        /*mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
+        mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
 
             @Override
             public void onSuccess() {
@@ -130,7 +130,7 @@ ConnectionController {
                             e.printStackTrace();
                         }
                         multicastP2P.createMultigroupP2P();
-                        if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION")) {
+                        if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION")) {
                             multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
                             multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
                         }
@@ -162,7 +162,7 @@ ConnectionController {
 
             }
         });
-        wifiLock.acquire();*/
+        wifiLock.acquire();
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ ConnectionController {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
-                if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
+                if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION"))
                     wifiConnection(id);
                 else {
                     new CountDownTimer(5000, 1000) {
@@ -225,7 +225,7 @@ ConnectionController {
 
                     @Override
                     public void onFinish() {
-                        if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
+                        if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION"))
                             wifiConnection(id);
                         else {
                             tcpServer.setup();

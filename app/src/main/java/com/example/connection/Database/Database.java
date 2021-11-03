@@ -49,7 +49,11 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.IP_GROUP_OWNER + " TEXT, "
                 + Task.TaskEntry.ACCEPT + " TEXT DEFAULT 'false', "
                 + Task.TaskEntry.MESSAGES_ACCEPTED + " TEXT DEFAULT 'true', "
-                + Task.TaskEntry.OTHER_GROUP + " TEXT DEFAULT 0 "
+                + Task.TaskEntry.OTHER_GROUP + " TEXT DEFAULT 0, "
+                + Task.TaskEntry.TELEGRAM_NICK + " TEXT, "
+                + Task.TaskEntry.TELEGRAM_SHARED + " TEXT DEFAULT 'false', "
+                + Task.TaskEntry.WHATSAPP_SHARED + " TEXT DEFAULT 'false', "
+                + Task.TaskEntry.NUMBER_SHARED + " TEXT DEFAULT 'false' "
                 + ")";
 
         String CREATE_USER_PLUS_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.Company.USER_PLUS + " ( "
@@ -613,15 +617,15 @@ public class Database extends SQLiteOpenHelper {
         String query = "SELECT *" +
                 " FROM " + Task.TaskEntry.USER +
                 " WHERE " + Task.TaskEntry.IP + " IS NOT NULL" +
-                (!Connection.genders[0].equals("") && Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "'": "") +
-                (Connection.genders[0].equals("") && !Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "'": "") +
-                (Connection.genders[0].equals("") && Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'": "") +
+                (!Connection.genders[0].equals("") && Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "'" : "") +
+                (Connection.genders[0].equals("") && !Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "'" : "") +
+                (Connection.genders[0].equals("") && Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'" : "") +
 
-                (!Connection.genders[0].equals("") && !Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'": "") +
+                (!Connection.genders[0].equals("") && !Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'" : "") +
 
-                (!Connection.genders[0].equals("") && Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'": "") +
-                (!Connection.genders[0].equals("") && !Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "'": "") +
-                (Connection.genders[0].equals("") && !Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'": "") +
+                (!Connection.genders[0].equals("") && Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'" : "") +
+                (!Connection.genders[0].equals("") && !Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "'" : "") +
+                (Connection.genders[0].equals("") && !Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "' OR " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'" : "") +
                 ";";
 
 
@@ -639,13 +643,13 @@ public class Database extends SQLiteOpenHelper {
             if (Connection.minAge != 16 && Connection.maxAge != 100) {
                 if (Integer.parseInt(user.getAge()) > Connection.minAge && Integer.parseInt(user.getAge()) < Connection.maxAge)
                     userList.add(user);
-            }else if(Connection.minAge == 16 && Connection.maxAge != 100){
+            } else if (Connection.minAge == 16 && Connection.maxAge != 100) {
                 if (Integer.parseInt(user.getAge()) < Connection.maxAge)
                     userList.add(user);
-            }else if(Connection.minAge != 16){
+            } else if (Connection.minAge != 16) {
                 if (Integer.parseInt(user.getAge()) > Connection.minAge)
                     userList.add(user);
-            }else{
+            } else {
                 userList.add(user);
             }
         }
@@ -701,15 +705,17 @@ public class Database extends SQLiteOpenHelper {
     /**
      * Return the specified user
      */
-    public Cursor getUser(String id) {
+    public User getUser(String id) {
         String query = "SELECT * " +
                 " FROM " + Task.TaskEntry.USER +
                 " WHERE id_user ='" + id + "'";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
+            return new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
+        } else {
+            return null;
         }
-        return c;
     }
 
     /**
@@ -751,6 +757,52 @@ public class Database extends SQLiteOpenHelper {
         msgValues.put(Task.TaskEntry.IP, "NULL");
         db.update(Task.TaskEntry.USER, msgValues, null, null);
 
+    }
+    /**
+     * Return true if the type of number request is shared, false if not
+     */
+    public boolean isNumberShared(String id, String type){
+        String query="";
+        switch(type){
+            case "number":
+                query = "SELECT " + Task.TaskEntry.NUMBER_SHARED +
+                        " FROM "+ Task.TaskEntry.USER +
+                        " WHERE "+ Task.TaskEntry.ID_USER +" = "+id;
+                break;
+            case "whatsapp":
+                query = "SELECT " + Task.TaskEntry.WHATSAPP_SHARED +
+                        " FROM "+ Task.TaskEntry.USER +
+                        " WHERE "+ Task.TaskEntry.ID_USER +" = "+id;
+                break;
+            case "telegram":
+                query = "SELECT " + Task.TaskEntry.TELEGRAM_SHARED +
+                        " FROM "+ Task.TaskEntry.USER +
+                        " WHERE "+ Task.TaskEntry.ID_USER +" = "+id;
+                break;
+            default:
+                break;
+        }
+        Cursor c = db.rawQuery(query, null);
+        if(c!=null){
+            c.moveToFirst();
+            return c.getString(0).equals("true");
+        }
+        return false;
+    }
+
+    /**
+     * Return the telegram nickname of the user
+     */
+    public String getTelegramNick(String id){
+        String query = "SELECT " + Task.TaskEntry.TELEGRAM_NICK +
+                " FROM "+ Task.TaskEntry.USER +
+                " WHERE "+ Task.TaskEntry.ID_USER +" = "+id;
+        Cursor c = db.rawQuery(query, null);
+        if(c!=null){
+            c.moveToFirst();
+            return c.getString(0);
+        }
+        return "";
     }
 
     /**
