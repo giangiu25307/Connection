@@ -28,6 +28,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -51,11 +52,11 @@ public class TcpServer {
         port = 50000;
     }
 
-    public void setMulticastP2p(Multicast_P2P multicastP2p){
+    public void setMulticastP2p(Multicast_P2P multicastP2p) {
         this.multicastP2p = multicastP2p;
     }
 
-    public void close(){
+    public void close() {
         AsyncServer.getDefault().kill();
         System.out.println("[Server] Server close socket");
 
@@ -93,7 +94,7 @@ public class TcpServer {
         socket.setDataCallback(new DataCallback() {
             @Override
             public void onDataAvailable(DataEmitter emitter, ByteBufferList bb) {
-                String received=new String(bb.getAllByteArray());
+                String received = new String(bb.getAllByteArray());
                 System.out.println("[Server] Received Message " + received);
                 String identifier = messageIdentifier(received);
                 Util.writeAll(socket, ("messageConfirmed£€" + identifier).getBytes(), new CompletedCallback() {
@@ -131,6 +132,25 @@ public class TcpServer {
             Intent intent = new Intent(connection.getApplicationContext(), MessageController.getIstance().getClass());
             String[] splittedR = msg.split("£€");
             switch (splittedR[0]) {
+                case "share":
+                    if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
+                        try {
+                            String message = encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3])));
+                            String[] splittedMessage = message.split("£€");
+                            if(splittedMessage[1].equals("number")){
+                                database.setNumber(splittedR[3],splittedMessage[0]);
+                            } else if (splittedMessage[1].equals("whatsapp")){
+                                database.setWhatsapp(splittedR[3],splittedMessage[0]);
+                            }else if (splittedMessage[1].equals("telegram")){
+                                database.setTelegram(splittedR[3],splittedMessage[0]);
+                            }
+                        } catch (InvalidKeyException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
+                    }
+                    break;
                 case "image":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                         sdf = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss");
@@ -140,23 +160,23 @@ public class TcpServer {
                         fos.write(msg.getBytes());
                         fos.close();
                         database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", splittedR[1], splittedR[1]);
-                        intent.putExtra("intentType","messageController");
-                        intent.putExtra("communicationType","tcp");
-                      //  intent.putExtra("msg",message); da finire la parte delle immagini
-                        intent.putExtra("id",splittedR[1]);
+                        intent.putExtra("intentType", "messageController");
+                        intent.putExtra("communicationType", "tcp");
+                        //  intent.putExtra("msg",message); da finire la parte delle immagini
+                        intent.putExtra("id", splittedR[1]);
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
                     }
                     return "image";
                 case "sendInfo":
                     //The group owner send all user information to the new user --------------------------------------------------------------------------------------------------------------------------------
-                    for (int i = 1; i < splittedR.length-1; i = i + 12) {
+                    for (int i = 1; i < splittedR.length - 1; i = i + 12) {
                         if (i == 1) {
                             splittedR[2] = splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName;
                             database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
                             database.setMyGroupOwnerIp(splittedR[i + 1], splittedR[i]);
-                        }else {
+                        } else {
                             splittedR[i + 1] = splittedR[i + 1].split("%")[0] + "%" + MyNetworkInterface.wlanName;
                             database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
@@ -177,16 +197,16 @@ public class TcpServer {
                             datetime = String.valueOf(LocalDateTime.now());
                         }
                         try {
-                            String message=encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3])));
+                            String message = encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3])));
                             date = format.parse(datetime);
                             if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
-                                database.addMsg("",splittedR[3], splittedR[3]);
+                                database.addMsg("", splittedR[3], splittedR[3]);
                             }
                             database.addMsg(message, splittedR[3], splittedR[3]);
-                            intent.putExtra("intentType","messageController");
-                            intent.putExtra("communicationType","tcp");
-                            intent.putExtra("msg",message);
-                            intent.putExtra("id",splittedR[3]);
+                            intent.putExtra("intentType", "messageController");
+                            intent.putExtra("communicationType", "tcp");
+                            intent.putExtra("msg", message);
+                            intent.putExtra("id", splittedR[3]);
                             connection.getApplicationContext().sendBroadcast(intent);
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -199,14 +219,14 @@ public class TcpServer {
                     return "message";
                 case "handShake":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
-                        String message[]=encryption.decrypt(splittedR[2]).split("£€");
-                        database.createChat(message[2], database.getUserName(message[2]),message[0]);
-                        database.addMsg("",message[2], message[2]);
+                        String message[] = encryption.decrypt(splittedR[2]).split("£€");
+                        database.createChat(message[2], database.getUserName(message[2]), message[0]);
+                        database.addMsg("", message[2], message[2]);
                         database.addMsg(message[1], message[2], message[2]);
-                        intent.putExtra("intentType","messageController");
-                        intent.putExtra("communicationType","tcp");
-                        intent.putExtra("msg",message[1]);
-                        intent.putExtra("id",message[2]);
+                        intent.putExtra("intentType", "messageController");
+                        intent.putExtra("communicationType", "tcp");
+                        intent.putExtra("msg", message[1]);
+                        intent.putExtra("id", message[2]);
                         connection.getApplicationContext().sendBroadcast(intent);
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
@@ -216,15 +236,15 @@ public class TcpServer {
                     for (int i = 1; i < splittedR.length - 1; i = i + 12) {
                         if (i == 1)
                             database.setMyGroupOwnerIp(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i]);
-                        database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                        database.addUser(splittedR[i], splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
                         database.setOtherGroup(splittedR[i]);
                     }
-                    splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
-                    splittedR[2]=database.getMyGroupOwnerIp();
+                    splittedR[1] += "€€" + ConnectionController.myUser.getIdUser();
+                    splittedR[2] = database.getMyGroupOwnerIp();
                     String string = this.arrayToString(splittedR);
                     DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, InetAddress.getByName("234.0.0.0"), 6789);
                     multicastP2p.getMulticastP2P().send(message);
-                    Multicast_P2P.dbUserEvent=false;
+                    Multicast_P2P.dbUserEvent = false;
                     return "groupInfo";
                     /*case "REQUEST-MEET":
                         //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
@@ -250,18 +270,17 @@ public class TcpServer {
                 default:
                     return "";
             }
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             //report exception somewhere.
             e.printStackTrace();
         }
         return "";
     }
 
-    private String arrayToString(String[] array){
-        String string="";
-        for (int i=0;i<array.length;i++){
-            string+=array[i]+"£€";
+    private String arrayToString(String[] array) {
+        String string = "";
+        for (int i = 0; i < array.length; i++) {
+            string += array[i] + "£€";
         }
         return string;
     }

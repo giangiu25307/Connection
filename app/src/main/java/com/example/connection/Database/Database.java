@@ -758,32 +758,33 @@ public class Database extends SQLiteOpenHelper {
         db.update(Task.TaskEntry.USER, msgValues, null, null);
 
     }
+
     /**
      * Return true if the type of number request is shared, false if not
      */
-    public boolean isNumberShared(String id, String type){
-        String query="";
-        switch(type){
+    public boolean isNumberShared(String id, String type) {
+        String query = "";
+        switch (type) {
             case "number":
                 query = "SELECT " + Task.TaskEntry.NUMBER_SHARED +
-                        " FROM "+ Task.TaskEntry.USER +
-                        " WHERE "+ Task.TaskEntry.ID_USER +" = "+id;
+                        " FROM " + Task.TaskEntry.USER +
+                        " WHERE " + Task.TaskEntry.ID_USER + " = " + id;
                 break;
             case "whatsapp":
                 query = "SELECT " + Task.TaskEntry.WHATSAPP_SHARED +
-                        " FROM "+ Task.TaskEntry.USER +
-                        " WHERE "+ Task.TaskEntry.ID_USER +" = "+id;
+                        " FROM " + Task.TaskEntry.USER +
+                        " WHERE " + Task.TaskEntry.ID_USER + " = " + id;
                 break;
             case "telegram":
                 query = "SELECT " + Task.TaskEntry.TELEGRAM_SHARED +
-                        " FROM "+ Task.TaskEntry.USER +
-                        " WHERE "+ Task.TaskEntry.ID_USER +" = "+id;
+                        " FROM " + Task.TaskEntry.USER +
+                        " WHERE " + Task.TaskEntry.ID_USER + " = " + id;
                 break;
             default:
                 break;
         }
         Cursor c = db.rawQuery(query, null);
-        if(c!=null){
+        if (c != null) {
             c.moveToFirst();
             return c.getString(0).equals("true");
         }
@@ -793,12 +794,12 @@ public class Database extends SQLiteOpenHelper {
     /**
      * Return the telegram nickname of the user
      */
-    public String getTelegramNick(String id){
+    public String getTelegramNick(String id) {
         String query = "SELECT " + Task.TaskEntry.TELEGRAM_NICK +
-                " FROM "+ Task.TaskEntry.USER +
-                " WHERE "+ Task.TaskEntry.ID_USER +" = "+id;
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.ID_USER + " = " + id;
         Cursor c = db.rawQuery(query, null);
-        if(c!=null){
+        if (c != null) {
             c.moveToFirst();
             return c.getString(0);
         }
@@ -834,6 +835,16 @@ public class Database extends SQLiteOpenHelper {
         return c.getString(0);
     }
 
+    public String getNumber(String idUser) {
+        String query = "SELECT " + Task.TaskEntry.NUMBER +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.ID_USER + "=" + idUser;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+        }
+        return c.getString(0);
+    }
 
     public void setAccept(String idUser, String value) {
         ContentValues msgValues = new ContentValues();
@@ -847,6 +858,27 @@ public class Database extends SQLiteOpenHelper {
     public void setNumber(String idUser, String value) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.NUMBER, value);
+        msgValues.put(Task.TaskEntry.NUMBER_SHARED, "true");
+        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + idUser, null);
+    }
+
+    /**
+     * Set the whatsapp of the specified user
+     */
+    public void setWhatsapp(String idUser, String value) {
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.NUMBER, value);
+        msgValues.put(Task.TaskEntry.WHATSAPP_SHARED, "true");
+        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + idUser, null);
+    }
+
+    /**
+     * Set the telegram of the specified user
+     */
+    public void setTelegram(String idUser, String value) {
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.TELEGRAM_NICK, value);
+        msgValues.put(Task.TaskEntry.TELEGRAM_SHARED, "true");
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + idUser, null);
     }
 

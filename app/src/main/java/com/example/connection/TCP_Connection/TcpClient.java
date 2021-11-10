@@ -113,6 +113,28 @@ public class TcpClient {
         }
     }
 
+    public void sendShare(String message, String id) {
+        noKey = false;
+        oldClearMsg = message;
+        oldIp = database.findIp(id);
+        oldId = id;
+        checkInterface(id);
+        String msg = "share£€" + id + "£€";
+        try {
+            msg += encryption.encryptAES(message, encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
+            oldMsg = msg + "£€" + ConnectionController.myUser.getIdUser();
+            AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
+                @Override
+                public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
+                    System.out.println("Done");
+                    handleConnectCompleted(ex, socket, oldMsg);
+                }
+            });
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendImage(String imagePath, String id) throws IOException {
         noKey = false;
         Bitmap bmp = BitmapFactory.decodeFile(imagePath);
