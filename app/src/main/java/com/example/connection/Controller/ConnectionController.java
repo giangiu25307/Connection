@@ -69,6 +69,7 @@ ConnectionController {
     private PlusController plusController;
     private boolean CallbackWhenGO;
     private NetworkCallback callbackGO, callbackDirect;
+    private  WifiP2pManager.ActionListener mActionListener;
 
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
@@ -90,7 +91,6 @@ ConnectionController {
                 .setNetworkName(SSID + myId)
                 .setPassphrase(networkPassword)
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                .enablePersistentMode(false)
                 .build();
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
@@ -100,6 +100,8 @@ ConnectionController {
             @Override
             public void run() {
                 disconnectToGroup();
+                android.os.Process.killProcess(android.os.Process.myPid());
+
             }
         }));
 
@@ -117,7 +119,7 @@ ConnectionController {
     @SuppressLint("MissingPermission")
     public void createGroup() {
         GO_leave = false;
-        mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
+        mManager.createGroup(mChannel, mConfig, mActionListener=new WifiP2pManager.ActionListener() {
 
             @Override
             public void onSuccess() {
@@ -146,6 +148,7 @@ ConnectionController {
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                         tcpServer.setup();
                         tcpServer.setMulticastP2p(multicastP2P);
+
                     }
                 }, 3000);
 
@@ -280,6 +283,7 @@ ConnectionController {
         }
         bluetoothAdvertiser.stopAdvertising();
         tcpServer.close();
+
     }
 
     //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
