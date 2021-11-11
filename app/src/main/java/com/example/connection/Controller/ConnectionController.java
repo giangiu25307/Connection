@@ -217,6 +217,7 @@ ConnectionController {
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
     public void connectToGroup(final String id) {//GroupOwner groupOwner){//
+        System.out.println("ciao");
         wifiConnection(id);
         bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
@@ -334,7 +335,7 @@ ConnectionController {
                         .build();
         networkRequest = new NetworkRequest.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .setNetworkSpecifier(specifier)
                 .build();
     }
