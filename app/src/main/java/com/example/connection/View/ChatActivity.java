@@ -267,21 +267,33 @@ public class ChatActivity extends AppCompatActivity {
                 number.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        chatController.share(database.getNumber(ConnectionController.myUser.getIdUser())+"£€number", user.getIdUser());
+                        try {
+                            chatController.share(database.getNumber(ConnectionController.myUser.getIdUser()) + "£€number", user.getIdUser());
+                        } catch (NullPointerException e) {
+                            System.out.println("account disconnected");
+                        }
                     }
                 });
 
                 whatsappNumber.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        chatController.share(database.getNumber(ConnectionController.myUser.getIdUser())+"£€whatsapp", user.getIdUser());
+                        try {
+                            chatController.share(database.getNumber(ConnectionController.myUser.getIdUser()) + "£€whatsapp", user.getIdUser());
+                        } catch (NullPointerException e) {
+                            System.out.println("account disconnected");
+                        }
                     }
                 });
 
                 telegramNumber.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        chatController.share(database.getTelegramNick(ConnectionController.myUser.getIdUser())+"£€telegram", user.getIdUser());
+                        try {
+                            chatController.share(database.getTelegramNick(ConnectionController.myUser.getIdUser()) + "£€telegram", user.getIdUser());
+                        } catch (NullPointerException e) {
+                            System.out.println("account disconnected");
+                        }
                     }
                 });
 
@@ -315,11 +327,11 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(context, "Number copied to clipboard", Toast.LENGTH_SHORT).show();
         } else {
             if (user.getGender().equals("male"))
-                Toast.makeText(context, "The user has not shared his telegram", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "The user has not shared his number", Toast.LENGTH_SHORT).show();
             else if (user.getGender().equals("female"))
-                Toast.makeText(context, "The user has not shared her telegram", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "The user has not shared her number", Toast.LENGTH_SHORT).show();
             else
-                Toast.makeText(context, "The user has not shared his/her telegram", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "The user has not shared his/her number", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -328,11 +340,11 @@ public class ChatActivity extends AppCompatActivity {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/" + user.getNumber())));
         } else {
             if (user.getGender().equals("male"))
-                Toast.makeText(context, "The user has not shared his telegram", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "The user has not shared his whatsapp", Toast.LENGTH_SHORT).show();
             else if (user.getGender().equals("female"))
-                Toast.makeText(context, "The user has not shared her telegram", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "The user has not shared her whatsapp", Toast.LENGTH_SHORT).show();
             else
-                Toast.makeText(context, "The user has not shared his/her telegram", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "The user has not shared his/her whatsapp", Toast.LENGTH_SHORT).show();
         }
     }
 
