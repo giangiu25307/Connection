@@ -18,6 +18,7 @@
         android:layout_marginTop="5dp"
         android:layout_weight="1"
         android:text="username"
-        android:textColor="?attr/textColor"/>
+        android:textColor="?attr/textColor"
+        android:fontFamily="@font/opensans_regular_custom"/>
 
 </LinearLayout>

@@ -19,9 +19,10 @@
         <item name="textColor">@android:color/black</item>
         <item name="secondaryTextColor">@color/secondaryTextColor</item>
         <item name="invertedTextColor">@android:color/white</item>
+        <item name="invertedSecondaryTextColor">@color/darkSecondaryTextColor</item>
         <item name="hintColor">@color/hintColor</item>
         <item name="iconTint">@android:color/black</item>
-        <item name="revertedIconTint">@android:color/white</item>
+        <item name="invertedIconTint">@android:color/white</item>
         <item name="bottomUnselectedColor">@color/bottomUnselectedColor</item>
         <item name="topLineBottomSheetColor">@color/topLineBottomSheetColor</item>
         <item name="toolbarAndSettingsCardIconColor">@color/toolbarAndSettingsCardIconColor</item>
@@ -44,9 +45,10 @@
         <item name="textColor">@android:color/white</item>
         <item name="secondaryTextColor">@color/darkSecondaryTextColor</item>
         <item name="invertedTextColor">@android:color/black</item>
+        <item name="invertedSecondaryTextColor">@color/secondaryTextColor</item>
         <item name="hintColor">@color/darkHintColor</item>
         <item name="iconTint">@android:color/white</item>
-        <item name="revertedIconTint">@android:color/black</item>
+        <item name="invertedIconTint">@android:color/black</item>
         <item name="bottomUnselectedColor">@color/darkBottomUnselectedColor</item>
         <item name="topLineBottomSheetColor">@color/darkTopLineBottomSheetColor</item>
         <item name="toolbarAndSettingsCardIconColor">@color/darkToolbarAndSettingsCardIconColor</item>
