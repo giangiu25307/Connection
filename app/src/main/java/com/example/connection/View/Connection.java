@@ -90,7 +90,7 @@ public class Connection extends AppCompatActivity {
         countDownTimer.start();
 
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
-        boolean createSample = true;
+        boolean createSample = false;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
             database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo","");
@@ -141,13 +141,9 @@ public class Connection extends AppCompatActivity {
             database.addUser("53", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
             database.addUser("54", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
         }
+        database.addUser("0", null, "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
+        //database.addUser("1", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
 
-        // database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
-        //database.addUser("2", null, "test2", "test1@gmail.com", "male", "test1", "test1", "test1", "test1", "01-01-2001", "nothingToseehere", null);//xiaomia2litemio
-        // database.addUser("3",null,"test4","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
-        //database.addUser("9",null,"test8","test9@gmail.com","other","test9","test9","test3","test3","01-01-2003","azz",null);
-        // database.addUser("5",null,"test4","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
-        // database.addUser("11",null,"test10","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
         createNotificationChannels();
         foregroundService = new MyForegroundService();
         Intent notificationIntent = new Intent(this, foregroundService.getClass());
@@ -346,24 +342,4 @@ public class Connection extends AppCompatActivity {
         return false;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == VPN_REQUEST_CODE && resultCode == RESULT_OK) {
-            //waitingForVPNStart = true;
-            localVPNService = new LocalVPNService();
-            this.startService(new Intent(this, localVPNService.getClass()));
-            //enableButton(false);
-        }
-    }
-
-    public void startVpn() {
-
-        Intent vpnIntent = VpnService.prepare(this);
-
-        if (vpnIntent != null)
-            this.startActivityForResult(vpnIntent, VPN_REQUEST_CODE);
-        else
-            onActivityResult(VPN_REQUEST_CODE, RESULT_OK, null);
-    }
 }

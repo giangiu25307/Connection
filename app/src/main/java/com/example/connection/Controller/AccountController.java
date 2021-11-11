@@ -71,7 +71,7 @@ public class AccountController {
             jsonObject.put("gender", gender);
             jsonObject.put("surname", surname);
             jsonObject.put("country", country);
-           // jsonObject.put("city", city);
+            jsonObject.put("city", city);
             jsonObject.put("birth", birth);
             jsonObject.put("number", number);
             jsonObject.put("porfilePic",profilePic);

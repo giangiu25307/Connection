@@ -74,6 +74,10 @@ public class ChatController {
 
     }
 
+    public void share(String numberOrNickAndType, String idReceiver) {
+        tcp.sendShare(numberOrNickAndType, idReceiver);
+    }
+
     //send a direct image -------------------------------------------------------------------------------------------------------------------------------
     public void sendTCPPath(Paths path, String idReceiver) {
         //DA FARE PER BENE

@@ -33,9 +33,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
+import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
@@ -233,30 +235,56 @@ public class ChatActivity extends AppCompatActivity {
                 String ageAndGender = user.getAge() + ", " + user.getGender();
                 ageAndGenderTextView.setText(ageAndGender);
 
+                LinearLayout chatterNumber = alertDialog.findViewById(R.id.linearLayoutChatterNumber);
+                LinearLayout chatterWhatsappNumber = alertDialog.findViewById(R.id.linearLayoutChatterWhatsapp);
+                LinearLayout chatterTelegramNumber = alertDialog.findViewById(R.id.linearLayoutChatterTelegram);
+
+                chatterNumber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showChatterNumber();
+                    }
+                });
+
+                chatterWhatsappNumber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openChatterWhatsapp();
+                    }
+                });
+
+                chatterTelegramNumber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openChatterTelegram();
+                    }
+                });
+
                 LinearLayout number = alertDialog.findViewById(R.id.linearLayoutNumber);
-                LinearLayout whatsappNumber = alertDialog.findViewById(R.id.linearLayoutNumber);
-                LinearLayout telegramNumber = alertDialog.findViewById(R.id.linearLayoutNumber);
+                LinearLayout whatsappNumber = alertDialog.findViewById(R.id.linearLayoutWhatsapp);
+                LinearLayout telegramNumber = alertDialog.findViewById(R.id.linearLayoutTelegram);
 
                 number.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showChatterNumber(textViewChatterNumber);
+                        chatController.share(database.getNumber(ConnectionController.myUser.getIdUser())+"£€number", user.getIdUser());
                     }
                 });
 
                 whatsappNumber.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        openChatterWhatsapp(textViewChatterWhatsapp);
+                        chatController.share(database.getNumber(ConnectionController.myUser.getIdUser())+"£€whatsapp", user.getIdUser());
                     }
                 });
 
                 telegramNumber.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        openChatterTelegram(textViewChatterTelegram);
+                        chatController.share(database.getTelegramNick(ConnectionController.myUser.getIdUser())+"£€telegram", user.getIdUser());
                     }
                 });
+
                 alertDialog.findViewById(R.id.closeTextView).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -279,26 +307,47 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void showChatterNumber(TextView chatterNumber) {
+    private void showChatterNumber() {
         if (database.isNumberShared(user.getIdUser(), "number")) {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("number", user.getNumber());
             clipboard.setPrimaryClip(clip);
+            Toast.makeText(context, "Number copied to clipboard", Toast.LENGTH_SHORT).show();
+        } else {
+            if (user.getGender().equals("male"))
+                Toast.makeText(context, "The user has not shared his telegram", Toast.LENGTH_SHORT).show();
+            else if (user.getGender().equals("female"))
+                Toast.makeText(context, "The user has not shared her telegram", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context, "The user has not shared his/her telegram", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void openChatterWhatsapp(TextView whatsappNumber) {
+    private void openChatterWhatsapp() {
         if (database.isNumberShared(user.getIdUser(), "whatsapp")) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/" + user.getNumber())));
+        } else {
+            if (user.getGender().equals("male"))
+                Toast.makeText(context, "The user has not shared his telegram", Toast.LENGTH_SHORT).show();
+            else if (user.getGender().equals("female"))
+                Toast.makeText(context, "The user has not shared her telegram", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context, "The user has not shared his/her telegram", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void openChatterTelegram(TextView telegramUsername) {
+    private void openChatterTelegram() {
         if (database.isNumberShared(user.getIdUser(), "telegram")) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/" + database.getTelegramNick(user.getIdUser()))));
+        } else {
+            if (user.getGender().equals("male"))
+                Toast.makeText(context, "The user has not shared his telegram", Toast.LENGTH_SHORT).show();
+            else if (user.getGender().equals("female"))
+                Toast.makeText(context, "The user has not shared her telegram", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context, "The user has not shared his/her telegram", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @Override
     protected void onStop() {
