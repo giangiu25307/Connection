@@ -1,6 +1,7 @@
 package com.example.connection.View;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
@@ -22,7 +23,10 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -39,6 +43,7 @@ import com.example.connection.Model.UserPlus;
 import com.example.connection.R;
 import com.example.connection.Services.MyForegroundService;
 import com.example.connection.vpn.LocalVPNService;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -162,6 +167,7 @@ public class Connection extends AppCompatActivity {
         //Global channel
         channel = new NotificationChannel("globalMessageNotification", "Global message", NotificationManager.IMPORTANCE_DEFAULT);
         notificationManager.createNotificationChannel(channel);
+
     }
 
     private void requestPermissions(){

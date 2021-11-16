@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/notificationIcon"
-        android:icon="@drawable/ic_notification"
-        android:title="Notify"
-        app:showAsAction="always"
-        app:iconTint="?attr/toolbarAndSettingsCardIconColor"/>
-
-    <item
         android:id="@+id/randomIcon"
         android:icon="@drawable/ic_random"
         android:title="Random chat"
