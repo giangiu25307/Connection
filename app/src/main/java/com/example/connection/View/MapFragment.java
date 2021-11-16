@@ -204,53 +204,17 @@ public class MapFragment extends Fragment {
                 getContext().sendBroadcast(intent);*/
                 break;
             case R.id.notificationIcon:
-                if (!isNotificationChannelEnabled(getContext(), "chatMessageNotification") && !sharedPreferences.getBoolean("notificationsPopupShown", false)) {
-                    Snackbar snackbar = Snackbar.make(getView(), "", 6000);
-                    Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-                    layout.setBackgroundColor(getResources().getColor(R.color.transparent));
-                    TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
-                    textView.setVisibility(View.INVISIBLE);
-                    View snackView = getLayoutInflater().inflate(R.layout.lyt_notification_snackbar, null);
-                    ImageView imageView = snackView.findViewById(R.id.imageView12);
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Toast.makeText(getActivity(), "Click", Toast.LENGTH_SHORT).show();
-                            Intent settingsIntent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    .putExtra(Settings.EXTRA_APP_PACKAGE, getResources().getString(R.string.packagename))
-                                    .putExtra(Settings.EXTRA_CHANNEL_ID, "chatMessageNotification");
-                            startActivity(settingsIntent);
-                        }
-                    });
-                    layout.setPadding(5, 5, 5, 5);
-                    layout.addView(snackView, 0);
-                    snackbar.show();
-                    //sharedPreferences.edit().putBoolean("notificationsPopupShown", true).apply();
-                } else {
-                    Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
-                    intent.putExtra("intentType", "messageController");
-                    intent.putExtra("communicationType", "tcp");
-                    intent.putExtra("msg", "hello surf shark");
-                    intent.putExtra("idChat", "2");
-                    getContext().sendBroadcast(intent);
-
-                }
-
+                Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
+                intent.putExtra("intentType", "messageController");
+                intent.putExtra("communicationType", "tcp");
+                intent.putExtra("msg", "hello surf shark");
+                intent.putExtra("idChat", "2");
+                getContext().sendBroadcast(intent);
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private boolean isNotificationChannelEnabled(Context context, @Nullable String channelId) {
-        if (!TextUtils.isEmpty(channelId)) {
-            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel channel = manager.getNotificationChannel(channelId);
-            return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
-        }
-        return false;
     }
 
     @Override
