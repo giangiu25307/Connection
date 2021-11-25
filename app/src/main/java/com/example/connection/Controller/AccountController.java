@@ -44,7 +44,7 @@ public class AccountController {
         RequestBody body = RequestBody.create(jsonObject.toString(),mediaType);
 
         Request request = new Request.Builder()
-                .url("https://connexionauth.herokuapp.com/auth/login/")
+                .url("https://isconnection.herokuapp.com/auth/login/")
                 .post(body)
                 .build();
 
@@ -84,7 +84,7 @@ public class AccountController {
         RequestBody body = RequestBody.create(jsonObject.toString(),mediaType);
 
         Request request = new Request.Builder()
-                .url("https://connexionauth.herokuapp.com/auth/signup/")
+                .url("https://isconnection.herokuapp.com/auth/signup/")
                 .post(body)
                 .build();
 
