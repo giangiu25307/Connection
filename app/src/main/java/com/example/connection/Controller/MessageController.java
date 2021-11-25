@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;

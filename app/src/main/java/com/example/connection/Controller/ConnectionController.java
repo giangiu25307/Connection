@@ -87,11 +87,11 @@ ConnectionController {
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection, this, bluetoothAdvertiser);
-        /*mConfig = new WifiP2pConfig.Builder()
+        mConfig = new WifiP2pConfig.Builder()
                 .setNetworkName(SSID + myId)
                 .setPassphrase(networkPassword)
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                .build();*/
+                .build();
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
