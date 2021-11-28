@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.ConnectionSpec;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -71,10 +70,11 @@ public class AccountController {
             jsonObject.put("gender", gender);
             jsonObject.put("surname", surname);
             jsonObject.put("country", country);
-            jsonObject.put("city", city);
-            jsonObject.put("birth", birth);
-            jsonObject.put("number", number);
-            jsonObject.put("porfilePic",profilePic);
+            // jsonObject.put("city", city);
+            jsonObject.put("birthday", birth);
+            jsonObject.put("phoneNumber", number);
+            jsonObject.put("phoneNumber", number);
+            // jsonObject.put("porfilePic",profilePic);
         } catch (
                 JSONException e) {
             e.printStackTrace();
