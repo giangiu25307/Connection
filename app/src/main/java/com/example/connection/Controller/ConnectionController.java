@@ -113,6 +113,11 @@ ConnectionController {
         bluetoothAdvertiser.stopAdvertising();
         wifiLock.release();
         mManager.removeGroup(mChannel, null);
+        try {
+            mChannel.close();
+        }catch(Throwable e){
+            System.out.println("Direct-Connection closed");
+        }
     }
 
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
@@ -148,7 +153,6 @@ ConnectionController {
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                         tcpServer.setup();
                         tcpServer.setMulticastP2p(multicastP2P);
-
                     }
                 }, 3000);
 
