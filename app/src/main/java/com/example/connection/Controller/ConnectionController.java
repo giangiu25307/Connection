@@ -160,12 +160,14 @@ ConnectionController {
             @Override
             public void onFailure(int reason) {
                 System.out.println("create group error" + reason);
+                mChannel.close();
                 new CountDownTimer(3000, 3000) {
 
                     public void onTick(long millisUntilFinished) {
                     }
 
                     public void onFinish() {
+                        mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
                         createGroup();
                     }
                 }.start();
