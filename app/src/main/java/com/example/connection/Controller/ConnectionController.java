@@ -101,7 +101,6 @@ ConnectionController {
             public void run() {
                 disconnectToGroup();
                 android.os.Process.killProcess(android.os.Process.myPid());
-
             }
         }));
 
@@ -220,8 +219,7 @@ ConnectionController {
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
-    public void connectToGroup(final String id) {//GroupOwner groupOwner){//
-        System.out.println("ciao");
+    public void connectToGroup(final String id) {
         wifiConnection(id);
         bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
