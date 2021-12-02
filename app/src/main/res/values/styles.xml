@@ -4,6 +4,7 @@
     <!-- App theme -->
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
 
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -26,10 +27,12 @@
         <item name="bottomUnselectedColor">@color/bottomUnselectedColor</item>
         <item name="topLineBottomSheetColor">@color/topLineBottomSheetColor</item>
         <item name="toolbarAndSettingsCardIconColor">@color/toolbarAndSettingsCardIconColor</item>
+        <item name="actionModeBackground">@color/backgroundColor</item>
 
     </style>
 
     <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
 
         <item name="android:colorPrimary">@color/darkColorPrimary</item>
         <item name="android:colorPrimaryDark">@color/darkColorPrimaryDark</item>
@@ -52,6 +55,7 @@
         <item name="bottomUnselectedColor">@color/darkBottomUnselectedColor</item>
         <item name="topLineBottomSheetColor">@color/darkTopLineBottomSheetColor</item>
         <item name="toolbarAndSettingsCardIconColor">@color/darkToolbarAndSettingsCardIconColor</item>
+        <item name="actionModeBackground">@color/darkBackgroundColor</item>
 
     </style>
 
@@ -116,6 +120,25 @@
         <item name="android:background">@drawable/bg_apply_confirm_buttons</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:fontFamily">@font/opensans_semibold</item>
+        <item name="android:paddingVertical">12dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- Cancel and apply/confirm dialog's buttons -->
+    <style name="cancelButton2" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/bg_cancel_button</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">?attr/secondaryTextColor</item>
+        <item name="android:fontFamily">@font/opensans_bold_custom</item>
+        <item name="android:paddingVertical">12dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="applyConfirmDeleteButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/bg_apply_confirm_buttons</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:fontFamily">@font/opensans_bold_custom</item>
         <item name="android:paddingVertical">12dp</item>
         <item name="android:gravity">center</item>
     </style>

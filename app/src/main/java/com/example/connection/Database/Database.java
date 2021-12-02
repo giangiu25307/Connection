@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.Task;
+import com.example.connection.Model.LastMessage;
 import com.example.connection.Model.User;
 import com.example.connection.Model.UserPlus;
 import com.example.connection.View.Connection;
@@ -183,12 +186,19 @@ public class Database extends SQLiteOpenHelper {
      *
      * @param idChat id of the person i'm speaking to
      */
-    public Cursor getLastMessageChat(String idChat) {
+    public LastMessage getLastMessageChat(String idChat) {
         String query = "SELECT last_message, datetime " +
                 " FROM " + Task.TaskEntry.CHAT +
-                " WHERE '" + Task.TaskEntry.ID_CHAT + "' = '" + idChat + "'";
+                " WHERE " + Task.TaskEntry.ID_CHAT + " = '" + idChat + "'";
+        System.out.println("Query " + query);
         Cursor cursor = db.rawQuery(query, null);
-        return cursor;
+        if(cursor != null){
+            cursor.moveToFirst();
+            Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
+            return new LastMessage(cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)), cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)));
+
+        }
+        return new LastMessage("", "");
 
     }
 
@@ -204,6 +214,30 @@ public class Database extends SQLiteOpenHelper {
         chatValues.put(Task.TaskEntry.SYMMETRIC_KEY, symmetric);
         db.insert(Task.TaskEntry.CHAT, null, chatValues);
     }
+
+    /**
+     * Delete the specified chat
+     * @param idChat
+     */
+    public void deleteChat(String idChat) {
+        db = this.getWritableDatabase();
+        String query = "DELETE FROM " + Task.TaskEntry.CHAT +
+                " WHERE " + Task.TaskEntry.ID_CHAT + " = '" + idChat + "'";
+        db.execSQL(query);
+    }
+
+    /**
+     * Delete the specified message
+     * @param idMessage
+     * @param idChat
+     */
+    public void deleteMessage(String idMessage, String idChat) {
+        db = this.getWritableDatabase();
+        String query = "DELETE FROM " + Task.TaskEntry.MESSAGE +
+                " WHERE " + Task.TaskEntry.ID_USER + " = '" + idMessage + "' AND "+ Task.TaskEntry.ID_CHAT + " = '" + idChat + "'";
+        db.execSQL(query);
+    }
+
 
     /**
      * Get all msg from a specified chat
