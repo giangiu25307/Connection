@@ -87,11 +87,11 @@ ConnectionController {
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection, this, bluetoothAdvertiser);
-        /*mConfig = new WifiP2pConfig.Builder()
+        mConfig = new WifiP2pConfig.Builder()
                 .setNetworkName(SSID + myId)
                 .setPassphrase(networkPassword)
                 .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
-                .build();*/
+                .build();
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
@@ -101,7 +101,6 @@ ConnectionController {
             public void run() {
                 disconnectToGroup();
                 android.os.Process.killProcess(android.os.Process.myPid());
-
             }
         }));
 
@@ -113,6 +112,11 @@ ConnectionController {
         bluetoothAdvertiser.stopAdvertising();
         wifiLock.release();
         mManager.removeGroup(mChannel, null);
+        try {
+            mChannel.close();
+        }catch(Throwable e){
+            System.out.println("Direct-Connection closed");
+        }
     }
 
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
@@ -148,7 +152,6 @@ ConnectionController {
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                         tcpServer.setup();
                         tcpServer.setMulticastP2p(multicastP2P);
-
                     }
                 }, 3000);
 
@@ -216,8 +219,7 @@ ConnectionController {
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
-    public void connectToGroup(final String id) {//GroupOwner groupOwner){//
-        System.out.println("ciao");
+    public void connectToGroup(final String id) {
         wifiConnection(id);
         bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
