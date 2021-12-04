@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.DrawController;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
 import com.example.connection.TCP_Connection.Encryption;
@@ -46,15 +47,17 @@ public class HomeFragment extends Fragment {
     private TextView toolbarTitle;
     private SettingsFragment settings;
     private Connection connection;
+    private DrawController drawController;
 
     public HomeFragment() {
 
     }
 
-    public HomeFragment newInstance(Connection connection, Database database) {
+    public HomeFragment newInstance(Connection connection, Database database, DrawController drawController) {
         homeFragment = new HomeFragment();
         homeFragment.setConnection(connection);
         homeFragment.setDatabase(database);
+        homeFragment.setDrawController(drawController);
         homeFragment.setConnectionController();
         homeFragment.setChatController();
         homeFragment.setChat();
@@ -156,11 +159,15 @@ public class HomeFragment extends Fragment {
     }
 
     public void setMap() {
-        this.map = new MapFragment().newInstance(connectionController, database);
+        this.map = new MapFragment().newInstance(connectionController, database, drawController);
     }
 
     public void setChat() {
         this.chat = new ChatFragment().newInstance(database, chatController, toolbar);
+    }
+
+    public void setDrawController(DrawController drawController) {
+        this.drawController = drawController;
     }
 
     public void setSettings() {
@@ -177,8 +184,7 @@ public class HomeFragment extends Fragment {
 
     public void setConnectionController() {
        this.connectionController = new ConnectionController(connection, database);
-       //connectionController.active4G();
-       //connectionController.initProcess();
+       connectionController.initProcess();
     }
 
     public void setChatController(ChatController chatController) {

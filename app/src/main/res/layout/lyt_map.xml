@@ -1,38 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mapLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MapFragment">
+    android:layout_height="match_parent">
 
-    <HorizontalScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/layoutBackground"
-        android:scrollbars="none">
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:background="@drawable/bg_map_card">
 
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:scrollbars="none">
+    <com.example.connection.View.Layout.FlowLayout
+        android:id="@+id/mapFlowLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    <include layout="@layout/lyt_map_buttons"/>
 
-                <android.widget.AbsoluteLayout
-                    android:id="@+id/mapLayout"
-                    android:layout_width="450dp"
-                    android:layout_height="665dp">
+    </LinearLayout>
 
-                    <Space
-                        android:layout_width="450dp"
-                        android:layout_height="665dp" />
-
-                </android.widget.AbsoluteLayout>
-            </RelativeLayout>
-        </ScrollView>
-    </HorizontalScrollView>
-
-</FrameLayout>
+</RelativeLayout>

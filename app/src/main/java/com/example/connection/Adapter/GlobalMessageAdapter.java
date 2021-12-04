@@ -75,7 +75,7 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
                 @Override
                 public void openChat(int p) {
                     messageCursor.moveToPosition(p);
-                    BottomSheetNewChat bottomSheet = new BottomSheetNewChat(database.getAllUserInformation(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_USER))));
+                    BottomSheetNewChat bottomSheet = new BottomSheetNewChat(database.getAllUserInformation(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_USER))), false);
                     bottomSheet.show(((AppCompatActivity)context).getSupportFragmentManager(), "ModalBottomSheet");
                 }
             });

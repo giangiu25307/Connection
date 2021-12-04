@@ -9,6 +9,8 @@
     <Spinner
         android:id="@+id/country"
         style="@style/inputDataStyle"
+        android:background="@drawable/bg_spinner_country"
+        android:popupBackground="@drawable/bg_spinner_country"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0" />

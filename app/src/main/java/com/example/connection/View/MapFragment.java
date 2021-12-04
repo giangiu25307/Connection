@@ -1,27 +1,37 @@
 package com.example.connection.View;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.app.Notification;
+import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsoluteLayout;
+import android.view.ViewTreeObserver;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.app.Person;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -31,11 +41,9 @@ import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.UDP_Connection.Multicast;
-import com.example.connection.UDP_Connection.MyNetworkInterface;
+import com.example.connection.View.Layout.FlowLayout;
+import com.google.android.material.snackbar.Snackbar;
 
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 
 public class MapFragment extends Fragment {
@@ -45,16 +53,21 @@ public class MapFragment extends Fragment {
     private Database database;
     private ImageView filterImage;
     private DrawController drawController;
-
+    private SharedPreferences sharedPreferences;
+    int layoutWidth;
+    int layoutHeight;
+    FlowLayout parent;
+    ArrayList<User> userList;
 
     public MapFragment() {
 
     }
 
-    public MapFragment newInstance(ConnectionController connectionController, Database database) {
+    public MapFragment newInstance(ConnectionController connectionController, Database database, DrawController drawController) {
         MapFragment mapFragment = new MapFragment();
         mapFragment.setConnectionController(connectionController);
         mapFragment.setDatabase(database);
+        mapFragment.setDrawController(drawController);
         return mapFragment;
     }
 
@@ -66,56 +79,67 @@ public class MapFragment extends Fragment {
         this.database = database;
     }
 
+    public void setDrawController(DrawController drawController) {
+        this.drawController = drawController;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
-        drawing(view);
-        Thread thread = new Thread(new Runnable() {
+        parent = view.findViewById(R.id.mapFlowLayout);
+        userList = database.getAllFilteredUsers();
+        sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
+        parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void run() {
-                while(true){
-                    if(!Multicast.dbUserEvent){
-                        Multicast.dbUserEvent=true;
-                        MapFragment fragment = new MapFragment().newInstance(connectionController,database);
-                        fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commitAllowingStateLoss();
-                    }
-                }
+            public void onGlobalLayout() {
+                parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                drawController.init(getContext(), parent, parent.getHeight(), parent.getWidth(), userList);
             }
         });
-        thread.start();
+
         return view;
     }
 
-    public void drawing(View view) {
-        Cursor c = database.getAllUsers();
-        c.moveToFirst();
-        final ArrayList<User> userList = new ArrayList<>();
-        String[] arrayName = new String[c.getCount() == 0 ? 1 : c.getCount()];
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
+        if (!isNotificationChannelEnabled("chatMessageNotification") && !sharedPreferences.getBoolean("notificationsPopupShown", false)) {
 
-        userList.add(ConnectionController.myUser);
-        arrayName[0] = ConnectionController.myUser.getName();
-
-        for (int i = 0; i < c.getCount(); i++) {
-            if (i == 0) {
-                if (MyNetworkInterface.getMyP2pNetworkInterface("p2p0") != null) {
-                    user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-                    userList.add(user);
-                    arrayName[i] = c.getString(1);
+            Snackbar snackbar = Snackbar.make(view, "", 8000);
+            Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+            layout.setBackgroundColor(getContext().getColor(R.color.transparent));
+            TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
+            textView.setVisibility(View.INVISIBLE);
+            View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_notification_snackbar, null);
+            ImageView imageView = snackView.findViewById(R.id.imageView12);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent settingsIntent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .putExtra(Settings.EXTRA_APP_PACKAGE, getString(R.string.packagename))
+                            .putExtra(Settings.EXTRA_CHANNEL_ID, "chatMessageNotification");
+                    startActivity(settingsIntent);
                 }
-            }else {
-                user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-                userList.add(user);
-                arrayName[i] = c.getString(1);
-            }
-            c.moveToNext();
+            });
+            layout.setPadding(5, 5, 5, 5);
+            layout.addView(snackView, 0);
+            snackbar.show();
+            sharedPreferences.edit().putBoolean("notificationsPopupShown", true).apply();
         }
-        //ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.listview_row, R.id.textViewList, arrayName);
-        AbsoluteLayout mapLayout = view.findViewById(R.id.mapLayout);
-        drawController = new DrawController(mapLayout.getContext(), userList, mapLayout);
-        mapLayout.addView(drawController);
+    }
+
+    private boolean isNotificationChannelEnabled(@Nullable String channelId) {
+        if (!TextUtils.isEmpty(channelId)) {
+            NotificationManager manager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = manager.getNotificationChannel(channelId);
+            return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
+        }
+        return false;
     }
 
     @Override
@@ -134,8 +158,8 @@ public class MapFragment extends Fragment {
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
 
-                final TextView cancelTextView, applyTextView, male = alertDialog.findViewById(R.id.male),female = alertDialog.findViewById(R.id.female),other=alertDialog.findViewById(R.id.other);
-                final EditText minAge = alertDialog.findViewById(R.id.editTextMinAge), maxAge=alertDialog.findViewById(R.id.editTextMaxAge);
+                final TextView cancelTextView, applyTextView, male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
+                final EditText minAge = alertDialog.findViewById(R.id.editTextMinAge), maxAge = alertDialog.findViewById(R.id.editTextMaxAge);
                 cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
                 applyTextView = alertDialog.findViewById(R.id.applyTextView);
 
@@ -143,11 +167,11 @@ public class MapFragment extends Fragment {
                 male.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(Connection.genders[0].equals("")) {
+                        if (Connection.genders[0].equals("")) {
                             male.setTextAppearance(R.style.genderSelected);
                             male.setBackgroundResource(R.drawable.bg_gender_filter_selected);
                             Connection.genders[0] = "male";
-                        }else{
+                        } else {
                             male.setTextAppearance(R.style.genderUnselected);
                             male.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
                             Connection.genders[0] = "";
@@ -157,11 +181,11 @@ public class MapFragment extends Fragment {
                 female.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(Connection.genders[1].equals("")) {
+                        if (Connection.genders[1].equals("")) {
                             female.setTextAppearance(R.style.genderSelected);
                             female.setBackgroundResource(R.drawable.bg_gender_filter_selected);
                             Connection.genders[1] = "female";
-                        }else{
+                        } else {
                             female.setTextAppearance(R.style.genderUnselected);
                             female.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
 
@@ -172,11 +196,11 @@ public class MapFragment extends Fragment {
                 other.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(Connection.genders[2].equals("")) {
+                        if (Connection.genders[2].equals("")) {
                             other.setTextAppearance(R.style.genderSelected);
                             other.setBackgroundResource(R.drawable.bg_gender_filter_selected);
                             Connection.genders[2] = "other";
-                        }else{
+                        } else {
                             other.setTextAppearance(R.style.genderUnselected);
                             other.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
                             Connection.genders[2] = "";
@@ -194,23 +218,30 @@ public class MapFragment extends Fragment {
                 applyTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Connection.minAge = minAge.getText().toString();
-                        Connection.maxAge = maxAge.getText().toString();
-                        drawController.applyFilters(Connection.minAge, Connection.maxAge, Connection.genders);
+                        Connection.minAge = Integer.parseInt(minAge.getText().toString());
+                        Connection.maxAge = Integer.parseInt(maxAge.getText().toString());
                         alertDialog.dismiss();
-                        Fragment fragment = new MapFragment().newInstance(connectionController, database);
+                        Fragment fragment = new MapFragment().newInstance(connectionController, database, drawController);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
                     }
                 });
                 break;
-            case R.id.gpsIcon:
-                Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
+            case R.id.randomIcon:
+                int number = (int) (Math.random() * userList.size());
+                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(userList.get(number), true);
+                if (getContext() != null) {
+                    bottomSheet.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ModalBottomSheet");
+                } else {
+                    Toast.makeText(getActivity(), "Unable to start a random chat, try again", Toast.LENGTH_SHORT).show();
+                }
+
+                /*Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
                 intent.putExtra("intentType", "messageController");
                 intent.putExtra("communicationType", "tcp");
-                intent.putExtra("msg", "porco dio");
+                intent.putExtra("msg", "hello surf shark");
                 intent.putExtra("idChat", "2");
-                getContext().sendBroadcast(intent);
+                getContext().sendBroadcast(intent);*/
                 break;
             default:
                 break;

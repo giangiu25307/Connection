@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
     <dimen name="request_closerequestdialog_messages_oknointernetconnection_button_filterinput_corner">10dp</dimen>
-    <dimen name="dialogbutton_filtercard_chatcard_requestcard_settingscard_themecard_input_corner">12.5dp</dimen>
+    <dimen name="dialogbutton_mapbutton_filtercard_chatcard_requestcard_settingscard_themecard_input_corner">12.5dp</dimen>
     <dimen name="login_signup_showhidepassword_attachment_permission_button_corner">7.5dp</dimen>
     <dimen name="dialogbg_messageinput_settingsprofilebutton_corner">15dp</dimen>
     <dimen name="pageindicator_messagesnumbercounter_editprofilebutton_datemessagebg_corner">20dp</dimen>

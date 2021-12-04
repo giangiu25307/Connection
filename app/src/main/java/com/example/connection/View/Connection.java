@@ -1,6 +1,7 @@
 package com.example.connection.View;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
@@ -22,7 +23,10 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -30,13 +34,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.AccountController;
+import com.example.connection.Controller.DrawController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.MapUsers;
+import com.example.connection.Model.User;
 import com.example.connection.Model.UserPlus;
 import com.example.connection.R;
 import com.example.connection.Services.MyForegroundService;
 import com.example.connection.vpn.LocalVPNService;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -54,16 +61,18 @@ public class Connection extends AppCompatActivity {
     public static boolean boot = true,isGlobalChatOpen=false;
     public static Database database;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
-    public static String fragmentName = "MAP",idChatOpen="";
+    public static String fragmentName = "MAP", idChatOpen="";
     public static String lightOrDark = "light";
-    public static ArrayList<MapUsers> mapUsers = new ArrayList<MapUsers>();
-    public static String minAge = "16", maxAge = "100";
+    //public static ArrayList<User> mapUsers = new ArrayList<User>();
+    public static int minAge = 16, maxAge = 100;
     public static String[] genders = {"male", "female", "other"};
     private static final int VPN_REQUEST_CODE = 0x0F;
     private AccountController accountController;
     public static LocalVPNService localVPNService;
     private NotificationChannel channel;
     public static MyForegroundService foregroundService;
+    public static int page=0;
+    private DrawController drawController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,62 +84,100 @@ public class Connection extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         database = new Database(this);
         accountController = new AccountController();
+        drawController = new DrawController(database);
         loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragment = new SplashScreenFragment();
         loadFragment(false);
         requestPermissions();
-        xiamoiWifiPermission();
+        createCountDowntimer();
+        countDownTimer.start();
 
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
         boolean createSample = false;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
             database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo","");
-            database.createChat("2", "Andrew2", null);
+            database.createChat("2", "Chat 1", null);
             database.addMsg("Ciao", "2", "2");
             database.addMsg("WeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeWeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "0", "2");
             database.addMsg("we", "0", "2");
             database.setRequest("2", "false");
 
             database.addUser("23", "192.168.49.20", "Andrew123", "andrew@12gmail.com", "male", "Andrewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
-            database.createChat("23", "Andrew123", null);
+            database.createChat("23", "Chat 2", null);
             database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
 
             database.addUser("25", "192.168.49.20", "Andrew345", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
-            database.createChat("25", "Andrew345", null);
+            database.createChat("25", "Chat 3", null);
             database.addMsg("wee", "25", "25");
-            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
+            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "25", "25");
 
             database.addUser("27", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
-            database.createChat("27", "Andrew345", null);
+            database.createChat("27", "Chat 4", null);
             database.addMsg("wee", "27", "27");
-            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
+            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "27", "27");
 
-            database.addUser("29", "192.168.49.20", "Andrew980", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
-            database.createChat("29", "Andrew345", null);
+            database.addUser("28", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("28", "Chat 5", null);
+            database.addMsg("wee", "28", "28");
+            database.setRequest("28", "false");
+            database.addUser("29", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("29", "Chat 6", null);
             database.addMsg("wee", "29", "29");
-            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
-
-            database.addUser("31", "192.168.49.20", "Andrew132", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo", "");
-            database.createChat("31", "Andrew345", null);
+            database.setRequest("29", "false");
+            database.addUser("30", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("30", "Chat 7", null);
+            database.addMsg("wee", "30", "30");
+            database.setRequest("30", "false");
+            database.addUser("31", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("31", "Chat 8", null);
             database.addMsg("wee", "31", "31");
-            database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
-
-            database.addUser("33", "192.168.49.20", "Andrew847", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo", "");
-            database.createChat("33", "Andrew345", null);
+            database.setRequest("31", "false");
+            database.addUser("32", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("32", "Chat 9", null);
+            database.addMsg("wee", "32", "32");
+            database.setRequest("32", "false");
+            database.addUser("33", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("33", "Chat 10", null);
             database.addMsg("wee", "33", "33");
+            database.setRequest("33", "false");
+            database.addUser("34", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("34", "Chat 11", null);
+            database.addMsg("wee", "34", "34");
+            database.setRequest("34", "false");
+            database.addUser("35", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("35", "Chat 12", null);
+            database.addMsg("wee", "35", "35");
+            database.setRequest("35", "false");
+            database.addUser("36", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.createChat("36", "Chat 13", null);
+            database.addMsg("wee", "36", "36");
+            database.setRequest("36", "false");
+            database.addUser("37", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("38", "192.168.49.20", "Andreeeeeeeeeeeeeeeeeeeeeew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("39", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("40", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("41", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("42", "192.168.49.20", "Andrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("43", "192.168.49.20", "Andrew38888888888888888888888888886", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("44", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("45", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("46", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("47", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("48", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("50", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("51", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("52", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("53", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
+            database.addUser("54", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
         }
+        //database.addUser("0", null, "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
+        //database.addUser("1", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
+        //database.addUser("2", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
 
-        // database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);//redminote7
-        //database.addUser("2", null, "test2", "test1@gmail.com", "male", "test1", "test1", "test1", "test1", "01-01-2001", "nothingToseehere", null);//xiaomia2litemio
-        // database.addUser("3",null,"test4","test2@gmail.com","other","test2","test2","test2","test2","01-01-2002","macheccazonesoioscusi",null);//xiaomia2litesuo
-        //database.addUser("9",null,"test8","test9@gmail.com","other","test9","test9","test3","test3","01-01-2003","azz",null);
-        // database.addUser("5",null,"test4","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
-        // database.addUser("11",null,"test10","test3@gmail.com","other","test3","test3","test3","test3","01-01-2003","azz",null);//s9
-        createCountDowntimer();
-        countDownTimer.start();
+
         createNotificationChannels();
         foregroundService = new MyForegroundService();
         Intent notificationIntent = new Intent(this, foregroundService.getClass());
@@ -149,6 +196,7 @@ public class Connection extends AppCompatActivity {
         //Global channel
         channel = new NotificationChannel("globalMessageNotification", "Global message", NotificationManager.IMPORTANCE_DEFAULT);
         notificationManager.createNotificationChannel(channel);
+
     }
 
     private void requestPermissions(){
@@ -160,20 +208,18 @@ public class Connection extends AppCompatActivity {
         //ENDS PERMISSIONS REQUEST
     }
 
-    private void xiamoiWifiPermission(){
+    private boolean xiamoiWifiPermission(){
+
         try {
             String manufacturer = "xiaomi";
-            if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
-                //database.addUser("0",null,"test0","test0@gmail.com","female","test0","test0","test0","test0","01-01-2000","nonlaho",null);
-                //this will open auto start screen where user can enable permission for your app
-                Intent intent1 = new Intent();
-                intent1.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsTabActivity"));
-                startActivity(intent1);
+            if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER) && !sharedPreferences.getBoolean("DoNotShowXiaomiPermissionFragment",false)) {
+                return true;
             }else{
-                //database.addUser("1", null, "test1", "test1@gmail.com", "male", "test1", "test1", "test1", "test1", "01-01-2001", "nothingToseehere", null);
+                return false;
             }
         } catch (ActivityNotFoundException e) {
             System.out.println("Not MIUI device");
+            return false;
         }
     }
 
@@ -231,25 +277,34 @@ public class Connection extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                if (firstLogin()) {
-                    fragment = createLoginFragment();
-                } else {
-                    fragment = createHomeFragment();
+                if(xiamoiWifiPermission()){
+                    fragment = createXiaomiPermissionFragment();
+                    loadFragment(true);
+                    startTimer2 = false;
+                }else {
+                    if (firstLogin()) {
+                        fragment = createLoginFragment();
+                    } else {
+                        fragment = createHomeFragment();
+                    }
+                    loadFragment(true);
+                    startTimer2 = false;
                 }
-                loadFragment(true);
-                startTimer2 = false;
             }
         };
     }
 
     private HomeFragment createHomeFragment() {
-        return new HomeFragment().newInstance(this, database);
+        return new HomeFragment().newInstance(this, database,drawController);
     }
 
     private LoginFragment createLoginFragment() {
-        return new LoginFragment().newInstance(this, database, accountController);
+        return new LoginFragment().newInstance(this, database, accountController,drawController);
     }
 
+    private XiaomiPermissionFragment createXiaomiPermissionFragment(){
+        return new XiaomiPermissionFragment().newInstance(this, database, accountController, drawController);
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -313,9 +368,8 @@ public class Connection extends AppCompatActivity {
     }
 
     public boolean firstLogin() {
-        String myid = "";
         try {
-            myid = database.getUser("0").getString(0);
+            database.getUser("0");
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Utente non trovato");
             return true;
@@ -323,24 +377,4 @@ public class Connection extends AppCompatActivity {
         return false;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == VPN_REQUEST_CODE && resultCode == RESULT_OK) {
-            //waitingForVPNStart = true;
-            localVPNService = new LocalVPNService();
-            this.startService(new Intent(this, localVPNService.getClass()));
-            //enableButton(false);
-        }
-    }
-
-    public void startVpn() {
-
-        Intent vpnIntent = VpnService.prepare(this);
-
-        if (vpnIntent != null)
-            this.startActivityForResult(vpnIntent, VPN_REQUEST_CODE);
-        else
-            onActivityResult(VPN_REQUEST_CODE, RESULT_OK, null);
-    }
 }

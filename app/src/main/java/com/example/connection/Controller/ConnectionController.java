@@ -1,14 +1,18 @@
 package com.example.connection.Controller;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.net.NetworkSpecifier;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSpecifier;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
@@ -17,6 +21,7 @@ import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
@@ -39,12 +44,13 @@ import static android.net.ConnectivityManager.NetworkCallback;
 public class
 ConnectionController {
 
-    private String SSID = "DIRECT-CONNEXION", networkPassword = "12345678";
+    private String SSID = "DIRECT-CONNECTION", networkPassword = "6i4knmjhui524j";
     private WifiManager wifiManager;
     private Connection connection;
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
     private WifiP2pConfig mConfig;
+
     private Multicast_P2P multicastP2P;
     private Multicast_WLAN multicastWLAN;
     public static User myUser;
@@ -55,17 +61,17 @@ ConnectionController {
     private String myId;
     private ConnectivityManager connManager;
     private NetworkRequest networkRequest;
-    public static Network mMobileNetwork, mWifiNetwork, mWifiP2pNetwork;
     private Encryption encryption;
     private TcpClient tcpClient;
     private TcpServer tcpServer;
     public static boolean GO_leave = false;
     private WifiManager.WifiLock wifiLock;
     private PlusController plusController;
+    private boolean CallbackWhenGO;
+    private NetworkCallback callbackGO, callbackDirect;
+    private  WifiP2pManager.ActionListener mActionListener;
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     public ConnectionController(Connection connection, Database database) {
-        
         this.connection = connection;
         encryption = new Encryption(connection);
         mManager = (WifiP2pManager) connection.getSystemService(Context.WIFI_P2P_SERVICE);
@@ -81,11 +87,12 @@ ConnectionController {
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection, this, bluetoothAdvertiser);
-        connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
-        networkRequest = new NetworkRequest.Builder()
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        mConfig = new WifiP2pConfig.Builder()
+                .setNetworkName(SSID + myId)
+                .setPassphrase(networkPassword)
+                .setGroupOperatingBand(WifiP2pConfig.GROUP_OWNER_BAND_2GHZ)
                 .build();
+        connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
         wifiLock = wifiManager.createWifiLock(1, "testLock");
@@ -93,8 +100,11 @@ ConnectionController {
             @Override
             public void run() {
                 disconnectToGroup();
+                android.os.Process.killProcess(android.os.Process.myPid());
             }
         }));
+
+
     }
 
     //Remove a group --------------------------------------------------------------------------------------------------------------------------------
@@ -102,21 +112,24 @@ ConnectionController {
         bluetoothAdvertiser.stopAdvertising();
         wifiLock.release();
         mManager.removeGroup(mChannel, null);
+        try {
+            mChannel.close();
+        }catch(Throwable e){
+            System.out.println("Direct-Connection closed");
+        }
     }
 
     //Create a group --------------------------------------------------------------------------------------------------------------------------------
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     @SuppressLint("MissingPermission")
     public void createGroup() {
         GO_leave = false;
-        /*mManager.createGroup(mChannel, mConfig, new WifiP2pManager.ActionListener() {
+        mManager.createGroup(mChannel, mConfig, mActionListener=new WifiP2pManager.ActionListener() {
 
             @Override
             public void onSuccess() {
                 bluetoothAdvertiser.stopAdvertising();
                 bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
                 bluetoothAdvertiser.startAdvertising();
-                wifiManager.disconnect();
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -130,7 +143,7 @@ ConnectionController {
                             e.printStackTrace();
                         }
                         multicastP2P.createMultigroupP2P();
-                        if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION")) {
+                        if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION")) {
                             multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
                             multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
                         }
@@ -147,8 +160,6 @@ ConnectionController {
             @Override
             public void onFailure(int reason) {
                 System.out.println("create group error" + reason);
-
-                resetWifi();
                 new CountDownTimer(3000, 3000) {
 
                     public void onTick(long millisUntilFinished) {
@@ -159,10 +170,9 @@ ConnectionController {
                     }
                 }.start();
 
-
             }
         });
-        wifiLock.acquire();*/
+        wifiLock.acquire();
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
@@ -170,13 +180,14 @@ ConnectionController {
         tcpServer.close();
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         wifiConnection(id);
-        connManager.requestNetwork(networkRequest, new NetworkCallback() {
+        connManager.requestNetwork(networkRequest, callbackGO = new NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
-                if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
+                if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION"))
                     wifiConnection(id);
                 else {
+                    CallbackWhenGO = true;
                     new CountDownTimer(5000, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
@@ -208,12 +219,12 @@ ConnectionController {
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
-    public void connectToGroup(final String id) {//GroupOwner groupOwner){//
+    public void connectToGroup(final String id) {
         wifiConnection(id);
         bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceClientConnectedToGroupOwner, id);
         bluetoothAdvertiser.stopAdvertising();
-        connManager.requestNetwork(networkRequest, new NetworkCallback() {
+        connManager.requestNetwork(networkRequest, callbackDirect = new NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
 
@@ -225,9 +236,10 @@ ConnectionController {
 
                     @Override
                     public void onFinish() {
-                        if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNEXION"))
+                        if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION"))
                             wifiConnection(id);
                         else {
+                            CallbackWhenGO = false;
                             tcpServer.setup();
                             try {
                                 MyNetworkInterface.setNetworkInterfacesNames();
@@ -267,10 +279,14 @@ ConnectionController {
         if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null) {
             multicastWLAN.imLeaving();
         }
-        wifiManager.disconnect();
-        wifiManager.removeNetwork(netId);
+        if (CallbackWhenGO) {
+            connManager.unregisterNetworkCallback(callbackGO);
+        } else {
+            connManager.unregisterNetworkCallback(callbackDirect);
+        }
         bluetoothAdvertiser.stopAdvertising();
         tcpServer.close();
+
     }
 
     //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
@@ -299,24 +315,6 @@ ConnectionController {
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
     }
 
-    public void active4G() {
-        final ConnectivityManager connectivityManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkRequest.Builder req = new NetworkRequest.Builder();
-        req.addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR);
-        req.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
-        NetworkRequest networkRequest = req.build();
-        NetworkCallback networkCallback = new
-                NetworkCallback() {
-                    @Override
-                    public void onAvailable(Network network) {
-                        mMobileNetwork = network;
-                        //connectivityManager.bindProcessToNetwork(network);
-                        connection.startVpn();
-                    }
-                };
-        connectivityManager.requestNetwork(networkRequest, networkCallback);
-    }
-
     //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
     public void connectToGroupOwnerId(String id) {
         GO_leave = false;
@@ -332,19 +330,16 @@ ConnectionController {
     }
 
     public void wifiConnection(String id) {
-        wifiManager.disconnect();
-        WifiConfiguration wifiConfig = new WifiConfiguration();
-        String SSID1 = SSID + 0;
-        wifiConfig.SSID = String.format("\"%s\"", SSID1);
-        wifiConfig.preSharedKey = String.format("\"%s\"", networkPassword);
-        wifiConfig.priority = 999999999;
-//remember id
-        System.out.println(id);
-        wifiManager.startScan();
-        wifiManager.startScan();
-        wifiManager.startScan();
-        netId = wifiManager.addNetwork(wifiConfig);
-        wifiManager.enableNetwork(netId, true);
+        NetworkSpecifier specifier =
+                new WifiNetworkSpecifier.Builder()
+                        .setSsid(SSID+ id)
+                        .setWpa2Passphrase(networkPassword)
+                        .build();
+        networkRequest = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .setNetworkSpecifier(specifier)
+                .build();
     }
 
     public String getSSID() {
@@ -355,9 +350,4 @@ ConnectionController {
         return wifiManager;
     }
 
-    public void resetWifi() {
-        wifiManager.setWifiEnabled(false);
-        wifiManager.setWifiEnabled(true);
-
-    }
 }

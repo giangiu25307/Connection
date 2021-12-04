@@ -39,6 +39,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.connection.Adapter.SliderAdapter;
 import com.example.connection.Controller.AccountController;
+import com.example.connection.Controller.DrawController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
@@ -61,6 +62,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> nations = new ArrayList<String>();
     private int yearText = 0, monthText = 0, dayText = 0;
     private String countryCode="";
+    private DrawController drawController;
 
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
@@ -87,13 +89,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private Connection connection;
     private AccountController accountController;
 
-    public SignupFragment newInstance(Connection connection, Database database, AccountController accountController) {
+    public SignupFragment newInstance(Connection connection, Database database, AccountController accountController, DrawController drawController) {
         SignupFragment signupFragment = new SignupFragment();
         signupFragment.setConnection(connection);
         signupFragment.setDatabase(database);
         signupFragment.setNations();
         signupFragment.setUser();
         signupFragment.setAccountController(accountController);
+        signupFragment.setDrawController(drawController);
         return signupFragment;
     }
 
@@ -110,7 +113,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new LoginFragment().newInstance(connection,database,accountController);
+                Fragment fragment = new LoginFragment().newInstance(connection,database,accountController,drawController);
                 loadFragment(fragment);
             }
         });
@@ -171,7 +174,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     }
                     database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic(), user.getPublicKey());
                     database.setNumber("0", user.getNumber());
-                    Fragment fragment = new HomeFragment().newInstance(connection,database);
+                    Fragment fragment = new HomeFragment().newInstance(connection,database,drawController);
                     loadFragment(fragment);
                 }
                 break;
@@ -509,4 +512,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     public void setAccountController(AccountController accountController) {
         this.accountController = accountController;
     }
+
+    public void setDrawController(DrawController drawController) {
+        this.drawController = drawController;
+    }
+
 }

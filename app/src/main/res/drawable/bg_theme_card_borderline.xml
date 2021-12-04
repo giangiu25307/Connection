@@ -3,6 +3,6 @@
 
     <solid android:color="?attr/itemBackground"/>
     <stroke android:color="?attr/textColor" android:width="2dp"/>
-    <corners android:radius="@dimen/dialogbutton_filtercard_chatcard_requestcard_settingscard_themecard_input_corner"/>
+    <corners android:radius="@dimen/dialogbutton_mapbutton_filtercard_chatcard_requestcard_settingscard_themecard_input_corner"/>
 
 </shape>
