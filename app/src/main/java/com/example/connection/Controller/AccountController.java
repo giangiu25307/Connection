@@ -51,6 +51,7 @@ public class AccountController {
         Call call = client.newCall(request);
         try {
             Response response = client.newCall(request).execute();
+            System.out.println("ciao" + response.body().string());
             return response.body().string();
         }catch (Exception e){
             e.printStackTrace();
@@ -64,17 +65,16 @@ public class AccountController {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name", name);
+            jsonObject.put("surname", surname);
             jsonObject.put("username", username);
             jsonObject.put("password", password);
-            jsonObject.put("email", mail);
             jsonObject.put("gender", gender);
-            jsonObject.put("surname", surname);
-            jsonObject.put("country", country);
             // jsonObject.put("city", city);
+            jsonObject.put("phoneNumber", number);
             jsonObject.put("birthday", birth);
-            jsonObject.put("phoneNumber", number);
-            jsonObject.put("phoneNumber", number);
-            // jsonObject.put("porfilePic",profilePic);
+            jsonObject.put("country", country);
+            jsonObject.put("profilePic", profilePic);
+            jsonObject.put("email", mail);
         } catch (
                 JSONException e) {
             e.printStackTrace();

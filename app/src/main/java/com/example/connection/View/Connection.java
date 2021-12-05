@@ -1,19 +1,15 @@
 package com.example.connection.View;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.net.VpnService;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
@@ -23,13 +19,9 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -37,19 +29,9 @@ import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.DrawController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
-import com.example.connection.Model.MapUsers;
-import com.example.connection.Model.User;
-import com.example.connection.Model.UserPlus;
 import com.example.connection.R;
 import com.example.connection.Services.MyForegroundService;
 import com.example.connection.vpn.LocalVPNService;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class Connection extends AppCompatActivity {
     private Fragment fragment;
@@ -173,7 +155,7 @@ public class Connection extends AppCompatActivity {
             database.addUser("53", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
             database.addUser("54", "192.168.49.20", "Andrew386", "andrew@12gmail.com", "male", "Andrew", "Wa131nd", "England", "London", "23-03-1997", "/photo","");
         }
-        //database.addUser("0", null, "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
+        database.addUser("0", null, "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
         //database.addUser("1", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
         //database.addUser("2", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo","");
 

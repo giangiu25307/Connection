@@ -1,27 +1,23 @@
 package com.example.connection.Controller;
 
-import android.Manifest;
+import static android.net.ConnectivityManager.NetworkCallback;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.net.NetworkSpecifier;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiNetworkSpecifier;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
@@ -38,8 +34,6 @@ import com.example.connection.View.Connection;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
-
-import static android.net.ConnectivityManager.NetworkCallback;
 
 public class
 ConnectionController {
@@ -166,6 +160,13 @@ ConnectionController {
                     }
 
                     public void onFinish() {
+                        mManager.removeGroup(mChannel, null);
+                        try {
+                            mChannel.close();
+                            mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
+                        } catch (Throwable e) {
+                            System.out.println("Direct-Connection closed");
+                        }
                         createGroup();
                     }
                 }.start();
