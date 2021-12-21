@@ -29,6 +29,7 @@ import androidx.core.app.Person;
 import androidx.core.app.RemoteInput;
 
 import com.example.connection.Adapter.ChatAdapter;
+import com.example.connection.Adapter.GlobalMessageAdapter;
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Model.User;
 import com.example.connection.R;
@@ -44,6 +45,7 @@ public class MessageController extends BroadcastReceiver {
     public MessageAdapter messageAdapter;
     private static MessageController messageController;
     private ChatAdapter chatAdapter;
+    private GlobalMessageAdapter globalMessageAdapter;
     private Context context;
     private HashMap<String, NotificationCompat.MessagingStyle> messagingStyleHashMap;
     private HashMap<String, Integer> pendingIds;
@@ -71,6 +73,10 @@ public class MessageController extends BroadcastReceiver {
 
     public void setChatAdapter(ChatAdapter chatAdapter) {
         this.chatAdapter = chatAdapter;
+    }
+
+    public void setGlobalMessageAdapter(GlobalMessageAdapter globalMessageAdapter) {
+        this.globalMessageAdapter = globalMessageAdapter;
     }
 
     public void setContext(Context context) {

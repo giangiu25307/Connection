@@ -20,6 +20,7 @@ public class Task {
         public static final String CITY = "city";
         public static final String PROFILE_PIC = "profile_pic";
         public static final String MESSAGE= "MESSAGE";
+        public static final String ID_MESSAGE= "id_message";
         public static final String ID_CHAT = "id_chat";
         public static final String MSG = "msg";
         public static final String PATH = "path";
