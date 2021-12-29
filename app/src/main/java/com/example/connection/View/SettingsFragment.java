@@ -34,6 +34,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.connection.BuildConfig;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
@@ -44,14 +45,14 @@ import java.util.regex.Pattern;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
-    private ConstraintLayout themeSettings, changePasswordSettings, forgottenPasswordSettings;
+    private ConstraintLayout themeSettings, changePasswordSettings, forgottenPasswordSettings, information;
     private SharedPreferences sharedPreferences;
     private String newTheme;
     private ConnectionController connectionController;
     private Database database;
     private ChatController chatController;
     private int theme = R.style.AppTheme;
-    private TextView themeOptionDescription, wallpaperOptionDescription, informationDescription;
+    private TextView themeOptionDescription, wallpaperOptionDescription;
     private ImageView editProfileButton;
     private int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic, profilePics;
@@ -141,11 +142,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         wallpaperSettings = view.findViewById(R.id.wallpaperSettings);
         wallpaperSettings.setOnClickListener(this);
 
+        information = view.findViewById(R.id.information);
+        information.setOnClickListener(this);
+
         profilePic = view.findViewById(R.id.profilePic);
 
         //wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
-
-        view.findViewById(R.id.informationDescription).setSelected(true);
 
         setProfilePic();
 
@@ -168,15 +170,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 Intent intent = new Intent(getActivity(), EditProfileActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.wallpaperSettings:
+                chooseBackgroundImage();
+                break;
             case R.id.themeSettings:
                 manageTheme(dialogBuilder);
                 break;
             case R.id.changePasswordSettings:
                 changePassword(dialogBuilder);
                 break;
-            case R.id.wallpaperSettings:
-                chooseBackgroundImage();
-                break;
+            case R.id.information:
+                openInformationDialog(dialogBuilder);
             default:
                 break;
         }
@@ -416,6 +420,46 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();
+    }
+
+    private void openInformationDialog(AlertDialog.Builder dialogBuilder){
+        dialogBuilder.setView(R.layout.dialog_information);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+        final LinearLayout rate, share;
+        final TextView close;
+        rate = alertDialog.findViewById(R.id.rate);
+        share = alertDialog.findViewById(R.id.share);
+        close = alertDialog.findViewById(R.id.close);
+
+        rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
+            }
+        });
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Connection");
+                String shareMessage= "Start using Connection\n";
+                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID;
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                startActivity(Intent.createChooser(shareIntent, "Share Connection"));
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+
     }
 
     private void captureImage() {
