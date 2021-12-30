@@ -2,11 +2,13 @@ package com.example.connection.View;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -35,6 +37,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Connection connection;
     private AccountController accountController;
     private DrawController drawController;
+    private ImageView showHidePassword;
+    private boolean isPasswordShown = false;
 
     public LoginFragment() {
 
@@ -62,7 +66,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         loginButton.setOnClickListener(this);
         email = view.findViewById(R.id.editTextEmail);
         password = view.findViewById(R.id.editTextPassword);
-
+        showHidePassword = view.findViewById(R.id.showHidePassword);
+        showHidePassword.setOnClickListener(this);
         return view;
     }
 
@@ -93,6 +98,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 } else {
                     email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
+                }
+                break;
+            case R.id.showHidePassword:
+                if(!isPasswordShown){
+                    password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    showHidePassword.setImageResource(R.drawable.ic_hide_password);
+                    password.setSelection(password.getText().length());
+                    isPasswordShown = true;
+                }else{
+                    password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    showHidePassword.setImageResource(R.drawable.ic_show_password);
+                    password.setSelection(password.getText().length());
+                    isPasswordShown = false;
                 }
                 break;
             default:

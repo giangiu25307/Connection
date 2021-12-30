@@ -184,7 +184,7 @@
         <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
     </style>
 
-    <style name="showHidepasswordImageStyle">
+    <style name="showHidePasswordImageStyle">
         <item name="android:background">@drawable/bg_show_hide_password</item>
         <item name="android:tint">?attr/hintColor</item>
         <item name="android:padding">4dp</item>

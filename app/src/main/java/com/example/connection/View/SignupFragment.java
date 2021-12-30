@@ -14,10 +14,14 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Patterns;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -63,6 +67,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private int yearText = 0, monthText = 0, dayText = 0;
     private String countryCode="";
     private DrawController drawController;
+    private boolean isPasswordShown = false;
 
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
@@ -128,14 +133,41 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onPageSelected(int position) {
                 currentPage = position;
+                System.out.println("Pagina: " + position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 checker();
             }
+
+
         };
         viewPager.setOnPageChangeListener(viewListener);
+        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                EditText password = viewPager.findViewById(R.id.password);
+                ImageView showHidePassword = viewPager.findViewById(R.id.showHidePassword);
+                showHidePassword.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(!isPasswordShown){
+                            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                            showHidePassword.setImageResource(R.drawable.ic_hide_password);
+                            password.setSelection(password.getText().length());
+                            isPasswordShown = true;
+                        }else{
+                            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                            showHidePassword.setImageResource(R.drawable.ic_show_password);
+                            password.setSelection(password.getText().length());
+                            isPasswordShown = false;
+                        }
+                    }
+                });
+            }
+        });
 
         next.setOnClickListener(this);
         back.setOnClickListener(this);
@@ -200,6 +232,24 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 EditText usernameLabel = viewPager.findViewById(R.id.username);
                 EditText email = viewPager.findViewById(R.id.email);
                 EditText password = viewPager.findViewById(R.id.password);
+                ImageView showHidePassword = viewPager.findViewById(R.id.showHidePassword);
+                showHidePassword.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        System.out.println("Cambio visibilità password");
+                        if(!isPasswordShown){
+                            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                            showHidePassword.setImageResource(R.drawable.ic_hide_password);
+                            password.setSelection(password.getText().length());
+                            isPasswordShown = true;
+                        }else{
+                            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                            showHidePassword.setImageResource(R.drawable.ic_show_password);
+                            password.setSelection(password.getText().length());
+                            isPasswordShown = false;
+                        }
+                    }
+                });
                 if (!user.getUsername().equals("")) usernameLabel.setText(user.getUsername());
                 if (!user.getMail().equals("")) email.setText(user.getMail());
                 if (!user.getPassword().equals("")) password.setText(user.getPassword());
