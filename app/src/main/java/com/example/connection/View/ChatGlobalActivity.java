@@ -13,20 +13,18 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.connection.Adapter.MessageAdapter;
+import com.example.connection.Adapter.GlobalMessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.R;
@@ -39,7 +37,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
     private EditText message_input;
     private ImageView sendView;
     private RecyclerView recyclerView;
-    private MessageAdapter chatAdapter;
+    private GlobalMessageAdapter globalMessageAdapter;
     private ConstraintLayout chatBackground;
     private int lastPosition;
     private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -91,7 +89,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
 
         sendView.setOnClickListener(view -> {
             chatController.sendGlobalMsg(message_input.getText().toString());
-            MessageController.getIstance().setMessageAdapter(chatAdapter);
+            MessageController.getIstance().setGlobalMessageAdapter(globalMessageAdapter);
         });
 
         //Database database = (Database) getIntent().getParcelableExtra("database");
@@ -138,8 +136,8 @@ public class ChatGlobalActivity extends AppCompatActivity {
         setBackgroundImage();
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setLayoutManager(linearLayoutManager);
-        chatAdapter = new MessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager);
-        recyclerView.setAdapter(chatAdapter);
+        globalMessageAdapter = new GlobalMessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager);
+        recyclerView.setAdapter(globalMessageAdapter);
         recyclerView.scrollToPosition(messageCursor.getCount() - 1);
         recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override

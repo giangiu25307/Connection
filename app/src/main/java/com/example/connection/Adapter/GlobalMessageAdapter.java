@@ -40,7 +40,6 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Database database;
     private String idChat;
     private Bitmap bitmap;
-    private int receivedMessageTextColor;
     SimpleDateFormat format = new SimpleDateFormat();
     Date date = new Date();
     int counter;
@@ -50,13 +49,12 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
-    public GlobalMessageAdapter(Context context, Database database, String id, Cursor messageCursor, LinearLayoutManager linearLayoutManager, int receivedMessageTextColor) {
+    public GlobalMessageAdapter(Context context, Database database, String id, Cursor messageCursor, LinearLayoutManager linearLayoutManager) {
         this.context = context;
         this.database = database;
         this.idChat = id;
         this.messageCursor = messageCursor;
         this.linearLayoutManager = linearLayoutManager;
-        this.receivedMessageTextColor = receivedMessageTextColor;
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(messageCursor));
     }
 

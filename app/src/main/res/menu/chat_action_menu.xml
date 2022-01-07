@@ -3,10 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/copyIcon"
+        android:icon="@drawable/ic_copy"
+        android:title="Copy"
+        app:iconTint="?attr/toolbarAndSettingsCardIconColor"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/deleteIcon"
         android:icon="@drawable/ic_delete_white"
         android:title="Delete"
-        app:showAsAction="always"
-        app:iconTint="?attr/toolbarAndSettingsCardIconColor"/>
+        app:iconTint="?attr/toolbarAndSettingsCardIconColor"
+        app:showAsAction="ifRoom" />
 
 </menu>

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,7 +33,6 @@ import com.example.connection.util.RecyclerItemClickListener;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class ChatFragment extends Fragment implements View.OnClickListener {
 
@@ -114,9 +111,9 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     private void setupRecyclerView(View view) {
         chatRecyclerView = view.findViewById(R.id.chatRecyclerView);
         chatCursor = database.getAllNoRequestChat();
-        if(chatCursor != null){
+        if (chatCursor != null && chatCursor.getCount() > 0) {
             fillChatArrayList();
-        }else{
+        } else {
             //Gestire il caso in cui non ci siano chat
         }
 
@@ -169,69 +166,68 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     }
 
     private void defineRecyclerViewOnLong(RecyclerView recyclerView) {
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), recyclerView,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        if (isMultiSelect) {
-                            addRemoveMultiSelect(chatRecyclerView.findViewHolderForAdapterPosition(position).itemView.getTag().toString());
-                        }else{
-                            final String id = chatsList.get(position).getId();
-                            Intent myIntent = new Intent(getContext(), ChatActivity.class);
-                            // myIntent.putExtra("chatController", chatController); //Optional parameters\
-                            myIntent.putExtra("idChat", id);
-                            //TODO Da cambiare in username
-                            myIntent.putExtra("username", chatsList.get(position).getName());
-                            getContext().startActivity(myIntent);
-                        }
-                        System.out.println("Andato da fragment");
-                    }
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if (isMultiSelect) {
+                    addRemoveMultiSelect(chatRecyclerView.findViewHolderForAdapterPosition(position).itemView.getTag().toString(), position);
+                } else {
+                    final String id = chatsList.get(position).getId();
+                    Intent myIntent = new Intent(getContext(), ChatActivity.class);
+                    // myIntent.putExtra("chatController", chatController); //Optional parameters\
+                    myIntent.putExtra("idChat", id);
+                    //TODO Da cambiare in username
+                    myIntent.putExtra("username", chatsList.get(position).getName());
+                    getContext().startActivity(myIntent);
+                }
 
-                    @Override
-                    public void onItemLongClick(View view, int position) {
-                        System.out.println("Multi select" + isMultiSelect);
-                        if (!isMultiSelect) {
-                            multiselectList = new ArrayList<>();
-                            isMultiSelect = true;
-
-                            if (actionMode == null) {
-                                actionMode = toolbar.startActionMode(actionModeCallback);
-                            }
-                        }
-                        System.out.println("Position " + position);
-                        addRemoveMultiSelect(chatRecyclerView.findViewHolderForAdapterPosition(position).itemView.getTag().toString());
-                    }
-                }));
-
-
-    }
-
-    public void addRemoveMultiSelect(String position) {
-
-        if (actionMode != null) {
-            if (multiselectList.contains(position)) {
-                multiselectList.remove(position);
-            } else {
-                multiselectList.add(position);
             }
 
-            actionMode.setTitle(multiselectList.size() > 0 ? "" + multiselectList.size() + " selected" : "0");
-            refreshAdapter();
+            @Override
+            public void onItemLongClick(View view, int position) {
+                if (!isMultiSelect) {
+                    multiselectList = new ArrayList<>();
+                    isMultiSelect = true;
+
+                    if (actionMode == null) {
+                        actionMode = toolbar.startActionMode(actionModeCallback);
+                    }
+                }
+                addRemoveMultiSelect(chatRecyclerView.findViewHolderForAdapterPosition(position).itemView.getTag().toString(), position);
+            }
+        }));
+    }
+
+    public void addRemoveMultiSelect(String id, int position) {
+
+        if (actionMode != null) {
+            if (multiselectList.contains(id)) {
+                multiselectList.remove(id);
+            } else {
+                multiselectList.add(id);
+            }
+
+            actionMode.setTitle(multiselectList.size() > 0 ? multiselectList.size() + " selected" : "0");
+            refreshAdapter(position, false);
         }
 
     }
 
-    public void refreshAdapter() {
-        chatAdapter.selectedUsersList = multiselectList;
-        chatAdapter.notifyDataSetChanged();
+    public void refreshAdapter(int position, boolean destroyedActionMode) {
+        chatAdapter.selectedChat = multiselectList;
+        if(destroyedActionMode){
+            chatAdapter.notifyDataSetChanged();
+        }else{
+            chatAdapter.notifyItemChanged(position);
+        }
         MessageController.getIstance().setChatAdapter(chatAdapter);
     }
 
-    private void fillChatArrayList(){
+    private void fillChatArrayList() {
         chatCursor.moveToFirst();
-        do{
+        do {
             chatsList.add(new Chat(chatCursor.getString(0), chatCursor.getString(1), chatCursor.getString(2), chatCursor.getString(3)));
-        }while(chatCursor.moveToNext());
+        } while (chatCursor.moveToNext());
     }
 
     @Override
@@ -254,12 +250,12 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         this.toolbar = toolbar;
     }
 
-    private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+    private final ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.chat_action_menu, menu);
+            inflater.inflate(R.menu.chats_action_menu, menu);
             contextMenu = menu;
             return true;
         }
@@ -278,10 +274,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                     final AlertDialog alertDialog = dialogBuilder.create();
                     alertDialog.show();
                     int chatSelected = multiselectList.size();
-                    TextView titletextView = alertDialog.findViewById(R.id.deleteDialogTitle);
-                    titletextView.setText(chatSelected > 1 ? "Delete chats?" : "Delete chat?");
+                    TextView titleTextView = alertDialog.findViewById(R.id.deleteDialogTitle);
+                    titleTextView.setText(chatSelected > 1 ? "Delete chats?" : "Delete chat?");
                     TextView subtitleTextView = alertDialog.findViewById(R.id.deleteDialogSubtitle);
-                    subtitleTextView.setText(chatSelected > 1 ? "Are you sure you want to delete " + chatSelected +" chats? The operation cannot be undone"
+                    subtitleTextView.setText(chatSelected > 1 ? "Are you sure you want to delete " + chatSelected + " chats? The operation cannot be undone"
                             : "Are you sure you want to delete " + chatSelected + " chat? The operation cannot be undone");
                     alertDialog.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -307,15 +303,15 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         public void onDestroyActionMode(ActionMode mode) {
             actionMode = null;
             isMultiSelect = false;
-            multiselectList = new ArrayList<>();
-            refreshAdapter();
+            multiselectList.clear();
+            refreshAdapter(0, true);
         }
     };
 
-    private void deleteSelectedChat(){
+    private void deleteSelectedChat() {
         //Collections.sort(multiselectList, Collections.reverseOrder());
 
-        for (String id: multiselectList) {
+        for (String id : multiselectList) {
             database.deleteChat(id);
             chatAdapter.removeChat(id);
             chatsList.removeIf(chat -> chat.getId().equals(id));
@@ -340,7 +336,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(actionMode != null){
+        if (actionMode != null) {
             actionMode.finish();
         }
     }

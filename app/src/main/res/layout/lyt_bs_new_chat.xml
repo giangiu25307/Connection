@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="4dp"
         android:fontFamily="@font/opensans_semibold_custom"
-        android:text="Start new chat"
+        android:text="New chat"
         android:textColor="?attr/textColor"
         android:textSize="21sp"
         app:layout_constraintBottom_toBottomOf="parent"

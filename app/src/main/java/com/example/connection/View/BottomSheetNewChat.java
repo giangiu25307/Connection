@@ -44,7 +44,7 @@ public class BottomSheetNewChat extends BottomSheetDialogFragment {
 
         if(randomChat){
             TextView bottomSheetTitle = view.findViewById(R.id.bottomSheetTitle);
-            bottomSheetTitle.setText("Start new random chat");
+            bottomSheetTitle.setText("New random chat");
         }
         CircleImageView profileImage = view.findViewById(R.id.profilePicMapAlertDialog2);
         profileImage.setImageBitmap(BitmapFactory.decodeFile(user.getProfilePic()));

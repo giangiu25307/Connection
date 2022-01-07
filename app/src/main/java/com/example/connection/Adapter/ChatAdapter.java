@@ -3,6 +3,7 @@ package com.example.connection.Adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Model.Chat;
-import com.example.connection.Model.LastMessage;
 import com.example.connection.Model.User;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Database.Database;
@@ -40,7 +40,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     Date date = new Date();
     ChatController chatController;
-    public ArrayList<String> selectedUsersList = new ArrayList<>();
+    public ArrayList<String> selectedChat = new ArrayList<>();
 
     public ChatAdapter(Context context, ArrayList<Chat> chatList, Database database, ChatController chatController) {
         this.context = context;
@@ -79,40 +79,55 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         if (chatsList.get(position) == null) {
             return;
         }
+        System.out.println("Position " + position);
 
         Chat chat = chatsList.get(position);
 
         String id = chat.getId();
-        if(selectedUsersList.contains(id)){
+        if (selectedChat.contains(id)) {
             holder.chatLayout.setBackground(context.getDrawable(R.drawable.bg_chat_card_selection));
-        }else{
+        } else {
             holder.chatLayout.setBackground(context.getDrawable(R.drawable.bg_chat_card));
         }
 
         holder.name.setText(chat.getName());
         String lastMessage = chat.getLastMessage();
-        holder.lastMessage.setText(lastMessage);
+        System.out.println("Id chat: " + id + " , name: " + chat.getName());
+        if (lastMessage != null) {
+            System.out.println("true");
+            holder.lastMessage.setText(lastMessage);
+            holder.lastMessage.setTypeface(null, Typeface.NORMAL);
+        }else{
+            System.out.println("false");
+            holder.lastMessage.setText("No message");
+            holder.lastMessage.setTypeface(null, Typeface.ITALIC);
+        }
 
         String datetime = chat.getDateTime();
-        try {
-            date = format.parse(datetime);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Date date2 = null;
-        try {
-            date2 = format.parse(String.valueOf(LocalDateTime.now()));
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (datetime != null) {
+            try {
+                date = format.parse(datetime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Date date2 = null;
+            try {
+                date2 = format.parse(String.valueOf(LocalDateTime.now()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (DateFormat.format("dd", date).equals(DateFormat.format("dd", date2)) && DateFormat.format("MM", date).equals(DateFormat.format("MM", date2)) && DateFormat.format("yyyy", date).equals(DateFormat.format("yyyy", date2))) {
+                datetime = String.valueOf(DateFormat.format("HH:mm", date));
+            } else {
+                String year = String.valueOf(DateFormat.format("yyyy", date));
+                datetime = DateFormat.format("dd/MM", date) + "/" + year.substring(year.length() - 2);
+            }
+            holder.timeLastMessage.setText(datetime);
+        } else {
+            holder.timeLastMessage.setText("");
         }
 
-        if (DateFormat.format("dd", date).equals(DateFormat.format("dd", date2)) && DateFormat.format("MM", date).equals(DateFormat.format("MM", date2)) && DateFormat.format("yyyy", date).equals(DateFormat.format("yyyy", date2))) {
-            datetime = String.valueOf(DateFormat.format("HH:mm", date));
-        }else{
-            String year = String.valueOf(DateFormat.format("yyyy", date));
-            datetime = DateFormat.format("dd/MM", date) + "/" + year.substring(year.length() - 2);
-        }
-        holder.timeLastMessage.setText(datetime);
 
         //TODO Implementere messaggi non letti
         File profilePic = new File(database.getUser(id).getProfilePic());
@@ -160,9 +175,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public void swapCursor(Cursor newChatsList) {
         newChatsList.moveToFirst();
         chatsList.clear();
-        while(newChatsList.moveToNext()){
+        do {
             chatsList.add(new Chat(newChatsList.getString(0), newChatsList.getString(1), newChatsList.getString(2), newChatsList.getString(3)));
-        }
+        } while (newChatsList.moveToNext());
 
         if (chatsList != null) {
             notifyDataSetChanged();
@@ -170,12 +185,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     }
 
-    public void removeChat(String id){
+    public void removeChat(String id) {
         Iterator<Chat> iterator = chatsList.iterator();
 
         while (iterator.hasNext()) {
             Chat chat = iterator.next();
-            if(chat.getId().equals(id)){
+            if (chat.getId().equals(id)) {
                 iterator.remove();
                 int position = chatsList.indexOf(chat);
                 chatsList.remove(chat);
@@ -194,12 +209,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }*/
     }
 
-    public void refreshChat(String id, String lastMessage, String dateTime){
+    public void refreshChat(String id, String lastMessage, String dateTime) {
         Iterator<Chat> iterator = chatsList.iterator();
 
         while (iterator.hasNext()) {
             Chat chat = iterator.next();
-            if(chat.getId().equals(id)){
+            if (chat.getId().equals(id)) {
                 int position = chatsList.indexOf(chat);
                 chat.setLastMessage(lastMessage);
                 chat.setDateTime(dateTime);

@@ -149,19 +149,19 @@
     <!-- Settings card -->
     <style name="settingsGroupTitle" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">?attr/secondaryTextColor</item>
-        <item name="android:fontFamily">@font/opensans_regular</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="titleSettingsCard" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">?attr/textColor</item>
-        <item name="android:fontFamily">@font/opensans_semibold</item>
+        <item name="android:fontFamily">@font/opensans_semibold_custom</item>
         <item name="android:textSize">15sp</item>
     </style>
 
     <style name="subTitleSettingsCard" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">?attr/textColor</item>
-        <item name="android:fontFamily">@font/opensans_light</item>
+        <item name="android:textColor">?attr/secondaryTextColor</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
         <item name="android:textSize">13sp</item>
     </style>
 
@@ -182,12 +182,12 @@
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:textColorHint">?attr/hintColor</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:fontFamily">@font/opensans_light</item>
+        <item name="android:fontFamily">@font/opensans_light_custom</item>
         <item name="android:padding">12.5dp</item>
         <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
     </style>
 
-    <style name="showHidepasswordImageStyle">
+    <style name="showHidePasswordImageStyle">
         <item name="android:background">@drawable/bg_show_hide_password</item>
         <item name="android:tint">?attr/hintColor</item>
         <item name="android:padding">4dp</item>

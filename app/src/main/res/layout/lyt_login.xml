@@ -63,8 +63,8 @@
             android:textSize="16sp" />
 
         <ImageView
-            android:id="@+id/imageView4"
-            style="@style/showHidepasswordImageStyle"
+            android:id="@+id/showHidePassword"
+            style="@style/showHidePasswordImageStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"

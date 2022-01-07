@@ -76,6 +76,7 @@ public class Database extends SQLiteOpenHelper {
                 + ")";
 
         String CREATE_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.MESSAGE + " ( "
+                + Task.TaskEntry.ID_MESSAGE + " TEXT PRIMARY KEY, "
                 + Task.TaskEntry.ID_CHAT + " TEXT NOT NULL, "
                 + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
                 + Task.TaskEntry.MSG + " TEXT, "
@@ -142,6 +143,12 @@ public class Database extends SQLiteOpenHelper {
         //if (idSender.equals("0")) setRequest(idChat, "false");
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
+        int lastId = Integer.parseInt(getLastMessageId());
+        if(getLastMessageId().isEmpty()){
+            msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId);
+        }else{
+            msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId + 1);
+        }
         msgValues.put(Task.TaskEntry.ID_CHAT, idChat);
         msgValues.put(Task.TaskEntry.ID_SENDER, idSender);
         msgValues.put(Task.TaskEntry.MSG, msg);
@@ -159,12 +166,36 @@ public class Database extends SQLiteOpenHelper {
      */
     public void addImage(String paths, String idSender, String idChat) {
         ContentValues msgValues = new ContentValues();
+        int lastId = Integer.parseInt(getLastMessageId());
+        if(lastId == 0){
+            msgValues.put(Task.TaskEntry.ID_MESSAGE, "0");
+        }else{
+            msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId + 1);
+        }
         msgValues.put(Task.TaskEntry.ID_CHAT, idChat);
         msgValues.put(Task.TaskEntry.ID_SENDER, idSender);
         msgValues.put(Task.TaskEntry.PATH, paths);
         msgValues.put(Task.TaskEntry.DATETIME, String.valueOf(LocalDateTime.now()));
         db.insert(Task.TaskEntry.MESSAGE, null, msgValues);
         lastMessageChat(paths, idChat);
+    }
+
+    /**
+     * Get the last message
+     *
+     *
+     */
+    public String getLastMessageId() {
+        String query = "SELECT id_message " +
+                " FROM " + Task.TaskEntry.MESSAGE +
+                " ORDER BY CAST(" + Task.TaskEntry.ID_MESSAGE + " AS UNSIGNED) DESC LIMIT 1";
+        System.out.println("Query " + query);
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor != null && cursor.getCount() > 0){
+            cursor.moveToFirst();
+            return cursor.getString(0);
+        }
+        return "0";
     }
 
     /**
@@ -196,10 +227,8 @@ public class Database extends SQLiteOpenHelper {
             cursor.moveToFirst();
             Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
             return new LastMessage(cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)), cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)));
-
         }
         return new LastMessage("", "");
-
     }
 
     /**
@@ -234,7 +263,7 @@ public class Database extends SQLiteOpenHelper {
     public void deleteMessage(String idMessage, String idChat) {
         db = this.getWritableDatabase();
         String query = "DELETE FROM " + Task.TaskEntry.MESSAGE +
-                " WHERE " + Task.TaskEntry.ID_USER + " = '" + idMessage + "' AND "+ Task.TaskEntry.ID_CHAT + " = '" + idChat + "'";
+                " WHERE " + Task.TaskEntry.ID_MESSAGE + " = '" + idMessage + "'";
         db.execSQL(query);
     }
 
@@ -243,7 +272,7 @@ public class Database extends SQLiteOpenHelper {
      * Get all msg from a specified chat
      */
     public Cursor getAllMsg(String idChat) {
-        String query = " SELECT id_sender,msg,path,datetime " +
+        String query = " SELECT id_message, id_sender, msg, path, datetime " +
                 " FROM MESSAGE " +
                 " WHERE id_chat = " + idChat +
                 " ORDER BY " + Task.TaskEntry.DATETIME + " ASC ";
