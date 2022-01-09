@@ -233,6 +233,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 EditText email = viewPager.findViewById(R.id.email);
                 EditText password = viewPager.findViewById(R.id.password);
                 ImageView showHidePassword = viewPager.findViewById(R.id.showHidePassword);
+                TextView passwordHintsTitle = viewPager.findViewById(R.id.passwordHintsTitle);
+                TextView passwordHints = viewPager.findViewById(R.id.passwordHints);
                 showHidePassword.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -273,10 +275,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 if (!regexPassword.matcher(pass).matches()) {
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
+                    passwordHintsTitle.setVisibility(View.VISIBLE);
+                    passwordHints.setVisibility(View.VISIBLE);
                 } else {
                     user.setPassword(pass);
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
+                    passwordHintsTitle.setVisibility(View.INVISIBLE);
+                    passwordHints.setVisibility(View.INVISIBLE);
                 }
                 return !user.getMail().equals("") && !user.getPassword().equals("") && !user.getUsername().equals("");
             case 1:

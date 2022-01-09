@@ -54,4 +54,26 @@
             app:srcCompat="@drawable/ic_show_password"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/passwordHintsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginTop="10dp"
+        android:textColor="?attr/secondaryTextColor"
+        android:fontFamily="@font/opensans_semibold_custom"
+        android:text="Password hints"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/passwordHints"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:maxLines="6"
+        android:textColor="?attr/secondaryTextColor"
+        android:fontFamily="@font/opensans_regular_custom"
+        android:text="• At least 8 characters \n• No white spaces \n• At least 1 lower case \n• At least 1 upper case \n• At least 1 number \n• At least 1 special character"
+        android:visibility="invisible"/>
+
 </LinearLayout>
