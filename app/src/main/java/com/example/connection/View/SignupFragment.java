@@ -61,13 +61,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     private Database database;
     private static final int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
-    private ImageView profilePic;
+    private ImageView profilePic, nextImageView;
     private RelativeLayout next, back;
     private ArrayList<String> nations = new ArrayList<String>();
     private int yearText = 0, monthText = 0, dayText = 0;
     private String countryCode="";
     private DrawController drawController;
     private boolean isPasswordShown = false;
+    private View[] views;
 
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
@@ -114,6 +115,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         viewPager.setAdapter(sliderAdapter);
         next = view.findViewById(R.id.nextButton);
         back = view.findViewById(R.id.backButton);
+        back.setAlpha(0.25f);
         LinearLayout login = view.findViewById(R.id.linearLayoutLoginBackButton);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,6 +174,13 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         next.setOnClickListener(this);
         back.setOnClickListener(this);
 
+        nextImageView = view.findViewById(R.id.imageView27);
+
+        views = new View[3];
+        views[0] = view.findViewById(R.id.view2);
+        views[1] = view.findViewById(R.id.view3);
+        views[2] = view.findViewById(R.id.view4);
+
         return view;
     }
 
@@ -181,7 +190,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             case R.id.nextButton:
                 if (currentPage < 3) {
                     if (checker()) {
+                        views[currentPage].setBackgroundResource(R.drawable.bg_page_indicator_selected);
                         viewPager.setCurrentItem(currentPage + 1);
+                        if(currentPage > 0){
+                            back.setAlpha(1f);
+                        }
+                        if(currentPage == 3){
+                            nextImageView.setImageResource(R.drawable.ic_done);
+                        }
                     } else viewPager.setCurrentItem(currentPage);
                 } else {
                     //send user info to server
@@ -211,7 +227,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.backButton:
-                if (currentPage > 0) viewPager.setCurrentItem(currentPage - 1);
+                if (currentPage > 0){
+                    viewPager.setCurrentItem(currentPage - 1);
+                    views[currentPage].setBackgroundResource(R.drawable.bg_page_indicator);
+                    nextImageView.setImageResource(R.drawable.ic_arrow_right);
+                }
                 break;
             default:
                 break;
@@ -235,6 +255,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 ImageView showHidePassword = viewPager.findViewById(R.id.showHidePassword);
                 TextView passwordHintsTitle = viewPager.findViewById(R.id.passwordHintsTitle);
                 TextView passwordHints = viewPager.findViewById(R.id.passwordHints);
+                back.setAlpha(0.3f);
                 showHidePassword.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
