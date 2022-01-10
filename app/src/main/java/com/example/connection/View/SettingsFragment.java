@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
-    private ConstraintLayout themeSettings, changePasswordSettings, forgottenPasswordSettings, information;
+    private ConstraintLayout themeSettings, changePasswordSettings, forgottenPasswordSettings, information, bugReport;
     private SharedPreferences sharedPreferences;
     private String newTheme;
     private ConnectionController connectionController;
@@ -145,6 +145,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         information = view.findViewById(R.id.information);
         information.setOnClickListener(this);
 
+        bugReport = view.findViewById(R.id.bugReport);
+        bugReport.setOnClickListener(this);
+
         profilePic = view.findViewById(R.id.profilePic);
 
         //wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
@@ -181,6 +184,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.information:
                 openInformationDialog(dialogBuilder);
+                break;
+            case R.id.bugReport:
+                openBugReportDialog(dialogBuilder);
+                break;
             default:
                 break;
         }
@@ -456,6 +463,31 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
+            }
+        });
+
+
+    }
+
+    private void openBugReportDialog(AlertDialog.Builder dialogBuilder){
+        dialogBuilder.setView(R.layout.dialog_bug_report);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+        final TextView cancel, send;
+        cancel = alertDialog.findViewById(R.id.cancelTextView);
+        send = alertDialog.findViewById(R.id.sendTextView);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO Da aggiunge codice che invia il report
             }
         });
 

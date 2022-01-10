@@ -151,7 +151,6 @@
                 android:layout_weight="1"
                 android:background="@color/transparent"
                 android:elevation="2.5dp"
-                android:fadeScrollbars="false"
                 android:gravity="center_vertical"
                 android:hint="Scrivi un messaggio"
                 android:inputType="textMultiLine|textLongMessage|textCapSentences"
