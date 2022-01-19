@@ -54,7 +54,7 @@
                     android:id="@+id/profilePic"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/gray_rounded_background"
+                    android:background="@drawable/bg_profile_pic_image_view_primary"
                     android:padding="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

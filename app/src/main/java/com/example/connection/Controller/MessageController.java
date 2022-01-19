@@ -1,28 +1,12 @@
 package com.example.connection.Controller;
 
-import android.app.Activity;
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.provider.Settings;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.Person;
@@ -36,7 +20,6 @@ import com.example.connection.R;
 import com.example.connection.TCP_Connection.TcpClient;
 import com.example.connection.View.ChatActivity;
 import com.example.connection.View.Connection;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
 
@@ -168,7 +151,7 @@ public class MessageController extends BroadcastReceiver {
 
                         // Create the reply action and add the remote input.
                         NotificationCompat.Action action =
-                                new NotificationCompat.Action.Builder(R.drawable.ic_send,
+                                new NotificationCompat.Action.Builder(R.drawable.ic_send_from_notification,
                                         messageController.getContext().getString(R.string.reply_label), replyPendingIntent)
                                         .addRemoteInput(remoteInput)
                                         .setAllowGeneratedReplies(true)
@@ -231,7 +214,7 @@ public class MessageController extends BroadcastReceiver {
 
                         // Create the reply action and add the remote input.
                         NotificationCompat.Action action =
-                                new NotificationCompat.Action.Builder(R.drawable.ic_send,
+                                new NotificationCompat.Action.Builder(R.drawable.ic_send_from_notification,
                                         messageController.getContext().getString(R.string.reply_label), replyPendingIntent)
                                         .addRemoteInput(newRemoteInput)
                                         .setAllowGeneratedReplies(true)

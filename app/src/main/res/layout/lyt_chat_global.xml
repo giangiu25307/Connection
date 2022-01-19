@@ -175,7 +175,7 @@
                 android:layout_weight="1"
                 android:alpha="0.5"
                 android:clickable="false"
-                android:src="@drawable/ic_send2"
+                android:src="@drawable/ic_send"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
