@@ -105,19 +105,9 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
         File profilePic = new File(user.getProfilePic());
 
-        if (profilePic.exists()) {
-
-            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circle);
-            bitmap2 = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
-            BitmapDrawable layer1 = new BitmapDrawable(context.getResources(), bitmap2);
-            BitmapDrawable layer2 = new BitmapDrawable(context.getResources(), bitmap);
-            Drawable[] layers = {layer1, layer2};
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
-            ImageView profilePicImageView = holder.profilePic;
-            profilePicImageView.setImageTintList(null);
-            profilePicImageView.setImageDrawable(layerDrawable);
-            //bitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
-
+        if(profilePic.exists()){
+            Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
+            holder.profilePic.setImageBitmap(myBitmap);
         }
 
         //String timeLastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATE));

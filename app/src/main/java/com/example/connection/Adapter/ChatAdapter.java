@@ -3,6 +3,7 @@ package com.example.connection.Adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -131,7 +132,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         //TODO Implementere messaggi non letti
         File profilePic = new File(database.getUser(id).getProfilePic());
-        //TODO Settare l'immagine
+        if(profilePic.exists()){
+            Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
+            holder.profilePic.setImageBitmap(myBitmap);
+        }
 
         holder.itemView.setTag(id);
 

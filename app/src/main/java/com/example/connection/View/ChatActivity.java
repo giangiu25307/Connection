@@ -50,6 +50,7 @@ import com.example.connection.R;
 import com.example.connection.util.RecyclerItemClickListener;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -103,6 +104,12 @@ public class ChatActivity extends AppCompatActivity {
                 finish();
             }
         });
+        ImageView profilePicImageView = findViewById(R.id.profilePic);
+        File profilePic = new File(user.getProfilePic());
+        if(profilePic.exists()){
+            Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
+            profilePicImageView.setImageBitmap(myBitmap);
+        }
         message_input = findViewById(R.id.message_input);
         sendView = findViewById(R.id.sendView);
         chatBackground = findViewById(R.id.chatBackground);
