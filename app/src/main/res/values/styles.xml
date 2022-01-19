@@ -28,6 +28,7 @@
         <item name="topLineBottomSheetColor">@color/topLineBottomSheetColor</item>
         <item name="toolbarAndSettingsCardIconColor">@color/toolbarAndSettingsCardIconColor</item>
         <item name="actionModeBackground">@color/backgroundColor</item>
+        <item name="vectorLogin">@drawable/vector_login</item>
 
     </style>
 
@@ -56,6 +57,7 @@
         <item name="topLineBottomSheetColor">@color/darkTopLineBottomSheetColor</item>
         <item name="toolbarAndSettingsCardIconColor">@color/darkToolbarAndSettingsCardIconColor</item>
         <item name="actionModeBackground">@color/darkBackgroundColor</item>
+        <item name="vectorLogin">@drawable/vector_login_dark</item>
 
     </style>
 
