@@ -12,10 +12,8 @@
         android:id="@+id/textView25"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/opensans_semibold_custom"
         android:text="Logout"
-        android:textColor="?attr/textColor"
-        android:textSize="21sp" />
+        style="@style/dialogTitle"/>
 
     <TextView
         android:id="@+id/textView28"
@@ -34,6 +32,7 @@
         android:ems="10"
         android:hint="Enter your password"
         android:inputType="textPassword"
+        android:autofillHints="password"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imageView4"
         app:layout_constraintHorizontal_bias="0.0"

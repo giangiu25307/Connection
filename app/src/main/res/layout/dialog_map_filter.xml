@@ -15,10 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:fontFamily="@font/opensans_semibold_custom"
         android:text="Filters"
-        android:textColor="?attr/textColor"
-        android:textSize="21sp" />
+        style="@style/dialogTitle"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/genderLayout"
@@ -97,6 +95,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:background="@drawable/bg_map_filter_card"
         android:orientation="horizontal">

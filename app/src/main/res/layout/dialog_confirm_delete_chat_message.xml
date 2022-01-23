@@ -14,9 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delete"
-        android:fontFamily="@font/opensans_bold_custom"
-        android:textColor="?attr/textColor"
-        android:textSize="21sp"/>
+        style="@style/dialogTitle"/>
 
     <TextView
         android:id="@+id/deleteDialogSubtitle"
@@ -50,7 +48,7 @@
 
         <Button
             android:id="@+id/deleteButton"
-            style="@style/applyConfirmDeleteButton"
+            style="@style/dialogActionButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

@@ -63,9 +63,15 @@
 
     <!-- Screen title -->
     <style name="screenTitle" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">?attr/textColor</item>
-        <item name="android:fontFamily">@font/opensans_bold_custom</item>
         <item name="android:textSize">28sp</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:fontFamily">@font/opensans_semibold_custom</item>
+    </style>
+
+    <style name="dialogTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">21sp</item>
+        <item name="android:fontFamily">@font/opensans_bold_custom</item>
+        <item name="android:textColor">?attr/textColor</item>
     </style>
 
     <!-- Map buttons -->
@@ -98,6 +104,17 @@
         <item name="android:paddingVertical">7.5dp</item>
     </style>
 
+    <style name="inputDataStyle" parent="Widget.Design.TextInputLayout">
+        <item name="android:background">@drawable/bg_input_data</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textColorHint">?attr/hintColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
+        <item name="android:paddingHorizontal">12.5dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
+    </style>
+
     <!-- Age in map's filter -->
     <style name="ageInputStyle" parent="Widget.MaterialComponents.TextView">
         <item name="android:background">@drawable/bg_age_input</item>
@@ -117,25 +134,17 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:paddingVertical">8dp</item>
         <item name="android:gravity">center</item>
+        <item name="backgroundTint">@null</item>
     </style>
 
-    <style name="applyConfirmButton" parent="Widget.AppCompat.Button.Borderless">
+    <style name="dialogActionButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:background">@drawable/bg_apply_confirm_buttons</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:fontFamily">@font/opensans_semibold_custom</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:paddingVertical">8dp</item>
         <item name="android:gravity">center</item>
-    </style>
-
-    <!-- Cancel and apply/confirm dialog's buttons -->
-    <style name="applyConfirmDeleteButton" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:background">@drawable/bg_apply_confirm_buttons</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:fontFamily">@font/opensans_semibold_custom</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:paddingVertical">8dp</item>
-        <item name="android:gravity">center</item>
+        <item name="backgroundTint">@null</item>
     </style>
 
     <!-- Settings card -->
@@ -167,16 +176,6 @@
 
     <style name="bottomSheetBackground" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_bs_new_chat</item>
-    </style>
-
-    <style name="inputDataStyle" parent="Widget.Design.TextInputLayout">
-        <item name="android:background">@drawable/bg_input_data</item>
-        <item name="android:textColor">?attr/textColor</item>
-        <item name="android:textColorHint">?attr/hintColor</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:fontFamily">@font/opensans_light_custom</item>
-        <item name="android:padding">12.5dp</item>
-        <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
     </style>
 
     <style name="showHidePasswordImageStyle">

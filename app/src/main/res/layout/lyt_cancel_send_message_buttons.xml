@@ -6,23 +6,22 @@
     android:layout_marginBottom="16dp"
     android:layout_weight="1">
 
-    <TextView
+    <Button
         android:id="@+id/cancelTextView"
         style="@style/cancelButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="16dp"
-        android:gravity="center"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline17"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <Button
         android:id="@+id/sendMessageTextView"
-        style="@style/applyConfirmButton"
+        style="@style/dialogActionButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

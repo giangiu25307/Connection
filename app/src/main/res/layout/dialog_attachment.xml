@@ -12,10 +12,8 @@
         android:id="@+id/textView50"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/opensans_semibold_custom"
         android:text="Attachment"
-        android:textColor="?attr/textColor"
-        android:textSize="21sp" />
+        style="@style/dialogTitle"/>
 
     <LinearLayout
         android:layout_width="match_parent"

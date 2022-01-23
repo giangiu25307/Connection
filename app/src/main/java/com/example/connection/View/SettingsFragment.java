@@ -222,12 +222,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         newPassword2 = alertDialog.findViewById(R.id.editTextNewPassword2);
 
 
-        final TextView forgotPasswordButton, cancelTextView, confirmTextview;
-        forgotPasswordButton = alertDialog.findViewById(R.id.forgotPasswordButton);
-        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-        confirmTextview = alertDialog.findViewById(R.id.confirmTextView);
+        final TextView forgotPasswordTextView;
+        final Button cancelButton, confirmButton;
+        forgotPasswordTextView = alertDialog.findViewById(R.id.forgotPasswordButton);
+        cancelButton = alertDialog.findViewById(R.id.cancelTextView);
+        confirmButton = alertDialog.findViewById(R.id.confirmTextView);
 
-        forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
+        forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
@@ -236,13 +237,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 final AlertDialog alertDialog2 = dialogBuilder.create();
                 alertDialog2.show();
 
-                final TextView cancelTextView, confirmTextview;
+                final Button cancelButton, confirmTextview;
                 final EditText emailEditText;
-                cancelTextView = alertDialog2.findViewById(R.id.cancelTextView);
+                cancelButton = alertDialog2.findViewById(R.id.cancelTextView);
                 confirmTextview = alertDialog2.findViewById(R.id.confirmTextView);
                 emailEditText = alertDialog2.findViewById(R.id.editTextEmail);
 
-                cancelTextView.setOnClickListener(new View.OnClickListener() {
+                cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         alertDialog2.dismiss();
@@ -270,14 +271,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        cancelTextView.setOnClickListener(new View.OnClickListener() {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
             }
         });
 
-        confirmTextview.setOnClickListener(new View.OnClickListener() {
+        confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 /*
@@ -474,18 +475,18 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         dialogBuilder.setView(R.layout.dialog_bug_report);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
-        final TextView cancel, send;
-        cancel = alertDialog.findViewById(R.id.cancelTextView);
-        send = alertDialog.findViewById(R.id.sendTextView);
+        final Button cancelButton, sendButton;
+        cancelButton = alertDialog.findViewById(R.id.cancelTextView);
+        sendButton = alertDialog.findViewById(R.id.sendTextView);
 
-        cancel.setOnClickListener(new View.OnClickListener() {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
             }
         });
 
-        send.setOnClickListener(new View.OnClickListener() {
+        sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO Da aggiunge codice che invia il report
