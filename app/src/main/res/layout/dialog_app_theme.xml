@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:fontFamily="@font/opensans_semibold_custom"
+        android:fontFamily="@font/opensans_bold_custom"
         android:text="Select app theme"
         android:textColor="?attr/textColor"
         android:textSize="21sp" />
@@ -22,8 +22,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:layout_weight="1"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -42,6 +43,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="10dp"
+                android:contentDescription="Light theme"
                 app:srcCompat="@drawable/ic_light"
                 app:tint="?attr/iconTint" />
 
@@ -70,6 +72,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="10dp"
+                android:contentDescription="Dark theme"
                 app:srcCompat="@drawable/ic_dark"
                 app:tint="?attr/iconTint" />
 
@@ -87,6 +90,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
@@ -114,7 +118,8 @@
                 android:layout_height="32dp"
                 android:layout_marginEnd="10dp"
                 app:srcCompat="@drawable/ic_follow_system"
-                app:tint="?attr/iconTint" />
+                app:tint="?attr/iconTint"
+                android:contentDescription="System theme"/>
 
             <TextView
                 android:id="@+id/textView12"

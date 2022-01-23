@@ -44,7 +44,7 @@
         android:background="@drawable/bg_close_button_request_dialog"
         android:fontFamily="@font/opensans_semibold"
         android:minHeight="0dp"
-        android:paddingVertical="7dp"
+        android:paddingVertical="8dp"
         android:letterSpacing="0"
         android:text="Close"
         android:textAllCaps="false"

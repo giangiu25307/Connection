@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -316,13 +317,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         alertDialog.show();
 
         final LinearLayout lightButton, darkButton, followSystemButton;
-        final TextView cancelTextView, applyTextView;
+        final Button cancelButton, applyButton;
 
         lightButton = alertDialog.findViewById(R.id.lightButton);
         darkButton = alertDialog.findViewById(R.id.darkButton);
         followSystemButton = alertDialog.findViewById(R.id.followSystemButton);
-        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-        applyTextView = alertDialog.findViewById(R.id.applyTextView);
+        cancelButton = alertDialog.findViewById(R.id.cancelTextView);
+        applyButton = alertDialog.findViewById(R.id.applyTextView);
 
 
         String currentTheme = sharedPreferences.getString("appTheme", "light");
@@ -388,14 +389,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        cancelTextView.setOnClickListener(new View.OnClickListener() {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
             }
         });
 
-        applyTextView.setOnClickListener(new View.OnClickListener() {
+        applyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeTheme(newTheme, alertDialog);

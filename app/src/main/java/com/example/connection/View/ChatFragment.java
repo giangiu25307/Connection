@@ -275,7 +275,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                     alertDialog.show();
                     int chatSelected = multiselectList.size();
                     TextView titleTextView = alertDialog.findViewById(R.id.deleteDialogTitle);
-                    titleTextView.setText(chatSelected > 1 ? "Delete chats?" : "Delete chat?");
+                    titleTextView.setText(chatSelected > 1 ? "Delete chats" : "Delete chat");
                     TextView subtitleTextView = alertDialog.findViewById(R.id.deleteDialogSubtitle);
                     subtitleTextView.setText(chatSelected > 1 ? "Are you sure you want to delete " + chatSelected + " chats? The operation cannot be undone"
                             : "Are you sure you want to delete " + chatSelected + " chat? The operation cannot be undone");

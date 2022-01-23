@@ -351,7 +351,7 @@ public class ChatActivity extends AppCompatActivity {
                     alertDialog.show();
                     int chatSelected = multiselectList.size();
                     TextView titleTextView = alertDialog.findViewById(R.id.deleteDialogTitle);
-                    titleTextView.setText(chatSelected > 1 ? "Delete messages?" : "Delete message?");
+                    titleTextView.setText(chatSelected > 1 ? "Delete messages" : "Delete message");
                     TextView subtitleTextView = alertDialog.findViewById(R.id.deleteDialogSubtitle);
                     subtitleTextView.setText(chatSelected > 1 ? "Are you sure you want to delete " + chatSelected + " messages? The operation cannot be undone"
                             : "Are you sure you want to delete " + chatSelected + " message? The operation cannot be undone");

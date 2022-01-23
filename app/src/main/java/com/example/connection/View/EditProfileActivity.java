@@ -19,13 +19,13 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.connection.Controller.ConnectionController;
@@ -40,8 +40,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Database database;
-    private TextView cancelTextView, applyTextView, gallery, takePhoto, textViewGender;
+    private TextView gallery, takePhoto, textViewGender;
     private EditText editTextUsername, editTextMail, editTextName, editTextSurname, editTextPhoneNumber, editTextCity, editTextCountry;
+    private Button cancelButton, applyButton;
     private CircleImageView profilePic;
     private String previousProfilePic = "";
     private int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
@@ -89,12 +90,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         takePhoto = findViewById(R.id.textView13);
         gallery = findViewById(R.id.textView14);
-        cancelTextView = findViewById(R.id.cancelTextView);
-        applyTextView = findViewById(R.id.applyTextView);
+        cancelButton = findViewById(R.id.cancelTextView);
+        applyButton = findViewById(R.id.applyTextView);
         takePhoto.setOnClickListener(this);
         gallery.setOnClickListener(this);
-        cancelTextView.setOnClickListener(this);
-        applyTextView.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        applyButton.setOnClickListener(this);
 
         profilePic = findViewById(R.id.profilePic);
 
