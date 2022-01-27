@@ -11,11 +11,11 @@
 
     <TextView
         android:id="@+id/textView33"
+        style="@style/dialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Report bug"
-        style="@style/dialogTitle"/>
+        android:text="Report bug" />
 
     <EditText
         android:id="@+id/editTextOldPassword2"
@@ -23,13 +23,12 @@
         android:layout_width="match_parent"
         android:layout_height="125dp"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="8dp"
         android:layout_weight="1"
-        android:ems="10"
-        android:fontFamily="@font/opensans_regular"
         android:gravity="top"
         android:hint="Write bug"
+        android:importantForAutofill="no"
         android:inputType="textMultiLine|textCapSentences"
+        android:paddingVertical="8dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imageView4"
@@ -38,6 +37,6 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
         app:layout_constraintVertical_bias="0.0" />
 
-    <include layout="@layout/lyt_cancel_send_report_buttons"/>
+    <include layout="@layout/lyt_cancel_send_report_buttons" />
 
 </LinearLayout>

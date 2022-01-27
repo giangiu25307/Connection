@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="12dp"
-        android:background="@drawable/bg_message_number_counter"
+        android:background="@drawable/bg_unread_messages_counter"
         android:fontFamily="@font/opensans_light_custom"
         android:gravity="center"
         android:paddingHorizontal="6dp"

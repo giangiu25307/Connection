@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -417,21 +418,19 @@ public class ChatActivity extends AppCompatActivity {
                 dialogBuilder.setView(R.layout.dialog_chat_information);
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
+
+                Button chatterNumber = alertDialog.findViewById(R.id.chatterNumberButton);
+                Button chatterWhatsappNumber = alertDialog.findViewById(R.id.chatterWhatsappButton);
+                Button chatterTelegramNumber = alertDialog.findViewById(R.id.chatterTelegramButton);
+
                 TextView usernameTextView = alertDialog.findViewById(R.id.dialogChatInformationUsernameTextView);
                 TextView ageAndGenderTextView = alertDialog.findViewById(R.id.dialogChatInformationAgeAndGenderTextView);
-                TextView textViewChatterNumber = alertDialog.findViewById(R.id.dialogChatInformationChatterNumberTextView);
-                TextView textViewChatterWhatsapp = alertDialog.findViewById(R.id.dialogChatInformationChatterWhatsappTextView);
-                TextView textViewChatterTelegram = alertDialog.findViewById(R.id.dialogChatInformationChatterTelegramTextView);
 
-                isSomethingShared(textViewChatterNumber, textViewChatterWhatsapp, textViewChatterTelegram);
+                isSomethingShared(chatterNumber, chatterWhatsappNumber, chatterTelegramNumber);
 
                 usernameTextView.setText(user.getUsername());
                 String ageAndGender = user.getAge() + ", " + user.getGender();
                 ageAndGenderTextView.setText(ageAndGender);
-
-                LinearLayout chatterNumber = alertDialog.findViewById(R.id.linearLayoutChatterNumber);
-                LinearLayout chatterWhatsappNumber = alertDialog.findViewById(R.id.linearLayoutChatterWhatsapp);
-                LinearLayout chatterTelegramNumber = alertDialog.findViewById(R.id.linearLayoutChatterTelegram);
 
                 chatterNumber.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -454,9 +453,9 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
 
-                LinearLayout number = alertDialog.findViewById(R.id.linearLayoutNumber);
-                LinearLayout whatsappNumber = alertDialog.findViewById(R.id.linearLayoutWhatsapp);
-                LinearLayout telegramNumber = alertDialog.findViewById(R.id.linearLayoutTelegram);
+                Button number = alertDialog.findViewById(R.id.userNumberButton);
+                Button whatsappNumber = alertDialog.findViewById(R.id.userWhatsappButton);
+                Button telegramNumber = alertDialog.findViewById(R.id.userTelegramButton);
 
                 number.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -491,7 +490,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
 
-                alertDialog.findViewById(R.id.closeTextView).setOnClickListener(new View.OnClickListener() {
+                alertDialog.findViewById(R.id.closeButton).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         alertDialog.dismiss();
@@ -501,7 +500,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void isSomethingShared(TextView number, TextView whatsapp, TextView telegram) {
+    private void isSomethingShared(Button number, Button whatsapp, Button telegram) {
         if (database.isNumberShared(user.getIdUser(), "number")) {
             number.setText(user.getNumber());
         }

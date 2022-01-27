@@ -282,7 +282,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/appThemeDialogTitle"
                 style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

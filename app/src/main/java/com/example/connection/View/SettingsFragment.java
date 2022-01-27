@@ -15,7 +15,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -39,7 +37,6 @@ import com.example.connection.BuildConfig;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
-import com.example.connection.Model.User;
 import com.example.connection.R;
 
 import java.util.regex.Pattern;
@@ -317,15 +314,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
-        final LinearLayout lightButton, darkButton, followSystemButton;
-        final Button cancelButton, applyButton;
+        final Button lightButton, darkButton, followSystemButton, cancelButton, applyButton;
 
         lightButton = alertDialog.findViewById(R.id.lightButton);
         darkButton = alertDialog.findViewById(R.id.darkButton);
         followSystemButton = alertDialog.findViewById(R.id.followSystemButton);
         cancelButton = alertDialog.findViewById(R.id.cancelTextView);
         applyButton = alertDialog.findViewById(R.id.applyTextView);
-
 
         String currentTheme = sharedPreferences.getString("appTheme", "light");
         if (currentTheme.equals("dark")) {
@@ -436,7 +431,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
         final LinearLayout rate, share;
-        final TextView close;
+        final Button close;
         rate = alertDialog.findViewById(R.id.rate);
         share = alertDialog.findViewById(R.id.share);
         close = alertDialog.findViewById(R.id.close);

@@ -17,13 +17,12 @@ import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Patterns;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -190,7 +189,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             case R.id.nextButton:
                 if (currentPage < 3) {
                     if (checker()) {
-                        views[currentPage].setBackgroundResource(R.drawable.bg_page_indicator_selected);
+                        views[currentPage].setBackgroundResource(R.drawable.bg_signup_page_indicator_selected);
                         viewPager.setCurrentItem(currentPage + 1);
                         if(currentPage > 0){
                             back.setAlpha(1f);
@@ -229,7 +228,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             case R.id.backButton:
                 if (currentPage > 0){
                     viewPager.setCurrentItem(currentPage - 1);
-                    views[currentPage].setBackgroundResource(R.drawable.bg_page_indicator);
+                    views[currentPage].setBackgroundResource(R.drawable.bg_signup_page_indicator_unselected);
                     nextImageView.setImageResource(R.drawable.ic_arrow_right);
                 }
                 break;
@@ -317,12 +316,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         dialogBuilder.setView(R.layout.dialog_gender);
                         final AlertDialog alertDialog = dialogBuilder.create();
                         alertDialog.show();
-                        TextView male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
+                        Button male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
                         final TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
                         male.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                gender.setText("Maschio");
+                                gender.setText("Male");
                                 user.setGender("Maschio");
                                 alertDialog.dismiss();
                             }
@@ -330,7 +329,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         female.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                gender.setText("Femmina");
+                                gender.setText("Female");
                                 user.setGender("Femmina");
                                 alertDialog.dismiss();
                             }
@@ -338,7 +337,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         other.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                gender.setText("Altro");
+                                gender.setText("Other");
                                 user.setGender("Altro");
                                 alertDialog.dismiss();
                             }

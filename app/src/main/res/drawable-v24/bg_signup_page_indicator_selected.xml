@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
 
     <solid android:color="?attr/textColor"/>
-    <corners android:radius="@dimen/pageindicator_messagesnumbercounter_editprofilebutton_datemessagebg_corner"/>
+    <corners android:radius="@dimen/signupPageIndicatorCorner"/>
 
 </shape>

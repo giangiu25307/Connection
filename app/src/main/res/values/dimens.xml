@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
-    <dimen name="request_closerequestdialog_messages_oknointernetconnection_button_filterinput_corner">10dp</dimen>
-    <dimen name="dialogbutton_mapbutton_filtercard_chatcard_requestcard_settingscard_themecard_input_corner">12.5dp</dimen>
-    <dimen name="login_signup_showhidepassword_attachment_permission_button_corner">7.5dp</dimen>
-    <dimen name="dialogbg_messageinput_settingsprofilebutton_corner">15dp</dimen>
-    <dimen name="pageindicator_messagesnumbercounter_editprofilebutton_datemessagebg_corner">20dp</dimen>
+
+    <!-- Corners dimensions -->
+    <dimen name="nextLoginButtonCorner">7.5dp</dimen>
+    <dimen name="signupButtonCorner">7.5dp</dimen>
+    <dimen name="showHidePasswordButtonCorner">7.5dp</dimen>
+
+    <dimen name="genderFilterCorner">10dp</dimen>
+    <dimen name="ageFilterCorner">10dp</dimen>
+    <dimen name="messageCorner">10dp</dimen>
+    <dimen name="requestButtonCorner">10dp</dimen>
+
+    <dimen name="dialogItemCorner">12.5dp</dimen>
+    <dimen name="dialogButtonCorner">12.5dp</dimen>
+    <dimen name="buttonCorner">12.5dp</dimen>
+    <dimen name="cardCorner">12.5dp</dimen>
+    <dimen name="inputDataCorner">12.5dp</dimen>
+    <dimen name="countrySpinnerCorner">12.5dp</dimen>
+
+    <dimen name="dialogCorner">15dp</dimen>
+    <dimen name="messageInputCorner">15dp</dimen>
+    <dimen name="settingsProfileButtonCorner">15dp</dimen>
+
+    <dimen name="dateMessagesChronologyCorner">20dp</dimen>
+    <dimen name="unreadMessagesCounterCorner">20dp</dimen>
+    <dimen name="signupPageIndicatorCorner">20dp</dimen>
 </resources>

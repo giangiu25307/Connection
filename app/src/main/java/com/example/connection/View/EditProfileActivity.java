@@ -158,7 +158,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 dialogBuilder.setView(R.layout.dialog_gender);
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
-                TextView male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
+                Button male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
                 male.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -36,19 +36,11 @@
 
     <Button
         android:id="@+id/closeRequestDialog"
-        style="?android:attr/borderlessButtonStyle"
+        style="@style/cancelButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:background="@drawable/bg_close_button_request_dialog"
-        android:fontFamily="@font/opensans_semibold_custom"
-        android:letterSpacing="0"
-        android:minHeight="0dp"
-        android:paddingVertical="8dp"
         android:text="Close"
-        android:textAllCaps="false"
-        android:textColor="@color/secondaryColor"
-        android:textSize="16sp"
-        app:backgroundTint="@null" />
+        android:textSize="16sp" />
 
 </LinearLayout>

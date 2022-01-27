@@ -159,8 +159,7 @@ public class MapFragment extends Fragment {
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
 
-                final TextView male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
-                final Button cancelButton, applyButton;
+                final Button male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other), cancelButton, applyButton;
                 final EditText minAge = alertDialog.findViewById(R.id.editTextMinAge), maxAge = alertDialog.findViewById(R.id.editTextMaxAge);
                 cancelButton = alertDialog.findViewById(R.id.cancelTextView);
                 applyButton = alertDialog.findViewById(R.id.applyTextView);

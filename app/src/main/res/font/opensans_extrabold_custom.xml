@@ -5,6 +5,6 @@
     <font
         android:font="@font/opensans_extrabold"
         android:fontStyle="normal"
-        android:fontWeight="800"/>
+        android:fontWeight="800" />
 
 </font-family>

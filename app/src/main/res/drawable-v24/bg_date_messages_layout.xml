@@ -3,6 +3,6 @@
 
     <solid android:color="?attr/whiteBlack" />
     <stroke android:width="0.6dp" android:color="?attr/textColor" />
-    <corners android:radius="@dimen/pageindicator_messagesnumbercounter_editprofilebutton_datemessagebg_corner" />
+    <corners android:radius="@dimen/dateMessagesChronologyCorner" />
 
 </shape>

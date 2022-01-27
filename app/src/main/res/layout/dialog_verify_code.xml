@@ -28,7 +28,7 @@
         android:fontFamily="@font/opensans_regular_custom"
         android:text="Enter the code sent by email"
         android:textColor="?attr/secondaryTextColor"
-        android:textSize="15sp" />
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/editTextNumber7"
@@ -36,9 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="8dp"
         android:layout_weight="1"
-        android:ems="10"
         android:gravity="center"
         android:hint="0"
         android:importantForAutofill="no"

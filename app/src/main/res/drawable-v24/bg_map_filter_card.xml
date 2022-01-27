@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
 
     <solid android:color="?attr/itemBackground" />
-    <corners android:radius="@dimen/dialogbutton_mapbutton_filtercard_chatcard_requestcard_settingscard_themecard_input_corner" />
+    <corners android:radius="@dimen/cardCorner" />
 
 </shape>

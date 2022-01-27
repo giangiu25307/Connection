@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
 
     <solid android:color="?attr/secondItemBackground" />
-    <corners android:radius="@dimen/dialogbg_messageinput_settingsprofilebutton_corner" />
+    <corners android:radius="@dimen/settingsProfileButtonCorner" />
 
 </shape>

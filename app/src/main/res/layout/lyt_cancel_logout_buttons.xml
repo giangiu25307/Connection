@@ -7,7 +7,7 @@
     android:layout_weight="1">
 
     <Button
-        android:id="@+id/cancelTextView"
+        android:id="@+id/cancelButton"
         style="@style/cancelButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -19,12 +19,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/applyTextView"
+        android:id="@+id/logoutButton"
         style="@style/dialogActionButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="Apply"
+        android:background="@drawable/bg_delete_block_logout_button"
+        android:text="Logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline17"

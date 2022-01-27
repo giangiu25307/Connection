@@ -11,10 +11,10 @@
 
     <TextView
         android:id="@+id/deleteDialogTitle"
+        style="@style/dialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"
-        style="@style/dialogTitle"/>
+        android:text="Delete" />
 
     <TextView
         android:id="@+id/deleteDialogSubtitle"
@@ -26,40 +26,10 @@
         android:textColor="?attr/secondaryTextColor"
         android:textSize="15sp" />
 
-    <LinearLayout
+    <include
+        layout="@layout/lyt_cancel_delete_buttons"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/cancelButton"
-            style="@style/cancelButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:text="Cancel"
-            app:backgroundTint="@null"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline17"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/deleteButton"
-            style="@style/dialogActionButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="Delete"
-            app:backgroundTint="@null"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline17"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp" />
 
 </LinearLayout>

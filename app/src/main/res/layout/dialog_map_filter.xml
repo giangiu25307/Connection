@@ -12,11 +12,11 @@
 
     <TextView
         android:id="@+id/textView22"
+        style="@style/dialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Filters"
-        style="@style/dialogTitle"/>
+        android:text="Filters" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/genderLayout"
@@ -34,7 +34,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
-            android:fontFamily="@font/opensans_semibold"
+            android:fontFamily="@font/opensans_semibold_custom"
             android:paddingTop="0dp"
             android:text="Gender"
             android:textColor="?attr/secondaryTextColor"
@@ -59,33 +59,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/genderTextView">
 
-            <TextView
+            <Button
                 android:id="@+id/male"
                 style="@style/genderSelected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="@font/opensans_regular"
-                android:text="Male" />
+                android:text="Male"
+                tools:ignore="TouchTargetSizeCheck" />
 
-            <TextView
+            <Button
                 android:id="@+id/female"
                 style="@style/genderSelected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_weight="1"
-                android:fontFamily="@font/opensans_regular"
-                android:text="Female" />
+                android:text="Female"
+                tools:ignore="TouchTargetSizeCheck" />
 
-            <TextView
+            <Button
                 android:id="@+id/other"
                 style="@style/genderSelected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="@font/opensans_regular"
-                android:text="Other" />
+                android:text="Other"
+                tools:ignore="TouchTargetSizeCheck" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -95,7 +95,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:background="@drawable/bg_map_filter_card"
         android:orientation="horizontal">
@@ -108,7 +107,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
-            android:fontFamily="@font/opensans_semibold"
+            android:fontFamily="@font/opensans_semibold_custom"
             android:text="Age"
             android:textColor="?attr/secondaryTextColor"
             android:textSize="18sp"
@@ -138,12 +137,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ems="4"
-                android:fontFamily="@font/opensans_regular"
-                android:gravity="center"
                 android:hint="16"
-                android:inputType="number"
-                android:maxLength="3" />
+                android:importantForAutofill="no"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/textView26"
@@ -151,10 +147,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_weight="1"
-                android:fontFamily="@font/opensans_regular"
+                android:fontFamily="@font/opensans_regular_custom"
                 android:text="to"
                 android:textColor="?attr/textColor"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/editTextMaxAge"
@@ -162,17 +158,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ems="4"
-                android:fontFamily="@font/opensans_regular"
-                android:gravity="center"
                 android:hint="100"
-                android:inputType="number"
-                android:maxLength="3" />
+                android:importantForAutofill="no"
+                tools:ignore="TouchTargetSizeCheck" />
 
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/lyt_cancel_apply_buttons"/>
+    <include layout="@layout/lyt_cancel_apply_buttons" />
 
 </LinearLayout>
