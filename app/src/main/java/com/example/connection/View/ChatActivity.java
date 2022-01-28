@@ -419,6 +419,13 @@ public class ChatActivity extends AppCompatActivity {
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
 
+                ImageView profilePicImageView = findViewById(R.id.profilePicChatInformation);
+                File profilePic = new File(user.getProfilePic());
+                if(profilePic.exists()){
+                    Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
+                    profilePicImageView.setImageBitmap(myBitmap);
+                }
+
                 Button chatterNumber = alertDialog.findViewById(R.id.chatterNumberButton);
                 Button chatterWhatsappNumber = alertDialog.findViewById(R.id.chatterWhatsappButton);
                 Button chatterTelegramNumber = alertDialog.findViewById(R.id.chatterTelegramButton);
