@@ -308,7 +308,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             case 1:
                 final DatePickerDialog datePickerDialog = new DatePickerDialog(getContext());
                 EditText firstNameLabel = viewPager.findViewById(R.id.firstname), surnameLabel = viewPager.findViewById(R.id.surname);
-                TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
+                TextView gender = viewPager.findViewById(R.id.genderSignUpButton);
                 gender.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -316,8 +316,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         dialogBuilder.setView(R.layout.dialog_gender);
                         final AlertDialog alertDialog = dialogBuilder.create();
                         alertDialog.show();
+                        final Button gender = viewPager.findViewById(R.id.genderSignUpButton);
                         Button male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
-                        final TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
                         male.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -344,7 +344,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         });
                     }
                 });
-                final AppCompatTextView dateOfBirth = viewPager.findViewById(R.id.dateOfBirthSignUpTextView);
+                final Button dateOfBirth = viewPager.findViewById(R.id.dateOfBirthSignUpButton);
                 if (!user.getName().equals("")) firstNameLabel.setText(user.getName());
                 if (!user.getSurname().equals("")) surnameLabel.setText(user.getSurname());
                 if (!user.getGender().equals("")) gender.setText(user.getGender());

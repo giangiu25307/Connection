@@ -52,6 +52,7 @@
                 android:layout_marginBottom="8dp"
                 style="@style/screenTitle"
                 android:text="Global chat"
+                android:fontFamily="@font/opensans_semibold_custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:ems="10"
         android:hint="Name"
         android:inputType="textEmailAddress"
         android:textColor="?attr/textColor"
@@ -28,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_weight="0"
-        android:ems="10"
         android:hint="Surname"
         android:inputType="textEmailAddress"
         android:textColor="?attr/textColor"
@@ -44,31 +42,34 @@
         android:layout_weight="0"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/dateOfBirthSignUpTextView"
-            style="@style/inputDataStyle"
+        <Button
+            android:id="@+id/dateOfBirthSignUpButton"
+            style="@style/generalButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:hint="Date of birth"
             android:textColor="?attr/textColor"
+            android:gravity="center"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/surname"
             app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/genderSignUpTextView"
-            style="@style/inputDataStyle"
+        <Button
+            android:id="@+id/genderSignUpButton"
+            style="@style/generalButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:ems="10"
             android:hint="Gender"
             android:textColor="?attr/textColor"
+            android:gravity="center"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"

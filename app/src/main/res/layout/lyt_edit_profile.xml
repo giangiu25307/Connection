@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="?attr/layoutBackground"
     android:paddingBottom="10dp">
 
@@ -93,12 +93,12 @@
 
             <TextView
                 android:id="@+id/textView17"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Username"
-                style="@style/settingsGroupTitle" />
+                android:text="Username" />
 
             <EditText
                 android:id="@+id/editTextUsername"
@@ -107,18 +107,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="Username"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView34"
+                style="@style/settingsGroupTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Mail"
-                style="@style/settingsGroupTitle" />
+                android:text="Mail" />
 
             <EditText
                 android:id="@+id/editTextMail"
@@ -127,18 +126,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="Mail"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView18"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Name"
-                style="@style/settingsGroupTitle" />
+                android:text="Name" />
 
             <EditText
                 android:id="@+id/editTextName"
@@ -147,18 +145,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="Name"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView35"
+                style="@style/settingsGroupTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Surname"
-                style="@style/settingsGroupTitle" />
+                android:text="Surname" />
 
             <EditText
                 android:id="@+id/editTextSurname"
@@ -167,18 +164,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="Surname"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView19"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Phone number"
-                style="@style/settingsGroupTitle" />
+                android:text="Phone number" />
 
             <EditText
                 android:id="@+id/editTextPhonenumber"
@@ -187,37 +183,36 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="Phone number"
                 android:inputType="number" />
 
             <TextView
                 android:id="@+id/textView20"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Gender"
-                style="@style/settingsGroupTitle" />
+                android:text="Gender" />
 
-            <TextView
+            <Button
                 android:id="@+id/textViewGender"
-                style="@style/inputDataStyle"
+                style="@style/generalButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
+                android:paddingStart="12.5dp"
                 android:text="Gender" />
 
             <TextView
                 android:id="@+id/textView36"
+                style="@style/settingsGroupTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="City"
-                style="@style/settingsGroupTitle" />
+                android:text="City" />
 
             <EditText
                 android:id="@+id/editTextCity"
@@ -226,18 +221,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="City"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView37"
+                style="@style/settingsGroupTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Country"
-                style="@style/settingsGroupTitle" />
+                android:text="Country" />
 
             <EditText
                 android:id="@+id/editTextCountry"
@@ -245,10 +239,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:hint="Country"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/textView38"
+                style="@style/settingsGroupTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:text="Telegram username" />
+
+            <EditText
+                android:id="@+id/editTextTelegramUsername"
+                style="@style/inputDataStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
-                android:ems="10"
-                android:hint="Country"
+                android:hint="Telegram username (without @)"
                 android:inputType="text" />
 
         </LinearLayout>

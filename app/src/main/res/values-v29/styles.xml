@@ -69,7 +69,7 @@
     <style name="screenTitle" parent="Widget.MaterialComponents.TextView">
         <item name="android:textSize">28sp</item>
         <item name="android:textColor">?attr/textColor</item>
-        <item name="android:fontFamily">@font/opensans_semibold_custom</item>
+        <item name="android:fontFamily">@font/opensans_bold_custom</item>
     </style>
 
     <style name="dialogTitle" parent="Widget.MaterialComponents.TextView">
