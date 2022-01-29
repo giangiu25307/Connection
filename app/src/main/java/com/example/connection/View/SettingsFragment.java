@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,6 +62,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private ChatFragment chat;
     private SettingsFragment settingsFragment;
     private Connection connection;
+    private boolean isOldPasswordShown, isNewPasswordShown, isNewPassword2Shown;
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
             "(?=.*[a-z])" + //at least 1 lower case
@@ -214,9 +217,38 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         alertDialog.show();
 
         final EditText oldPassword, newPassword, newPassword2;
+        final ImageButton showHideOldPassword, showHideNewPassword, showHideNewPassword2;
         oldPassword = alertDialog.findViewById(R.id.editTextOldPassword);
         newPassword = alertDialog.findViewById(R.id.editTextNewPassword);
         newPassword2 = alertDialog.findViewById(R.id.editTextNewPassword2);
+
+        showHideOldPassword = alertDialog.findViewById(R.id.showHideOldPassword);
+        showHideNewPassword = alertDialog.findViewById(R.id.showHideNewPassword);
+        showHideNewPassword2 = alertDialog.findViewById(R.id.showHideNewPassword2);
+
+        showHideOldPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showHidePassword(isOldPasswordShown, oldPassword, showHideOldPassword);
+                isOldPasswordShown = !isOldPasswordShown;
+            }
+        });
+
+        showHideNewPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showHidePassword(isNewPasswordShown, newPassword, showHideNewPassword);
+                isNewPasswordShown = !isNewPasswordShown;
+            }
+        });
+
+        showHideNewPassword2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showHidePassword(isNewPassword2Shown, newPassword2, showHideNewPassword2);
+                isNewPassword2Shown = !isNewPassword2Shown;
+            }
+        });
 
 
         final TextView forgotPasswordTextView;
@@ -306,6 +338,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 */
             }
         });
+    }
+
+    private void showHidePassword(boolean isShown, EditText password, ImageButton showHidePasswordButton){
+        if(!isShown){
+            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            showHidePasswordButton.setImageResource(R.drawable.ic_hide_password);
+        }else{
+            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            showHidePasswordButton.setImageResource(R.drawable.ic_show_password);
+        }
+        password.setSelection(password.getText().length());
     }
 
     private void manageTheme(AlertDialog.Builder dialogBuilder) {

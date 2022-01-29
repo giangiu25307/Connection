@@ -3,10 +3,10 @@
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
 
     <!-- Corners dimensions -->
-    <dimen name="nextLoginButtonCorner">7.5dp</dimen>
     <dimen name="signupButtonCorner">7.5dp</dimen>
-    <dimen name="showHidePasswordButtonCorner">7.5dp</dimen>
+    <dimen name="showHidePasswordButtonCorner">12.5dp</dimen>
 
+    <dimen name="nextLoginButtonCorner">10dp</dimen>
     <dimen name="genderFilterCorner">10dp</dimen>
     <dimen name="ageFilterCorner">10dp</dimen>
     <dimen name="messageCorner">10dp</dimen>

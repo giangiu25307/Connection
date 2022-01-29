@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -36,7 +37,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -70,7 +70,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private int yearText = 0, monthText = 0, dayText = 0;
     private String countryCode="";
     private DrawController drawController;
-    private boolean isPasswordShown = false;
+    private boolean isPasswordShown;
     private View[] views;
     private Animation slideUp, slideDown;
 
@@ -120,7 +120,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         next = view.findViewById(R.id.nextButton);
         back = view.findViewById(R.id.backButton);
         back.setAlpha(0.25f);
-        LinearLayout login = view.findViewById(R.id.linearLayoutLoginBackButton);
+        Button login = view.findViewById(R.id.loginBackButton);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,7 +160,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             public void onGlobalLayout() {
                 view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 EditText password = viewPager.findViewById(R.id.password);
-                ImageView showHidePassword = viewPager.findViewById(R.id.showHidePassword);
+                ImageButton showHidePassword = viewPager.findViewById(R.id.showHidePassword);
                 showHidePassword.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -274,14 +274,13 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         if(!isPasswordShown){
                             password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                             showHidePassword.setImageResource(R.drawable.ic_hide_password);
-                            password.setSelection(password.getText().length());
                             isPasswordShown = true;
                         }else{
                             password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                             showHidePassword.setImageResource(R.drawable.ic_show_password);
-                            password.setSelection(password.getText().length());
                             isPasswordShown = false;
                         }
+                        password.setSelection(password.getText().length());
                     }
                 });
                 if (!user.getUsername().equals("")) usernameLabel.setText(user.getUsername());

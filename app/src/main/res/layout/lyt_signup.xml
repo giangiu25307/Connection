@@ -21,43 +21,34 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.25" />
 
-    <LinearLayout
-        android:id="@+id/linearLayoutLoginBackButton"
+    <Button
+        android:id="@+id/loginBackButton"
+        style="@style/generalButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
+        android:minHeight="0dp"
+        android:paddingVertical="2dp"
+        android:text="LOG IN"
+        android:textSize="12sp"
+        app:icon="@drawable/ic_back"
+        app:iconSize="17.5dp"
+        app:iconTint="?attr/iconTint"
+        app:iconGravity="textStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline8"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginEnd="5dp"
-            app:srcCompat="@drawable/ic_back"
-            app:tint="?attr/iconTint" />
-
-        <TextView
-            android:id="@+id/textView29"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="LOG IN"
-            android:textColor="?attr/textColor"
-            android:textSize="14sp" />
-
-    </LinearLayout>
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <com.example.connection.View.MyViewPager
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="350dp"
         android:layout_marginTop="32dp"
+        android:contentDescription="Sign up steps"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
         app:layout_constraintStart_toStartOf="@+id/guideline8"

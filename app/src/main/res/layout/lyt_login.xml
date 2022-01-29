@@ -6,6 +6,34 @@
     android:layout_height="match_parent"
     android:background="?attr/layoutBackground">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.07" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.93" />
+
     <ImageView
         android:id="@+id/imageView13"
         android:layout_width="275dp"
@@ -63,12 +91,12 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
         app:layout_constraintVertical_bias="0.050000012" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/showHidePassword"
         style="@style/showHidePasswordImageStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="0"
+        android:contentDescription="Show and hide password"
         app:layout_constraintBottom_toBottomOf="@+id/editTextPassword"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
@@ -95,56 +123,35 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:id="@+id/skipButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Salta login e signup"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signupButton" />
-
-    <LinearLayout
         android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_next_button_login"
+        android:fontFamily="@font/opensans_semibold_custom"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingHorizontal="30dp"
-        android:paddingVertical="10dp"
+        android:letterSpacing="0"
+        android:minHeight="0dp"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="6dp"
+        android:text="Log in"
+        android:textColor="?attr/invertedTextColor"
+        android:textSize="16sp"
+        app:backgroundTint="@null"
+        app:icon="@drawable/ic_arrow_right"
+        app:iconGravity="textEnd"
+        app:iconTint="?attr/invertedIconTint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/textView15"
-        app:layout_constraintVertical_bias="0.209">
-
-        <TextView
-            android:id="@+id/textView53"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/opensans_regular_custom"
-            android:text="LOG IN"
-            android:textColor="?attr/invertedTextColor"
-            android:textSize="17sp" />
-
-        <ImageView
-            android:id="@+id/imageView23"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center"
-            android:layout_weight="0"
-            app:srcCompat="@drawable/ic_arrow_right"
-            app:tint="?attr/whiteBlack" />
-    </LinearLayout>
+        app:layout_constraintVertical_bias="0.209" />
 
     <TextView
         android:id="@+id/textView55"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:fontFamily="@font/opensans_regular_custom"
         android:text="Don't have an account?"
         android:textColor="?attr/textColor"
@@ -154,67 +161,31 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/loginButton"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
+    <Button
         android:id="@+id/signupButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:background="@color/transparent"
+        android:fontFamily="@font/opensans_semibold_custom"
+        android:gravity="left|center_vertical"
+        android:letterSpacing="0"
+        android:minHeight="0dp"
+        android:paddingHorizontal="0dp"
+        android:paddingVertical="0dp"
+        android:text="Sign up"
+        android:textColor="?attr/textColor"
+        android:textSize="16sp"
+        app:backgroundTint="@null"
+        app:icon="@drawable/ic_arrow_right"
+        app:iconGravity="textEnd"
+        app:iconTint="?attr/iconTint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toBottomOf="@+id/textView55"
-        app:layout_constraintVertical_bias="0.0">
-
-        <TextView
-            android:id="@+id/textView54"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/opensans_semibold_custom"
-            android:text="SIGN UP"
-            android:textColor="?attr/textColor"
-            android:textSize="17sp" />
-
-        <ImageView
-            android:id="@+id/imageView24"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_arrow_right"
-            app:tint="?attr/iconTint" />
-    </LinearLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.07" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.8" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.93" />
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
