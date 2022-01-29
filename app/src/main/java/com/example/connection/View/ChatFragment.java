@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,11 +40,12 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     private Database database;
     private Button requestButton;
     private ChatController chatController;
-    private TextView totalChat;
+    private TextView totalChat, noChatTextView;
     private Toolbar toolbar;
     private Cursor chatCursor;
     private ChatAdapter chatAdapter;
     private RecyclerView chatRecyclerView;
+    private ImageView noChatImageView;
 
     ActionMode actionMode;
     Menu contextMenu;
@@ -52,6 +54,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     ArrayList<String> multiselectList = new ArrayList<>();
 
     public ChatFragment() {
+
     }
 
     public ChatFragment newInstance(Database database, ChatController chatController, Toolbar toolbar) {
@@ -77,23 +80,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
         setHasOptionsMenu(true);
 
-        /*
-        sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
-        if(sharedPreferences.getString("appTheme", "light").equals("light")){
-            textColor = Color.BLACK;
-        }else{
-            textColor = Color.WHITE;
-        }
-
-        globalButton = view.findViewById(R.id.globalButton);
-        globalButton.setOnClickListener(this);
-
-
-        TextView textView = view.findViewById(R.id.requestTextView);
-        textView.setText("1");
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.left_to_right);
-        textView.startAnimation(animation);
-        */
         requestButton = view.findViewById(R.id.requestButton);
         int totalRequest = database.getAllRequestChat().getCount();
         requestButton.setText(totalRequest <= 1 ? totalRequest + " request" : totalRequest + " requests");//(totalRequest==0 ? "No" : ""+totalRequest);
@@ -104,6 +90,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
             crossToRequestDialog(dialogBuilder, totalRequest);
         });
+
+        noChatImageView = view.findViewById(R.id.noChatImageView);
+        noChatTextView = view.findViewById(R.id.noChatTextView);
+
         setupRecyclerView(view);
         return view;
     }
@@ -113,18 +103,16 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         chatCursor = database.getAllNoRequestChat();
         if (chatCursor != null && chatCursor.getCount() > 0) {
             fillChatArrayList();
+            chatAdapter = new ChatAdapter(getContext(), chatsList, database, chatController);
+            chatRecyclerView.setAdapter(chatAdapter);
+            chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            defineRecyclerViewOnLong(chatRecyclerView);
         } else {
-            //Gestire il caso in cui non ci siano chat
+            chatRecyclerView.setVisibility(View.INVISIBLE);
+            noChatImageView.setVisibility(View.VISIBLE);
+            noChatTextView.setVisibility(View.VISIBLE);
         }
 
-        chatAdapter = new ChatAdapter(getContext(), chatsList, database, chatController);
-        chatRecyclerView.setAdapter(chatAdapter);
-        chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        /*if(cursor.getCount() == 0){
-            TextView textView = view.findViewById(R.id.textViewChat);
-            textView.setVisibility(View.VISIBLE);
-        }*/
-        defineRecyclerViewOnLong(chatRecyclerView);
         MessageController.getIstance().setChatAdapter(chatAdapter);
     }
 
@@ -156,13 +144,28 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     private void setupRequestRecyclerView(AlertDialog view) {
         RecyclerView recyclerView = view.findViewById(R.id.requestRecycleView);
         Cursor cursor = database.getAllRequestChat();
-        RequestAdapter requestAdapter = new RequestAdapter(getContext(), cursor, database, chatController, requestButton);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(requestAdapter);
-        /*if(cursor.getCount() == 0){                                    //THERE IS NOTHING HERE
-            TextView textView = view.findViewById(R.id.textView0Chat);
-            textView.setVisibility(View.VISIBLE);
-        }*/
+        if (cursor != null && cursor.getCount() > 0) {
+            RequestAdapter requestAdapter = new RequestAdapter(getContext(), cursor, database, chatController, requestButton);
+            recyclerView.setAdapter(requestAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        } else {
+            ImageView noRequestImageView = view.findViewById(R.id.noRequestImageView);
+            TextView noRequestTextView = view.findViewById(R.id.noRequestTextView);
+
+            if(recyclerView != null){
+                recyclerView.setVisibility(View.INVISIBLE);
+            }
+
+            if(noRequestImageView != null){
+                noRequestImageView.setVisibility(View.VISIBLE);
+            }
+
+            if(noRequestTextView != null){
+                noRequestTextView.setVisibility(View.VISIBLE);
+            }
+
+        }
+
     }
 
     private void defineRecyclerViewOnLong(RecyclerView recyclerView) {
@@ -215,9 +218,9 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
     public void refreshAdapter(int position, boolean destroyedActionMode) {
         chatAdapter.selectedChat = multiselectList;
-        if(destroyedActionMode){
+        if (destroyedActionMode) {
             chatAdapter.notifyDataSetChanged();
-        }else{
+        } else {
             chatAdapter.notifyItemChanged(position);
         }
         MessageController.getIstance().setChatAdapter(chatAdapter);
@@ -325,7 +328,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
 
-        View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_chats_deleted_snackbar, null);
+        View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
         TextView textView1 = snackView.findViewById(R.id.textView);
         textView1.setText(snackbarText);
         layout.setPadding(5, 5, 5, 5);

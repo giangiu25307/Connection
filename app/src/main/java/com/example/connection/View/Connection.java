@@ -78,6 +78,11 @@ public class Connection extends AppCompatActivity {
         countDownTimer.start();
 
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
+        boolean createMyUser = false;
+        if(createMyUser){
+            database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
+        }
+
         boolean createSample = true;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");

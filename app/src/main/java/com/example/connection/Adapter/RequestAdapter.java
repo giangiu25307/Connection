@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -121,27 +122,38 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         informationTextView.setText(user.getName());
         String temp = user.getAge() + ", " + user.getGender();
         informationTextView2.setText(temp);
-        lastMessageTextView.setText(lastMessage);
-        try {
-            date = format.parse(datetime);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (lastMessage != null) {
+            lastMessageTextView.setText(lastMessage);
+            lastMessageTextView.setTypeface(null, Typeface.NORMAL);
+        }else{
+            lastMessageTextView.setText("No message");
+            lastMessageTextView.setTypeface(null, Typeface.ITALIC);
         }
-        Date date2 = null;
-        try {
-            date2 = format.parse(String.valueOf(LocalDateTime.now()));
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(datetime != null){
+            try {
+                date = format.parse(datetime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Date date2 = null;
+            try {
+                date2 = format.parse(String.valueOf(LocalDateTime.now()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (date.getDay() == date2.getDay() && date.getMonth() == date2.getMonth() && date.getYear() == date2.getYear()) {
+                datetime = String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes();
+            } else {
+                datetime = String.valueOf(date.getDay() < 10 ? '0' : "") + date.getDay() + "/" + (date.getMonth() < 10 ? '0' : "") + date.getMonth() + "/" + String.valueOf(date.getYear()).substring(String.valueOf(date.getYear()).length() - 2, String.valueOf(date.getYear()).length());
+            }
+
+            System.out.println("Orario chat: " + datetime);
+            timeLastMessageTextView.setText(datetime);
+        }else{
+            timeLastMessageTextView.setText("");
         }
 
-        if (date.getDay() == date2.getDay() && date.getMonth() == date2.getMonth() && date.getYear() == date2.getYear()) {
-            datetime = String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes();
-        } else {
-            datetime = String.valueOf(date.getDay() < 10 ? '0' : "") + date.getDay() + "/" + (date.getMonth() < 10 ? '0' : "") + date.getMonth() + "/" + String.valueOf(date.getYear()).substring(String.valueOf(date.getYear()).length() - 2, String.valueOf(date.getYear()).length());
-        }
-
-        System.out.println("Orario chat: " + datetime);
-        timeLastMessageTextView.setText(datetime);
         //lastMessageTimeTextView.setText(timeLastMessage);
     }
 

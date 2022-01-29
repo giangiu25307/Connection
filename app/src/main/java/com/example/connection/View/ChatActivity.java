@@ -28,7 +28,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -401,7 +400,7 @@ public class ChatActivity extends AppCompatActivity {
         TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
 
-        View snackView = ChatActivity.this.getLayoutInflater().inflate(R.layout.lyt_chats_deleted_snackbar, null);
+        View snackView = ChatActivity.this.getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
         TextView textView1 = snackView.findViewById(R.id.textView);
         textView1.setText(snackbarText);
         layout.setPadding(5, 5, 5, 5);
