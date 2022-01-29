@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -62,12 +64,15 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private static final int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic, nextImageView;
     private RelativeLayout next, back;
+    private TextView signupInformationTextView;
+    private String[] signupInformation = {"Account information", "Personal information", "Personal information", "Profile pic"};
     private ArrayList<String> nations = new ArrayList<String>();
     private int yearText = 0, monthText = 0, dayText = 0;
     private String countryCode="";
     private DrawController drawController;
     private boolean isPasswordShown = false;
     private View[] views;
+    private Animation slideUp, slideDown;
 
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
@@ -124,6 +129,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        signupInformationTextView = view.findViewById(R.id.signupInformation);
+
+        slideDown = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_down);
+
+        slideUp = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_up);
 
         ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -191,6 +201,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     if (checker()) {
                         views[currentPage].setBackgroundResource(R.drawable.bg_signup_page_indicator_selected);
                         viewPager.setCurrentItem(currentPage + 1);
+                        animTextView(true, currentPage);
                         if(currentPage > 0){
                             back.setAlpha(1f);
                         }
@@ -230,6 +241,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     viewPager.setCurrentItem(currentPage - 1);
                     views[currentPage].setBackgroundResource(R.drawable.bg_signup_page_indicator_unselected);
                     nextImageView.setImageResource(R.drawable.ic_arrow_right);
+                    animTextView(false, currentPage);
                 }
                 break;
             default:
@@ -467,6 +479,17 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void animTextView(boolean isNext, int currentPage){
+        signupInformationTextView.setText(signupInformation[currentPage]);
+        signupInformationTextView.clearAnimation();
+
+        if(isNext){
+            signupInformationTextView.startAnimation(slideDown);
+        }else{
+            signupInformationTextView.startAnimation(slideUp);
+        }
+    }
+
     public void setDatabase(Database database) {
         this.database = database;
     }
@@ -593,4 +616,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         this.drawController = drawController;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        signupInformationTextView.clearAnimation();
+    }
 }
