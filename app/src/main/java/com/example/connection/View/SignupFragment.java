@@ -456,8 +456,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 return !user.getNumber().equals("") && !user.getCity().equals("") && !user.getCountry().equals("");
             case 3:
                 profilePic = viewPager.findViewById(R.id.profilePic);
-                AppCompatTextView gallery = viewPager.findViewById(R.id.gallery);
-                AppCompatTextView photo = viewPager.findViewById(R.id.takePhoto);
+                Button gallery = viewPager.findViewById(R.id.gallery);
+                Button photo = viewPager.findViewById(R.id.takePhoto);
 
                 gallery.setOnClickListener(new View.OnClickListener() {
                     @Override

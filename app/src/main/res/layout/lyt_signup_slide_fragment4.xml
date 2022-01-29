@@ -24,15 +24,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_person_icon" />
 
-    <TextView
+    <Button
         android:id="@+id/takePhoto"
-        style="@style/inputDataStyle"
+        style="@style/generalButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
+        android:layout_marginBottom="4dp"
+        android:gravity="center"
         android:text="Take photo"
-        android:textAlignment="center"
-        android:textColor="#848486"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -40,15 +39,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
-    <TextView
+    <Button
         android:id="@+id/gallery"
-        style="@style/inputDataStyle"
+        style="@style/generalButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
         android:text="Gallery"
-        android:textAlignment="center"
-        android:textColor="#848486"
         app:layout_constraintBottom_toTopOf="@+id/guideline24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

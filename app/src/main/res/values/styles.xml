@@ -227,7 +227,7 @@
     <style name="showHidePasswordImageStyle">
         <item name="android:background">@drawable/bg_show_hide_password</item>
         <item name="android:tint">?attr/hintColor</item>
-        <item name="android:padding">4dp</item>
+        <item name="android:padding">11dp</item>
     </style>
 
     <style name="permissionButtonStyle" parent="Widget.AppCompat.Button">
