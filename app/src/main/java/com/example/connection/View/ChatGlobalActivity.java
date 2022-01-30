@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,7 +38,8 @@ public class ChatGlobalActivity extends AppCompatActivity {
     private String id;
     private TextView noMessageTextView;
     private EditText message_input;
-    private ImageView sendView, noMessageImageView;
+    private ImageButton sendView;
+    private ImageView noMessageImageView;
     private RecyclerView recyclerView;
     private GlobalMessageAdapter globalMessageAdapter;
     private ConstraintLayout chatBackground;

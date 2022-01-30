@@ -23,20 +23,21 @@
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/opensans_regular"
+            android:fontFamily="@font/opensans_regular_custom"
             android:gravity="left"
             android:paddingEnd="10dp"
             android:text="TextView"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/messageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/opensans_light_custom"
+            android:fontFamily="@font/opensans_regular_custom"
             android:text="TextView"
-            android:textColor="@android:color/white"
-            android:textSize="8sp" />
+            android:textColor="@color/messageSentTime"
+            android:textSize="9sp" />
     </LinearLayout>
 
 </LinearLayout>

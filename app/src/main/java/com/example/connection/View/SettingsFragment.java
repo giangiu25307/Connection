@@ -382,15 +382,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             Connection.lightOrDark = "Light";
             lightButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
         }
-                /*
-                if (currentTheme.equals("light")) {
-                    lightButton.setChecked(true);
-                } else if (currentTheme.equals("dark")) {
-                    darkButton.setChecked(true);
-                } else {
-                    followSystemButton.setChecked(true);
-                }
-                */
 
         lightButton.setOnClickListener(new View.OnClickListener() {
             @Override

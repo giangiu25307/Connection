@@ -27,6 +27,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +60,8 @@ public class ChatActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private ChatController chatController = ChatController.getInstance();
     private EditText message_input;
-    private ImageView sendView, noMessageImageView;
+    private ImageView noMessageImageView;
+    private ImageButton sendView;
     private TextView noMessageTextView;
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;

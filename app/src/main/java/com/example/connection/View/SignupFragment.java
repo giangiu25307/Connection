@@ -29,7 +29,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -62,8 +61,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     private Database database;
     private static final int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
-    private ImageView profilePic, nextImageView;
-    private RelativeLayout next, back;
+    private ImageView profilePic;
+    private ImageButton next, back;
     private TextView signupInformationTextView;
     private String[] signupInformation = {"Account information", "Personal information", "Personal information", "Profile pic"};
     private ArrayList<String> nations = new ArrayList<String>();
@@ -131,9 +130,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
         signupInformationTextView = view.findViewById(R.id.signupInformation);
 
-        slideDown = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_down);
+        slideDown = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_left);
 
-        slideUp = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_up);
+        slideUp = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_right);
 
         ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -183,8 +182,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         next.setOnClickListener(this);
         back.setOnClickListener(this);
 
-        nextImageView = view.findViewById(R.id.imageView27);
-
         views = new View[3];
         views[0] = view.findViewById(R.id.view2);
         views[1] = view.findViewById(R.id.view3);
@@ -202,11 +199,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         views[currentPage].setBackgroundResource(R.drawable.bg_signup_page_indicator_selected);
                         viewPager.setCurrentItem(currentPage + 1);
                         animTextView(true, currentPage);
-                        if(currentPage > 0){
+                        if(currentPage == 1){
                             back.setAlpha(1f);
                         }
                         if(currentPage == 3){
-                            nextImageView.setImageResource(R.drawable.ic_done);
+                            next.setImageResource(R.drawable.ic_done);
                         }
                     } else viewPager.setCurrentItem(currentPage);
                 } else {
@@ -238,9 +235,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.backButton:
                 if (currentPage > 0){
+                    if(currentPage == 3){
+                        next.setImageResource(R.drawable.ic_next_long);
+                    }
                     viewPager.setCurrentItem(currentPage - 1);
                     views[currentPage].setBackgroundResource(R.drawable.bg_signup_page_indicator_unselected);
-                    nextImageView.setImageResource(R.drawable.ic_arrow_right);
                     animTextView(false, currentPage);
                 }
                 break;

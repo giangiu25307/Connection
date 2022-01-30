@@ -58,8 +58,7 @@
         <item name="invertedIconTint">@android:color/black</item>
         <item name="bottomUnselectedColor">@color/darkBottomUnselectedColor</item>
         <item name="topLineBottomSheetColor">@color/darkTopLineBottomSheetColor</item>
-        <item name="toolbarAndSettingsCardIconColor">@color/darkToolbarAndSettingsCardIconColor
-        </item>
+        <item name="toolbarAndSettingsCardIconColor">@color/darkToolbarAndSettingsCardIconColor</item>
         <item name="actionModeBackground">@color/darkBackgroundColor</item>
         <item name="vectorLogin">@drawable/vector_login_dark</item>
 
@@ -229,8 +228,8 @@
 
     <style name="showHidePasswordImageStyle">
         <item name="android:background">@drawable/bg_show_hide_password</item>
-        <item name="android:tint">?attr/hintColor</item>
         <item name="android:padding">11dp</item>
+        <item name="tint">?attr/hintColor</item>
     </style>
 
     <style name="permissionButtonStyle" parent="Widget.AppCompat.Button">

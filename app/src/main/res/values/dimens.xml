@@ -4,7 +4,8 @@
 
     <!-- Corners dimensions -->
     <dimen name="signupButtonCorner">7.5dp</dimen>
-    <dimen name="showHidePasswordButtonCorner">12.5dp</dimen>
+
+    <dimen name="sendButtonCorner">8.75dp</dimen>
 
     <dimen name="nextLoginButtonCorner">10dp</dimen>
     <dimen name="genderFilterCorner">10dp</dimen>
@@ -18,6 +19,7 @@
     <dimen name="cardCorner">12.5dp</dimen>
     <dimen name="inputDataCorner">12.5dp</dimen>
     <dimen name="countrySpinnerCorner">12.5dp</dimen>
+    <dimen name="showHidePasswordButtonCorner">12.5dp</dimen>
 
     <dimen name="dialogCorner">15dp</dimen>
     <dimen name="messageInputCorner">15dp</dimen>
