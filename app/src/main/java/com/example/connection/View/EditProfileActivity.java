@@ -21,7 +21,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -40,7 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Database database;
-    private TextView gallery, takePhoto, textViewGender;
+    private Button gallery, takePhoto, gender;
     private EditText editTextUsername, editTextMail, editTextName, editTextSurname, editTextPhoneNumber, editTextCity, editTextCountry;
     private Button cancelButton, applyButton;
     private CircleImageView profilePic;
@@ -68,14 +67,14 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().setDisplayShowHomeEnabled(true);
         database = new Database(this);
-        editTextCity = findViewById(R.id.editTextCity);
-        editTextUsername = findViewById(R.id.editTextUsername);
-        editTextMail = findViewById(R.id.editTextMail);
-        editTextName = findViewById(R.id.editTextName);
-        editTextSurname = findViewById(R.id.editTextSurname);
-        editTextPhoneNumber = findViewById(R.id.editTextPhonenumber);
-        textViewGender = findViewById(R.id.textViewGender);
-        editTextCountry = findViewById(R.id.editTextCountry);
+        editTextCity = findViewById(R.id.cityEditText);
+        editTextUsername = findViewById(R.id.usernameEditText);
+        editTextMail = findViewById(R.id.mailEditText);
+        editTextName = findViewById(R.id.nameEditText);
+        editTextSurname = findViewById(R.id.surnameEditText);
+        editTextPhoneNumber = findViewById(R.id.phoneNumberEditText);
+        gender = findViewById(R.id.genderButton);
+        editTextCountry = findViewById(R.id.countryEditText);
 
         User user = new User(database.getMyInformation()[0], database.getMyInformation()[1], database.getMyInformation()[2], database.getMyInformation()[3], database.getMyInformation()[4], database.getMyInformation()[5], database.getMyInformation()[6], database.getMyInformation()[7], database.getMyInformation()[8], database.getMyInformation()[9], database.getMyInformation()[10]);
 
@@ -85,7 +84,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         editTextName.setText(user.getName());
         editTextSurname.setText(user.getSurname());
         editTextPhoneNumber.setText(user.getNumber());
-        textViewGender.setText(user.getGender());
+        gender.setText(user.getGender());
         editTextCountry.setText(user.getCountry());
 
         takePhoto = findViewById(R.id.textView13);
@@ -153,7 +152,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.textViewGender:
+            case R.id.genderButton:
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
                 dialogBuilder.setView(R.layout.dialog_gender);
                 final AlertDialog alertDialog = dialogBuilder.create();
@@ -162,21 +161,21 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 male.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        textViewGender.setText("Maschio");
+                        gender.setText("Maschio");
                         alertDialog.dismiss();
                     }
                 });
                 female.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        textViewGender.setText("Femmina");
+                        gender.setText("Femmina");
                         alertDialog.dismiss();
                     }
                 });
                 other.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        textViewGender.setText("Altro");
+                        gender.setText("Altro");
                         alertDialog.dismiss();
                     }
                 });
@@ -249,7 +248,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             database.setMail("0", editTextMail.getText().toString());
             database.setSurname("0", editTextSurname.getText().toString());
             database.setNumber("0", editTextPhoneNumber.getText().toString());
-            database.setGender("0", textViewGender.getText().toString());
+            database.setGender("0", gender.getText().toString());
             database.setCountry("0", editTextCountry.getText().toString());
             finish();
         }

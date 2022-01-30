@@ -38,6 +38,7 @@
             android:text="TextView"
             android:textColor="@color/messageSentTime"
             android:textSize="9sp" />
+
     </LinearLayout>
 
 </LinearLayout>

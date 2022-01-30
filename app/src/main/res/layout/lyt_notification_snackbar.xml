@@ -19,7 +19,7 @@
         android:textColor="?attr/invertedTextColor"
         android:textSize="15sp" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageView12"
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -27,6 +27,11 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:layout_weight="0"
+        android:background="@null"
+        android:contentDescription="Open notification settings"
+        android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_settings_outline"
-        app:tint="?attr/invertedIconTint" />
+        app:tint="?attr/invertedIconTint"
+        tools:ignore="TouchTargetSizeCheck" />
+
 </LinearLayout>

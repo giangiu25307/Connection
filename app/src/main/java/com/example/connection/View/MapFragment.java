@@ -24,6 +24,7 @@ import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -116,8 +117,8 @@ public class MapFragment extends Fragment {
             TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
             textView.setVisibility(View.INVISIBLE);
             View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_notification_snackbar, null);
-            ImageView imageView = snackView.findViewById(R.id.imageView12);
-            imageView.setOnClickListener(new View.OnClickListener() {
+            ImageButton imageButton = snackView.findViewById(R.id.imageView12);
+            imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent settingsIntent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)

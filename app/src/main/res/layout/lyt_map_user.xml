@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/userProfileIcon"
         android:layout_width="75dp"
-        android:layout_height="75dp"/>
+        android:layout_height="75dp" />
 
     <TextView
         android:id="@+id/usernameTextView"
@@ -17,8 +17,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
         android:layout_weight="1"
+        android:fontFamily="@font/opensans_regular_custom"
         android:text="username"
-        android:textColor="?attr/textColor"
-        android:fontFamily="@font/opensans_regular_custom"/>
+        android:textColor="?attr/textColor" />
 
 </LinearLayout>

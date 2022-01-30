@@ -39,6 +39,7 @@
             android:text="TextView"
             android:textColor="?attr/secondaryTextColor"
             android:textSize="9sp" />
+
     </LinearLayout>
 
 </LinearLayout>

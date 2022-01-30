@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Checkable;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -70,7 +71,7 @@ public class XiaomiPermissionFragment extends Fragment {
                 }
             }
         });
-        ImageView next = view.findViewById(R.id.imageView50);
+        ImageButton next = view.findViewById(R.id.imageView50);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

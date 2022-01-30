@@ -53,7 +53,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private ChatController chatController;
     private int theme = R.style.AppTheme;
     private TextView themeOptionDescription, wallpaperOptionDescription;
-    private ImageView editProfileButton;
+    private ImageButton editProfileButton, logoutButton;
     private int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic, profilePics;
     private String previousProfilePic = "";
@@ -132,6 +132,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         editProfileButton = view.findViewById(R.id.editProfileButton);
         editProfileButton.setOnClickListener(this);
 
+        logoutButton = view.findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(this);
+
         themeSettings = view.findViewById(R.id.themeSettings);
         themeSettings.setOnClickListener(this);
         //themeOptionDescription = view.findViewById(R.id.themeOptionDescription);
@@ -173,6 +176,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 //editProfile(dialogBuilder);
                 Intent intent = new Intent(getActivity(), EditProfileActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.logoutButton:
+                openLogoutDialog(dialogBuilder);
                 break;
             case R.id.wallpaperSettings:
                 chooseBackgroundImage();
@@ -340,11 +346,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void showHidePassword(boolean isShown, EditText password, ImageButton showHidePasswordButton){
-        if(!isShown){
+    private void showHidePassword(boolean isShown, EditText password, ImageButton showHidePasswordButton) {
+        if (!isShown) {
             password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             showHidePasswordButton.setImageResource(R.drawable.ic_hide_password);
-        }else{
+        } else {
             password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             showHidePasswordButton.setImageResource(R.drawable.ic_show_password);
         }
@@ -460,7 +466,31 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         transaction.commit();
     }
 
-    private void openInformationDialog(AlertDialog.Builder dialogBuilder){
+    private void openLogoutDialog(AlertDialog.Builder dialogBuilder){
+        dialogBuilder.setView(R.layout.dialog_logout);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+        final Button cancel, logout;
+        cancel = alertDialog.findViewById(R.id.cancelButton);
+        logout = alertDialog.findViewById(R.id.logoutButton);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO Implementare logica per effettuare il logout
+            }
+        });
+
+    }
+
+    private void openInformationDialog(AlertDialog.Builder dialogBuilder) {
         dialogBuilder.setView(R.layout.dialog_information);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
@@ -483,7 +513,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Connection");
-                String shareMessage= "Start using Connection\n";
+                String shareMessage = "Start using Connection\n";
                 shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID;
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                 startActivity(Intent.createChooser(shareIntent, "Share Connection"));
@@ -500,7 +530,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    private void openBugReportDialog(AlertDialog.Builder dialogBuilder){
+    private void openBugReportDialog(AlertDialog.Builder dialogBuilder) {
         dialogBuilder.setView(R.layout.dialog_bug_report);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();

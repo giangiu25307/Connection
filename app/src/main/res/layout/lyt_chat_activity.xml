@@ -228,6 +228,7 @@
         android:layout_width="115dp"
         android:layout_height="115dp"
         android:layout_marginBottom="8dp"
+        android:contentDescription="No messages image alert"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/guideline1"
         app:layout_constraintEnd_toEndOf="parent"

@@ -75,11 +75,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/ButtonOpenAppPermission" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
+        android:background="@null"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@+id/textView27"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -88,10 +90,12 @@
         app:srcCompat="@drawable/ic_help"
         app:tint="?attr/iconTint" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageView50"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:background="@null"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.444"

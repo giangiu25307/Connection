@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -184,7 +185,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
         RequestAdapter.ViewHolder.OnChatClickListener listener;
 
-        private ImageView profilePic, answer, cancel;
+        private ImageView profilePic;
+        private ImageButton answer, cancel;
         private TextView information, information2, lastMessage, timeLastMessage;
         private Cursor chatCursor;
 

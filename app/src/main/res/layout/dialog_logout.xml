@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/layoutBackground"
     android:orientation="vertical"
     android:paddingHorizontal="20dp"
     android:paddingTop="15dp"
@@ -21,24 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/opensans_regular_custom"
-        android:text="Warning text" />
-
-    <EditText
-        android:id="@+id/editTextNewPassword3"
-        style="@style/inputDataStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_weight="1"
-        android:autofillHints="password"
-        android:hint="Enter your password"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
-        app:layout_constraintVertical_bias="0.0" />
+        android:text="Are you sure you want to log out?" />
 
     <include layout="@layout/lyt_cancel_logout_buttons" />
 

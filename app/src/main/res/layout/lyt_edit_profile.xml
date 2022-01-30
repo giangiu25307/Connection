@@ -63,13 +63,13 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_person_icon" />
 
-                <TextView
+                <Button
                     android:id="@+id/textView13"
-                    style="@style/inputDataStyle"
+                    style="@style/generalButton"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Take photo"
-                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -77,13 +77,13 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
 
-                <TextView
+                <Button
                     android:id="@+id/textView14"
-                    style="@style/inputDataStyle"
+                    style="@style/generalButton"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Gallery"
-                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -101,7 +101,7 @@
                 android:text="Username" />
 
             <EditText
-                android:id="@+id/editTextUsername"
+                android:id="@+id/usernameEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
                 android:text="Mail" />
 
             <EditText
-                android:id="@+id/editTextMail"
+                android:id="@+id/mailEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
                 android:text="Name" />
 
             <EditText
-                android:id="@+id/editTextName"
+                android:id="@+id/nameEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -158,7 +158,7 @@
                 android:text="Surname" />
 
             <EditText
-                android:id="@+id/editTextSurname"
+                android:id="@+id/surnameEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                 android:text="Phone number" />
 
             <EditText
-                android:id="@+id/editTextPhonenumber"
+                android:id="@+id/phoneNumberEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -196,7 +196,7 @@
                 android:text="Gender" />
 
             <Button
-                android:id="@+id/textViewGender"
+                android:id="@+id/genderButton"
                 style="@style/generalButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -215,7 +215,7 @@
                 android:text="City" />
 
             <EditText
-                android:id="@+id/editTextCity"
+                android:id="@+id/cityEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -234,7 +234,7 @@
                 android:text="Country" />
 
             <EditText
-                android:id="@+id/editTextCountry"
+                android:id="@+id/countryEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -253,7 +253,7 @@
                 android:text="Telegram username" />
 
             <EditText
-                android:id="@+id/editTextTelegramUsername"
+                android:id="@+id/telegramUsernameEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
