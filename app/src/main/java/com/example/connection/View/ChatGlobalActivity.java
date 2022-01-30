@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -34,8 +35,9 @@ public class ChatGlobalActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private ChatController chatController = ChatController.getInstance();
     private String id;
+    private TextView noMessageTextView;
     private EditText message_input;
-    private ImageView sendView;
+    private ImageView sendView, noMessageImageView;
     private RecyclerView recyclerView;
     private GlobalMessageAdapter globalMessageAdapter;
     private ConstraintLayout chatBackground;
@@ -85,6 +87,8 @@ public class ChatGlobalActivity extends AppCompatActivity {
             }
         });
 
+        noMessageImageView = findViewById(R.id.noMessageImageView);
+        noMessageTextView = findViewById(R.id.noMessageTextView);
         setupRecyclerView();
 
         sendView.setOnClickListener(view -> {
@@ -134,29 +138,36 @@ public class ChatGlobalActivity extends AppCompatActivity {
         Cursor messageCursor = getAllMessage();
         recyclerView = findViewById(R.id.messageRecyclerView);
         setBackgroundImage();
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setLayoutManager(linearLayoutManager);
-        globalMessageAdapter = new GlobalMessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager);
-        recyclerView.setAdapter(globalMessageAdapter);
-        recyclerView.scrollToPosition(messageCursor.getCount() - 1);
-        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v,
-                                       int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                //int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
-                int count = recyclerView.getAdapter().getItemCount() - 1;
-                if (lastPosition == count) {
-                    try {
-                        recyclerView.smoothScrollToPosition(lastPosition);
-                        lastPosition = 0;
-                    }catch (IllegalArgumentException e){
-                        System.out.println(e);
-                    }
+        if(messageCursor != null && messageCursor.getCount() > 0){
+            globalMessageAdapter = new GlobalMessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager);
+            recyclerView.setAdapter(globalMessageAdapter);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.scrollToPosition(messageCursor.getCount() - 1);
+            recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v,
+                                           int left, int top, int right, int bottom,
+                                           int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    //int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+                    int count = recyclerView.getAdapter().getItemCount() - 1;
+                    if (lastPosition == count) {
+                        try {
+                            recyclerView.smoothScrollToPosition(lastPosition);
+                            lastPosition = 0;
+                        }catch (IllegalArgumentException e){
+                            System.out.println(e);
+                        }
 
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            recyclerView.setVisibility(View.INVISIBLE);
+            noMessageImageView.setVisibility(View.VISIBLE);
+            noMessageTextView.setVisibility(View.VISIBLE);
+        }
+
+
     }
 
     private Cursor getAllMessage(){

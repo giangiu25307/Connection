@@ -59,7 +59,8 @@ public class ChatActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private ChatController chatController = ChatController.getInstance();
     private EditText message_input;
-    private ImageView sendView;
+    private ImageView sendView, noMessageImageView;
+    private TextView noMessageTextView;
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;
     private ConstraintLayout chatBackground;
@@ -106,7 +107,7 @@ public class ChatActivity extends AppCompatActivity {
         });
         ImageView profilePicImageView = findViewById(R.id.profilePic);
         File profilePic = new File(user.getProfilePic());
-        if(profilePic.exists()){
+        if (profilePic.exists()) {
             Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
             profilePicImageView.setImageBitmap(myBitmap);
         }
@@ -148,6 +149,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        noMessageImageView = findViewById(R.id.noMessageImageView);
+        noMessageTextView = findViewById(R.id.noMessageTextView);
         setupRecyclerView();
 
         sendView.setOnClickListener(new View.OnClickListener() {
@@ -197,37 +200,38 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
+        recyclerView = findViewById(R.id.messageRecyclerView);
         Cursor messageCursor = Connection.database.getAllMsg(user.getIdUser());
+        setBackgroundImage();
         if (messageCursor != null && messageCursor.getCount() > 0) {
             fillMessagesArrayList(messageCursor);
-        } else {
-            //TODO Gestire il caso in cui non ci siano messaggi
-        }
-        recyclerView = findViewById(R.id.messageRecyclerView);
-        setBackgroundImage();
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setLayoutManager(linearLayoutManager);
-        messageAdapter = new MessageAdapter(this, Connection.database, user.getIdUser(), messageList, linearLayoutManager);
-        recyclerView.setAdapter(messageAdapter);
-        recyclerView.scrollToPosition(messageCursor.getCount() - 1);
-        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v,
-                                       int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                //int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
-                int count = recyclerView.getAdapter().getItemCount() - 1;
-                if (lastPosition == count) {
-                    try {
-                        recyclerView.smoothScrollToPosition(lastPosition);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Errore nella chat solitamente nulla");
+            messageAdapter = new MessageAdapter(this, Connection.database, user.getIdUser(), messageList, linearLayoutManager);
+            recyclerView.setAdapter(messageAdapter);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.scrollToPosition(messageCursor.getCount() - 1);
+            recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v,
+                                           int left, int top, int right, int bottom,
+                                           int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    //int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+                    int count = recyclerView.getAdapter().getItemCount() - 1;
+                    if (lastPosition == count) {
+                        try {
+                            recyclerView.smoothScrollToPosition(lastPosition);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Errore nella chat solitamente nulla");
+                        }
+                        lastPosition = 0;
                     }
-                    lastPosition = 0;
                 }
-            }
-        });
-        defineRecyclerViewOnLong(recyclerView);
+            });
+            defineRecyclerViewOnLong(recyclerView);
+        } else {
+            recyclerView.setVisibility(View.INVISIBLE);
+            noMessageImageView.setVisibility(View.VISIBLE);
+            noMessageTextView.setVisibility(View.VISIBLE);
+        }
         //Esempio di come aggiungere un messaggio a runtime
         //database.addMsg("Messaggio 7", "0", idChat);
         //messageAdapter.addMessage(new Message(database.getLastMessageId(), "0", "Messaggio 7", "2021-12-10T23:33:34.939"));
@@ -335,8 +339,8 @@ public class ChatActivity extends AppCompatActivity {
                 case R.id.copyIcon:
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                     String id = multiselectList.get(0);
-                    for(Message message : messageList) {
-                        if(message.getIdMessage().equals(id)){
+                    for (Message message : messageList) {
+                        if (message.getIdMessage().equals(id)) {
                             ClipData clip = ClipData.newPlainText("message", message.getMessage());
                             clipboard.setPrimaryClip(clip);
                         }
@@ -420,7 +424,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 ImageView profilePicImageView = findViewById(R.id.profilePicChatInformation);
                 File profilePic = new File(user.getProfilePic());
-                if(profilePic.exists()){
+                if (profilePic.exists()) {
                     Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
                     profilePicImageView.setImageBitmap(myBitmap);
                 }

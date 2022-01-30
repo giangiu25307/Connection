@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/opensans_regular_custom"
-        android:text="There are no chats here"
+        android:text="There are no requests here"
         android:textColor="?attr/secondaryTextColor"
         android:textSize="16sp"
         android:visibility="invisible"
