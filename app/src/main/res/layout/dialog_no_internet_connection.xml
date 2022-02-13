@@ -11,12 +11,10 @@
 
     <TextView
         android:id="@+id/textView25"
+        style="@style/dialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/opensans_semibold_custom"
-        android:text="No internet connection"
-        android:textColor="?attr/textColor"
-        android:textSize="21sp" />
+        android:text="No internet connection" />
 
     <ImageView
         android:id="@+id/imageView26"
@@ -30,22 +28,18 @@
         android:id="@+id/textView28"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/opensans_regular"
+        android:fontFamily="@font/opensans_regular_custom"
         android:gravity="center"
         android:text="Connect to the internet and try again"
         android:textColor="?attr/textColor" />
 
-    <TextView
+    <Button
         android:id="@+id/textView57"
+        style="@style/cancelButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/bg_ok_button_no_internet_connection"
-        android:fontFamily="@font/opensans_semibold"
-        android:gravity="center"
-        android:paddingVertical="12.5dp"
+        android:layout_marginTop="32dp"
         android:text="Ok"
-        android:textColor="@color/secondaryColor"
         android:textSize="16sp" />
 
 </LinearLayout>

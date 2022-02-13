@@ -14,16 +14,21 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,7 +36,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -58,11 +62,16 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private Database database;
     private static final int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic;
-    private RelativeLayout next, back;
+    private ImageButton next, back;
+    private TextView signupInformationTextView;
+    private String[] signupInformation = {"Account information", "Personal information", "Personal information", "Profile pic"};
     private ArrayList<String> nations = new ArrayList<String>();
     private int yearText = 0, monthText = 0, dayText = 0;
     private String countryCode="";
     private DrawController drawController;
+    private boolean isPasswordShown;
+    private View[] views;
+    private Animation slideUp, slideDown;
 
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
@@ -109,7 +118,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         viewPager.setAdapter(sliderAdapter);
         next = view.findViewById(R.id.nextButton);
         back = view.findViewById(R.id.backButton);
-        LinearLayout login = view.findViewById(R.id.linearLayoutLoginBackButton);
+        back.setAlpha(0.25f);
+        Button login = view.findViewById(R.id.loginBackButton);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,6 +128,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        signupInformationTextView = view.findViewById(R.id.signupInformation);
+
+        slideDown = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_left);
+
+        slideUp = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_right);
 
         ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -128,17 +143,49 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onPageSelected(int position) {
                 currentPage = position;
+                System.out.println("Pagina: " + position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 checker();
             }
+
+
         };
         viewPager.setOnPageChangeListener(viewListener);
+        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                EditText password = viewPager.findViewById(R.id.password);
+                ImageButton showHidePassword = viewPager.findViewById(R.id.showHidePassword);
+                showHidePassword.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(!isPasswordShown){
+                            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                            showHidePassword.setImageResource(R.drawable.ic_hide_password);
+                            password.setSelection(password.getText().length());
+                            isPasswordShown = true;
+                        }else{
+                            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                            showHidePassword.setImageResource(R.drawable.ic_show_password);
+                            password.setSelection(password.getText().length());
+                            isPasswordShown = false;
+                        }
+                    }
+                });
+            }
+        });
 
         next.setOnClickListener(this);
         back.setOnClickListener(this);
+
+        views = new View[3];
+        views[0] = view.findViewById(R.id.view2);
+        views[1] = view.findViewById(R.id.view3);
+        views[2] = view.findViewById(R.id.view4);
 
         return view;
     }
@@ -149,7 +196,15 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             case R.id.nextButton:
                 if (currentPage < 3) {
                     if (checker()) {
+                        views[currentPage].setBackgroundResource(R.drawable.bg_signup_page_indicator_selected);
                         viewPager.setCurrentItem(currentPage + 1);
+                        animTextView(true, currentPage);
+                        if(currentPage == 1){
+                            back.setAlpha(1f);
+                        }
+                        if(currentPage == 3){
+                            next.setImageResource(R.drawable.ic_done);
+                        }
                     } else viewPager.setCurrentItem(currentPage);
                 } else {
                     //send user info to server
@@ -179,7 +234,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.backButton:
-                if (currentPage > 0) viewPager.setCurrentItem(currentPage - 1);
+                if (currentPage > 0){
+                    if(currentPage == 3){
+                        next.setImageResource(R.drawable.ic_next_long);
+                    }
+                    viewPager.setCurrentItem(currentPage - 1);
+                    views[currentPage].setBackgroundResource(R.drawable.bg_signup_page_indicator_unselected);
+                    animTextView(false, currentPage);
+                }
                 break;
             default:
                 break;
@@ -200,6 +262,26 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 EditText usernameLabel = viewPager.findViewById(R.id.username);
                 EditText email = viewPager.findViewById(R.id.email);
                 EditText password = viewPager.findViewById(R.id.password);
+                ImageView showHidePassword = viewPager.findViewById(R.id.showHidePassword);
+                TextView passwordHintsTitle = viewPager.findViewById(R.id.passwordHintsTitle);
+                TextView passwordHints = viewPager.findViewById(R.id.passwordHints);
+                back.setAlpha(0.3f);
+                showHidePassword.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        System.out.println("Cambio visibilità password");
+                        if(!isPasswordShown){
+                            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                            showHidePassword.setImageResource(R.drawable.ic_hide_password);
+                            isPasswordShown = true;
+                        }else{
+                            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                            showHidePassword.setImageResource(R.drawable.ic_show_password);
+                            isPasswordShown = false;
+                        }
+                        password.setSelection(password.getText().length());
+                    }
+                });
                 if (!user.getUsername().equals("")) usernameLabel.setText(user.getUsername());
                 if (!user.getMail().equals("")) email.setText(user.getMail());
                 if (!user.getPassword().equals("")) password.setText(user.getPassword());
@@ -223,16 +305,20 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 if (!regexPassword.matcher(pass).matches()) {
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
+                    passwordHintsTitle.setVisibility(View.VISIBLE);
+                    passwordHints.setVisibility(View.VISIBLE);
                 } else {
                     user.setPassword(pass);
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
+                    passwordHintsTitle.setVisibility(View.INVISIBLE);
+                    passwordHints.setVisibility(View.INVISIBLE);
                 }
                 return !user.getMail().equals("") && !user.getPassword().equals("") && !user.getUsername().equals("");
             case 1:
                 final DatePickerDialog datePickerDialog = new DatePickerDialog(getContext());
                 EditText firstNameLabel = viewPager.findViewById(R.id.firstname), surnameLabel = viewPager.findViewById(R.id.surname);
-                TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
+                TextView gender = viewPager.findViewById(R.id.genderSignUpButton);
                 gender.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -240,12 +326,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         dialogBuilder.setView(R.layout.dialog_gender);
                         final AlertDialog alertDialog = dialogBuilder.create();
                         alertDialog.show();
-                        TextView male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
-                        final TextView gender = viewPager.findViewById(R.id.genderSignUpTextView);
+                        final Button gender = viewPager.findViewById(R.id.genderSignUpButton);
+                        Button male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
                         male.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                gender.setText("Maschio");
+                                gender.setText("Male");
                                 user.setGender("Maschio");
                                 alertDialog.dismiss();
                             }
@@ -253,7 +339,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         female.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                gender.setText("Femmina");
+                                gender.setText("Female");
                                 user.setGender("Femmina");
                                 alertDialog.dismiss();
                             }
@@ -261,14 +347,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         other.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                gender.setText("Altro");
+                                gender.setText("Other");
                                 user.setGender("Altro");
                                 alertDialog.dismiss();
                             }
                         });
                     }
                 });
-                final AppCompatTextView dateOfBirth = viewPager.findViewById(R.id.dateOfBirthSignUpTextView);
+                final Button dateOfBirth = viewPager.findViewById(R.id.dateOfBirthSignUpButton);
                 if (!user.getName().equals("")) firstNameLabel.setText(user.getName());
                 if (!user.getSurname().equals("")) surnameLabel.setText(user.getSurname());
                 if (!user.getGender().equals("")) gender.setText(user.getGender());
@@ -368,8 +454,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 return !user.getNumber().equals("") && !user.getCity().equals("") && !user.getCountry().equals("");
             case 3:
                 profilePic = viewPager.findViewById(R.id.profilePic);
-                AppCompatTextView gallery = viewPager.findViewById(R.id.gallery);
-                AppCompatTextView photo = viewPager.findViewById(R.id.takePhoto);
+                Button gallery = viewPager.findViewById(R.id.gallery);
+                Button photo = viewPager.findViewById(R.id.takePhoto);
 
                 gallery.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -388,6 +474,17 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 return !user.getProfilePic().equals("");
+        }
+    }
+
+    private void animTextView(boolean isNext, int currentPage){
+        signupInformationTextView.setText(signupInformation[currentPage]);
+        signupInformationTextView.clearAnimation();
+
+        if(isNext){
+            signupInformationTextView.startAnimation(slideDown);
+        }else{
+            signupInformationTextView.startAnimation(slideUp);
         }
     }
 
@@ -517,4 +614,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         this.drawController = drawController;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        signupInformationTextView.clearAnimation();
+    }
 }

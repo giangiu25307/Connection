@@ -10,28 +10,36 @@
         android:layout_height="match_parent"
         android:background="?attr/layoutBackground">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
         <Button
             android:id="@+id/requestButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_request_counter_block_button"
-            app:backgroundTint="@null"
-            android:fontFamily="@font/opensans_regular"
+            android:background="@drawable/bg_request_counter_button"
+            android:fontFamily="@font/opensans_regular_custom"
             android:letterSpacing="0"
             android:minHeight="0dp"
             android:paddingHorizontal="12.5dp"
-            android:paddingVertical="0dp"
+            android:paddingVertical="2dp"
             android:text="Request"
-            android:textColor="@color/secondaryColor"
             android:textAllCaps="false"
+            android:textColor="@color/secondaryColor"
+            app:backgroundTint="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chatRecyclerView"
@@ -44,6 +52,36 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/requestButton" />
+
+        <ImageView
+            android:id="@+id/noChatImageView"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="No chats image alert"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/guideline1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/empty" />
+
+        <TextView
+            android:id="@+id/noChatTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/opensans_regular_custom"
+            android:text="There are no chats here"
+            android:textColor="?attr/secondaryTextColor"
+            android:textSize="17sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline1"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

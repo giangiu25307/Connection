@@ -7,6 +7,7 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
+import com.example.connection.Model.LastMessage;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
@@ -193,8 +194,8 @@ public class TcpServer {
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
                         String datetime = "";
                         try {
-                            Cursor dateDB = database.getLastMessageChat(splittedR[1]);
-                            datetime = dateDB.getString(dateDB.getColumnIndex(Task.TaskEntry.DATETIME));
+                            LastMessage lastMessage = database.getLastMessageChat(splittedR[1]);
+                            datetime = lastMessage.getDateTime();
                         } catch (IndexOutOfBoundsException e) {
                             datetime = String.valueOf(LocalDateTime.now());
                         }

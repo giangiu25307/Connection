@@ -9,6 +9,7 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
+import com.example.connection.Model.LastMessage;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.ChatActivity;
 import com.example.connection.View.Connection;
@@ -177,8 +178,8 @@ public class TcpClient {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         String datetime = "";
         try {
-            Cursor dateDB = database.getLastMessageChat(id);
-            datetime = dateDB.getString(dateDB.getColumnIndex(Task.TaskEntry.DATETIME));
+            LastMessage lastMessage = database.getLastMessageChat(id);
+            datetime = lastMessage.getDateTime();
         } catch (IndexOutOfBoundsException e) {
             datetime = String.valueOf(LocalDateTime.now());
         }

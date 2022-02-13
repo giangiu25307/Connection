@@ -22,7 +22,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -115,8 +117,8 @@ public class MapFragment extends Fragment {
             TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
             textView.setVisibility(View.INVISIBLE);
             View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_notification_snackbar, null);
-            ImageView imageView = snackView.findViewById(R.id.imageView12);
-            imageView.setOnClickListener(new View.OnClickListener() {
+            ImageButton imageButton = snackView.findViewById(R.id.imageView12);
+            imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent settingsIntent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
@@ -158,10 +160,10 @@ public class MapFragment extends Fragment {
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
 
-                final TextView cancelTextView, applyTextView, male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
+                final Button male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other), cancelButton, applyButton;
                 final EditText minAge = alertDialog.findViewById(R.id.editTextMinAge), maxAge = alertDialog.findViewById(R.id.editTextMaxAge);
-                cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-                applyTextView = alertDialog.findViewById(R.id.applyTextView);
+                cancelButton = alertDialog.findViewById(R.id.cancelTextView);
+                applyButton = alertDialog.findViewById(R.id.applyTextView);
 
                 //Gender
                 male.setOnClickListener(new View.OnClickListener() {
@@ -208,14 +210,14 @@ public class MapFragment extends Fragment {
                     }
                 });
 
-                cancelTextView.setOnClickListener(new View.OnClickListener() {
+                cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         alertDialog.dismiss();
                     }
                 });
 
-                applyTextView.setOnClickListener(new View.OnClickListener() {
+                applyButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Connection.minAge = Integer.parseInt(minAge.getText().toString());

@@ -13,11 +13,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,7 +26,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.connection.Adapter.MessageAdapter;
+import com.example.connection.Adapter.GlobalMessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.MessageController;
 import com.example.connection.R;
@@ -36,10 +36,12 @@ public class ChatGlobalActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private ChatController chatController = ChatController.getInstance();
     private String id;
+    private TextView noMessageTextView;
     private EditText message_input;
-    private ImageView sendView;
+    private ImageButton sendView;
+    private ImageView noMessageImageView;
     private RecyclerView recyclerView;
-    private MessageAdapter chatAdapter;
+    private GlobalMessageAdapter globalMessageAdapter;
     private ConstraintLayout chatBackground;
     private int lastPosition;
     private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -87,11 +89,13 @@ public class ChatGlobalActivity extends AppCompatActivity {
             }
         });
 
+        noMessageImageView = findViewById(R.id.noMessageImageView);
+        noMessageTextView = findViewById(R.id.noMessageTextView);
         setupRecyclerView();
 
         sendView.setOnClickListener(view -> {
             chatController.sendGlobalMsg(message_input.getText().toString());
-            MessageController.getIstance().setMessageAdapter(chatAdapter);
+            MessageController.getIstance().setGlobalMessageAdapter(globalMessageAdapter);
         });
 
         //Database database = (Database) getIntent().getParcelableExtra("database");
@@ -136,29 +140,36 @@ public class ChatGlobalActivity extends AppCompatActivity {
         Cursor messageCursor = getAllMessage();
         recyclerView = findViewById(R.id.messageRecyclerView);
         setBackgroundImage();
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setLayoutManager(linearLayoutManager);
-        chatAdapter = new MessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager);
-        recyclerView.setAdapter(chatAdapter);
-        recyclerView.scrollToPosition(messageCursor.getCount() - 1);
-        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v,
-                                       int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                //int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
-                int count = recyclerView.getAdapter().getItemCount() - 1;
-                if (lastPosition == count) {
-                    try {
-                        recyclerView.smoothScrollToPosition(lastPosition);
-                        lastPosition = 0;
-                    }catch (IllegalArgumentException e){
-                        System.out.println(e);
-                    }
+        if(messageCursor != null && messageCursor.getCount() > 0){
+            globalMessageAdapter = new GlobalMessageAdapter(this, Connection.database, id, messageCursor, linearLayoutManager);
+            recyclerView.setAdapter(globalMessageAdapter);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.scrollToPosition(messageCursor.getCount() - 1);
+            recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v,
+                                           int left, int top, int right, int bottom,
+                                           int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    //int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+                    int count = recyclerView.getAdapter().getItemCount() - 1;
+                    if (lastPosition == count) {
+                        try {
+                            recyclerView.smoothScrollToPosition(lastPosition);
+                            lastPosition = 0;
+                        }catch (IllegalArgumentException e){
+                            System.out.println(e);
+                        }
 
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            recyclerView.setVisibility(View.INVISIBLE);
+            noMessageImageView.setVisibility(View.VISIBLE);
+            noMessageTextView.setVisibility(View.VISIBLE);
+        }
+
+
     }
 
     private Cursor getAllMessage(){

@@ -2,20 +2,28 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lyt_chat_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_send_image_message_separator"
     android:clickable="false"
     tools:context=".View.ChatActivity">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/layoutBackground"
         android:elevation="1dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        android:background="?attr/layoutBackground"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -43,31 +51,39 @@
                 app:srcCompat="@drawable/ic_back"
                 app:tint="?attr/textColor" />
 
-            <ImageView
-                android:id="@+id/imageView3"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profilePic"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_profile_pic_image_view_secondary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/backImageView"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_person_icon" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/nameUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                style="@style/screenTitle"
+                android:ellipsize="end"
+                android:fontFamily="@font/opensans_semibold_custom"
+                android:maxLines="1"
                 android:text="TextView"
+                android:textColor="?attr/textColor"
+                android:textSize="24sp"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/profilePic"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -125,34 +141,51 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/sendImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/ic_wallpaper"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="12dp"
+                android:background="@null"
+                android:contentDescription="Send image"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="@+id/sendView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="?attr/toolbarAndSettingsCardIconColor" />
+                app:layout_constraintTop_toTopOf="@+id/sendView"
+                app:srcCompat="@drawable/ic_wallpaper"
+                app:tint="?attr/iconTint"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_send_image_message_separator"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/sendImage"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
                 android:id="@+id/message_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
+                android:layout_marginStart="8dp"
                 android:background="@color/transparent"
                 android:elevation="2.5dp"
-                android:fadeScrollbars="false"
                 android:gravity="center_vertical"
                 android:hint="Scrivi un messaggio"
                 android:inputType="textMultiLine|textLongMessage|textCapSentences"
                 android:maxLines="4"
                 android:minLines="1"
-                android:padding="5dp"
+                android:paddingVertical="5dp"
+                android:paddingEnd="8dp"
                 android:scrollbars="vertical"
                 android:textColor="?attr/textColor"
                 android:textColorHint="?attr/hintColor"
@@ -160,30 +193,64 @@
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/sendView"
-                app:layout_constraintStart_toEndOf="@+id/sendImage"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/view"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TouchTargetSizeCheck" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/sendView"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="12dp"
-                android:layout_weight="1"
                 android:alpha="0.5"
+                android:background="@drawable/bg_send_button"
                 android:clickable="false"
-                android:src="@drawable/ic_send2"
+                android:contentDescription="Send message"
+                android:padding="4dp"
+                android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="1.0"
-                app:tint="@color/secondaryColor" />
+                app:srcCompat="@drawable/ic_send"
+                app:tint="?attr/invertedIconTint" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/noMessageImageView"
+        android:layout_width="115dp"
+        android:layout_height="115dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="No messages image alert"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/guideline1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/empty" />
+
+    <TextView
+        android:id="@+id/noMessageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/opensans_regular_custom"
+        android:text="There are no messages here"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="17sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline1"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
