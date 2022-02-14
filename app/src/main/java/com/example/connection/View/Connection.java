@@ -191,7 +191,6 @@ public class Connection extends AppCompatActivity {
         foregroundService = new MyForegroundService();
         Intent notificationIntent = new Intent(this, foregroundService.getClass());
         this.startForegroundService(notificationIntent);
-        MessageController.newInstance(this);
 
     }
 

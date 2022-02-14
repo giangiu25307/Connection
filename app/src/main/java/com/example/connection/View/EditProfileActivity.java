@@ -161,21 +161,21 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 male.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        gender.setText("Maschio");
+                        gender.setText("Male");
                         alertDialog.dismiss();
                     }
                 });
                 female.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        gender.setText("Femmina");
+                        gender.setText("Female");
                         alertDialog.dismiss();
                     }
                 });
                 other.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        gender.setText("Altro");
+                        gender.setText("Other");
                         alertDialog.dismiss();
                     }
                 });

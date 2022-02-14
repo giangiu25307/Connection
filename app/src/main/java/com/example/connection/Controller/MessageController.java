@@ -15,6 +15,7 @@ import androidx.core.app.RemoteInput;
 import com.example.connection.Adapter.ChatAdapter;
 import com.example.connection.Adapter.GlobalMessageAdapter;
 import com.example.connection.Adapter.MessageAdapter;
+import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.TCP_Connection.TcpClient;
@@ -33,18 +34,23 @@ public class MessageController extends BroadcastReceiver {
     private HashMap<String, NotificationCompat.MessagingStyle> messagingStyleHashMap;
     private HashMap<String, Integer> pendingIds;
     private int counter = 2;
-    private TcpClient tcpClient;
+    private Database database;
+    private ChatController chatController;
 
     // Key for the string that's delivered in the action's intent.
     private static final String KEY_TEXT_REPLY = "key_text_reply";
 
-    public static MessageController newInstance(Context context) {
+    public static MessageController newInstance(Context context, Database database, ChatController chatController) {
         messageController = new MessageController();
         messageController.setContext(context);
         messageController.setMessagingStyleHashMap();
         messageController.setPendingIds();
+        messageController.setDatabase(database);
+        messageController.setChatController(chatController);
         return messageController;
     }
+
+    public void setDatabase(Database database){ this.database = database; }
 
     public static MessageController getIstance() {
         return messageController;
@@ -86,12 +92,8 @@ public class MessageController extends BroadcastReceiver {
         this.messagingStyleHashMap = new HashMap<>();
     }
 
-    public TcpClient getTcpClient() {
-        return tcpClient;
-    }
-
-    public void setTcpClient(TcpClient tcpClient) {
-        this.tcpClient = tcpClient;
+    public void setChatController(ChatController chatController) {
+        this.chatController = chatController;
     }
 
     private void checkNotificationChannelEnabled() {
@@ -173,7 +175,6 @@ public class MessageController extends BroadcastReceiver {
                                 .setGroupSummary(true)
                                 .setAutoCancel(true)
                                 .build();
-                        System.out.println(messageController.getPendingIds().get(intent.getStringExtra("idChat")));
                         notificationManager.notify(messageController.getPendingIds().get(intent.getStringExtra("idChat")), notificationBuilder.build());
                         notificationManager.notify(0, summaryNotification);
                         if (Connection.fragmentName.equals("chat")) {
@@ -190,11 +191,12 @@ public class MessageController extends BroadcastReceiver {
                     }
                     break;
                 case "reply":
+                    messageController.database.setReadMessage(intent.getStringExtra("idChat"), database.getLastMessageId(intent.getStringExtra("idChat")));
                     Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
                     if (remoteInput != null) {
                         //messageController.getTcpClient().sendMessage(String.valueOf(remoteInput.getCharSequence(KEY_TEXT_REPLY)),intent.getStringExtra("idChat"));
                         String reply = String.valueOf(remoteInput.getCharSequence(KEY_TEXT_REPLY));
-                        System.out.println(reply);
+                        messageController.chatController.sendTCPMsg(reply,intent.getStringExtra("idChat"));
                         NotificationCompat.MessagingStyle messagingStyle = messageController.getMessagingStyleHashMap().get(intent.getStringExtra("idChat"));
                         messagingStyle.addMessage(reply, System.currentTimeMillis(), (Person) null);
                         messageController.getMessagingStyleHashMap().put(intent.getStringExtra("idChat"), messagingStyle);

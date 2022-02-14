@@ -269,7 +269,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 showHidePassword.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        System.out.println("Cambio visibilità password");
                         if(!isPasswordShown){
                             password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                             showHidePassword.setImageResource(R.drawable.ic_hide_password);
@@ -287,6 +286,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 if (!user.getPassword().equals("")) password.setText(user.getPassword());
                 String mail = email.getText().toString().trim(), pass = password.getText().toString().trim(), username = usernameLabel.getText().toString().trim();
                 if (!regexName.matcher(username).matches()) {
+                    user.setUsername("");
                     usernameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
@@ -295,6 +295,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     viewPager.setPagingEnabled(true);
                 }
                 if (!Patterns.EMAIL_ADDRESS.matcher(mail).matches()) {
+                    user.setMail("");
                     email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
@@ -303,6 +304,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     viewPager.setPagingEnabled(true);
                 }
                 if (!regexPassword.matcher(pass).matches()) {
+                    user.setPassword("");
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                     passwordHintsTitle.setVisibility(View.VISIBLE);
@@ -332,7 +334,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(View v) {
                                 gender.setText("Male");
-                                user.setGender("Maschio");
+                                user.setGender("Male");
                                 alertDialog.dismiss();
                             }
                         });
@@ -340,7 +342,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(View v) {
                                 gender.setText("Female");
-                                user.setGender("Femmina");
+                                user.setGender("Female");
                                 alertDialog.dismiss();
                             }
                         });
@@ -348,7 +350,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(View v) {
                                 gender.setText("Other");
-                                user.setGender("Altro");
+                                user.setGender("Other");
                                 alertDialog.dismiss();
                             }
                         });
@@ -373,6 +375,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                 String birth = yearText != 0 ? (dayText < 10 ? "0" + dayText : dayText) + "-" + (monthText < 10 ? "0" + monthText : monthText) + "-" + yearText : "";
                                 dateOfBirth.setText(birth);
                                 if (birth.equals("")) {
+                                    user.setBirth("");
                                     dateOfBirth.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                                     viewPager.setPagingEnabled(false);
                                 } else {
@@ -385,6 +388,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 if (gender.getText().toString().trim().isEmpty()) {
+                    user.setGender("");
                     gender.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
@@ -392,6 +396,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     viewPager.setPagingEnabled(true);
                 }
                 if (!regexName.matcher(firstname).matches()) {
+                    user.setName("");
                     firstNameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
@@ -400,6 +405,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     viewPager.setPagingEnabled(true);
                 }
                 if (!regexName.matcher(surname).matches()) {
+                    user.setSurname("");
                     surnameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
@@ -407,15 +413,15 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     surnameLabel.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
                     viewPager.setPagingEnabled(true);
                 }
-                return !user.getName().equals("") && !user.getSurname().equals("") && !user.getBirth().equals("");
+                return !user.getName().equals("") && !user.getSurname().equals("") && !user.getBirth().equals("") && !user.getGender().equals("");
             case 2:
                 final TextView telephone = viewPager.findViewById(R.id.telephone), cities = viewPager.findViewById(R.id.city), numberCode = viewPager.findViewById(R.id.numberCode);
                 Spinner country = viewPager.findViewById(R.id.country);
-
+                if(!user.getNumber().equals(""))telephone.setText(user.getNumber());
                 String number = telephone.getText().toString().trim();
                 String city = cities.getText().toString().trim();
                 if (!regexPhoneNumber.matcher(number).matches()) {
-                    System.out.println("Inserire un numero di telefono valido");
+                    user.setNumber("");
                     telephone.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
@@ -439,11 +445,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
+                        user.setCountry("");
                         viewPager.setPagingEnabled(false);
                     }
                 });
                 if (!regexName.matcher(city).matches()) {
-                    System.out.println("Inserire una città valida");
+                    user.setCity("");
                     cities.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     viewPager.setPagingEnabled(false);
                 } else {
@@ -461,16 +468,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         chooseProfilePic();
-                        //if (!user.getProfilePic().equals("")) next.setText("Confirm");
-                        //else next.setText("Next");
                     }
                 });
                 photo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         captureImage();
-                        //if (!user.getProfilePic().equals("")) next.setText("Confirm");
-                        //else next.setText("Next");
                     }
                 });
                 return !user.getProfilePic().equals("");

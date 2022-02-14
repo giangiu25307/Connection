@@ -237,13 +237,6 @@ public class MapFragment extends Fragment {
                 } else {
                     Toast.makeText(getActivity(), "Unable to start a random chat, try again", Toast.LENGTH_SHORT).show();
                 }
-
-                /*Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
-                intent.putExtra("intentType", "messageController");
-                intent.putExtra("communicationType", "tcp");
-                intent.putExtra("msg", "hello surf shark");
-                intent.putExtra("idChat", "2");
-                getContext().sendBroadcast(intent);*/
                 break;
             default:
                 break;

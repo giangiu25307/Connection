@@ -44,6 +44,7 @@ public class Task {
         public static final String TELEGRAM_SHARED = "telegram_shared";
         public static final String WHATSAPP_SHARED = "whatsapp_shared";
         public static final String TELEGRAM_NICK = "telegram_nick";
+        public static final String IS_READ = "is_read"; //0 no, 1 si
 
         /*public static final String GROUPS = "GROUPS";
         public static final String GROUP_NAME = "GROUP_NAME";

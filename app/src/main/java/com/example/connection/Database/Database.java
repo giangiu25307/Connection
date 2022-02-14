@@ -82,6 +82,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.MSG + " TEXT, "
                 + Task.TaskEntry.PATH + " TEXT, "
                 + Task.TaskEntry.DATETIME + " TEXT, "
+                + Task.TaskEntry.IS_READ + "TEXT DEFAULT 0,"
                 + "FOREIGN KEY (" + Task.TaskEntry.ID_CHAT + ") REFERENCES " + Task.TaskEntry.CHAT + "(" + Task.TaskEntry.ID_CHAT + ") ON DELETE CASCADE"
                 + ")";
 
@@ -143,8 +144,8 @@ public class Database extends SQLiteOpenHelper {
         //if (idSender.equals("0")) setRequest(idChat, "false");
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
-        int lastId = Integer.parseInt(getLastMessageId());
-        if(getLastMessageId().isEmpty()){
+        int lastId = Integer.parseInt(getLastMessageId(idChat));
+        if(getLastMessageId(idChat).isEmpty()){
             msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId);
         }else{
             msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId + 1);
@@ -158,6 +159,44 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
+     * Set message as read
+     *
+     * @param idChat      id of the person i'm speaking to
+     * @param idMessage   id of the message i'm reading
+     */
+    public void setReadMessage(String idChat, String idMessage){
+        db = this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.IS_READ, "1");
+        db.update(Task.TaskEntry.MESSAGE, msgValues, Task.TaskEntry.ID_CHAT + " = " + idChat + " AND " + Task.TaskEntry.ID_MESSAGE +" = "+idMessage, null);
+    }
+
+    /**
+     *Set all messages as read
+     *
+     * @param idChat  id of the person i'm speaking to
+     */
+    public void setReadAllMessages(String idChat){
+        db = this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.IS_READ, "1");
+        db.update(Task.TaskEntry.MESSAGE, msgValues, Task.TaskEntry.ID_CHAT + " = " + idChat, null);
+    }
+
+    /**
+     *Count all unread messages
+     *
+     * @param idChat  id of the person i'm speaking to
+     */
+    public int countMessageNotRead(String idChat){
+        String query = "SELECT id_message " +
+                " FROM " + Task.TaskEntry.MESSAGE +
+                " WHERE "+ Task.TaskEntry.IS_READ +" = 0";
+        Cursor cursor = db.rawQuery(query, null);
+        return cursor.getCount();
+    }
+
+    /**
      * Add a imagePath in the database
      *
      * @param paths    path of the image received
@@ -166,7 +205,7 @@ public class Database extends SQLiteOpenHelper {
      */
     public void addImage(String paths, String idSender, String idChat) {
         ContentValues msgValues = new ContentValues();
-        int lastId = Integer.parseInt(getLastMessageId());
+        int lastId = Integer.parseInt(getLastMessageId(idChat));
         if(lastId == 0){
             msgValues.put(Task.TaskEntry.ID_MESSAGE, "0");
         }else{
@@ -185,11 +224,11 @@ public class Database extends SQLiteOpenHelper {
      *
      *
      */
-    public String getLastMessageId() {
+    public String getLastMessageId(String idChat) {
         String query = "SELECT id_message " +
                 " FROM " + Task.TaskEntry.MESSAGE +
+                " WHERE "+ Task.TaskEntry.ID_CHAT + " = " + idChat +
                 " ORDER BY CAST(" + Task.TaskEntry.ID_MESSAGE + " AS UNSIGNED) DESC LIMIT 1";
-        System.out.println("Query " + query);
         Cursor cursor = db.rawQuery(query, null);
         if(cursor != null && cursor.getCount() > 0){
             cursor.moveToFirst();
@@ -1232,6 +1271,11 @@ public class Database extends SQLiteOpenHelper {
     }
 
     // PLUS USERS -------------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Will be never used
+     * @return
+     */
     public UserPlus getMyPlusUser() {
         String query = "SELECT *" +
                 " FROM " + Task.Company.USER_PLUS;

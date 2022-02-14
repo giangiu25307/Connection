@@ -95,6 +95,7 @@ ConnectionController {
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
+        MessageController messageController = new MessageController().newInstance(connection.getApplicationContext(),database,chatController);
         wifiLock = wifiManager.createWifiLock(1, "testLock");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override

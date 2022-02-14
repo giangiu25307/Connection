@@ -89,6 +89,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.lyt_chat_activity);
         context = this;
         idChat = getIntent().getStringExtra("idChat");
+        database.setReadAllMessages(idChat);
         user = database.getUser(idChat);
         Connection.idChatOpen = user.getIdUser();
         String username = getIntent().getStringExtra("username");
@@ -474,8 +475,10 @@ public class ChatActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         try {
                             chatController.share(database.getNumber(ConnectionController.myUser.getIdUser()) + "£€number", user.getIdUser());
+                            number.setText("Shared");
                         } catch (NullPointerException e) {
                             System.out.println("account disconnected");
+                            number.setText("Not shared");
                         }
                     }
                 });
@@ -485,8 +488,10 @@ public class ChatActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         try {
                             chatController.share(database.getNumber(ConnectionController.myUser.getIdUser()) + "£€whatsapp", user.getIdUser());
+                            whatsappNumber.setText("Shared");
                         } catch (NullPointerException e) {
                             System.out.println("account disconnected");
+                            whatsappNumber.setText("Not shared");
                         }
                     }
                 });
@@ -495,9 +500,18 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         try {
+                            if(database.getTelegramNick(ConnectionController.myUser.getIdUser()).equals("")){
+                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(alertDialog.getContext(), R.style.CustomAlertDialog);
+                                //dialogBuilder.setView(R.layout.dialog_confirm_delete_chat_message); need view
+                                final AlertDialog alertDialog = dialogBuilder.create();
+                                TextView telegramNick = null; //= alertDialog.findViewById(R.id.telegramNickLabel);
+                                database.setTelegram(ConnectionController.myUser.getIdUser(),telegramNick.getText().toString());
+                            }
                             chatController.share(database.getTelegramNick(ConnectionController.myUser.getIdUser()) + "£€telegram", user.getIdUser());
+                            telegramNumber.setText("Shared");
                         } catch (NullPointerException e) {
                             System.out.println("account disconnected");
+                            telegramNumber.setText("Not shared");
                         }
                     }
                 });
