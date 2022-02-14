@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Adapter.GlobalMessageAdapter;
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.MessageController;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.R;
 
 public class ChatGlobalActivity extends AppCompatActivity {
@@ -95,7 +95,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
 
         sendView.setOnClickListener(view -> {
             chatController.sendGlobalMsg(message_input.getText().toString());
-            MessageController.getIstance().setGlobalMessageAdapter(globalMessageAdapter);
+            MessageListener.getIstance().setGlobalMessageAdapter(globalMessageAdapter);
         });
 
         //Database database = (Database) getIntent().getParcelableExtra("database");

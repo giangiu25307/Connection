@@ -1020,12 +1020,28 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
-     * Discard the chat with the specified user
+     * Block the chat with the specified user
      */
-    public void discard(String id) {
+    public void blockUser(String idUser) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED, "false");
-        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + id, null);
+        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = " + idUser, null);
+    }
+
+    /**
+     * see if a user is blocked
+     */
+    public boolean isUserBlocked(String idUser) {
+        String query = "SELECT " + Task.TaskEntry.MESSAGES_ACCEPTED +
+                " FROM " + Task.TaskEntry.USER +
+                " WHERE " + Task.TaskEntry.ID_USER + "=" + idUser;
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+            if(c.getString(0).equals("true"))return false;
+            else return true;
+        }
+        return true;
     }
 
     /**

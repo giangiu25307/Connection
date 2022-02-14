@@ -1,4 +1,4 @@
-package com.example.connection.View;
+package com.example.connection.Listener;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.os.CountDownTimer;
 import com.example.connection.Controller.AutoClicker;
 import com.example.connection.Controller.ConnectionController;
 
-public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
+public class WiFiDirectBroadcastListener extends BroadcastReceiver {
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
     WifiP2pInfo wifiP2PInfo = new WifiP2pInfo();
@@ -19,7 +19,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     AutoClicker autoClicker;
     ConnectionController connectionController;
 
-    public WiFiDirectBroadcastReceiver(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, WifiP2pManager.PeerListListener peerListListener, WifiP2pManager.ConnectionInfoListener connectionInfoListener) {
+    public WiFiDirectBroadcastListener(WifiP2pManager mManager, WifiP2pManager.Channel mChannel, WifiP2pManager.PeerListListener peerListListener, WifiP2pManager.ConnectionInfoListener connectionInfoListener) {
         this.mManager = mManager;
         this.mChannel = mChannel;
         this.peerListListener = peerListListener;

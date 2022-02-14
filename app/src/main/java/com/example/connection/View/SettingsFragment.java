@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,7 +42,19 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.regex.Pattern;
+
+import okhttp3.Call;
+import okhttp3.ConnectionSpec;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
@@ -548,11 +561,49 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Da aggiunge codice che invia il report
+                if(sendBugReport(view.findViewById(R.id.editTextBugReport)))alertDialog.dismiss();
             }
         });
 
 
+    }
+
+    private boolean sendBugReport(TextView textView){
+        OkHttpClient client= new OkHttpClient.Builder()
+                .connectionSpecs(Arrays.asList(ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS))
+                .build();
+        // create your json here
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("userId", ConnectionController.myUser.getIdUser());
+            jsonObject.put("BugReport", textView.getText().toString());
+        } catch (
+                JSONException e) {
+            e.printStackTrace();
+        }
+
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(jsonObject.toString(),mediaType);
+
+        Request request = new Request.Builder()
+                .url("https://isconnection.herokuapp.com/bugReport")
+                .post(body)
+                .build();
+
+
+        Call call = client.newCall(request);
+        try {
+            Response response = client.newCall(request).execute();
+            if(response.isSuccessful()){
+                Toast.makeText(getContext(),"Thanks for reporting", Toast.LENGTH_LONG);
+            }else{
+                Toast.makeText(getContext(),"Something went wrong", Toast.LENGTH_LONG);
+                return false;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return true;
     }
 
     private void captureImage() {

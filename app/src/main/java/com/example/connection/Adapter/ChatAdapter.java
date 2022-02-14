@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.opengl.Visibility;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,20 +59,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.lyt_chat, parent, false);
 
-        return new ViewHolder(view, new ViewHolder.OnChatClickListener() {
-
-            @Override
-            public void openChat(int p) {
-                /*chatCursor.moveToPosition(p);
-                final String id = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT));
-                Intent myIntent = new Intent(context, ChatActivity.class);
-                // myIntent.putExtra("chatController", chatController); //Optional parameters\
-                myIntent.putExtra("idChat", id);
-                //TODO Da cambiare in username
-                myIntent.putExtra("username", chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.NAME)));
-                context.startActivity(myIntent);*/
-            }
-        });
+        return new ViewHolder(view);
     }
 
     @Override
@@ -130,34 +118,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }
 
 
-        //TODO Implementere messaggi non letti
+        holder.unreadMessage.setText(database.countMessageNotRead(id));
+        if(holder.unreadMessage.getText().equals("0"))
+            holder.unreadMessage.setVisibility(View.INVISIBLE);
+        else
+            holder.unreadMessage.setVisibility(View.VISIBLE);
         File profilePic = new File(database.getUser(id).getProfilePic());
         if(profilePic.exists()){
             Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
             holder.profilePic.setImageBitmap(myBitmap);
         }
-
         holder.itemView.setTag(id);
-
-        /*
-
-        if (profilePic.exists()) {
-
-            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circle);
-            bitmap2 = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
-            BitmapDrawable layer1 = new BitmapDrawable(context.getResources(), bitmap2);
-            BitmapDrawable layer2 = new BitmapDrawable(context.getResources(), bitmap);
-            Drawable[] layers = {layer1, layer2};
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
-            ImageView profilePicImageView = holder.profilePic;
-            profilePicImageView.setImageTintList(null);
-            profilePicImageView.setImageDrawable(layerDrawable);
-            //bitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
-
-        }
-
-        */
-
     }
 
     @Override
@@ -201,16 +172,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, chatsList.size());
             }
-
         }
-        /*for (Chat chat: chatsList){
-            if(chat.getId().equals(id)){
-                int position = chatsList.indexOf(chat);
-                chatsList.remove(chat);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, chatsList.size());
-            }
-        }*/
     }
 
     public void refreshChat(String id, String lastMessage, String dateTime) {
@@ -240,38 +202,22 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         this.position = position;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        OnChatClickListener listener;
 
         private ConstraintLayout chatLayout;
         private final ImageView profilePic;
-        private final TextView name, lastMessage, timeLastMessage;
+        private final TextView name, lastMessage, timeLastMessage, unreadMessage;
 
-        private ViewHolder(View itemView, OnChatClickListener listener) {
+        private ViewHolder(View itemView) {
             super(itemView);
-            this.listener = listener;
 
             chatLayout = itemView.findViewById(R.id.chatLayout);
-            chatLayout.setOnClickListener(this);
             profilePic = itemView.findViewById(R.id.profilePhoto);
             name = itemView.findViewById(R.id.name);
             lastMessage = itemView.findViewById(R.id.lastMessage);
             timeLastMessage = itemView.findViewById(R.id.timeLastMessage);
-
-        }
-
-        @Override
-        public void onClick(View view) {
-
-            if (view.getId() == R.id.chatLayout) {
-                listener.openChat(this.getLayoutPosition());
-            }
-
-        }
-
-        public interface OnChatClickListener {
-            void openChat(int p);
+            unreadMessage = itemView.findViewById(R.id.textViewUnreadMessage);
         }
 
     }

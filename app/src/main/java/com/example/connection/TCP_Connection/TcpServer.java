@@ -1,11 +1,9 @@
 package com.example.connection.TCP_Connection;
 
 import android.content.Intent;
-import android.database.Cursor;
 
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.MessageController;
-import com.example.connection.Controller.Task;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.LastMessage;
 import com.example.connection.UDP_Connection.Multicast;
@@ -130,8 +128,11 @@ public class TcpServer {
 
     public String messageIdentifier(String msg) {
         try {
-            Intent intent = new Intent(connection.getApplicationContext(), MessageController.getIstance().getClass());
+            Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
             String[] splittedR = msg.split("£€");
+            if(database.isUserBlocked(splittedR[0])){
+                return "";
+            }
             switch (splittedR[0]) {
                 case "share":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {

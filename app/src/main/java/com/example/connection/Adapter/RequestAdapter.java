@@ -83,7 +83,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             @Override
             public void deleteRequest(int p) {
                 chatCursor.moveToPosition(p);
-                database.discard(chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT)));
+                database.blockUser(chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT)));
                 swapCursor(database.getAllRequestChat());
             }
 

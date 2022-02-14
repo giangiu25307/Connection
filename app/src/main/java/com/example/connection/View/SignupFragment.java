@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,6 +56,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Pattern;
+
+import okhttp3.Response;
 
 
 public class SignupFragment extends Fragment implements View.OnClickListener {
@@ -209,28 +212,19 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 } else {
                     //send user info to server
                     try {
-                        String response=accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePic());
-                        System.out.println(response);
-                        ContextWrapper contextWrapper = new ContextWrapper(getContext());
-                        File directory = contextWrapper.getDir(getContext().getFilesDir().getName(), Context.MODE_PRIVATE);
-                        File file =  new File(directory,"response");
-                        String data = "ciao";
-                        try {
-                            FileOutputStream fos = new FileOutputStream(file, true); // save
-                            fos.write(data.getBytes());
-                            fos.close();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        Response response=accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePic());
+                        if(response.isSuccessful()){
+                            database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic(), user.getPublicKey());
+                            database.setNumber("0", user.getNumber());
+                            Toast.makeText(getContext(),"Registration successful", Toast.LENGTH_LONG);
+                            Fragment fragment = new LoginFragment().newInstance(connection,database,accountController,drawController);
+                            loadFragment(fragment);
+                        }else{
+                            Toast.makeText(getContext(),"Something went wrong", Toast.LENGTH_LONG);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic(), user.getPublicKey());
-                    database.setNumber("0", user.getNumber());
-                    Fragment fragment = new HomeFragment().newInstance(connection,database,drawController);
-                    loadFragment(fragment);
                 }
                 break;
             case R.id.backButton:

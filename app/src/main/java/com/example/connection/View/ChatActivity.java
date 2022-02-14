@@ -43,7 +43,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.MessageController;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.Message;
 import com.example.connection.Model.User;
@@ -93,10 +93,10 @@ public class ChatActivity extends AppCompatActivity {
         user = database.getUser(idChat);
         Connection.idChatOpen = user.getIdUser();
         String username = getIntent().getStringExtra("username");
-        if (MessageController.getIstance().getMessagingStyleHashMap().get(user.getIdUser()) != null) {
-            MessageController.getIstance().getMessagingStyleHashMap().replace(user.getIdUser(), new NotificationCompat.MessagingStyle(username));
+        if (MessageListener.getIstance().getMessagingStyleHashMap().get(user.getIdUser()) != null) {
+            MessageListener.getIstance().getMessagingStyleHashMap().replace(user.getIdUser(), new NotificationCompat.MessagingStyle(username));
         }
-        MessageController.getIstance().getMessagingStyleHashMap();
+        MessageListener.getIstance().getMessagingStyleHashMap();
         TextView nameTextView = findViewById(R.id.nameUser);
         nameTextView.setText(username);
         toolbar = findViewById(R.id.toolbar2);
@@ -160,7 +160,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 chatController.sendTCPMsg(message_input.getText().toString(), user.getIdUser());
-                MessageController.getIstance().setMessageAdapter(messageAdapter);
+                MessageListener.getIstance().setMessageAdapter(messageAdapter);
             }
         });
 
@@ -444,6 +444,13 @@ public class ChatActivity extends AppCompatActivity {
                 usernameTextView.setText(user.getUsername());
                 String ageAndGender = user.getAge() + ", " + user.getGender();
                 ageAndGenderTextView.setText(ageAndGender);
+                Button block = alertDialog.findViewById(R.id.blockButton);
+                block.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        database.blockUser(user.getIdUser());
+                    }
+                });
 
                 chatterNumber.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -502,13 +509,31 @@ public class ChatActivity extends AppCompatActivity {
                         try {
                             if(database.getTelegramNick(ConnectionController.myUser.getIdUser()).equals("")){
                                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(alertDialog.getContext(), R.style.CustomAlertDialog);
-                                //dialogBuilder.setView(R.layout.dialog_confirm_delete_chat_message); need view
+                                dialogBuilder.setView(R.layout.dialog_telegram_username);
                                 final AlertDialog alertDialog = dialogBuilder.create();
-                                TextView telegramNick = null; //= alertDialog.findViewById(R.id.telegramNickLabel);
-                                database.setTelegram(ConnectionController.myUser.getIdUser(),telegramNick.getText().toString());
+                                TextView telegramNick = alertDialog.findViewById(R.id.editTextTelegramNick);
+                                Button confirm = alertDialog.findViewById(R.id.confirmTextView);
+                                confirm.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        database.setTelegram(ConnectionController.myUser.getIdUser(),telegramNick.getText().toString());
+                                        chatController.share(database.getTelegramNick(ConnectionController.myUser.getIdUser()) + "£€telegram", user.getIdUser());
+                                        telegramNumber.setText("Shared");
+                                        alertDialog.dismiss();
+                                    }
+                                });
+                                Button cancel = alertDialog.findViewById(R.id.cancelTextView);
+                                cancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        alertDialog.dismiss();
+                                        telegramNumber.setText("Not shared");
+                                    }
+                                });
+                            }else{
+                                chatController.share(database.getTelegramNick(ConnectionController.myUser.getIdUser()) + "£€telegram", user.getIdUser());
+                                telegramNumber.setText("Shared");
                             }
-                            chatController.share(database.getTelegramNick(ConnectionController.myUser.getIdUser()) + "£€telegram", user.getIdUser());
-                            telegramNumber.setText("Shared");
                         } catch (NullPointerException e) {
                             System.out.println("account disconnected");
                             telegramNumber.setText("Not shared");

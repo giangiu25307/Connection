@@ -58,7 +58,7 @@ public class AccountController {
         return null;
     }
 
-    public String register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number,String profilePic) throws IOException {
+    public Response register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number,String profilePic) throws IOException {
 
         // create your json here
         JSONObject jsonObject = new JSONObject();
@@ -91,7 +91,7 @@ public class AccountController {
         Call call = client.newCall(request);
         try {
             Response response = client.newCall(request).execute();
-            return response.body().string();
+            return response;
 
         }catch (Exception e){
             e.printStackTrace();

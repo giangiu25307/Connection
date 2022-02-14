@@ -1,31 +1,26 @@
 package com.example.connection.Controller;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.net.NetworkSpecifier;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiNetworkSpecifier;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Database.Database;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.Encryption;
 import com.example.connection.TCP_Connection.TcpClient;
@@ -95,7 +90,7 @@ ConnectionController {
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
-        MessageController messageController = new MessageController().newInstance(connection.getApplicationContext(),database,chatController);
+        MessageListener messageListener = new MessageListener().newInstance(connection.getApplicationContext(),database,chatController);
         wifiLock = wifiManager.createWifiLock(1, "testLock");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override

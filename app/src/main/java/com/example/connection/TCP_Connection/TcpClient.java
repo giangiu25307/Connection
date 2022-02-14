@@ -1,13 +1,10 @@
 package com.example.connection.TCP_Connection;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.MessageController;
-import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.LastMessage;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
@@ -212,6 +209,7 @@ public class TcpClient {
                 System.out.println("[Client] Received Message " + received);
 
                 if (!received.split("£€")[0].equals("messageConfirmed"))
+
                     sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
                 else {
                     if (!noKey) {

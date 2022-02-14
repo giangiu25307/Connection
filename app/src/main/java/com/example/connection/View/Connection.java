@@ -23,12 +23,10 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.DrawController;
-import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
 import com.example.connection.Services.MyForegroundService;
@@ -41,7 +39,7 @@ public class Connection extends AppCompatActivity {
     private Boolean startTimer2 = true;
     private long secondsRemaining = 1000;
     private SharedPreferences sharedPreferences;
-    public static boolean boot = true, isGlobalChatOpen = false;
+    public static boolean boot = true, isGlobalChatOpen = false, isChatFragmentVisible = false;
     public static Database database;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     public static String fragmentName = "MAP", idChatOpen = "";
@@ -49,10 +47,7 @@ public class Connection extends AppCompatActivity {
     //public static ArrayList<User> mapUsers = new ArrayList<User>();
     public static int minAge = 16, maxAge = 100;
     public static String[] genders = {"male", "female", "other"};
-    private static final int VPN_REQUEST_CODE = 0x0F;
     private AccountController accountController;
-    public static LocalVPNService localVPNService;
-    private NotificationChannel channel;
     public static MyForegroundService foregroundService;
     public static int page = 0;
     private DrawController drawController;

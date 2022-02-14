@@ -1,4 +1,4 @@
-package com.example.connection.Controller;
+package com.example.connection.Listener;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -15,19 +15,21 @@ import androidx.core.app.RemoteInput;
 import com.example.connection.Adapter.ChatAdapter;
 import com.example.connection.Adapter.GlobalMessageAdapter;
 import com.example.connection.Adapter.MessageAdapter;
+import com.example.connection.Controller.ChatController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
-import com.example.connection.TCP_Connection.TcpClient;
 import com.example.connection.View.ChatActivity;
+import com.example.connection.View.ChatFragment;
 import com.example.connection.View.Connection;
 
 import java.util.HashMap;
+import java.util.Objects;
 
-public class MessageController extends BroadcastReceiver {
+public class MessageListener extends BroadcastReceiver {
 
     public MessageAdapter messageAdapter;
-    private static MessageController messageController;
+    private static MessageListener messageListener;
     private ChatAdapter chatAdapter;
     private GlobalMessageAdapter globalMessageAdapter;
     private Context context;
@@ -40,20 +42,20 @@ public class MessageController extends BroadcastReceiver {
     // Key for the string that's delivered in the action's intent.
     private static final String KEY_TEXT_REPLY = "key_text_reply";
 
-    public static MessageController newInstance(Context context, Database database, ChatController chatController) {
-        messageController = new MessageController();
-        messageController.setContext(context);
-        messageController.setMessagingStyleHashMap();
-        messageController.setPendingIds();
-        messageController.setDatabase(database);
-        messageController.setChatController(chatController);
-        return messageController;
+    public static MessageListener newInstance(Context context, Database database, ChatController chatController) {
+        messageListener = new MessageListener();
+        messageListener.setContext(context);
+        messageListener.setMessagingStyleHashMap();
+        messageListener.setPendingIds();
+        messageListener.setDatabase(database);
+        messageListener.setChatController(chatController);
+        return messageListener;
     }
 
     public void setDatabase(Database database){ this.database = database; }
 
-    public static MessageController getIstance() {
-        return messageController;
+    public static MessageListener getIstance() {
+        return messageListener;
     }
 
     public void setMessageAdapter(MessageAdapter adapter) {
@@ -103,37 +105,41 @@ public class MessageController extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent chatActivity = new Intent(messageController.getContext(), ChatActivity.class);
+        Intent chatActivity = new Intent(messageListener.getContext(), ChatActivity.class);
         if (intent.getStringExtra("intentType").equals("messageController")) {
             switch (intent.getStringExtra("communicationType")) {
                 case "tcp":
                     if (Connection.idChatOpen.equals(intent.getStringExtra("idChat"))) {
-                        messageController.messageAdapter.swapCursor(Connection.database.getAllMsg(intent.getStringExtra("idChat")));
-                    } else {
+                        messageListener.messageAdapter.swapCursor(Connection.database.getAllMsg(intent.getStringExtra("idChat")));
+                    }else if(Connection.isChatFragmentVisible){
+                        ChatFragment chatFragment = ChatFragment.getIstance();
+                        chatFragment.setupRecyclerView(chatFragment.requireView());
+                    }
+                    else {
                         User user = Connection.database.getUser(intent.getStringExtra("idChat"));
                         chatActivity.putExtra("idChat", user.getIdUser());
                         chatActivity.putExtra("username", user.getUsername());
-                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(messageController.getContext());
+                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(messageListener.getContext());
                         NotificationCompat.MessagingStyle messagingStyle;
-                        if (messageController.getMessagingStyleHashMap().get(user.getIdUser()) != null) {
-                            messagingStyle = messageController.getMessagingStyleHashMap().get(user.getIdUser());
+                        if (messageListener.getMessagingStyleHashMap().get(user.getIdUser()) != null) {
+                            messagingStyle = messageListener.getMessagingStyleHashMap().get(user.getIdUser());
                             messagingStyle.addMessage(intent.getStringExtra("msg"), System.currentTimeMillis(), (Person) null);
-                            messageController.getMessagingStyleHashMap().replace(user.getIdUser(), messagingStyle);
+                            messageListener.getMessagingStyleHashMap().replace(user.getIdUser(), messagingStyle);
                         } else {
                             messagingStyle = new NotificationCompat.MessagingStyle(user.getUsername());
                             messagingStyle.addMessage(intent.getStringExtra("msg"), System.currentTimeMillis(), (Person) null);
-                            messageController.getMessagingStyleHashMap().put(user.getIdUser(), messagingStyle);
+                            messageListener.getMessagingStyleHashMap().put(user.getIdUser(), messagingStyle);
                         }
                         PendingIntent chatIntent;
                         try {
-                            chatIntent = PendingIntent.getActivity(messageController.getContext(), messageController.getPendingIds().get(intent.getStringExtra("idChat")), chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.getPendingIds().get(intent.getStringExtra("idChat")), chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
                         } catch (NullPointerException e) {
-                            messageController.getPendingIds().put(intent.getStringExtra("idChat"), messageController.counter);
-                            chatIntent = PendingIntent.getActivity(messageController.getContext(), messageController.counter, chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                            messageController.counter++;
+                            messageListener.getPendingIds().put(intent.getStringExtra("idChat"), messageListener.counter);
+                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.counter, chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            messageListener.counter++;
                         }
 
-                        String replyLabel = messageController.getContext().getResources().getString(R.string.reply_label);
+                        String replyLabel = messageListener.getContext().getResources().getString(R.string.reply_label);
                         RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
                                 .setLabel(replyLabel)
                                 .build();
@@ -146,20 +152,20 @@ public class MessageController extends BroadcastReceiver {
 
                         // Build a PendingIntent for the reply action to trigger.
                         PendingIntent replyPendingIntent =
-                                PendingIntent.getBroadcast(messageController.getContext(),
-                                        messageController.getPendingIds().get(intent.getStringExtra("idChat")),
+                                PendingIntent.getBroadcast(messageListener.getContext(),
+                                        messageListener.getPendingIds().get(intent.getStringExtra("idChat")),
                                         replyIntent,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
 
                         // Create the reply action and add the remote input.
                         NotificationCompat.Action action =
                                 new NotificationCompat.Action.Builder(R.drawable.ic_send_from_notification,
-                                        messageController.getContext().getString(R.string.reply_label), replyPendingIntent)
+                                        messageListener.getContext().getString(R.string.reply_label), replyPendingIntent)
                                         .addRemoteInput(remoteInput)
                                         .setAllowGeneratedReplies(true)
                                         .build();
 
-                        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(messageController.getContext(), "chatMessageNotification")
+                        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(messageListener.getContext(), "chatMessageNotification")
                                 .setSmallIcon(R.mipmap.ic_launcher)
                                 .setStyle(messagingStyle)
                                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
@@ -169,16 +175,16 @@ public class MessageController extends BroadcastReceiver {
                                 .addAction(action)
                                 .setAutoCancel(true);
 
-                        Notification summaryNotification = new NotificationCompat.Builder(messageController.getContext(), "chatMessageNotification")
+                        Notification summaryNotification = new NotificationCompat.Builder(messageListener.getContext(), "chatMessageNotification")
                                 .setSmallIcon(R.mipmap.ic_launcher)
                                 .setGroup("CHAT_GROUP")
                                 .setGroupSummary(true)
                                 .setAutoCancel(true)
                                 .build();
-                        notificationManager.notify(messageController.getPendingIds().get(intent.getStringExtra("idChat")), notificationBuilder.build());
+                        notificationManager.notify(messageListener.getPendingIds().get(intent.getStringExtra("idChat")), notificationBuilder.build());
                         notificationManager.notify(0, summaryNotification);
                         if (Connection.fragmentName.equals("chat")) {
-                            messageController.chatAdapter.swapCursor(Connection.database.getAllChat());
+                            messageListener.chatAdapter.swapCursor(Connection.database.getAllChat());
                         }
                     }
                     break;
@@ -191,47 +197,47 @@ public class MessageController extends BroadcastReceiver {
                     }
                     break;
                 case "reply":
-                    messageController.database.setReadMessage(intent.getStringExtra("idChat"), database.getLastMessageId(intent.getStringExtra("idChat")));
+                    messageListener.database.setReadMessage(intent.getStringExtra("idChat"), database.getLastMessageId(intent.getStringExtra("idChat")));
                     Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
                     if (remoteInput != null) {
                         //messageController.getTcpClient().sendMessage(String.valueOf(remoteInput.getCharSequence(KEY_TEXT_REPLY)),intent.getStringExtra("idChat"));
                         String reply = String.valueOf(remoteInput.getCharSequence(KEY_TEXT_REPLY));
-                        messageController.chatController.sendTCPMsg(reply,intent.getStringExtra("idChat"));
-                        NotificationCompat.MessagingStyle messagingStyle = messageController.getMessagingStyleHashMap().get(intent.getStringExtra("idChat"));
+                        messageListener.chatController.sendTCPMsg(reply,intent.getStringExtra("idChat"));
+                        NotificationCompat.MessagingStyle messagingStyle = messageListener.getMessagingStyleHashMap().get(intent.getStringExtra("idChat"));
                         messagingStyle.addMessage(reply, System.currentTimeMillis(), (Person) null);
-                        messageController.getMessagingStyleHashMap().put(intent.getStringExtra("idChat"), messagingStyle);
-                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(messageController.getContext());
+                        messageListener.getMessagingStyleHashMap().put(intent.getStringExtra("idChat"), messagingStyle);
+                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(messageListener.getContext());
 
-                        String replyLabel = messageController.getContext().getResources().getString(R.string.reply_label);
+                        String replyLabel = messageListener.getContext().getResources().getString(R.string.reply_label);
                         RemoteInput newRemoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
                                 .setLabel(replyLabel)
                                 .build();
 
                         // Build a PendingIntent for the reply action to trigger.
                         PendingIntent replyPendingIntent =
-                                PendingIntent.getBroadcast(messageController.getContext(),
-                                        messageController.getPendingIds().get(intent.getStringExtra("idChat")),
+                                PendingIntent.getBroadcast(messageListener.getContext(),
+                                        messageListener.getPendingIds().get(intent.getStringExtra("idChat")),
                                         intent,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
 
                         // Create the reply action and add the remote input.
                         NotificationCompat.Action action =
                                 new NotificationCompat.Action.Builder(R.drawable.ic_send_from_notification,
-                                        messageController.getContext().getString(R.string.reply_label), replyPendingIntent)
+                                        messageListener.getContext().getString(R.string.reply_label), replyPendingIntent)
                                         .addRemoteInput(newRemoteInput)
                                         .setAllowGeneratedReplies(true)
                                         .build();
 
                         PendingIntent chatIntent;
                         try {
-                            chatIntent = PendingIntent.getActivity(messageController.getContext(), messageController.getPendingIds().get(intent.getStringExtra("idChat")), chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.getPendingIds().get(intent.getStringExtra("idChat")), chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
                         } catch (NullPointerException e) {
-                            messageController.getPendingIds().put(intent.getStringExtra("idChat"), messageController.counter);
-                            chatIntent = PendingIntent.getActivity(messageController.getContext(), messageController.counter, chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                            messageController.counter++;
+                            messageListener.getPendingIds().put(intent.getStringExtra("idChat"), messageListener.counter);
+                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.counter, chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            messageListener.counter++;
                         }
 
-                        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(messageController.getContext(), "chatMessageNotification")
+                        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(messageListener.getContext(), "chatMessageNotification")
                                 .setSmallIcon(R.mipmap.ic_launcher)
                                 .setStyle(messagingStyle)
                                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
@@ -241,14 +247,14 @@ public class MessageController extends BroadcastReceiver {
                                 .addAction(action)
                                 .setAutoCancel(true);
 
-                        Notification summaryNotification = new NotificationCompat.Builder(messageController.getContext(), "chatMessageNotification")
+                        Notification summaryNotification = new NotificationCompat.Builder(messageListener.getContext(), "chatMessageNotification")
                                 .setSmallIcon(R.mipmap.ic_launcher)
                                 .setGroup("CHAT_GROUP")
                                 .setGroupSummary(true)
                                 .setAutoCancel(true)
                                 .build();
 
-                        notificationManager.notify(messageController.getPendingIds().get(intent.getStringExtra("idChat")), notificationBuilder.build());
+                        notificationManager.notify(messageListener.getPendingIds().get(intent.getStringExtra("idChat")), notificationBuilder.build());
                         notificationManager.notify(0, summaryNotification);
                     }
                     break;
