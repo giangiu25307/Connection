@@ -17,12 +17,17 @@ import com.example.connection.Adapter.GlobalMessageAdapter;
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Database.Database;
+import com.example.connection.Model.LastMessage;
+import com.example.connection.Model.Message;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.ChatActivity;
 import com.example.connection.View.ChatFragment;
 import com.example.connection.View.Connection;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -52,7 +57,9 @@ public class MessageListener extends BroadcastReceiver {
         return messageListener;
     }
 
-    public void setDatabase(Database database){ this.database = database; }
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
 
     public static MessageListener getIstance() {
         return messageListener;
@@ -110,12 +117,19 @@ public class MessageListener extends BroadcastReceiver {
             switch (intent.getStringExtra("communicationType")) {
                 case "tcp":
                     if (Connection.idChatOpen.equals(intent.getStringExtra("idChat"))) {
-                        messageListener.messageAdapter.swapCursor(Connection.database.getAllMsg(intent.getStringExtra("idChat")));
-                    }else if(Connection.fragmentName.equals("CHAT")){
+                        LastMessage lastMessage = database.getLastMessageChat(intent.getStringExtra("idChat"));
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                        Date date = new Date();
+                        try {
+                            date = format.parse(lastMessage.getDateTime());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        messageListener.messageAdapter.addMessage(new Message(database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString()));
+                    } else if (Connection.fragmentName.equals("CHAT")) {
                         ChatFragment chatFragment = ChatFragment.getIstance();
                         chatFragment.setupRecyclerView(chatFragment.requireView());
-                    }
-                    else {
+                    } else {
                         User user = Connection.database.getUser(intent.getStringExtra("idChat"));
                         chatActivity.putExtra("idChat", user.getIdUser());
                         chatActivity.putExtra("username", user.getUsername());
@@ -202,7 +216,7 @@ public class MessageListener extends BroadcastReceiver {
                     if (remoteInput != null) {
                         //messageController.getTcpClient().sendMessage(String.valueOf(remoteInput.getCharSequence(KEY_TEXT_REPLY)),intent.getStringExtra("idChat"));
                         String reply = String.valueOf(remoteInput.getCharSequence(KEY_TEXT_REPLY));
-                        messageListener.chatController.sendTCPMsg(reply,intent.getStringExtra("idChat"));
+                        messageListener.chatController.sendTCPMsg(reply, intent.getStringExtra("idChat"));
                         NotificationCompat.MessagingStyle messagingStyle = messageListener.getMessagingStyleHashMap().get(intent.getStringExtra("idChat"));
                         messagingStyle.addMessage(reply, System.currentTimeMillis(), (Person) null);
                         messageListener.getMessagingStyleHashMap().put(intent.getStringExtra("idChat"), messagingStyle);

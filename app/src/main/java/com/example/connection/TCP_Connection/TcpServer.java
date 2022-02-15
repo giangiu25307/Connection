@@ -164,6 +164,7 @@ public class TcpServer {
                         database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", splittedR[1], splittedR[1]);
                         intent.putExtra("intentType", "messageController");
                         intent.putExtra("communicationType", "tcp");
+                        intent.putExtra("idUser", splittedR[1]);
                         //  intent.putExtra("msg",message); da finire la parte delle immagini
                         intent.putExtra("idChat", splittedR[1]);
                     } else {
@@ -211,6 +212,7 @@ public class TcpServer {
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", message);
                             intent.putExtra("idChat", splittedR[3]);
+                            intent.putExtra("idUser", splittedR[3]);
                             connection.getApplicationContext().sendBroadcast(intent);
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -231,6 +233,7 @@ public class TcpServer {
                         intent.putExtra("communicationType", "tcp");
                         intent.putExtra("msg", message[1]);
                         intent.putExtra("idChat", message[2]);
+                        intent.putExtra("idUser", message[2]);
                         connection.getApplicationContext().sendBroadcast(intent);
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);

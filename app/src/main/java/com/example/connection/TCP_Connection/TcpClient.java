@@ -215,7 +215,9 @@ public class TcpClient {
                         sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
                     else
                     {
-                        //TODO Make visible the ic_error_send_message
+                        database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
+                        database.getLastMessageId(oldId);
+                        //TODO aggiornare il database con un nuovo campo
                     }
                 else {
                     if (!noKey) {
@@ -228,6 +230,7 @@ public class TcpClient {
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", oldClearMsg);
                             intent.putExtra("idChat", oldId);
+                            intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
                             connection.getApplicationContext().sendBroadcast(intent);
                         } else if (received.split("£€")[1].equals("message")) {
                             checkDate(oldId);
@@ -236,6 +239,7 @@ public class TcpClient {
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", oldClearMsg);
                             intent.putExtra("idChat", oldId);
+                            intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
                             connection.getApplicationContext().sendBroadcast(intent);
                         } else {
                             checkDate(oldId);
@@ -244,6 +248,7 @@ public class TcpClient {
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", oldImage);
                             intent.putExtra("idChat", oldId);
+                            intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
                             connection.getApplicationContext().sendBroadcast(intent);
                         }
                         database.setRequest(oldId, "false");
