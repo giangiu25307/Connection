@@ -52,13 +52,18 @@ public class MapFragment extends Fragment {
     int layoutHeight;
     FlowLayout parent;
     ArrayList<User> userList;
+    private static MapFragment mapFragment;
 
     public MapFragment() {
 
     }
 
+    public static MapFragment getIstance(){
+        return mapFragment;
+    }
+
     public MapFragment newInstance(ConnectionController connectionController, Database database, DrawController drawController) {
-        MapFragment mapFragment = new MapFragment();
+        mapFragment = new MapFragment();
         mapFragment.setConnectionController(connectionController);
         mapFragment.setDatabase(database);
         mapFragment.setDrawController(drawController);
@@ -77,24 +82,31 @@ public class MapFragment extends Fragment {
         this.drawController = drawController;
     }
 
+    public DrawController getDrawController(){
+        return mapFragment.drawController;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
-        parent = view.findViewById(R.id.mapFlowLayout);
-        userList = database.getAllFilteredUsers();
-        sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
-        parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        mapFragment.parent = view.findViewById(R.id.mapFlowLayout);
+        mapFragment.userList = mapFragment.database.getAllFilteredUsers();
+        mapFragment.sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
+        graphicRefresh();
+        return view;
+    }
+
+    public void graphicRefresh(){
+        mapFragment.parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                drawController.init(getContext(), parent, parent.getHeight(), parent.getWidth(), userList);
+                mapFragment.parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                mapFragment.drawController.init(getContext(), mapFragment.parent, mapFragment.parent.getHeight(), mapFragment.parent.getWidth(), userList);
             }
         });
-
-        return view;
     }
 
     @Override
@@ -215,15 +227,15 @@ public class MapFragment extends Fragment {
                         Connection.minAge = Integer.parseInt(minAge.getText().toString());
                         Connection.maxAge = Integer.parseInt(maxAge.getText().toString());
                         alertDialog.dismiss();
-                        Fragment fragment = new MapFragment().newInstance(connectionController, database, drawController);
+                        Fragment fragment = new MapFragment().newInstance(mapFragment.connectionController, mapFragment.database, mapFragment.drawController);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
                     }
                 });
                 break;
             case R.id.randomIcon:
-                int number = (int) (Math.random() * userList.size());
-                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(userList.get(number), true);
+                int number = (int) (Math.random() * mapFragment.userList.size());
+                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(mapFragment.userList.get(number), true);
                 if (getContext() != null) {
                     bottomSheet.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ModalBottomSheet");
                 } else {

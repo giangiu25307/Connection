@@ -145,9 +145,9 @@ public class Database extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         int lastId = Integer.parseInt(getLastMessageId(idChat));
-        if(getLastMessageId(idChat).isEmpty()){
+        if (getLastMessageId(idChat).isEmpty()) {
             msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId);
-        }else{
+        } else {
             msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId + 1);
         }
         msgValues.put(Task.TaskEntry.ID_CHAT, idChat);
@@ -161,22 +161,22 @@ public class Database extends SQLiteOpenHelper {
     /**
      * Set message as read
      *
-     * @param idChat      id of the person i'm speaking to
-     * @param idMessage   id of the message i'm reading
+     * @param idChat    id of the person i'm speaking to
+     * @param idMessage id of the message i'm reading
      */
-    public void setReadMessage(String idChat, String idMessage){
+    public void setReadMessage(String idChat, String idMessage) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.IS_READ, "1");
-        db.update(Task.TaskEntry.MESSAGE, msgValues, Task.TaskEntry.ID_CHAT + " = " + idChat + " AND " + Task.TaskEntry.ID_MESSAGE +" = "+idMessage, null);
+        db.update(Task.TaskEntry.MESSAGE, msgValues, Task.TaskEntry.ID_CHAT + " = " + idChat + " AND " + Task.TaskEntry.ID_MESSAGE + " = " + idMessage, null);
     }
 
     /**
-     *Set all messages as read
+     * Set all messages as read
      *
-     * @param idChat  id of the person i'm speaking to
+     * @param idChat id of the person i'm speaking to
      */
-    public void setReadAllMessages(String idChat){
+    public void setReadAllMessages(String idChat) {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.IS_READ, "1");
@@ -184,14 +184,14 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
-     *Count all unread messages
+     * Count all unread messages
      *
-     * @param idChat  id of the person i'm speaking to
+     * @param idChat id of the person i'm speaking to
      */
-    public int countMessageNotRead(String idChat){
+    public int countMessageNotRead(String idChat) {
         String query = "SELECT id_message " +
                 " FROM " + Task.TaskEntry.MESSAGE +
-                " WHERE "+ Task.TaskEntry.IS_READ +" = 0";
+                " WHERE " + Task.TaskEntry.IS_READ + " = 0";
         Cursor cursor = db.rawQuery(query, null);
         return cursor.getCount();
     }
@@ -206,9 +206,9 @@ public class Database extends SQLiteOpenHelper {
     public void addImage(String paths, String idSender, String idChat) {
         ContentValues msgValues = new ContentValues();
         int lastId = Integer.parseInt(getLastMessageId(idChat));
-        if(lastId == 0){
+        if (lastId == 0) {
             msgValues.put(Task.TaskEntry.ID_MESSAGE, "0");
-        }else{
+        } else {
             msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId + 1);
         }
         msgValues.put(Task.TaskEntry.ID_CHAT, idChat);
@@ -221,16 +221,14 @@ public class Database extends SQLiteOpenHelper {
 
     /**
      * Get the last message
-     *
-     *
      */
     public String getLastMessageId(String idChat) {
         String query = "SELECT id_message " +
                 " FROM " + Task.TaskEntry.MESSAGE +
-                " WHERE "+ Task.TaskEntry.ID_CHAT + " = " + idChat +
+                " WHERE " + Task.TaskEntry.ID_CHAT + " = " + idChat +
                 " ORDER BY CAST(" + Task.TaskEntry.ID_MESSAGE + " AS UNSIGNED) DESC LIMIT 1";
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor != null && cursor.getCount() > 0){
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             return cursor.getString(0);
         }
@@ -262,7 +260,7 @@ public class Database extends SQLiteOpenHelper {
                 " WHERE " + Task.TaskEntry.ID_CHAT + " = '" + idChat + "'";
         System.out.println("Query " + query);
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor != null){
+        if (cursor != null) {
             cursor.moveToFirst();
             Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
             return new LastMessage(cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)), cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)));
@@ -285,6 +283,7 @@ public class Database extends SQLiteOpenHelper {
 
     /**
      * Delete the specified chat
+     *
      * @param idChat
      */
     public void deleteChat(String idChat) {
@@ -296,6 +295,7 @@ public class Database extends SQLiteOpenHelper {
 
     /**
      * Delete the specified message
+     *
      * @param idMessage
      * @param idChat
      */
@@ -312,8 +312,9 @@ public class Database extends SQLiteOpenHelper {
      */
     public Cursor getAllMsg(String idChat) {
         String query = " SELECT id_message, id_sender, msg, path, datetime " +
-                " FROM MESSAGE " +
-                " WHERE id_chat = " + idChat +
+                " FROM MESSAGE INNER JOIN " + Task.TaskEntry.USER + " ON " + Task.TaskEntry.ID_USER + " = '" + idChat +
+                                                                  "' AND " + Task.TaskEntry.MESSAGES_ACCEPTED + " = 'true'" +
+                " WHERE id_chat = '" + idChat + "'"+
                 " ORDER BY " + Task.TaskEntry.DATETIME + " ASC ";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
@@ -329,7 +330,9 @@ public class Database extends SQLiteOpenHelper {
      */
     public Cursor getAllChat() {
         String query = "SELECT " + Task.TaskEntry.ID_CHAT + ", " + Task.TaskEntry.NAME + ", " + Task.TaskEntry.LAST_MESSAGE + ", " + Task.TaskEntry.DATETIME +
-                " FROM " + Task.TaskEntry.CHAT + " ORDER BY " + Task.TaskEntry.DATETIME + " DESC ";
+                " FROM " + Task.TaskEntry.CHAT + "INNER JOIN " + Task.TaskEntry.USER + " ON " + Task.TaskEntry.ID_USER + " = '" + Task.TaskEntry.ID_CHAT +
+                                                                                     "' AND " + Task.TaskEntry.MESSAGES_ACCEPTED + " = 'true'" +
+                " ORDER BY " + Task.TaskEntry.DATETIME + " DESC ";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
@@ -1038,7 +1041,7 @@ public class Database extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();
-            if(c.getString(0).equals("true"))return false;
+            if (c.getString(0).equals("true")) return false;
             else return true;
         }
         return true;
@@ -1290,6 +1293,7 @@ public class Database extends SQLiteOpenHelper {
 
     /**
      * Will be never used
+     *
      * @return
      */
     public UserPlus getMyPlusUser() {

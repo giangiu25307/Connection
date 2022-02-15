@@ -111,7 +111,7 @@ public class MessageListener extends BroadcastReceiver {
                 case "tcp":
                     if (Connection.idChatOpen.equals(intent.getStringExtra("idChat"))) {
                         messageListener.messageAdapter.swapCursor(Connection.database.getAllMsg(intent.getStringExtra("idChat")));
-                    }else if(Connection.isChatFragmentVisible){
+                    }else if(Connection.fragmentName.equals("CHAT")){
                         ChatFragment chatFragment = ChatFragment.getIstance();
                         chatFragment.setupRecyclerView(chatFragment.requireView());
                     }

@@ -48,6 +48,7 @@ public class HomeFragment extends Fragment {
     private SettingsFragment settings;
     private Connection connection;
     private DrawController drawController;
+    private String lastFragmentName;
 
     public HomeFragment() {
 
@@ -63,6 +64,7 @@ public class HomeFragment extends Fragment {
         homeFragment.setChat();
         homeFragment.setMap();
         homeFragment.setSettings();
+        homeFragment.setLastFragmentName(Connection.fragmentName);
         return homeFragment;
     }
 
@@ -92,6 +94,8 @@ public class HomeFragment extends Fragment {
         bottomNavigationMenu = view.findViewById(R.id.bottomNavigationMenu);
         bottomNavigationMenu.setOnNavigationItemSelectedListener(bottomNavigationMenuListener);
         bottomNavigationMenu.setItemIconTintList(null);
+
+        Connection.fragmentName = homeFragment.getLastFragmentName();
 
         if (savedInstanceState == null && Connection.fragmentName.equals("MAP")) {
             bottomNavigationMenu.getMenu().getItem(0).setChecked(true);
@@ -211,6 +215,40 @@ public class HomeFragment extends Fragment {
         return chat;
     }
 
+    public String getLastFragmentName() {
+        return lastFragmentName;
+    }
+
+    public void setLastFragmentName(String lastFragmentName) {
+        this.lastFragmentName = lastFragmentName;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        homeFragment.setLastFragmentName(Connection.fragmentName);
+        Connection.fragmentName = "";
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        homeFragment.setLastFragmentName(Connection.fragmentName);
+        Connection.fragmentName = "";
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        homeFragment.setLastFragmentName(Connection.fragmentName);
+        Connection.fragmentName = "";
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Connection.fragmentName = homeFragment.getLastFragmentName();
+    }
 }
 
 

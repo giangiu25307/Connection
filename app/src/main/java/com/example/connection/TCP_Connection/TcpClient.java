@@ -38,12 +38,14 @@ public class TcpClient {
     private String oldIp, oldMsg, oldLocalAddress, oldSecretKey, oldId, oldClearMsg, oldImage;
     private boolean noKey = false;
     private Connection connection;
+    private int counter;
 
 
     public TcpClient(Database database, Encryption encryption, Connection connection) {
         this.connection = connection;
         this.database = database;
         this.encryption = encryption;
+        counter = 0;
     }
 
     public void sendMessageNoKey(String ip, String text, String id) {
@@ -209,8 +211,12 @@ public class TcpClient {
                 System.out.println("[Client] Received Message " + received);
 
                 if (!received.split("£€")[0].equals("messageConfirmed"))
-
-                    sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
+                    if(counter != 5)
+                        sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
+                    else
+                    {
+                        //TODO Make visible the ic_error_send_message
+                    }
                 else {
                     if (!noKey) {
                         Intent intent = new Intent(connection.getApplicationContext(), ChatActivity.class);

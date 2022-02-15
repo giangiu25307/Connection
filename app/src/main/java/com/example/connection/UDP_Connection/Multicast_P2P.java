@@ -3,6 +3,8 @@ package com.example.connection.UDP_Connection;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.TcpClient;
+import com.example.connection.View.Connection;
+import com.example.connection.View.MapFragment;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -144,6 +146,10 @@ Multicast_P2P extends Multicast {
                             break;
                         default:
                             break;
+                    }
+                    if(Connection.fragmentName.equals("MAP")) {
+                        MapFragment mapFragment = MapFragment.getIstance();
+                        mapFragment.graphicRefresh();
                     }
                 }
             }

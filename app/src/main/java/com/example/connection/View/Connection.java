@@ -39,7 +39,7 @@ public class Connection extends AppCompatActivity {
     private Boolean startTimer2 = true;
     private long secondsRemaining = 1000;
     private SharedPreferences sharedPreferences;
-    public static boolean boot = true, isGlobalChatOpen = false, isChatFragmentVisible = false;
+    public static boolean boot = true, isGlobalChatOpen = false;
     public static Database database;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     public static String fragmentName = "MAP", idChatOpen = "";
