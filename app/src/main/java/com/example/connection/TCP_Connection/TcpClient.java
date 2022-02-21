@@ -139,6 +139,7 @@ public class TcpClient {
         noKey = false;
         Bitmap bmp = BitmapFactory.decodeFile(imagePath);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG,50,bos);
         String imageString = "image£€" + id + "£€";
         oldImage = imagePath;
         try {
@@ -158,16 +159,10 @@ public class TcpClient {
 
     private void checkInterface(String id) {
         if (database.isOtherGroup(id)) {
-            System.out.println("altro gruppo");
-            //oldLocalAddress = database.findIp(ConnectionController.myUser.getIdUser());
-            //AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
             oldLocalAddress = MyNetworkInterface.wlanIpv6Address;
             AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
         } else {
-            System.out.println("mio gruppo");
-            //oldLocalAddress = "192.168.49.1";
             oldLocalAddress = MyNetworkInterface.p2pIpv6Address;
-            System.out.println(oldLocalAddress);
             AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
         }
     }
@@ -215,9 +210,17 @@ public class TcpClient {
                         sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
                     else
                     {
-                        database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
-                        database.getLastMessageId(oldId);
-                        //TODO aggiornare il database con un nuovo campo
+                        database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);                        ;
+                        database.setMessageSent(oldId,database.getLastMessageId(oldId),"0");
+                        counter++;
+                        Intent intent = new Intent(connection.getApplicationContext(), ChatActivity.class);
+                        intent.putExtra("intentType", "messageController");
+                        intent.putExtra("communicationType", "tcp");
+                        intent.putExtra("msg", oldClearMsg);
+                        intent.putExtra("idChat", oldId);
+                        intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                        intent.putExtra("sent", "0");
+                        connection.getApplicationContext().sendBroadcast(intent);
                     }
                 else {
                     if (!noKey) {
@@ -231,6 +234,7 @@ public class TcpClient {
                             intent.putExtra("msg", oldClearMsg);
                             intent.putExtra("idChat", oldId);
                             intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                            intent.putExtra("sent", "1");
                             connection.getApplicationContext().sendBroadcast(intent);
                         } else if (received.split("£€")[1].equals("message")) {
                             checkDate(oldId);
@@ -240,6 +244,7 @@ public class TcpClient {
                             intent.putExtra("msg", oldClearMsg);
                             intent.putExtra("idChat", oldId);
                             intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                            intent.putExtra("sent", "1");
                             connection.getApplicationContext().sendBroadcast(intent);
                         } else {
                             checkDate(oldId);
@@ -249,6 +254,7 @@ public class TcpClient {
                             intent.putExtra("msg", oldImage);
                             intent.putExtra("idChat", oldId);
                             intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                            intent.putExtra("sent", "1");
                             connection.getApplicationContext().sendBroadcast(intent);
                         }
                         database.setRequest(oldId, "false");

@@ -82,7 +82,8 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.MSG + " TEXT, "
                 + Task.TaskEntry.PATH + " TEXT, "
                 + Task.TaskEntry.DATETIME + " TEXT, "
-                + Task.TaskEntry.IS_READ + "TEXT DEFAULT 0,"
+                + Task.TaskEntry.IS_READ + " TEXT DEFAULT 0, "
+                + Task.TaskEntry.MESSAGE_SENT + " TEXT DEFAULT 1, "
                 + "FOREIGN KEY (" + Task.TaskEntry.ID_CHAT + ") REFERENCES " + Task.TaskEntry.CHAT + "(" + Task.TaskEntry.ID_CHAT + ") ON DELETE CASCADE"
                 + ")";
 
@@ -168,6 +169,19 @@ public class Database extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.IS_READ, "1");
+        db.update(Task.TaskEntry.MESSAGE, msgValues, Task.TaskEntry.ID_CHAT + " = " + idChat + " AND " + Task.TaskEntry.ID_MESSAGE + " = " + idMessage, null);
+    }
+
+    /**
+     * Set message as sent or not
+     *
+     * @param idChat    id of the person i'm speaking to
+     * @param idMessage id of the message i'm sending
+     */
+    public void setMessageSent(String idChat, String idMessage, String sent) {
+        db = this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.MESSAGE_SENT, sent);
         db.update(Task.TaskEntry.MESSAGE, msgValues, Task.TaskEntry.ID_CHAT + " = " + idChat + " AND " + Task.TaskEntry.ID_MESSAGE + " = " + idMessage, null);
     }
 
@@ -311,7 +325,7 @@ public class Database extends SQLiteOpenHelper {
      * Get all msg from a specified chat
      */
     public Cursor getAllMsg(String idChat) {
-        String query = " SELECT id_message, id_sender, msg, path, datetime " +
+        String query = " SELECT id_message, id_sender, msg, path, datetime, sent " +
                 " FROM MESSAGE INNER JOIN " + Task.TaskEntry.USER + " ON " + Task.TaskEntry.ID_USER + " = '" + idChat +
                                                                   "' AND " + Task.TaskEntry.MESSAGES_ACCEPTED + " = 'true'" +
                 " WHERE id_chat = '" + idChat + "'"+
