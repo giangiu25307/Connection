@@ -100,9 +100,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 ChatController chatController = ChatController.getInstance();
                                 Message message = messagesList.get(p);
                                 database.deleteMessage(message.getIdMessage(), idChat);
+                                notifyItemRemoved(p);
                                 chatController.sendTCPMsg(message.getMessage(), idChat);
-                                view.findViewById(R.id.icErrorSendMessage).setVisibility(View.INVISIBLE);
-                                view.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                             }
                         });
                     }
