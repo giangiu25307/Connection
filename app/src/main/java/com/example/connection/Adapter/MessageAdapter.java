@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -125,7 +126,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         messageTime.setText(String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes());
 
         holder.itemView.setTag(message.getIdMessage());
-
+        if (message.getSent().equals("0"))
+            ((SentViewHolder) holder).icError.setVisibility(View.VISIBLE);
+        //TODO AGGIUNGERE DIALOG SPIEGAZIONE ERRORE INVIO MESSSAGGIO
     }
 
     @Override
@@ -152,7 +155,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         messagesList.clear();
 
         do {
-            messagesList.add(new Message(newMessageList.getString(0), newMessageList.getString(1), newMessageList.getString(2), newMessageList.getString(4)));
+            messagesList.add(new Message(newMessageList.getString(0), newMessageList.getString(1), newMessageList.getString(2), newMessageList.getString(4),messageCursor.getString(5)));
         } while (newMessageList.moveToNext());
 
         if (messagesList != null) {
@@ -173,16 +176,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, messagesList.size());
             }
-
         }
-        /*for (Chat chat: chatsList){
-            if(chat.getId().equals(id)){
-                int position = chatsList.indexOf(chat);
-                chatsList.remove(chat);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, chatsList.size());
-            }
-        }*/
     }
 
     public void addMessage(Message message){
@@ -211,6 +205,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         private LinearLayout messageLayout, textLayout;
         private TextView message, messageTime;
+        private ImageView icError;
 
         private SentViewHolder(View itemView) {
             super(itemView);
@@ -219,6 +214,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             textLayout = itemView.findViewById(R.id.textLayout);
             messageTime = itemView.findViewById(R.id.messageTime);
             message = itemView.findViewById(R.id.message);
+            icError = itemView.findViewById(R.id.icErrorSendMessage);
 
         }
 

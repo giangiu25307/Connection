@@ -125,7 +125,7 @@ public class MessageListener extends BroadcastReceiver {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        messageListener.messageAdapter.addMessage(new Message(database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString()));
+                        messageListener.messageAdapter.addMessage(new Message(database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString(), intent.getStringExtra("sent")));
                     } else if (Connection.fragmentName.equals("CHAT")) {
                         ChatFragment chatFragment = ChatFragment.getIstance();
                         chatFragment.setupRecyclerView(chatFragment.requireView());

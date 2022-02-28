@@ -6,12 +6,14 @@ public class Message {
     private String message;
     private String idSender;
     private String date;
+    private String sent;
 
-    public Message(String idMessage, String idSender, String message, String date) {
+    public Message(String idMessage, String idSender, String message, String date, String sent) {
         this.idMessage = idMessage;
         this.message = message;
         this.idSender = idSender;
         this.date = date;
+        this.sent = sent;
     }
 
     public String getIdMessage() {
@@ -32,5 +34,13 @@ public class Message {
 
     public String getDate() {
         return date;
+    }
+
+    public void setSent(String sent){
+        this.sent = sent;
+    }
+
+    public String getSent(){
+        return sent;
     }
 }
