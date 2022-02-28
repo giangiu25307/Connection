@@ -7,7 +7,7 @@
     android:layout_weight="1">
 
     <Button
-        android:id="@+id/cancelTextView"
+        android:id="@+id/cancelButton"
         style="@style/cancelButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/sendMessageTextView"
+        android:id="@+id/sendMessageButton"
         style="@style/dialogActionButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

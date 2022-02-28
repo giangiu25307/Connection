@@ -548,8 +548,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
         final Button cancelButton, sendButton;
-        cancelButton = alertDialog.findViewById(R.id.cancelTextView);
-        sendButton = alertDialog.findViewById(R.id.sendTextView);
+        cancelButton = alertDialog.findViewById(R.id.cancelButton);
+        sendButton = alertDialog.findViewById(R.id.sendButton);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override

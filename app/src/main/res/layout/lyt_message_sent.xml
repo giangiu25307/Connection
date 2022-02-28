@@ -9,6 +9,13 @@
     android:visibility="visible"
     android:orientation="horizontal">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:elevation="0.5dp"/>
+
     <ImageView
         android:id="@+id/icErrorSendMessage"
         android:layout_width="30dp"

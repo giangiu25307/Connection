@@ -18,17 +18,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.connection.Controller.ChatController;
 import com.example.connection.Database.Database;
 import com.example.connection.Controller.Task;
 import com.example.connection.Model.Chat;
 import com.example.connection.Model.Message;
 import com.example.connection.R;
+import com.example.connection.View.ChatActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,7 +77,38 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         View view = null;
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {
             view = inflater.inflate(R.layout.lyt_message_sent, parent, false);
-            return new SentViewHolder(view);
+            SentViewHolder sentViewHolder = new SentViewHolder(view, new SentViewHolder.OnAlertIconListener() {
+                @Override
+                public void openDialogMessageNotSent(int p) {
+                    if(database.findIp(idChat) == null){
+                        Toast.makeText(context, "User not connected", Toast.LENGTH_SHORT).show();
+                    }else{
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.CustomAlertDialog);
+                        dialogBuilder.setView(R.layout.dialog_retry_message);
+                        final AlertDialog alertDialog = dialogBuilder.create();
+                        alertDialog.show();
+                        alertDialog.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.dismiss();
+                            }
+                        });
+                        alertDialog.findViewById(R.id.retryButton).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                alertDialog.dismiss();
+                                ChatController chatController = ChatController.getInstance();
+                                Message message = messagesList.get(p);
+                                database.deleteMessage(message.getIdMessage(), idChat);
+                                chatController.sendTCPMsg(message.getMessage(), idChat);
+                                view.findViewById(R.id.icErrorSendMessage).setVisibility(View.INVISIBLE);
+                                view.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+                            }
+                        });
+                    }
+                }
+            });
+            return sentViewHolder;
         } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
             view = inflater.inflate(R.layout.lyt_message_received, parent, false);
             return new ReceivedViewHolder(view);
@@ -111,6 +147,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             textMessage = ((SentViewHolder) holder).message;
             messageTime = ((SentViewHolder) holder).messageTime;
+
+            ((SentViewHolder) holder).progressBar.setVisibility(View.INVISIBLE);
+
+            if (message.getSent().equals("0")){
+                ((SentViewHolder) holder).icError.setVisibility(View.VISIBLE);
+            }else{
+                ((SentViewHolder) holder).icError.setVisibility(View.INVISIBLE);
+            }
         } else if ((holder.getItemViewType() == VIEW_TYPE_MESSAGE_RECEIVED)) {
             if(selectedMessage.contains(message.getIdMessage())){
                 ((ReceivedViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.secondaryColorSemiTransparent));
@@ -126,9 +170,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         messageTime.setText(String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes());
 
         holder.itemView.setTag(message.getIdMessage());
-        if (message.getSent().equals("0"))
-            ((SentViewHolder) holder).icError.setVisibility(View.VISIBLE);
-        //TODO AGGIUNGERE DIALOG SPIEGAZIONE ERRORE INVIO MESSSAGGIO
+
     }
 
     @Override
@@ -184,7 +226,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyItemInserted(messagesList.size() - 1);
     }
 
-    public static class ReceivedViewHolder extends RecyclerView.ViewHolder{
+    public static class ReceivedViewHolder extends RecyclerView.ViewHolder {
 
         private LinearLayout messageLayout, textLayout;
         private TextView message, messageTime;
@@ -201,13 +243,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
-    public static class SentViewHolder extends RecyclerView.ViewHolder{
+    public static class SentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        MessageAdapter.SentViewHolder.OnAlertIconListener listener;
 
         private LinearLayout messageLayout, textLayout;
         private TextView message, messageTime;
         private ImageView icError;
+        private ProgressBar progressBar;
 
-        private SentViewHolder(View itemView) {
+        private SentViewHolder(View itemView, MessageAdapter.SentViewHolder.OnAlertIconListener listener) {
             super(itemView);
 
             messageLayout = itemView.findViewById(R.id.messageLayout);
@@ -215,7 +260,25 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             messageTime = itemView.findViewById(R.id.messageTime);
             message = itemView.findViewById(R.id.message);
             icError = itemView.findViewById(R.id.icErrorSendMessage);
+            progressBar = itemView.findViewById(R.id.progressBar);
+            this.listener = listener;
 
+        }
+
+        @Override
+        public void onClick(View view) {
+
+            switch (view.getId()) {
+                case R.id.icErrorSendMessage:
+                    listener.openDialogMessageNotSent(this.getLayoutPosition());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public interface OnAlertIconListener {
+            void openDialogMessageNotSent(int p);
         }
 
     }

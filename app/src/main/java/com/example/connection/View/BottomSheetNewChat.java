@@ -52,7 +52,7 @@ public class BottomSheetNewChat extends BottomSheetDialogFragment {
         name.setText(user.getUsername());
         String info = user.getGender() + " " + user.getAge();
         information.setText(info);
-        TextView send = view.findViewById(R.id.sendMessageTextView),cancel = view.findViewById(R.id.cancelTextView);
+        Button send = view.findViewById(R.id.sendMessageButton), cancel = view.findViewById(R.id.cancelButton);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
