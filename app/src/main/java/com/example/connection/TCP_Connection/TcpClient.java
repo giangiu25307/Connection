@@ -3,6 +3,7 @@ package com.example.connection.TCP_Connection;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.Toast;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
@@ -98,6 +99,28 @@ public class TcpClient {
         oldId = id;
         checkInterface(id);
         String msg = "message£€" + id + "£€";
+        try {
+            msg += encryption.encryptAES(message, encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
+            oldMsg = msg + "£€" + ConnectionController.myUser.getIdUser();
+            AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
+                @Override
+                public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
+                    System.out.println("Done");
+                    handleConnectCompleted(ex, socket, oldMsg);
+                }
+            });
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void reSendMessage(String message, String id) {
+        noKey = false;
+        oldClearMsg = message;
+        oldIp = database.findIp(id);
+        oldId = id;
+        checkInterface(id);
+        String msg = "reMessage£€" + id + "£€";
         try {
             msg += encryption.encryptAES(message, encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
             oldMsg = msg + "£€" + ConnectionController.myUser.getIdUser();
@@ -221,6 +244,8 @@ public class TcpClient {
                         intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
                         intent.putExtra("sent", "0");
                         connection.getApplicationContext().sendBroadcast(intent);
+                        if(received.split("£€")[1].equals("reMessage"))
+                            Toast.makeText(connection.getApplicationContext(), "Send message failed", Toast.LENGTH_SHORT).show();
                     }
                 else {
                     if (!noKey) {
@@ -246,7 +271,17 @@ public class TcpClient {
                             intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
                             intent.putExtra("sent", "1");
                             connection.getApplicationContext().sendBroadcast(intent);
-                        } else {
+                        } else if (received.split("£€")[1].equals("reMessage")) {
+                            checkDate(oldId);
+                            database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
+                            intent.putExtra("intentType", "messageController");
+                            intent.putExtra("communicationType", "tcp");
+                            intent.putExtra("msg", oldClearMsg);
+                            intent.putExtra("idChat", oldId);
+                            intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                            intent.putExtra("sent", "2");
+                            connection.getApplicationContext().sendBroadcast(intent);
+                        } else { //Image
                             checkDate(oldId);
                             database.addImage(oldImage, ConnectionController.myUser.getIdUser(), oldId);
                             intent.putExtra("intentType", "messageController");

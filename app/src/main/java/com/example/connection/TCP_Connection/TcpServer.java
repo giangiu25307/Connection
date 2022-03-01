@@ -223,6 +223,40 @@ public class TcpServer {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
                     }
                     return "message";
+                case "reMessage":
+                    //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
+                    if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
+                        Date date = new Date();
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                        String datetime = "";
+                        try {
+                            LastMessage lastMessage = database.getLastMessageChat(splittedR[1]);
+                            datetime = lastMessage.getDateTime();
+                        } catch (IndexOutOfBoundsException e) {
+                            datetime = String.valueOf(LocalDateTime.now());
+                        }
+                        try {
+                            String message = encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3])));
+                            date = format.parse(datetime);
+                            if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
+                                database.addMsg("", splittedR[3], splittedR[3]);
+                            }
+                            database.addMsg(message, splittedR[3], splittedR[3]);
+                            intent.putExtra("intentType", "messageController");
+                            intent.putExtra("communicationType", "tcp");
+                            intent.putExtra("msg", message);
+                            intent.putExtra("idChat", splittedR[3]);
+                            intent.putExtra("idUser", splittedR[3]);
+                            connection.getApplicationContext().sendBroadcast(intent);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        } catch (GeneralSecurityException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
+                    }
+                    return "reMessage";
                 case "handShake":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                         String message[] = encryption.decrypt(splittedR[2]).split("£€");

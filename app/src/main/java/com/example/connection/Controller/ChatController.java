@@ -74,6 +74,11 @@ public class ChatController {
 
     }
 
+    //send a direct message -------------------------------------------------------------------------------------------------------------------------------
+    public void reSendTCPMsg(String msg, String idReceiver) {
+        tcp.reSendMessage(msg, idReceiver);
+    }
+
     public void share(String numberOrNickAndType, String idReceiver) {
         tcp.sendShare(numberOrNickAndType, idReceiver);
     }
