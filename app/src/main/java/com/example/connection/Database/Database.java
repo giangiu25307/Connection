@@ -325,7 +325,7 @@ public class Database extends SQLiteOpenHelper {
      * Get all msg from a specified chat
      */
     public Cursor getAllMsg(String idChat) {
-        String query = " SELECT id_message, id_sender, msg, path, datetime, sent " +
+        String query = " SELECT id_message, id_sender, msg, path, datetime, " + Task.TaskEntry.MESSAGE_SENT +
                 " FROM MESSAGE INNER JOIN " + Task.TaskEntry.USER + " ON " + Task.TaskEntry.ID_USER + " = '" + idChat +
                                                                   "' AND " + Task.TaskEntry.MESSAGES_ACCEPTED + " = 'true'" +
                 " WHERE id_chat = '" + idChat + "'"+

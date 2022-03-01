@@ -118,7 +118,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }
 
 
-        holder.unreadMessage.setText(database.countMessageNotRead(id));
+        holder.unreadMessage.setText(String.valueOf(database.countMessageNotRead(id)));
         if(holder.unreadMessage.getText().equals("0"))
             holder.unreadMessage.setVisibility(View.INVISIBLE);
         else

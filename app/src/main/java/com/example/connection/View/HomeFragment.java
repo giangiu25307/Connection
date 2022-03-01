@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
     private Database database;
     private ChatController chatController;
     private BottomNavigationView bottomNavigationMenu;
-    private HomeFragment homeFragment;
+    private static HomeFragment homeFragment;
     private MapFragment map;
     private ChatFragment chat;
     private Toolbar toolbar;
@@ -80,6 +80,10 @@ public class HomeFragment extends Fragment {
         return homeFragment;
     }
 
+    public static HomeFragment getInstance(){
+        return homeFragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -94,7 +98,6 @@ public class HomeFragment extends Fragment {
         bottomNavigationMenu = view.findViewById(R.id.bottomNavigationMenu);
         bottomNavigationMenu.setOnNavigationItemSelectedListener(bottomNavigationMenuListener);
         bottomNavigationMenu.setItemIconTintList(null);
-
         Connection.fragmentName = homeFragment.getLastFragmentName();
 
         if (savedInstanceState == null && Connection.fragmentName.equals("MAP")) {
@@ -216,7 +219,7 @@ public class HomeFragment extends Fragment {
     }
 
     public String getLastFragmentName() {
-        return lastFragmentName;
+        return homeFragment.lastFragmentName;
     }
 
     public void setLastFragmentName(String lastFragmentName) {
