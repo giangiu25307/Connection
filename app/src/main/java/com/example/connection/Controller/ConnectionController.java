@@ -1,5 +1,7 @@
 package com.example.connection.Controller;
 
+import static android.net.ConnectivityManager.NetworkCallback;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -33,8 +35,6 @@ import com.example.connection.View.Connection;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
-
-import static android.net.ConnectivityManager.NetworkCallback;
 
 public class
 ConnectionController {
@@ -131,6 +131,7 @@ ConnectionController {
                     @Override
                     public void run() {
                         try {
+
                             MyNetworkInterface.setNetworkInterfacesNames();
                             myUser.setInetAddressP2P(MyNetworkInterface.p2pIpv6Address);
                             database.setMyGroupOwnerIp(MyNetworkInterface.p2pIpv6Address, myUser.getIdUser());
@@ -148,6 +149,7 @@ ConnectionController {
                         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
                         tcpServer.setup();
                         tcpServer.setMulticastP2p(multicastP2P);
+                        wifiLock.acquire();
                     }
                 }, 3000);
 
@@ -156,6 +158,8 @@ ConnectionController {
             @Override
             public void onFailure(int reason) {
                 System.out.println("create group error" + reason);
+                tcpServer.close();
+                mManager.removeGroup(mChannel, mActionListener);
                 mChannel.close();
                 new CountDownTimer(3000, 3000) {
 
@@ -163,14 +167,14 @@ ConnectionController {
                     }
 
                     public void onFinish() {
-                        mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
-                        createGroup();
+                        // mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
+                        //createGroup();
+                        System.out.println("eccomi");
                     }
                 }.start();
 
             }
         });
-        wifiLock.acquire();
     }
 
     //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
