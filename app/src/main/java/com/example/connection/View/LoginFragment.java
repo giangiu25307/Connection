@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.DrawController;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 
@@ -91,6 +93,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 } else {
                     email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
+                    Snackbar snackbar = Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.lyt_chat_activity), "", Snackbar.LENGTH_LONG);
+                    Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+                    layout.setBackgroundColor(getActivity().getColor(R.color.transparent));
+                    TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
+                    textView.setVisibility(View.INVISIBLE);
+
+                    View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
+                    TextView textView1 = snackView.findViewById(R.id.textView);
+                    textView1.setText("Mail and password don't match, please try again");
+                    layout.setPadding(5, 5, 5, 5);
+                    layout.addView(snackView, 0);
+                    snackbar.show();
                 }
                 break;
             case R.id.showHidePassword:

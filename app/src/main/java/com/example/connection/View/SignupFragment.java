@@ -44,8 +44,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.connection.Adapter.SliderAdapter;
 import com.example.connection.Controller.AccountController;
+import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.DrawController;
 import com.example.connection.Database.Database;
+import com.example.connection.Model.Message;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 
@@ -212,15 +214,33 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 } else {
                     //send user info to server
                     try {
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+                        dialogBuilder.setView(R.layout.dialog_signup_loading);
+                        final AlertDialog alertDialog = dialogBuilder.create();
+                        alertDialog.show();
                         Response response=accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePic());
                         if(response.isSuccessful()){
+                            alertDialog.dismiss();
                             database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic(), user.getPublicKey());
                             database.setNumber("0", user.getNumber());
                             Toast.makeText(getContext(),"Registration successful", Toast.LENGTH_LONG);
                             Fragment fragment = new LoginFragment().newInstance(connection,database,accountController,drawController);
                             loadFragment(fragment);
                         }else{
-                            Toast.makeText(getContext(),"Something went wrong", Toast.LENGTH_LONG);
+                            alertDialog.dismiss();
+                            dialogBuilder.setView(R.layout.dialog_signup_loading);
+                            final AlertDialog errorAlertDialog = dialogBuilder.create();
+                            errorAlertDialog.show();
+                            TextView dialogTitle = errorAlertDialog.findViewById(R.id.dialogTitle);
+                            dialogTitle.setText("Signup error");
+                            TextView dialogErrorMessagge = errorAlertDialog.findViewById(R.id.dialogErrorMessagge);
+                            dialogErrorMessagge.setText("Signup error, please try again");
+                            errorAlertDialog.findViewById(R.id.closeButton).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    errorAlertDialog.dismiss();
+                                }
+                            });
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
