@@ -64,7 +64,9 @@ ConnectionController {
     private PlusController plusController;
     private boolean CallbackWhenGO;
     private NetworkCallback callbackGO, callbackDirect;
-    private  WifiP2pManager.ActionListener mActionListener;
+    private WifiP2pManager.ActionListener mActionListener;
+    private boolean bitch = true;
+    private Thread t1;
 
     public ConnectionController(Connection connection, Database database) {
         this.connection = connection;
@@ -90,7 +92,7 @@ ConnectionController {
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
-        MessageListener messageListener = new MessageListener().newInstance(connection.getApplicationContext(),database,chatController);
+        MessageListener messageListener = new MessageListener().newInstance(connection.getApplicationContext(), database, chatController);
         wifiLock = wifiManager.createWifiLock(1, "testLock");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
@@ -110,7 +112,7 @@ ConnectionController {
         mManager.removeGroup(mChannel, null);
         try {
             mChannel.close();
-        }catch(Throwable e){
+        } catch (Throwable e) {
             System.out.println("Direct-Connection closed");
         }
     }
@@ -119,46 +121,51 @@ ConnectionController {
     @SuppressLint("MissingPermission")
     public void createGroup() {
         GO_leave = false;
-        mManager.createGroup(mChannel, mConfig, mActionListener=new WifiP2pManager.ActionListener() {
+        mManager.createGroup(mChannel, mConfig, mActionListener = new WifiP2pManager.ActionListener() {
 
             @Override
             public void onSuccess() {
-                bluetoothAdvertiser.stopAdvertising();
-                bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
-                bluetoothAdvertiser.startAdvertising();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-
-                            MyNetworkInterface.setNetworkInterfacesNames();
-                            myUser.setInetAddressP2P(MyNetworkInterface.p2pIpv6Address);
-                            database.setMyGroupOwnerIp(MyNetworkInterface.p2pIpv6Address, myUser.getIdUser());
-                            System.out.println(myUser.getInetAddressP2P().getHostAddress());
-                        } catch (SocketException | UnknownHostException e) {
-                            e.printStackTrace();
+                if(bitch) {
+                    bluetoothAdvertiser.stopAdvertising();
+                    bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
+                    bluetoothAdvertiser.startAdvertising();
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                while (MyNetworkInterface.p2pIpv6Address.equals("")) {
+                                    MyNetworkInterface.setNetworkInterfacesNames();
+                                }
+                                myUser.setInetAddressP2P(MyNetworkInterface.p2pIpv6Address);
+                                database.setMyGroupOwnerIp(MyNetworkInterface.p2pIpv6Address, myUser.getIdUser());
+                                System.out.println(myUser.getInetAddressP2P().getHostAddress());
+                            } catch (SocketException | UnknownHostException e) {
+                                e.printStackTrace();
+                            }
+                            multicastP2P.createMultigroupP2P();
+                            if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION")) {
+                                multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
+                                multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
+                            }
+                            t1 = new Thread(multicastP2P);
+                            t1.start();
+                            bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
+                            tcpServer.setup();
+                            tcpServer.setMulticastP2p(multicastP2P);
+                            wifiLock.acquire();
                         }
-                        multicastP2P.createMultigroupP2P();
-                        if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION")) {
-                            multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
-                            multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
-                        }
-                        Thread t1 = new Thread(multicastP2P);
-                        t1.start();
-                        bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
-                        tcpServer.setup();
-                        tcpServer.setMulticastP2p(multicastP2P);
-                        wifiLock.acquire();
-                    }
-                }, 3000);
-
+                    }, 3000);
+                }
             }
 
             @Override
             public void onFailure(int reason) {
+                bitch = false;
                 System.out.println("create group error" + reason);
                 tcpServer.close();
+                //multicastP2P.createMultigroupP2P();
+                //multicastP2P.closeMultigroupP2p();
                 mManager.removeGroup(mChannel, mActionListener);
                 mChannel.close();
                 new CountDownTimer(3000, 3000) {
@@ -167,9 +174,9 @@ ConnectionController {
                     }
 
                     public void onFinish() {
-                        // mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
-                        //createGroup();
-                        System.out.println("eccomi");
+                        mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
+                        bitch = true;
+                        createGroup();
                     }
                 }.start();
 
@@ -304,11 +311,11 @@ ConnectionController {
     //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
     private void GOLeaves() {
         multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
-        final boolean[] finish = {false};
         int prec = LocalDateTime.now().getSecond();
         while (LocalDateTime.now().getSecond() - prec < 10) ;
         this.removeGroup();
         multicastP2P.closeMultigroupP2p();
+        //TODO pulire dal db gli utenti connessi a me
     }
 
     public void initProcess() {
@@ -334,7 +341,7 @@ ConnectionController {
     public void wifiConnection(String id) {
         NetworkSpecifier specifier =
                 new WifiNetworkSpecifier.Builder()
-                        .setSsid(SSID+ id)
+                        .setSsid(SSID + id)
                         .setWpa2Passphrase(networkPassword)
                         .build();
         networkRequest = new NetworkRequest.Builder()
