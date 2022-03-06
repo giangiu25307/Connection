@@ -68,7 +68,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         return chatFragment;
     }
 
-    public static ChatFragment getIstance(){
+    public static ChatFragment getIstance() {
         return chatFragment;
     }
 
@@ -159,15 +159,15 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             ImageView noRequestImageView = view.findViewById(R.id.noRequestImageView);
             TextView noRequestTextView = view.findViewById(R.id.noRequestTextView);
 
-            if(recyclerView != null){
+            if (recyclerView != null) {
                 recyclerView.setVisibility(View.INVISIBLE);
             }
 
-            if(noRequestImageView != null){
+            if (noRequestImageView != null) {
                 noRequestImageView.setVisibility(View.VISIBLE);
             }
 
-            if(noRequestTextView != null){
+            if (noRequestTextView != null) {
                 noRequestTextView.setVisibility(View.VISIBLE);
             }
 
@@ -354,13 +354,21 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        chatAdapter.swapCursor(database.getAllNoRequestChat());
-        chatRecyclerView.scrollToPosition(position);
+        try {
+            chatAdapter.swapCursor(database.getAllNoRequestChat());
+            chatRecyclerView.scrollToPosition(position);
+        } catch (NullPointerException e) {
+            System.out.println("[Message Information Chat Fragment] cursore vuoto");
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        position = chatAdapter.getPosition();
+        try {
+            position = chatAdapter.getPosition();
+        } catch (NullPointerException e) {
+            System.out.println("[Message Information Chat Fragment] cursore vuoto");
+        }
     }
 }
