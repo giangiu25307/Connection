@@ -28,6 +28,7 @@
         <item name="topLineBottomSheetColor">@color/topLineBottomSheetColor</item>
         <item name="toolbarAndSettingsCardIconColor">@color/toolbarAndSettingsCardIconColor</item>
         <item name="actionModeBackground">@color/backgroundColor</item>
+        <item name="vectorLogin">@drawable/vector_login</item>
 
     </style>
 
@@ -56,19 +57,26 @@
         <item name="topLineBottomSheetColor">@color/darkTopLineBottomSheetColor</item>
         <item name="toolbarAndSettingsCardIconColor">@color/darkToolbarAndSettingsCardIconColor</item>
         <item name="actionModeBackground">@color/darkBackgroundColor</item>
+        <item name="vectorLogin">@drawable/vector_login_dark</item>
 
     </style>
 
     <!-- Screen title -->
     <style name="screenTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">28sp</item>
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:fontFamily">@font/opensans_bold_custom</item>
-        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="dialogTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">21sp</item>
+        <item name="android:fontFamily">@font/opensans_bold_custom</item>
+        <item name="android:textColor">?attr/textColor</item>
     </style>
 
     <!-- Map buttons -->
     <style name="mapButton" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:fontFamily">@font/opensans_regular_custom</item>
+        <item name="android:fontFamily">@font/opensans_semibold_custom</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">?attr/textColor</item>
@@ -80,20 +88,28 @@
     </style>
 
     <!-- Gender in map's filter -->
-    <style name="genderUnselected" parent="Widget.MaterialComponents.TextView">
+    <style name="genderUnselected" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:background">@drawable/bg_gender_filter_unselected</item>
         <item name="android:textColor">?attr/textColor</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
+        <item name="android:textAllCaps">false</item>
         <item name="android:paddingHorizontal">17.5dp</item>
-        <item name="android:paddingVertical">7.5dp</item>
+        <item name="android:paddingVertical">6dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="backgroundTint">@null</item>
     </style>
 
-    <style name="genderSelected" parent="Widget.MaterialComponents.TextView">
+    <style name="genderSelected" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:background">@drawable/bg_gender_filter_selected</item>
         <item name="android:textColor">?attr/invertedTextColor</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
+        <item name="android:textAllCaps">false</item>
         <item name="android:paddingHorizontal">17.5dp</item>
-        <item name="android:paddingVertical">7.5dp</item>
+        <item name="android:paddingVertical">6dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="backgroundTint">@null</item>
     </style>
 
     <!-- Age in map's filter -->
@@ -101,65 +117,98 @@
         <item name="android:background">@drawable/bg_age_input</item>
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:textColorHint">?attr/hintColor</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
         <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
-        <item name="android:paddingHorizontal">15dp</item>
-        <item name="android:paddingVertical">7.5dp</item>
+        <item name="android:inputType">number</item>
+        <item name="android:paddingHorizontal">24dp</item>
+        <item name="android:minHeight">41dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:importantForAutofill">no</item>
+        <item name="android:ems">5</item>
+        <item name="android:maxLength">3</item>
+    </style>
+
+    <style name="inputDataStyle" parent="Widget.Design.TextInputLayout">
+        <item name="android:background">@drawable/bg_input_data</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textColorHint">?attr/hintColor</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
+        <item name="android:paddingHorizontal">12.5dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
+        <item name="android:ems">10</item>
+    </style>
+
+    <style name="genderSelectionButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/bg_general_button</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="backgroundTint">@null</item>
     </style>
 
     <!-- Cancel and apply/confirm dialog's buttons -->
-    <style name="cancelButton" parent="Widget.MaterialComponents.TextView">
+    <style name="cancelButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:background">@drawable/bg_cancel_button</item>
         <item name="android:textColor">?attr/secondaryTextColor</item>
-        <item name="android:fontFamily">@font/opensans_semibold</item>
-        <item name="android:paddingVertical">12dp</item>
+        <item name="android:fontFamily">@font/opensans_semibold_custom</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingVertical">8dp</item>
         <item name="android:gravity">center</item>
+        <item name="backgroundTint">@null</item>
     </style>
 
-    <style name="applyConfirmButton" parent="Widget.MaterialComponents.TextView">
-        <item name="android:background">@drawable/bg_apply_confirm_buttons</item>
+    <style name="dialogActionButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/bg_dialog_action_button</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:fontFamily">@font/opensans_semibold</item>
-        <item name="android:paddingVertical">12dp</item>
+        <item name="android:fontFamily">@font/opensans_semibold_custom</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingVertical">8dp</item>
         <item name="android:gravity">center</item>
-    </style>
-
-    <!-- Cancel and apply/confirm dialog's buttons -->
-    <style name="cancelButton2" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:background">@drawable/bg_cancel_button</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">?attr/secondaryTextColor</item>
-        <item name="android:fontFamily">@font/opensans_bold_custom</item>
-        <item name="android:paddingVertical">12dp</item>
-        <item name="android:gravity">center</item>
-    </style>
-
-    <style name="applyConfirmDeleteButton" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:background">@drawable/bg_apply_confirm_buttons</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:fontFamily">@font/opensans_bold_custom</item>
-        <item name="android:paddingVertical">12dp</item>
-        <item name="android:gravity">center</item>
+        <item name="backgroundTint">@null</item>
     </style>
 
     <!-- Settings card -->
     <style name="settingsGroupTitle" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">?attr/secondaryTextColor</item>
-        <item name="android:fontFamily">@font/opensans_regular</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="titleSettingsCard" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">?attr/textColor</item>
-        <item name="android:fontFamily">@font/opensans_semibold</item>
+        <item name="android:fontFamily">@font/opensans_semibold_custom</item>
         <item name="android:textSize">15sp</item>
     </style>
 
     <style name="subTitleSettingsCard" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">?attr/textColor</item>
-        <item name="android:fontFamily">@font/opensans_light</item>
+        <item name="android:textColor">?attr/secondaryTextColor</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
         <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="themeButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/bg_theme_card_borderless</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="backgroundTint">@null</item>
+    </style>
+
+    <style name="generalButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/bg_general_button</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:fontFamily">@font/opensans_regular_custom</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="backgroundTint">@null</item>
     </style>
 
     <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -174,32 +223,10 @@
         <item name="android:background">@drawable/bg_bs_new_chat</item>
     </style>
 
-    <style name="inputDataStyle" parent="Widget.Design.TextInputLayout">
-        <item name="android:background">@drawable/bg_input_data</item>
-        <item name="android:textColor">?attr/textColor</item>
-        <item name="android:textColorHint">?attr/hintColor</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:fontFamily">@font/opensans_light</item>
-        <item name="android:padding">12.5dp</item>
-        <item name="android:textCursorDrawable">@drawable/bg_cursor_drawable</item>
-    </style>
-
-    <style name="showHidepasswordImageStyle">
+    <style name="showHidePasswordImageStyle">
         <item name="android:background">@drawable/bg_show_hide_password</item>
-        <item name="android:tint">?attr/hintColor</item>
-        <item name="android:padding">4dp</item>
-    </style>
-
-    <style name="nextButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/bg_next_button</item>
-        <item name="android:textColor">?attr/invertedTextColor</item>
-        <item name="android:textSize">15sp</item>
-    </style>
-
-    <style name="signupButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/bg_signup_button</item>
-        <item name="android:textColor">?attr/textColor</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:padding">11dp</item>
+        <item name="tint">?attr/hintColor</item>
     </style>
 
     <style name="permissionButtonStyle" parent="Widget.AppCompat.Button">
@@ -211,7 +238,7 @@
     </style>
 
     <style name="dateMessageStyle" parent="Widget.AppCompat.TextView">
-        <item name="android:background">@drawable/bg_date_message_layout</item>
+        <item name="android:background">@drawable/bg_date_messages_layout</item>
         <item name="android:paddingHorizontal">10dp</item>
         <item name="android:paddingVertical">2.5dp</item>
         <item name="android:textColor">?attr/textColor</item>

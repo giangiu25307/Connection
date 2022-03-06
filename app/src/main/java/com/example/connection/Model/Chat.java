@@ -59,7 +59,8 @@ public class Chat {
     }
 
     public void addMsg(String idSender, String msg, String data) {
-        message.put(numberMsg, new Message(idSender, msg, data));
+        //TODO Da revisionare, commentata perché da errore per l'idmessage e forse il metodo non verrà più usato
+        //message.put(numberMsg, new Message(idSender, msg, data));
         numberMsg++;
     }
 

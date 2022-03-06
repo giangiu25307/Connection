@@ -1,11 +1,9 @@
 package com.example.connection.TCP_Connection;
 
 import android.content.Intent;
-import android.database.Cursor;
 
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.MessageController;
-import com.example.connection.Controller.Task;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.LastMessage;
 import com.example.connection.UDP_Connection.Multicast;
@@ -130,8 +128,11 @@ public class TcpServer {
 
     public String messageIdentifier(String msg) {
         try {
-            Intent intent = new Intent(connection.getApplicationContext(), MessageController.getIstance().getClass());
+            Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
             String[] splittedR = msg.split("£€");
+            if(database.isUserBlocked(splittedR[0])){
+                return "";
+            }
             switch (splittedR[0]) {
                 case "share":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
@@ -163,6 +164,7 @@ public class TcpServer {
                         database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", splittedR[1], splittedR[1]);
                         intent.putExtra("intentType", "messageController");
                         intent.putExtra("communicationType", "tcp");
+                        intent.putExtra("idUser", splittedR[1]);
                         //  intent.putExtra("msg",message); da finire la parte delle immagini
                         intent.putExtra("idChat", splittedR[1]);
                     } else {
@@ -210,6 +212,7 @@ public class TcpServer {
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", message);
                             intent.putExtra("idChat", splittedR[3]);
+                            intent.putExtra("idUser", splittedR[3]);
                             connection.getApplicationContext().sendBroadcast(intent);
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -220,6 +223,40 @@ public class TcpServer {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
                     }
                     return "message";
+                case "reMessage":
+                    //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
+                    if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
+                        Date date = new Date();
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                        String datetime = "";
+                        try {
+                            LastMessage lastMessage = database.getLastMessageChat(splittedR[1]);
+                            datetime = lastMessage.getDateTime();
+                        } catch (IndexOutOfBoundsException e) {
+                            datetime = String.valueOf(LocalDateTime.now());
+                        }
+                        try {
+                            String message = encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3])));
+                            date = format.parse(datetime);
+                            if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
+                                database.addMsg("", splittedR[3], splittedR[3]);
+                            }
+                            database.addMsg(message, splittedR[3], splittedR[3]);
+                            intent.putExtra("intentType", "messageController");
+                            intent.putExtra("communicationType", "tcp");
+                            intent.putExtra("msg", message);
+                            intent.putExtra("idChat", splittedR[3]);
+                            intent.putExtra("idUser", splittedR[3]);
+                            connection.getApplicationContext().sendBroadcast(intent);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        } catch (GeneralSecurityException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
+                    }
+                    return "reMessage";
                 case "handShake":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                         String message[] = encryption.decrypt(splittedR[2]).split("£€");
@@ -230,6 +267,7 @@ public class TcpServer {
                         intent.putExtra("communicationType", "tcp");
                         intent.putExtra("msg", message[1]);
                         intent.putExtra("idChat", message[2]);
+                        intent.putExtra("idUser", message[2]);
                         connection.getApplicationContext().sendBroadcast(intent);
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);

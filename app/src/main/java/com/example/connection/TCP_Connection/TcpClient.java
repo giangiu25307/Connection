@@ -1,13 +1,11 @@
 package com.example.connection.TCP_Connection;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.Toast;
 
 import com.example.connection.Controller.ConnectionController;
-import com.example.connection.Controller.MessageController;
-import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.LastMessage;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
@@ -41,12 +39,14 @@ public class TcpClient {
     private String oldIp, oldMsg, oldLocalAddress, oldSecretKey, oldId, oldClearMsg, oldImage;
     private boolean noKey = false;
     private Connection connection;
+    private int counter;
 
 
     public TcpClient(Database database, Encryption encryption, Connection connection) {
         this.connection = connection;
         this.database = database;
         this.encryption = encryption;
+        counter = 0;
     }
 
     public void sendMessageNoKey(String ip, String text, String id) {
@@ -114,6 +114,28 @@ public class TcpClient {
         }
     }
 
+    public void reSendMessage(String message, String id) {
+        noKey = false;
+        oldClearMsg = message;
+        oldIp = database.findIp(id);
+        oldId = id;
+        checkInterface(id);
+        String msg = "reMessage£€" + id + "£€";
+        try {
+            msg += encryption.encryptAES(message, encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
+            oldMsg = msg + "£€" + ConnectionController.myUser.getIdUser();
+            AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
+                @Override
+                public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
+                    System.out.println("Done");
+                    handleConnectCompleted(ex, socket, oldMsg);
+                }
+            });
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendShare(String message, String id) {
         noKey = false;
         oldClearMsg = message;
@@ -140,6 +162,7 @@ public class TcpClient {
         noKey = false;
         Bitmap bmp = BitmapFactory.decodeFile(imagePath);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG,50,bos);
         String imageString = "image£€" + id + "£€";
         oldImage = imagePath;
         try {
@@ -159,16 +182,10 @@ public class TcpClient {
 
     private void checkInterface(String id) {
         if (database.isOtherGroup(id)) {
-            System.out.println("altro gruppo");
-            //oldLocalAddress = database.findIp(ConnectionController.myUser.getIdUser());
-            //AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
             oldLocalAddress = MyNetworkInterface.wlanIpv6Address;
             AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
         } else {
-            System.out.println("mio gruppo");
-            //oldLocalAddress = "192.168.49.1";
             oldLocalAddress = MyNetworkInterface.p2pIpv6Address;
-            System.out.println(oldLocalAddress);
             AsyncServer.getDefault().setLocalAddress(oldLocalAddress);
         }
     }
@@ -212,7 +229,24 @@ public class TcpClient {
                 System.out.println("[Client] Received Message " + received);
 
                 if (!received.split("£€")[0].equals("messageConfirmed"))
-                    sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
+                    if(counter != 5)
+                        sendMessageNoKey(oldIp, oldMsg, oldLocalAddress);
+                    else
+                    {
+                        database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);                        ;
+                        database.setMessageSent(oldId,database.getLastMessageId(oldId),"0");
+                        counter++;
+                        Intent intent = new Intent(connection.getApplicationContext(), ChatActivity.class);
+                        intent.putExtra("intentType", "messageController");
+                        intent.putExtra("communicationType", "tcp");
+                        intent.putExtra("msg", oldClearMsg);
+                        intent.putExtra("idChat", oldId);
+                        intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                        intent.putExtra("sent", "0");
+                        connection.getApplicationContext().sendBroadcast(intent);
+                        if(received.split("£€")[1].equals("reMessage"))
+                            Toast.makeText(connection.getApplicationContext(), "Send message failed", Toast.LENGTH_SHORT).show();
+                    }
                 else {
                     if (!noKey) {
                         Intent intent = new Intent(connection.getApplicationContext(), ChatActivity.class);
@@ -224,6 +258,8 @@ public class TcpClient {
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", oldClearMsg);
                             intent.putExtra("idChat", oldId);
+                            intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                            intent.putExtra("sent", "1");
                             connection.getApplicationContext().sendBroadcast(intent);
                         } else if (received.split("£€")[1].equals("message")) {
                             checkDate(oldId);
@@ -232,14 +268,28 @@ public class TcpClient {
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", oldClearMsg);
                             intent.putExtra("idChat", oldId);
+                            intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                            intent.putExtra("sent", "1");
                             connection.getApplicationContext().sendBroadcast(intent);
-                        } else {
+                        } else if (received.split("£€")[1].equals("reMessage")) {
+                            checkDate(oldId);
+                            database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
+                            intent.putExtra("intentType", "messageController");
+                            intent.putExtra("communicationType", "tcp");
+                            intent.putExtra("msg", oldClearMsg);
+                            intent.putExtra("idChat", oldId);
+                            intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                            intent.putExtra("sent", "2");
+                            connection.getApplicationContext().sendBroadcast(intent);
+                        } else { //Image
                             checkDate(oldId);
                             database.addImage(oldImage, ConnectionController.myUser.getIdUser(), oldId);
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", oldImage);
                             intent.putExtra("idChat", oldId);
+                            intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                            intent.putExtra("sent", "1");
                             connection.getApplicationContext().sendBroadcast(intent);
                         }
                         database.setRequest(oldId, "false");

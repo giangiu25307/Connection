@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/layoutBackground"
-    android:orientation="vertical"
     android:paddingHorizontal="20dp"
     android:paddingTop="15dp"
     android:paddingBottom="20dp">
@@ -18,14 +17,12 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/appThemeDialogTitle"
+        style="@style/dialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:fontFamily="@font/opensans_semibold_custom"
         android:text="Information"
-        android:textColor="?attr/textColor"
-        android:textSize="21sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -46,11 +43,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:layout_constraintTop_toBottomOf="@+id/appThemeDialogTitle"
         app:layout_constraintVertical_bias="0.0" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circleImageView"
+        android:id="@+id/profilePicChatInformation"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="8dp"
@@ -66,14 +63,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text="Username"
         android:textColor="?attr/textColor"
-        app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
+        app:layout_constraintBottom_toBottomOf="@+id/profilePicChatInformation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/circleImageView"
-        app:layout_constraintTop_toTopOf="@+id/circleImageView"
+        app:layout_constraintStart_toEndOf="@+id/profilePicChatInformation"
+        app:layout_constraintTop_toTopOf="@+id/profilePicChatInformation"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
@@ -81,14 +78,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:text="age, gender"
         android:textColor="?attr/textColor"
-        app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
+        app:layout_constraintBottom_toBottomOf="@+id/profilePicChatInformation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/circleImageView"
-        app:layout_constraintTop_toTopOf="@+id/circleImageView"
+        app:layout_constraintStart_toEndOf="@+id/profilePicChatInformation"
+        app:layout_constraintTop_toTopOf="@+id/profilePicChatInformation"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -104,88 +101,55 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/circleImageView"
+        app:layout_constraintTop_toBottomOf="@+id/profilePicChatInformation"
         app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
-        android:id="@+id/linearLayoutChatterNumber"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/chatterNumberButton"
+        style="@style/generalButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@drawable/bg_rounded_item"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingVertical="12.5dp"
+        android:text="Not shared"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView60"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/dialogChatInformationChatterNumberTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="Not shared"
-            android:textColor="?attr/textColor"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayoutChatterWhatsapp"
+    <Button
+        android:id="@+id/chatterWhatsappButton"
+        style="@style/generalButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/bg_rounded_item"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingVertical="12.5dp"
+        android:text="Not shared"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline22"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutChatterNumber"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/chatterNumberButton"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/dialogChatInformationChatterWhatsappTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="Not shared"
-            android:textColor="?attr/textColor"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayoutChatterTelegram"
+    <Button
+        android:id="@+id/chatterTelegramButton"
+        style="@style/generalButton"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/bg_rounded_item"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingVertical="12.5dp"
+        android:text="Not shared"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline22"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutChatterNumber"
-        app:layout_constraintVertical_bias="0.0">
-
-        <TextView
-            android:id="@+id/dialogChatInformationChatterTelegramTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="Not shared"
-            android:textColor="?attr/textColor"
-            android:textSize="16sp" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/chatterNumberButton"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView66"
@@ -200,98 +164,65 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutChatterWhatsapp"
+        app:layout_constraintTop_toBottomOf="@+id/chatterWhatsappButton"
         app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
-        android:id="@+id/linearLayoutNumber"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/userNumberButton"
+        style="@style/generalButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@drawable/bg_rounded_item"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingVertical="12.5dp"
+        android:text="Not shared"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView66"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/textView67"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="Not shared"
-            android:textColor="?attr/textColor"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayoutWhatsapp"
+    <Button
+        android:id="@+id/userWhatsappButton"
+        style="@style/generalButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/bg_rounded_item"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingVertical="12.5dp"
+        android:text="Not shared"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline22"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutNumber"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/userNumberButton"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <TextView
-            android:id="@+id/textView68"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="Not shared"
-            android:textColor="?attr/textColor"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayoutTelegram"
+    <Button
+        android:id="@+id/userTelegramButton"
+        style="@style/generalButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/bg_rounded_item"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingVertical="12.5dp"
+        android:text="Not shared"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline22"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutNumber"
-        app:layout_constraintVertical_bias="0.0">
-
-        <TextView
-            android:id="@+id/textView69"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="Not shared"
-            android:textColor="?attr/textColor"
-            android:textSize="16sp" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/userNumberButton"
+        app:layout_constraintVertical_bias="0.0" />
 
     <include
-        layout="@layout/lyt_block_close_buttons"
+        layout="@layout/lyt_close_block_buttons"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutWhatsapp"
+        app:layout_constraintTop_toBottomOf="@+id/userWhatsappButton"
         app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

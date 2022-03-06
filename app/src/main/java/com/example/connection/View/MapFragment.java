@@ -1,17 +1,12 @@
 package com.example.connection.View;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -21,10 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +32,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.DrawController;
-import com.example.connection.Controller.MessageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
@@ -58,13 +52,18 @@ public class MapFragment extends Fragment {
     int layoutHeight;
     FlowLayout parent;
     ArrayList<User> userList;
+    private static MapFragment mapFragment;
 
     public MapFragment() {
 
     }
 
+    public static MapFragment getIstance(){
+        return mapFragment;
+    }
+
     public MapFragment newInstance(ConnectionController connectionController, Database database, DrawController drawController) {
-        MapFragment mapFragment = new MapFragment();
+        mapFragment = new MapFragment();
         mapFragment.setConnectionController(connectionController);
         mapFragment.setDatabase(database);
         mapFragment.setDrawController(drawController);
@@ -83,24 +82,31 @@ public class MapFragment extends Fragment {
         this.drawController = drawController;
     }
 
+    public DrawController getDrawController(){
+        return mapFragment.drawController;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
-        parent = view.findViewById(R.id.mapFlowLayout);
-        userList = database.getAllFilteredUsers();
-        sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
-        parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        mapFragment.parent = view.findViewById(R.id.mapFlowLayout);
+        mapFragment.userList = mapFragment.database.getAllFilteredUsers();
+        mapFragment.sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
+        graphicRefresh();
+        return view;
+    }
+
+    public void graphicRefresh(){
+        mapFragment.parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                drawController.init(getContext(), parent, parent.getHeight(), parent.getWidth(), userList);
+                mapFragment.parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                mapFragment.drawController.init(getContext(), mapFragment.parent, mapFragment.parent.getHeight(), mapFragment.parent.getWidth(), userList);
             }
         });
-
-        return view;
     }
 
     @Override
@@ -115,8 +121,8 @@ public class MapFragment extends Fragment {
             TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
             textView.setVisibility(View.INVISIBLE);
             View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_notification_snackbar, null);
-            ImageView imageView = snackView.findViewById(R.id.imageView12);
-            imageView.setOnClickListener(new View.OnClickListener() {
+            ImageButton imageButton = snackView.findViewById(R.id.imageView12);
+            imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent settingsIntent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
@@ -158,10 +164,10 @@ public class MapFragment extends Fragment {
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
 
-                final TextView cancelTextView, applyTextView, male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other);
+                final Button male = alertDialog.findViewById(R.id.male), female = alertDialog.findViewById(R.id.female), other = alertDialog.findViewById(R.id.other), cancelButton, applyButton;
                 final EditText minAge = alertDialog.findViewById(R.id.editTextMinAge), maxAge = alertDialog.findViewById(R.id.editTextMaxAge);
-                cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-                applyTextView = alertDialog.findViewById(R.id.applyTextView);
+                cancelButton = alertDialog.findViewById(R.id.cancelTextView);
+                applyButton = alertDialog.findViewById(R.id.applyTextView);
 
                 //Gender
                 male.setOnClickListener(new View.OnClickListener() {
@@ -208,40 +214,33 @@ public class MapFragment extends Fragment {
                     }
                 });
 
-                cancelTextView.setOnClickListener(new View.OnClickListener() {
+                cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         alertDialog.dismiss();
                     }
                 });
 
-                applyTextView.setOnClickListener(new View.OnClickListener() {
+                applyButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Connection.minAge = Integer.parseInt(minAge.getText().toString());
                         Connection.maxAge = Integer.parseInt(maxAge.getText().toString());
                         alertDialog.dismiss();
-                        Fragment fragment = new MapFragment().newInstance(connectionController, database, drawController);
+                        Fragment fragment = new MapFragment().newInstance(mapFragment.connectionController, mapFragment.database, mapFragment.drawController);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.home_fragment, fragment).commit();
                     }
                 });
                 break;
             case R.id.randomIcon:
-                int number = (int) (Math.random() * userList.size());
-                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(userList.get(number), true);
+                int number = (int) (Math.random() * mapFragment.userList.size());
+                BottomSheetNewChat bottomSheet = new BottomSheetNewChat(mapFragment.userList.get(number), true);
                 if (getContext() != null) {
                     bottomSheet.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), "ModalBottomSheet");
                 } else {
                     Toast.makeText(getActivity(), "Unable to start a random chat, try again", Toast.LENGTH_SHORT).show();
                 }
-
-                /*Intent intent = new Intent(getContext(), MessageController.getIstance().getClass());
-                intent.putExtra("intentType", "messageController");
-                intent.putExtra("communicationType", "tcp");
-                intent.putExtra("msg", "hello surf shark");
-                intent.putExtra("idChat", "2");
-                getContext().sendBroadcast(intent);*/
                 break;
             default:
                 break;

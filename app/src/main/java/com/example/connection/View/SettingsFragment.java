@@ -15,44 +15,58 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Patterns;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.connection.BuildConfig;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
-import com.example.connection.Model.User;
 import com.example.connection.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.regex.Pattern;
+
+import okhttp3.Call;
+import okhttp3.ConnectionSpec;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
-    private ConstraintLayout themeSettings, changePasswordSettings, forgottenPasswordSettings;
+    private ConstraintLayout themeSettings, changePasswordSettings, forgottenPasswordSettings, information, bugReport;
     private SharedPreferences sharedPreferences;
     private String newTheme;
     private ConnectionController connectionController;
     private Database database;
     private ChatController chatController;
     private int theme = R.style.AppTheme;
-    private TextView themeOptionDescription, wallpaperOptionDescription, informationDescription;
-    private ImageView editProfileButton;
+    private TextView themeOptionDescription, wallpaperOptionDescription;
+    private ImageButton editProfileButton, logoutButton;
     private int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic, profilePics;
     private String previousProfilePic = "";
@@ -61,6 +75,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private ChatFragment chat;
     private SettingsFragment settingsFragment;
     private Connection connection;
+    private boolean isOldPasswordShown, isNewPasswordShown, isNewPassword2Shown;
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
             "(?=.*[a-z])" + //at least 1 lower case
@@ -130,6 +145,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         editProfileButton = view.findViewById(R.id.editProfileButton);
         editProfileButton.setOnClickListener(this);
 
+        logoutButton = view.findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(this);
+
         themeSettings = view.findViewById(R.id.themeSettings);
         themeSettings.setOnClickListener(this);
         //themeOptionDescription = view.findViewById(R.id.themeOptionDescription);
@@ -141,11 +159,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         wallpaperSettings = view.findViewById(R.id.wallpaperSettings);
         wallpaperSettings.setOnClickListener(this);
 
+        information = view.findViewById(R.id.information);
+        information.setOnClickListener(this);
+
+        bugReport = view.findViewById(R.id.bugReport);
+        bugReport.setOnClickListener(this);
+
         profilePic = view.findViewById(R.id.profilePic);
 
         //wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
-
-        view.findViewById(R.id.informationDescription).setSelected(true);
 
         setProfilePic();
 
@@ -168,14 +190,23 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 Intent intent = new Intent(getActivity(), EditProfileActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.logoutButton:
+                openLogoutDialog(dialogBuilder);
+                break;
+            case R.id.wallpaperSettings:
+                chooseBackgroundImage();
+                break;
             case R.id.themeSettings:
                 manageTheme(dialogBuilder);
                 break;
             case R.id.changePasswordSettings:
                 changePassword(dialogBuilder);
                 break;
-            case R.id.wallpaperSettings:
-                chooseBackgroundImage();
+            case R.id.information:
+                openInformationDialog(dialogBuilder);
+                break;
+            case R.id.bugReport:
+                openBugReportDialog(dialogBuilder);
                 break;
             default:
                 break;
@@ -205,17 +236,47 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         alertDialog.show();
 
         final EditText oldPassword, newPassword, newPassword2;
+        final ImageButton showHideOldPassword, showHideNewPassword, showHideNewPassword2;
         oldPassword = alertDialog.findViewById(R.id.editTextOldPassword);
         newPassword = alertDialog.findViewById(R.id.editTextNewPassword);
         newPassword2 = alertDialog.findViewById(R.id.editTextNewPassword2);
 
+        showHideOldPassword = alertDialog.findViewById(R.id.showHideOldPassword);
+        showHideNewPassword = alertDialog.findViewById(R.id.showHideNewPassword);
+        showHideNewPassword2 = alertDialog.findViewById(R.id.showHideNewPassword2);
 
-        final TextView forgotPasswordButton, cancelTextView, confirmTextview;
-        forgotPasswordButton = alertDialog.findViewById(R.id.forgotPasswordButton);
-        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-        confirmTextview = alertDialog.findViewById(R.id.confirmTextView);
+        showHideOldPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showHidePassword(isOldPasswordShown, oldPassword, showHideOldPassword);
+                isOldPasswordShown = !isOldPasswordShown;
+            }
+        });
 
-        forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
+        showHideNewPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showHidePassword(isNewPasswordShown, newPassword, showHideNewPassword);
+                isNewPasswordShown = !isNewPasswordShown;
+            }
+        });
+
+        showHideNewPassword2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showHidePassword(isNewPassword2Shown, newPassword2, showHideNewPassword2);
+                isNewPassword2Shown = !isNewPassword2Shown;
+            }
+        });
+
+
+        final TextView forgotPasswordTextView;
+        final Button cancelButton, confirmButton;
+        forgotPasswordTextView = alertDialog.findViewById(R.id.forgotPasswordButton);
+        cancelButton = alertDialog.findViewById(R.id.cancelTextView);
+        confirmButton = alertDialog.findViewById(R.id.confirmTextView);
+
+        forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
@@ -224,13 +285,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 final AlertDialog alertDialog2 = dialogBuilder.create();
                 alertDialog2.show();
 
-                final TextView cancelTextView, confirmTextview;
+                final Button cancelButton, confirmTextview;
                 final EditText emailEditText;
-                cancelTextView = alertDialog2.findViewById(R.id.cancelTextView);
+                cancelButton = alertDialog2.findViewById(R.id.cancelTextView);
                 confirmTextview = alertDialog2.findViewById(R.id.confirmTextView);
                 emailEditText = alertDialog2.findViewById(R.id.editTextEmail);
 
-                cancelTextView.setOnClickListener(new View.OnClickListener() {
+                cancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         alertDialog2.dismiss();
@@ -258,14 +319,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        cancelTextView.setOnClickListener(new View.OnClickListener() {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
             }
         });
 
-        confirmTextview.setOnClickListener(new View.OnClickListener() {
+        confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 /*
@@ -298,21 +359,30 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    private void showHidePassword(boolean isShown, EditText password, ImageButton showHidePasswordButton) {
+        if (!isShown) {
+            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            showHidePasswordButton.setImageResource(R.drawable.ic_hide_password);
+        } else {
+            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            showHidePasswordButton.setImageResource(R.drawable.ic_show_password);
+        }
+        password.setSelection(password.getText().length());
+    }
+
     private void manageTheme(AlertDialog.Builder dialogBuilder) {
         //AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
         dialogBuilder.setView(R.layout.dialog_app_theme);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
-        final LinearLayout lightButton, darkButton, followSystemButton;
-        final TextView cancelTextView, applyTextView;
+        final Button lightButton, darkButton, followSystemButton, cancelButton, applyButton;
 
         lightButton = alertDialog.findViewById(R.id.lightButton);
         darkButton = alertDialog.findViewById(R.id.darkButton);
         followSystemButton = alertDialog.findViewById(R.id.followSystemButton);
-        cancelTextView = alertDialog.findViewById(R.id.cancelTextView);
-        applyTextView = alertDialog.findViewById(R.id.applyTextView);
-
+        cancelButton = alertDialog.findViewById(R.id.cancelTextView);
+        applyButton = alertDialog.findViewById(R.id.applyTextView);
 
         String currentTheme = sharedPreferences.getString("appTheme", "light");
         if (currentTheme.equals("dark")) {
@@ -331,15 +401,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             Connection.lightOrDark = "Light";
             lightButton.setBackgroundResource(R.drawable.bg_theme_card_borderline);
         }
-                /*
-                if (currentTheme.equals("light")) {
-                    lightButton.setChecked(true);
-                } else if (currentTheme.equals("dark")) {
-                    darkButton.setChecked(true);
-                } else {
-                    followSystemButton.setChecked(true);
-                }
-                */
 
         lightButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -377,14 +438,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        cancelTextView.setOnClickListener(new View.OnClickListener() {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
             }
         });
 
-        applyTextView.setOnClickListener(new View.OnClickListener() {
+        applyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeTheme(newTheme, alertDialog);
@@ -416,6 +477,133 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_fragment, fragment);
         transaction.commit();
+    }
+
+    private void openLogoutDialog(AlertDialog.Builder dialogBuilder){
+        dialogBuilder.setView(R.layout.dialog_logout);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+        final Button cancel, logout;
+        cancel = alertDialog.findViewById(R.id.cancelButton);
+        logout = alertDialog.findViewById(R.id.logoutButton);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO Implementare logica per effettuare il logout
+            }
+        });
+
+    }
+
+    private void openInformationDialog(AlertDialog.Builder dialogBuilder) {
+        dialogBuilder.setView(R.layout.dialog_information);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+        final LinearLayout rate, share;
+        final Button close;
+        rate = alertDialog.findViewById(R.id.rate);
+        share = alertDialog.findViewById(R.id.share);
+        close = alertDialog.findViewById(R.id.close);
+
+        rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
+            }
+        });
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Connection");
+                String shareMessage = "Start using Connection\n";
+                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID;
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                startActivity(Intent.createChooser(shareIntent, "Share Connection"));
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+
+    }
+
+    private void openBugReportDialog(AlertDialog.Builder dialogBuilder) {
+        dialogBuilder.setView(R.layout.dialog_bug_report);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+        final Button cancelButton, sendButton;
+        cancelButton = alertDialog.findViewById(R.id.cancelButton);
+        sendButton = alertDialog.findViewById(R.id.sendButton);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sendBugReport(view.findViewById(R.id.editTextBugReport)))alertDialog.dismiss();
+            }
+        });
+
+
+    }
+
+    private boolean sendBugReport(TextView textView){
+        OkHttpClient client= new OkHttpClient.Builder()
+                .connectionSpecs(Arrays.asList(ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS))
+                .build();
+        // create your json here
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("userId", ConnectionController.myUser.getIdUser());
+            jsonObject.put("BugReport", textView.getText().toString());
+        } catch (
+                JSONException e) {
+            e.printStackTrace();
+        }
+
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(jsonObject.toString(),mediaType);
+
+        Request request = new Request.Builder()
+                .url("https://isconnection.herokuapp.com/bugReport")
+                .post(body)
+                .build();
+
+
+        Call call = client.newCall(request);
+        try {
+            Response response = client.newCall(request).execute();
+            if(response.isSuccessful()){
+                Toast.makeText(getContext(),"Thanks for reporting", Toast.LENGTH_LONG);
+            }else{
+                Toast.makeText(getContext(),"Something went wrong", Toast.LENGTH_LONG);
+                return false;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return true;
     }
 
     private void captureImage() {

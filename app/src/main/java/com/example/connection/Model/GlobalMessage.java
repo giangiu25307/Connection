@@ -5,7 +5,7 @@ public class GlobalMessage extends Message {
     String name;
 
     public GlobalMessage(String idSender, String message, String date,String name) {
-        super(idSender, message, date);
+        super(null, idSender, message, date, null);
         this.name=name;
     }
 

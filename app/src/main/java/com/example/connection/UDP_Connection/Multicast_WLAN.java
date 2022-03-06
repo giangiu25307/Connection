@@ -5,6 +5,8 @@ import com.example.connection.Controller.PlusController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.UserPlus;
 import com.example.connection.TCP_Connection.TcpClient;
+import com.example.connection.View.Connection;
+import com.example.connection.View.MapFragment;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -132,6 +134,10 @@ public class Multicast_WLAN extends Multicast {
                             break;
                         default:
                             break;
+                    }
+                    if(Connection.fragmentName.equals("MAP")) {
+                        MapFragment mapFragment = MapFragment.getIstance();
+                        mapFragment.graphicRefresh();
                     }
                 }
             }

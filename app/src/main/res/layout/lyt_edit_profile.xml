@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="?attr/layoutBackground"
     android:paddingBottom="10dp">
 
@@ -54,7 +54,7 @@
                     android:id="@+id/profilePic"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/gray_rounded_background"
+                    android:background="@drawable/bg_profile_pic_image_view_primary"
                     android:padding="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -63,13 +63,13 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_person_icon" />
 
-                <TextView
+                <Button
                     android:id="@+id/textView13"
-                    style="@style/inputDataStyle"
+                    style="@style/generalButton"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Take photo"
-                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -77,13 +77,13 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
 
-                <TextView
+                <Button
                     android:id="@+id/textView14"
-                    style="@style/inputDataStyle"
+                    style="@style/generalButton"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Gallery"
-                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -93,162 +93,174 @@
 
             <TextView
                 android:id="@+id/textView17"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Username"
-                style="@style/settingsGroupTitle" />
+                android:text="Username" />
 
             <EditText
-                android:id="@+id/editTextUsername"
+                android:id="@+id/usernameEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="Username"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView34"
+                style="@style/settingsGroupTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Mail"
-                style="@style/settingsGroupTitle" />
+                android:text="Mail" />
 
             <EditText
-                android:id="@+id/editTextMail"
+                android:id="@+id/mailEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="Mail"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView18"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Name"
-                style="@style/settingsGroupTitle" />
+                android:text="Name" />
 
             <EditText
-                android:id="@+id/editTextName"
+                android:id="@+id/nameEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="Name"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView35"
+                style="@style/settingsGroupTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Surname"
-                style="@style/settingsGroupTitle" />
+                android:text="Surname" />
 
             <EditText
-                android:id="@+id/editTextSurname"
+                android:id="@+id/surnameEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="Surname"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView19"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Phone number"
-                style="@style/settingsGroupTitle" />
+                android:text="Phone number" />
 
             <EditText
-                android:id="@+id/editTextPhonenumber"
+                android:id="@+id/phoneNumberEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="Phone number"
                 android:inputType="number" />
 
             <TextView
                 android:id="@+id/textView20"
+                style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Gender"
-                style="@style/settingsGroupTitle" />
+                android:text="Gender" />
 
-            <TextView
-                android:id="@+id/textViewGender"
-                style="@style/inputDataStyle"
+            <Button
+                android:id="@+id/genderButton"
+                style="@style/generalButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
+                android:paddingStart="12.5dp"
                 android:text="Gender" />
 
             <TextView
                 android:id="@+id/textView36"
+                style="@style/settingsGroupTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="City"
-                style="@style/settingsGroupTitle" />
+                android:text="City" />
 
             <EditText
-                android:id="@+id/editTextCity"
+                android:id="@+id/cityEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:ems="10"
                 android:hint="City"
                 android:inputType="text" />
 
             <TextView
                 android:id="@+id/textView37"
+                style="@style/settingsGroupTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="Country"
-                style="@style/settingsGroupTitle" />
+                android:text="Country" />
 
             <EditText
-                android:id="@+id/editTextCountry"
+                android:id="@+id/countryEditText"
+                style="@style/inputDataStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:hint="Country"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/textView38"
+                style="@style/settingsGroupTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:text="Telegram username" />
+
+            <EditText
+                android:id="@+id/telegramUsernameEditText"
                 style="@style/inputDataStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
-                android:ems="10"
-                android:hint="Country"
+                android:hint="Telegram username (without @)"
                 android:inputType="text" />
 
         </LinearLayout>

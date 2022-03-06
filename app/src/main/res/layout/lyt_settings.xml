@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
                 android:text="Profile" />
 
             <androidx.cardview.widget.CardView
@@ -31,8 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 app:cardBackgroundColor="?attr/itemBackground"
                 app:cardCornerRadius="12.5dp"
                 app:cardElevation="0dp"
@@ -68,20 +67,26 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <ImageView
+                        <ImageButton
                             android:id="@+id/editProfileButton"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_weight="0"
+                            android:background="@null"
+                            android:contentDescription="Edit profile"
+                            android:scaleType="fitXY"
                             app:srcCompat="@drawable/ic_edit"
                             app:tint="?attr/toolbarAndSettingsCardIconColor" />
 
-                        <ImageView
-                            android:id="@+id/imageView15"
+                        <ImageButton
+                            android:id="@+id/logoutButton"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginTop="10dp"
                             android:layout_weight="0"
+                            android:background="@null"
+                            android:contentDescription="Logout"
+                            android:scaleType="fitXY"
                             app:srcCompat="@drawable/ic_logout" />
 
                     </LinearLayout>
@@ -143,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
                 android:text="Personalize" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -151,7 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_settings_card"
                 android:clickable="true"
                 android:paddingVertical="5dp"
@@ -175,6 +180,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
+                    android:contentDescription="Chat background icon"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -242,6 +248,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
+                    android:contentDescription="App theme icon"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -283,12 +290,12 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/appThemeDialogTitle"
                 style="@style/settingsGroupTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
                 android:text="Security" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -296,7 +303,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_settings_card"
                 android:paddingVertical="5dp">
 
@@ -314,6 +321,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
+                    android:contentDescription="Password icon"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -360,7 +368,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
                 android:text="Other" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -368,7 +376,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_settings_card"
                 android:paddingVertical="5dp">
 
@@ -386,6 +394,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
+                    android:contentDescription="Information icon"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -416,10 +425,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="2dp"
-                    android:ellipsize="marquee"
-                    android:singleLine="true"
-                    android:text="Look at the app version, the project on GitHub and more"
-                    app:layout_constrainedWidth="true"
+                    android:text="All information about the app"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -452,6 +458,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
+                    android:contentDescription="Bug report icon"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"

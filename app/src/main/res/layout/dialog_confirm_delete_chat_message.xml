@@ -11,66 +11,25 @@
 
     <TextView
         android:id="@+id/deleteDialogTitle"
+        style="@style/dialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete?"
-        android:fontFamily="@font/opensans_bold_custom"
-        android:textColor="?attr/textColor"
-        android:textSize="21sp"/>
+        android:text="Delete" />
 
     <TextView
         android:id="@+id/deleteDialogSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Are you sure you want to delete?"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/opensans_regular_custom"
+        android:text="Are you sure you want to delete?"
         android:textColor="?attr/secondaryTextColor"
-        android:textSize="16sp"/>
+        android:textSize="15sp" />
 
-    <LinearLayout
+    <include
+        layout="@layout/lyt_cancel_delete_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="48dp">
-
-        <Button
-            android:id="@+id/cancelButton"
-            style="@style/cancelButton2"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:gravity="center"
-            android:letterSpacing="0"
-            android:minHeight="48dp"
-            android:paddingVertical="0dp"
-            android:text="Cancel"
-            android:textAllCaps="false"
-            app:backgroundTint="@null"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline17"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/deleteButton"
-            style="@style/applyConfirmDeleteButton"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:gravity="center"
-            android:text="Delete"
-            android:minHeight="48dp"
-            android:paddingVertical="0dp"
-            android:letterSpacing="0"
-            android:textAllCaps="false"
-            app:backgroundTint="@null"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline17"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </LinearLayout>
+        android:layout_marginTop="48dp" />
 
 </LinearLayout>

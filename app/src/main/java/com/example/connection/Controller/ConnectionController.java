@@ -1,7 +1,5 @@
 package com.example.connection.Controller;
 
-import static android.net.ConnectivityManager.NetworkCallback;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -22,6 +20,7 @@ import androidx.annotation.NonNull;
 import com.example.connection.Bluetooth.BluetoothAdvertiser;
 import com.example.connection.Bluetooth.BluetoothScanner;
 import com.example.connection.Database.Database;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.Model.User;
 import com.example.connection.TCP_Connection.Encryption;
 import com.example.connection.TCP_Connection.TcpClient;
@@ -34,6 +33,8 @@ import com.example.connection.View.Connection;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
+
+import static android.net.ConnectivityManager.NetworkCallback;
 
 public class
 ConnectionController {
@@ -89,6 +90,7 @@ ConnectionController {
         connManager = (ConnectivityManager) connection.getSystemService(Context.CONNECTIVITY_SERVICE);
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
+        MessageListener messageListener = new MessageListener().newInstance(connection.getApplicationContext(),database,chatController);
         wifiLock = wifiManager.createWifiLock(1, "testLock");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
@@ -154,19 +156,14 @@ ConnectionController {
             @Override
             public void onFailure(int reason) {
                 System.out.println("create group error" + reason);
+                mChannel.close();
                 new CountDownTimer(3000, 3000) {
 
                     public void onTick(long millisUntilFinished) {
                     }
 
                     public void onFinish() {
-                        mManager.removeGroup(mChannel, null);
-                        try {
-                            mChannel.close();
-                            mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
-                        } catch (Throwable e) {
-                            System.out.println("Direct-Connection closed");
-                        }
+                        mChannel = mManager.initialize(connection, connection.getMainLooper(), null);
                         createGroup();
                     }
                 }.start();

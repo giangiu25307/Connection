@@ -2,12 +2,16 @@ package com.example.connection.View;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,13 +25,13 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.DrawController;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
-    private Button skipButton;
-    private LinearLayout loginButton, signupButton;
+    private Button loginButton, signupButton;
     private ConnectionController connectionController;
     private Database database;
     private ChatController chatController;
@@ -35,6 +39,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Connection connection;
     private AccountController accountController;
     private DrawController drawController;
+    private ImageButton showHidePassword;
+    private boolean isPasswordShown;
 
     public LoginFragment() {
 
@@ -56,13 +62,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         signupButton = view.findViewById(R.id.signupButton);
         signupButton.setOnClickListener(this);
-        skipButton = view.findViewById(R.id.skipButton);
-        skipButton.setOnClickListener(this);
         loginButton = view.findViewById(R.id.loginButton);
         loginButton.setOnClickListener(this);
         email = view.findViewById(R.id.editTextEmail);
         password = view.findViewById(R.id.editTextPassword);
-
+        showHidePassword = view.findViewById(R.id.showHidePassword);
+        showHidePassword.setOnClickListener(this);
         return view;
     }
 
@@ -72,11 +77,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.signupButton:
                 fragment = new SignupFragment().newInstance(connection, database,accountController,drawController);
-                loadFragment(fragment);
-                break;
-            case R.id.skipButton:
-                //connectionController.startServiceDiscovery();
-                fragment = new HomeFragment().newInstance(connection, database,drawController);
                 loadFragment(fragment);
                 break;
             case R.id.loginButton:
@@ -93,7 +93,31 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 } else {
                     email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
                     password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
+                    Snackbar snackbar = Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.lyt_chat_activity), "", Snackbar.LENGTH_LONG);
+                    Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+                    layout.setBackgroundColor(getActivity().getColor(R.color.transparent));
+                    TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
+                    textView.setVisibility(View.INVISIBLE);
+
+                    View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
+                    TextView textView1 = snackView.findViewById(R.id.textView);
+                    textView1.setText("Mail and password don't match, please try again");
+                    layout.setPadding(5, 5, 5, 5);
+                    layout.addView(snackView, 0);
+                    snackbar.show();
                 }
+                break;
+            case R.id.showHidePassword:
+                if(!isPasswordShown){
+                    password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    showHidePassword.setImageResource(R.drawable.ic_hide_password);
+                    isPasswordShown = true;
+                }else{
+                    password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    showHidePassword.setImageResource(R.drawable.ic_show_password);
+                    isPasswordShown = false;
+                }
+                password.setSelection(password.getText().length());
                 break;
             default:
                 break;

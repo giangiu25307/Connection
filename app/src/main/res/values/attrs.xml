@@ -25,6 +25,9 @@
         <attr name="topLineBottomSheetColor" format="color"/>
         <attr name="toolbarAndSettingsCardIconColor" format="color"/>
 
+        <!-- Other -->
+        <attr name="vectorLogin" format="reference"/>
+
     </declare-styleable>
 
 </resources>

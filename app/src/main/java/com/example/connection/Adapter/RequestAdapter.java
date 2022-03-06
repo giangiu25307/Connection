@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -81,7 +83,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             @Override
             public void deleteRequest(int p) {
                 chatCursor.moveToPosition(p);
-                database.discard(chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT)));
+                database.blockUser(chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.ID_CHAT)));
                 swapCursor(database.getAllRequestChat());
             }
 
@@ -105,19 +107,9 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         String datetime = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATETIME));
         File profilePic = new File(user.getProfilePic());
 
-        if (profilePic.exists()) {
-
-            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circle);
-            bitmap2 = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
-            BitmapDrawable layer1 = new BitmapDrawable(context.getResources(), bitmap2);
-            BitmapDrawable layer2 = new BitmapDrawable(context.getResources(), bitmap);
-            Drawable[] layers = {layer1, layer2};
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
-            ImageView profilePicImageView = holder.profilePic;
-            profilePicImageView.setImageTintList(null);
-            profilePicImageView.setImageDrawable(layerDrawable);
-            //bitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
-
+        if(profilePic.exists()){
+            Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
+            holder.profilePic.setImageBitmap(myBitmap);
         }
 
         //String timeLastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATE));
@@ -131,27 +123,38 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         informationTextView.setText(user.getName());
         String temp = user.getAge() + ", " + user.getGender();
         informationTextView2.setText(temp);
-        lastMessageTextView.setText(lastMessage);
-        try {
-            date = format.parse(datetime);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (lastMessage != null) {
+            lastMessageTextView.setText(lastMessage);
+            lastMessageTextView.setTypeface(null, Typeface.NORMAL);
+        }else{
+            lastMessageTextView.setText("No message");
+            lastMessageTextView.setTypeface(null, Typeface.ITALIC);
         }
-        Date date2 = null;
-        try {
-            date2 = format.parse(String.valueOf(LocalDateTime.now()));
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(datetime != null){
+            try {
+                date = format.parse(datetime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Date date2 = null;
+            try {
+                date2 = format.parse(String.valueOf(LocalDateTime.now()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (date.getDay() == date2.getDay() && date.getMonth() == date2.getMonth() && date.getYear() == date2.getYear()) {
+                datetime = String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes();
+            } else {
+                datetime = String.valueOf(date.getDay() < 10 ? '0' : "") + date.getDay() + "/" + (date.getMonth() < 10 ? '0' : "") + date.getMonth() + "/" + String.valueOf(date.getYear()).substring(String.valueOf(date.getYear()).length() - 2, String.valueOf(date.getYear()).length());
+            }
+
+            System.out.println("Orario chat: " + datetime);
+            timeLastMessageTextView.setText(datetime);
+        }else{
+            timeLastMessageTextView.setText("");
         }
 
-        if (date.getDay() == date2.getDay() && date.getMonth() == date2.getMonth() && date.getYear() == date2.getYear()) {
-            datetime = String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes();
-        } else {
-            datetime = String.valueOf(date.getDay() < 10 ? '0' : "") + date.getDay() + "/" + (date.getMonth() < 10 ? '0' : "") + date.getMonth() + "/" + String.valueOf(date.getYear()).substring(String.valueOf(date.getYear()).length() - 2, String.valueOf(date.getYear()).length());
-        }
-
-        System.out.println("Orario chat: " + datetime);
-        timeLastMessageTextView.setText(datetime);
         //lastMessageTimeTextView.setText(timeLastMessage);
     }
 
@@ -182,7 +185,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
         RequestAdapter.ViewHolder.OnChatClickListener listener;
 
-        private ImageView profilePic, answer, cancel;
+        private ImageView profilePic;
+        private ImageButton answer, cancel;
         private TextView information, information2, lastMessage, timeLastMessage;
         private Cursor chatCursor;
 

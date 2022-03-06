@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <View
-        android:layout_width="50dp"
+        android:layout_width="37.5dp"
         android:layout_height="4dp"
         android:layout_gravity="center"
         android:layout_marginTop="12dp"
@@ -19,11 +19,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/opensans_semibold_custom"
-        android:text="Start new chat"
-        android:textColor="?attr/textColor"
-        android:textSize="21sp"
+        android:layout_marginTop="8dp"
+        android:text="New chat"
+        style="@style/dialogTitle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +30,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingVertical="20dp">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline18"
@@ -67,9 +66,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginBottom="8dp"
             android:text="Name"
             android:textColor="?attr/textColor"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@+id/guideline4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
