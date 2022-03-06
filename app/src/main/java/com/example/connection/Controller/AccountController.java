@@ -27,7 +27,7 @@ public class AccountController {
                 .build();
     }
 
-    public String login(String email,String password) throws IOException {
+    public boolean login(String email,String password) throws IOException {
 
         // create your json here
         JSONObject jsonObject = new JSONObject();
@@ -47,16 +47,13 @@ public class AccountController {
                 .post(body)
                 .build();
 
-
-        Call call = client.newCall(request);
         try {
             Response response = client.newCall(request).execute();
-            System.out.println("ciao" + response.body().string());
-            return response.body().string();
+            return response.isSuccessful();
         }catch (Exception e){
             e.printStackTrace();
         }
-        return null;
+        return false;
     }
 
     public Response register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number,String profilePic) throws IOException {
@@ -65,16 +62,17 @@ public class AccountController {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name", name);
-            jsonObject.put("surname", surname);
             jsonObject.put("username", username);
             jsonObject.put("password", password);
-            jsonObject.put("gender", gender);
-            // jsonObject.put("city", city);
-            jsonObject.put("phoneNumber", number);
-            jsonObject.put("birthday", birth);
-            jsonObject.put("country", country);
-            jsonObject.put("profilePic", profilePic);
             jsonObject.put("email", mail);
+            jsonObject.put("gender", gender);
+            jsonObject.put("surname", surname);
+            jsonObject.put("country", country);
+            // jsonObject.put("city", city);
+            jsonObject.put("birthday", birth);
+            jsonObject.put("phoneNumber", number);
+            jsonObject.put("phoneNumber", number);
+            // jsonObject.put("porfilePic",profilePic);
         } catch (
                 JSONException e) {
             e.printStackTrace();

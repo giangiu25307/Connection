@@ -221,7 +221,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         Response response=accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePic());
                         if(response.isSuccessful()){
                             alertDialog.dismiss();
-                            database.addUser("0", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic(), user.getPublicKey());
+                            database.addUser("1", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic(), user.getPublicKey());
                             database.setNumber("0", user.getNumber());
                             Toast.makeText(getContext(),"Registration successful", Toast.LENGTH_LONG);
                             Fragment fragment = new LoginFragment().newInstance(connection,database,accountController,drawController);

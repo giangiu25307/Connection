@@ -54,7 +54,7 @@ public class Connection extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        deleteDatabase("Connection");
+       // deleteDatabase("Connection");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -78,7 +78,7 @@ public class Connection extends AppCompatActivity {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
         }
 
-        boolean createSample = true;
+        boolean createSample = false;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
             database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo", "");
@@ -371,7 +371,7 @@ public class Connection extends AppCompatActivity {
 
     public boolean firstLogin() {
         try {
-            database.getUser("0");
+            if(database.getMyInformation()[0] != null);
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Utente non trovato");
             return true;

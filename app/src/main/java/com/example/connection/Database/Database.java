@@ -735,7 +735,7 @@ public class Database extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
         String query = "SELECT *" +
                 " FROM " + Task.TaskEntry.USER +
-                " WHERE " + Task.TaskEntry.IP + " IS NOT NULL" +
+                " WHERE " + Task.TaskEntry.IP + " IS NOT NULL OR " + Task.TaskEntry.IP_GROUP_OWNER + " IS NOT NULL" +
                 (!Connection.genders[0].equals("") && Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[0] + "'" : "") +
                 (Connection.genders[0].equals("") && !Connection.genders[1].equals("") && Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[1] + "'" : "") +
                 (Connection.genders[0].equals("") && Connection.genders[1].equals("") && !Connection.genders[2].equals("") ? " AND " + Task.TaskEntry.GENDER + " == '" + Connection.genders[2] + "'" : "") +
@@ -1052,13 +1052,20 @@ public class Database extends SQLiteOpenHelper {
         String query = "SELECT " + Task.TaskEntry.MESSAGES_ACCEPTED +
                 " FROM " + Task.TaskEntry.USER +
                 " WHERE " + Task.TaskEntry.ID_USER + "=" + idUser;
-        Cursor c = db.rawQuery(query, null);
-        if (c != null) {
-            c.moveToFirst();
-            if (c.getString(0).equals("true")) return false;
-            else return true;
+        try {
+            Cursor c = db.rawQuery(query, null);
+            if (c != null) {
+                c.moveToFirst();
+                if (c.getString(0).equals("true")) return false;
+                else return true;
+            }
+
+        }catch (CursorIndexOutOfBoundsException e){
+            System.out.println("Utente non inserito");
+            return false;
         }
-        return true;
+
+        return false;
     }
 
     /**

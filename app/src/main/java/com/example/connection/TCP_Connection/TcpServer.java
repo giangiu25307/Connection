@@ -10,6 +10,7 @@ import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.Connection;
+import com.example.connection.View.MapFragment;
 import com.example.connection.libs.AsyncServer;
 import com.example.connection.libs.AsyncServerSocket;
 import com.example.connection.libs.AsyncSocket;
@@ -130,7 +131,7 @@ public class TcpServer {
         try {
             Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
             String[] splittedR = msg.split("£€");
-            if(database.isUserBlocked(splittedR[0])){
+            if(database.isUserBlocked(splittedR[1])){
                 return "";
             }
             switch (splittedR[0]) {
@@ -188,6 +189,10 @@ public class TcpServer {
                         }
                     }
                     Multicast.dbUserEvent = false;
+                    if(Connection.fragmentName.equals("MAP")) {
+                        MapFragment mapFragment = MapFragment.getIstance();
+                        mapFragment.graphicRefresh();
+                    }
                     return "sendInfo";
                 case "message":
                     //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------

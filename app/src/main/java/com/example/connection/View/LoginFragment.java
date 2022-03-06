@@ -42,16 +42,22 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private ImageButton showHidePassword;
     private boolean isPasswordShown;
 
+    private static LoginFragment loginFragment;
+
     public LoginFragment() {
 
     }
 
     public LoginFragment newInstance(Connection connection, Database database, AccountController accountController, DrawController drawController) {
-        LoginFragment loginFragment = new LoginFragment();
+        loginFragment = new LoginFragment();
         loginFragment.setConnection(connection);
         loginFragment.setDatabase(database);
         loginFragment.setAccountController(accountController);
         loginFragment.setDrawController(drawController);
+        return loginFragment;
+    }
+
+    public static LoginFragment getInstance(){
         return loginFragment;
     }
 
@@ -60,14 +66,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_login, null);
 
-        signupButton = view.findViewById(R.id.signupButton);
-        signupButton.setOnClickListener(this);
-        loginButton = view.findViewById(R.id.loginButton);
-        loginButton.setOnClickListener(this);
-        email = view.findViewById(R.id.editTextEmail);
-        password = view.findViewById(R.id.editTextPassword);
-        showHidePassword = view.findViewById(R.id.showHidePassword);
-        showHidePassword.setOnClickListener(this);
+        loginFragment.signupButton = view.findViewById(R.id.signupButton);
+        loginFragment.signupButton.setOnClickListener(this);
+        loginFragment.loginButton = view.findViewById(R.id.loginButton);
+        loginFragment.loginButton.setOnClickListener(this);
+        loginFragment.email = view.findViewById(R.id.editTextEmail);
+        loginFragment.password = view.findViewById(R.id.editTextPassword);
+        loginFragment.showHidePassword = view.findViewById(R.id.showHidePassword);
+        loginFragment.showHidePassword.setOnClickListener(this);
         return view;
     }
 
@@ -76,48 +82,47 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         Fragment fragment;
         switch (v.getId()) {
             case R.id.signupButton:
-                fragment = new SignupFragment().newInstance(connection, database,accountController,drawController);
+                fragment = new SignupFragment().newInstance(loginFragment.connection, loginFragment.database,loginFragment.accountController,drawController);
                 loadFragment(fragment);
                 break;
             case R.id.loginButton:
-                if (checker()) {
-                    fragment = new HomeFragment().newInstance(connection, database,drawController);
-                    loadFragment(fragment);
-                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
-                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
-                    try {
-                        System.out.println(accountController.login(email.getText().toString(),password.getText().toString()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
-                    password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
-                    Snackbar snackbar = Snackbar.make(getActivity().getWindow().getDecorView().findViewById(R.id.lyt_chat_activity), "", Snackbar.LENGTH_LONG);
-                    Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-                    layout.setBackgroundColor(getActivity().getColor(R.color.transparent));
-                    TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
-                    textView.setVisibility(View.INVISIBLE);
+                try {
+                    if (accountController.login(loginFragment.email.getText().toString(),loginFragment.password.getText().toString())) {
+                        fragment = new HomeFragment().newInstance(loginFragment.connection, loginFragment.database,loginFragment.drawController);
+                        loadFragment(fragment);
+                        loginFragment.email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
+                        loginFragment.password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data));
+                    } else {
+                        loginFragment.email.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
+                        loginFragment.password.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.bg_input_data_wrong));
+                        Snackbar snackbar = Snackbar.make(loginFragment.getActivity().getWindow().getDecorView().findViewById(R.id.lyt_chat_activity), "", Snackbar.LENGTH_LONG);
+                        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+                        layout.setBackgroundColor(loginFragment.getActivity().getColor(R.color.transparent));
+                        TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
+                        textView.setVisibility(View.INVISIBLE);
 
-                    View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
-                    TextView textView1 = snackView.findViewById(R.id.textView);
-                    textView1.setText("Mail and password don't match, please try again");
-                    layout.setPadding(5, 5, 5, 5);
-                    layout.addView(snackView, 0);
-                    snackbar.show();
+                        View snackView = loginFragment.getActivity().getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
+                        TextView textView1 = snackView.findViewById(R.id.textView);
+                        textView1.setText("Mail and password don't match, please try again");
+                        layout.setPadding(5, 5, 5, 5);
+                        layout.addView(snackView, 0);
+                        snackbar.show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 break;
             case R.id.showHidePassword:
                 if(!isPasswordShown){
-                    password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    showHidePassword.setImageResource(R.drawable.ic_hide_password);
-                    isPasswordShown = true;
+                    loginFragment.password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    loginFragment.showHidePassword.setImageResource(R.drawable.ic_hide_password);
+                    loginFragment.isPasswordShown = true;
                 }else{
-                    password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    showHidePassword.setImageResource(R.drawable.ic_show_password);
-                    isPasswordShown = false;
+                    loginFragment.password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    loginFragment.showHidePassword.setImageResource(R.drawable.ic_show_password);
+                    loginFragment.isPasswordShown = false;
                 }
-                password.setSelection(password.getText().length());
+                loginFragment.password.setSelection(loginFragment.password.getText().length());
                 break;
             default:
                 break;
@@ -132,12 +137,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     public void setDatabase(Database database) {
         this.database = database;
-    }
-
-    private boolean checker() {
-        String data = database.getMyEmail();
-        if (data.equals(email.getText()) && data.equals(password.getText())) return true;
-        else return false;
     }
 
     private void setConnection(Connection connection) {

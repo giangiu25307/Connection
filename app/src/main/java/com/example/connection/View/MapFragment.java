@@ -58,7 +58,7 @@ public class MapFragment extends Fragment {
 
     }
 
-    public static MapFragment getIstance(){
+    public static MapFragment getIstance() {
         return mapFragment;
     }
 
@@ -78,11 +78,15 @@ public class MapFragment extends Fragment {
         this.database = database;
     }
 
+    public void setUserList(ArrayList<User> userList) {
+        this.userList = userList;
+    }
+
     public void setDrawController(DrawController drawController) {
         this.drawController = drawController;
     }
 
-    public DrawController getDrawController(){
+    public DrawController getDrawController() {
         return mapFragment.drawController;
     }
 
@@ -93,18 +97,18 @@ public class MapFragment extends Fragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         mapFragment.parent = view.findViewById(R.id.mapFlowLayout);
-        mapFragment.userList = mapFragment.database.getAllFilteredUsers();
+        mapFragment.setUserList(mapFragment.database.getAllFilteredUsers());
         mapFragment.sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
         graphicRefresh();
         return view;
     }
 
-    public void graphicRefresh(){
+    public void graphicRefresh() {
         mapFragment.parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 mapFragment.parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                mapFragment.drawController.init(getContext(), mapFragment.parent, mapFragment.parent.getHeight(), mapFragment.parent.getWidth(), userList);
+                mapFragment.drawController.init(getContext(), mapFragment.parent, mapFragment.parent.getHeight(), mapFragment.parent.getWidth(), mapFragment.userList);
             }
         });
     }
