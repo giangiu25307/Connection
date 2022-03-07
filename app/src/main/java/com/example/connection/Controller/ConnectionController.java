@@ -206,7 +206,9 @@ ConnectionController {
                         @Override
                         public void onFinish() {
                             try {
-                                MyNetworkInterface.setNetworkInterfacesNames();
+                                while (MyNetworkInterface.wlanIpv6Address.equals("")) {
+                                    MyNetworkInterface.setNetworkInterfacesNames();
+                                }
                                 myUser.setInetAddressWlan(MyNetworkInterface.wlanIpv6Address);
                                 database.setIp(myUser.getIdUser(), myUser.getInetAddressWlan().getHostAddress());
                             } catch (SocketException | UnknownHostException e) {
@@ -251,7 +253,9 @@ ConnectionController {
                             CallbackWhenGO = false;
                             tcpServer.setup();
                             try {
-                                MyNetworkInterface.setNetworkInterfacesNames();
+                                while (MyNetworkInterface.wlanIpv6Address.equals("")) {
+                                    MyNetworkInterface.setNetworkInterfacesNames();
+                                }
                                 myUser.setInetAddressWlan(MyNetworkInterface.wlanIpv6Address);
                                 database.setIp(myUser.getIdUser(), myUser.getInetAddressWlan().getHostAddress());
                             } catch (SocketException | UnknownHostException e) {
