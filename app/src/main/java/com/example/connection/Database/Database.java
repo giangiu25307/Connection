@@ -272,12 +272,11 @@ public class Database extends SQLiteOpenHelper {
         String query = "SELECT last_message, datetime " +
                 " FROM " + Task.TaskEntry.CHAT +
                 " WHERE " + Task.TaskEntry.ID_CHAT + " = '" + idChat + "'";
-        System.out.println("Query " + query);
         Cursor cursor = db.rawQuery(query, null);
         if (cursor != null) {
             cursor.moveToFirst();
             Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
-            return new LastMessage(cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)), cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)));
+            return new LastMessage(cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)), cursor.getString(cursor.getColumnIndex(Task.TaskEntry.DATETIME)));
         }
         return new LastMessage("", "");
     }

@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         toolbarTitle = toolbar.findViewById(R.id.toolbarTitle);
-
+        homeFragment = HomeFragment.getInstance();
         bottomNavigationMenu = view.findViewById(R.id.bottomNavigationMenu);
         bottomNavigationMenu.setOnNavigationItemSelectedListener(bottomNavigationMenuListener);
         bottomNavigationMenu.setItemIconTintList(null);

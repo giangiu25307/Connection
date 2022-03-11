@@ -507,7 +507,7 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         try {
-                            if(database.getTelegramNick(ConnectionController.myUser.getIdUser()).equals("")){
+                            if(database.getTelegramNick(ConnectionController.myUser.getIdUser()) == null || database.getTelegramNick(ConnectionController.myUser.getIdUser()).equals("")){
                                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(alertDialog.getContext(), R.style.CustomAlertDialog);
                                 dialogBuilder.setView(R.layout.dialog_telegram_username);
                                 final AlertDialog alertDialog = dialogBuilder.create();

@@ -152,7 +152,7 @@ public class TcpServer {
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
                     }
-                    break;
+                    return "share";
                 case "image":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                         sdf = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss");

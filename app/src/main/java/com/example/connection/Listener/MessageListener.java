@@ -117,7 +117,7 @@ public class MessageListener extends BroadcastReceiver {
             switch (intent.getStringExtra("communicationType")) {
                 case "tcp":
                     if (Connection.idChatOpen.equals(intent.getStringExtra("idChat"))) {
-                        LastMessage lastMessage = database.getLastMessageChat(intent.getStringExtra("idChat"));
+                        LastMessage lastMessage = messageListener.database.getLastMessageChat(intent.getStringExtra("idChat"));
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
                         Date date = new Date();
                         try {
@@ -125,7 +125,7 @@ public class MessageListener extends BroadcastReceiver {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        messageListener.messageAdapter.addMessage(new Message(database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString(), intent.getStringExtra("sent")));
+                        messageListener.messageAdapter.addMessage(new Message(messageListener.database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString(), intent.getStringExtra("sent")));
                     } else if (Connection.fragmentName.equals("CHAT")) {
                         ChatFragment chatFragment = ChatFragment.getIstance();
                         chatFragment.setupRecyclerView(chatFragment.requireView());

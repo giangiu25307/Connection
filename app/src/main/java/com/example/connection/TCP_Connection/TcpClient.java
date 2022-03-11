@@ -201,8 +201,13 @@ public class TcpClient {
             datetime = String.valueOf(LocalDateTime.now());
         }
         try {
-            date = format.parse(datetime);
-            if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
+            if(datetime != null) {
+                date = format.parse(datetime);
+                if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
+                    database.addMsg("", ConnectionController.myUser.getIdUser(), id);
+                }
+            }else{
+                date = format.parse(LocalDateTime.now().toString());
                 database.addMsg("", ConnectionController.myUser.getIdUser(), id);
             }
         } catch (ParseException e) {
@@ -281,7 +286,9 @@ public class TcpClient {
                             intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
                             intent.putExtra("sent", "2");
                             connection.getApplicationContext().sendBroadcast(intent);
-                        } else { //Image
+                        } else if(received.split("£€")[1].equals("share")) {
+                            //Non deve fare nulla, deve essere vuoto
+                        }else { //Image
                             checkDate(oldId);
                             database.addImage(oldImage, ConnectionController.myUser.getIdUser(), oldId);
                             intent.putExtra("intentType", "messageController");
