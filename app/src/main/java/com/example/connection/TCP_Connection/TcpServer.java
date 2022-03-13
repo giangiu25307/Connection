@@ -167,6 +167,7 @@ public class TcpServer {
                         intent.putExtra("idUser", splittedR[1]);
                         //  intent.putExtra("msg",message); da finire la parte delle immagini
                         intent.putExtra("idChat", splittedR[1]);
+                        connection.getApplicationContext().sendBroadcast(intent);
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
                     }

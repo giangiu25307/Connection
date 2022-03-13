@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.Model.LastMessage;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 import com.example.connection.View.ChatActivity;
@@ -241,7 +242,7 @@ public class TcpClient {
                         database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);                        ;
                         database.setMessageSent(oldId,database.getLastMessageId(oldId),"0");
                         counter++;
-                        Intent intent = new Intent(connection.getApplicationContext(), ChatActivity.class);
+                        Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                         intent.putExtra("intentType", "messageController");
                         intent.putExtra("communicationType", "tcp");
                         intent.putExtra("msg", oldClearMsg);
@@ -254,7 +255,7 @@ public class TcpClient {
                     }
                 else {
                     if (!noKey) {
-                        Intent intent = new Intent(connection.getApplicationContext(), ChatActivity.class);
+                        Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                         if (received.split("£€")[1].equals("handShake")) {
                             database.createChat(oldId, database.getUserName(oldId), oldSecretKey);
                             checkDate(oldId);

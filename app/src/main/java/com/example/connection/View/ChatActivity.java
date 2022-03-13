@@ -89,9 +89,9 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.lyt_chat_activity);
         context = this;
         idChat = getIntent().getStringExtra("idChat");
+        Connection.idChatOpen = idChat;
         database.setReadAllMessages(idChat);
         user = database.getUser(idChat);
-        Connection.idChatOpen = user.getIdUser();
         String username = getIntent().getStringExtra("username");
         if (MessageListener.getIstance().getMessagingStyleHashMap().get(user.getIdUser()) != null) {
             MessageListener.getIstance().getMessagingStyleHashMap().replace(user.getIdUser(), new NotificationCompat.MessagingStyle(username));
@@ -160,7 +160,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 chatController.sendTCPMsg(message_input.getText().toString(), user.getIdUser());
-                MessageListener.getIstance().setMessageAdapter(messageAdapter);
+                message_input.setText("");
             }
         });
 
@@ -203,14 +203,16 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
+
         recyclerView = findViewById(R.id.messageRecyclerView);
         Cursor messageCursor = Connection.database.getAllMsg(user.getIdUser());
+        messageAdapter = new MessageAdapter(this, Connection.database, user.getIdUser(), messageList, linearLayoutManager, recyclerView, noMessageImageView, noMessageTextView);
+        MessageListener.getIstance().setMessageAdapter(messageAdapter);
+        recyclerView.setAdapter(messageAdapter);
+        recyclerView.setLayoutManager(linearLayoutManager);
         setBackgroundImage();
         if (messageCursor != null && messageCursor.getCount() > 0) {
             fillMessagesArrayList(messageCursor);
-            messageAdapter = new MessageAdapter(this, Connection.database, user.getIdUser(), messageList, linearLayoutManager);
-            recyclerView.setAdapter(messageAdapter);
-            recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.scrollToPosition(messageCursor.getCount() - 1);
             recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                 @Override

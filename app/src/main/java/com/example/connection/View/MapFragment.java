@@ -33,6 +33,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.DrawController;
 import com.example.connection.Database.Database;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.Layout.FlowLayout;
@@ -255,6 +256,11 @@ public class MapFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }
 

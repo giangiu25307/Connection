@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -59,13 +60,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
     private ArrayList<Message> messagesList;
     public ArrayList<String> selectedMessage = new ArrayList<>();
+    private ImageView noMessageImageView;
+    private TextView noMessageTextView;
+    private RecyclerView recyclerView;
 
-    public MessageAdapter(Context context, Database database, String id, ArrayList<Message> messagesList, LinearLayoutManager linearLayoutManager) {
+    public MessageAdapter(Context context, Database database, String id, ArrayList<Message> messagesList, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView, ImageView noMessageImageView, TextView noMessageTextView) {
         this.context = context;
         this.database = database;
         this.idChat = id;
         this.messagesList = messagesList;
         this.linearLayoutManager = linearLayoutManager;
+        this.recyclerView = recyclerView;
+        this.noMessageImageView = noMessageImageView;
+        this.noMessageTextView = noMessageTextView;
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(messageCursor));
     }
 
@@ -221,6 +228,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void addMessage(Message message){
+        if(recyclerView.getVisibility() == View.INVISIBLE){
+            recyclerView.setVisibility(View.VISIBLE);
+            noMessageImageView.setVisibility(View.INVISIBLE);
+            noMessageTextView.setVisibility(View.INVISIBLE);
+        }
         messagesList.add(message);
         notifyItemInserted(messagesList.size() - 1);
     }

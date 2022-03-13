@@ -25,9 +25,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Database.Database;
 import com.example.connection.Controller.Task;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.ChatActivity;
+import com.example.connection.View.Connection;
 
 import java.io.File;
 import java.text.ParseException;

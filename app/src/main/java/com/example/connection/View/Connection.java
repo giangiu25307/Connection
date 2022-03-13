@@ -38,6 +38,7 @@ public class Connection extends AppCompatActivity {
     private Boolean startTimer = false;
     private Boolean startTimer2 = true;
     private long secondsRemaining = 1000;
+
     private SharedPreferences sharedPreferences;
     public static boolean boot = true, isGlobalChatOpen = false;
     public static Database database;
@@ -75,7 +76,13 @@ public class Connection extends AppCompatActivity {
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
         boolean createMyUser = true;
         if(createMyUser){
-            database.addUser("2", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
+            String manufacturer = "xiaomi";
+            if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
+                database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
+            } else {
+                database.addUser("1", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
+
+            }
         }
 
         boolean createSample = false;

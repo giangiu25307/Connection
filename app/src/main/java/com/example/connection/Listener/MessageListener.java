@@ -113,6 +113,7 @@ public class MessageListener extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Intent chatActivity = new Intent(messageListener.getContext(), ChatActivity.class);
+        messageListener = MessageListener.getIstance();
         if (intent.getStringExtra("intentType").equals("messageController")) {
             switch (intent.getStringExtra("communicationType")) {
                 case "tcp":
