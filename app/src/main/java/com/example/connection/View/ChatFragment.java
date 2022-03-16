@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Adapter.ChatAdapter;
+import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Adapter.RequestAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Listener.MessageListener;
@@ -106,6 +107,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     }
 
     public void setupRecyclerView(View view) {
+        position = chatAdapter.getPosition();
+        chatsList.clear();
         chatRecyclerView = view.findViewById(R.id.chatRecyclerView);
         chatCursor = chatFragment.database.getAllNoRequestChat();
         if (chatCursor != null && chatCursor.getCount() > 0) {
@@ -119,8 +122,8 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             noChatImageView.setVisibility(View.VISIBLE);
             noChatTextView.setVisibility(View.VISIBLE);
         }
-
         MessageListener.getIstance().setChatAdapter(chatAdapter);
+        chatRecyclerView.scrollToPosition(position);
     }
 
 

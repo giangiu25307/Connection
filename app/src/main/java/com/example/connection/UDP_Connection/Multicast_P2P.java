@@ -147,7 +147,7 @@ Multicast_P2P extends Multicast {
                         default:
                             break;
                     }
-                    if(Connection.fragmentName.equals("MAP")) {
+                    if(Connection.fragmentName.equals("MAP") && !splittedR[0].equals("globalMessage")) {
                         MapFragment mapFragment = MapFragment.getIstance();
                         mapFragment.graphicRefresh();
                     }

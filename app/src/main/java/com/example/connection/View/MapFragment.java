@@ -98,20 +98,20 @@ public class MapFragment extends Fragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         mapFragment.parent = view.findViewById(R.id.mapFlowLayout);
-        mapFragment.setUserList(mapFragment.database.getAllFilteredUsers());
         mapFragment.sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
-        graphicRefresh();
-        return view;
-    }
-
-    public void graphicRefresh() {
         mapFragment.parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 mapFragment.parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                mapFragment.drawController.init(getContext(), mapFragment.parent, mapFragment.parent.getHeight(), mapFragment.parent.getWidth(), mapFragment.userList);
+                graphicRefresh();
             }
         });
+        return view;
+    }
+
+    public void graphicRefresh() {
+        mapFragment.setUserList(mapFragment.database.getAllFilteredUsers());
+        mapFragment.drawController.init(getContext(), mapFragment.parent, mapFragment.parent.getHeight(), mapFragment.parent.getWidth(), mapFragment.userList);
     }
 
     @Override

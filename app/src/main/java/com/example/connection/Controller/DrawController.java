@@ -35,6 +35,7 @@ public class DrawController {
     }
 
     public void init(Context context, FlowLayout parent, int layoutHeight, int layoutWidth, ArrayList<User> userList) {
+        parent.removeAllViews();
         this.context = context;
         this.layoutHeight = layoutHeight;
         this.layoutWidth = layoutWidth;
@@ -50,6 +51,7 @@ public class DrawController {
 
     private LinearLayout createLayout(User user) {
         LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setTag(user.getIdUser());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         ImageView imageView = new ImageView(context);
         imageView.setImageDrawable(Drawable.createFromPath(user.getProfilePic()));

@@ -293,6 +293,10 @@ public class TcpServer {
                     DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, InetAddress.getByName("234.0.0.0"), 6789);
                     multicastP2p.getMulticastP2P().send(message);
                     Multicast_P2P.dbUserEvent = false;
+                    if(Connection.fragmentName.equals("MAP")) {
+                        MapFragment mapFragment = MapFragment.getIstance();
+                        mapFragment.graphicRefresh();
+                    }
                     return "groupInfo";
                     /*case "REQUEST-MEET":
                         //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
