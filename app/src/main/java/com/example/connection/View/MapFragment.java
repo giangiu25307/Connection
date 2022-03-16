@@ -41,7 +41,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements View.OnClickListener {
 
     private ConnectionController connectionController;
     private User user;
@@ -54,6 +54,7 @@ public class MapFragment extends Fragment {
     FlowLayout parent;
     ArrayList<User> userList;
     private static MapFragment mapFragment;
+    private Button backButton, nextButton;
 
     public MapFragment() {
 
@@ -97,6 +98,15 @@ public class MapFragment extends Fragment {
         @SuppressLint("inflateParams") View view = inflater.inflate(R.layout.lyt_map, null);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
+        backButton = view.findViewById(R.id.backMapButton);
+        nextButton = view.findViewById(R.id.nextButton);
+        if (mapFragment.userList.size() - (Connection.page * 25) <= 0) {
+            if(Connection.page != 0){
+                Connection.page = 0;
+            }
+            nextButton.setClickable(false);
+            nextButton.setAlpha(0.5f);
+        }
         mapFragment.parent = view.findViewById(R.id.mapFlowLayout);
         mapFragment.sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
         mapFragment.parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -261,6 +271,33 @@ public class MapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.backMapButton:
+                if (Connection.page > 0) {
+                    Connection.page--;
+                    backButton.setClickable(true);
+                    backButton.setAlpha(1f);
+                } else {
+                    backButton.setClickable(false);
+                    backButton.setAlpha(0.5f);
+                }
+            case R.id.nextMapButton:
+                if (mapFragment.userList.size() - (Connection.page * 25) > 0) {
+                    Connection.page++;
+                    nextButton.setClickable(true);
+                    nextButton.setAlpha(1f);
+                } else {
+                    nextButton.setClickable(false);
+                    nextButton.setAlpha(0.5f);
+                }
+            default:
+                graphicRefresh();
+                break;
+        }
     }
 }
 
