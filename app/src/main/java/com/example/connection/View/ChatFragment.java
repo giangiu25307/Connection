@@ -1,6 +1,7 @@
 package com.example.connection.View;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import com.example.connection.util.RecyclerItemClickListener;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ChatFragment extends Fragment implements View.OnClickListener {
 
@@ -48,7 +50,10 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     private RecyclerView chatRecyclerView;
     private ImageView noChatImageView;
     private static ChatFragment chatFragment;
+    private AlertDialog requestAlertDialog;
     private int position;
+
+    private int totalChatNumber, totalRequest;
 
     ActionMode actionMode;
     Menu contextMenu;
@@ -77,6 +82,14 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         this.chatController = chatController;
     }
 
+    private void setRequestAlertDialog(AlertDialog requestAlertDialog) {
+        this.requestAlertDialog = requestAlertDialog;
+    }
+
+    public AlertDialog getRequestAlertDialog() {
+        return requestAlertDialog;
+    }
+
     public void setDatabase(Database database) {
         this.database = database;
     }
@@ -88,26 +101,28 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
         setHasOptionsMenu(true);
 
-        requestButton = view.findViewById(R.id.requestButton);
-        int totalRequest = chatFragment.database.getAllRequestChat().getCount();
-        requestButton.setText(totalRequest <= 1 ? totalRequest + " request" : totalRequest + " requests");//(totalRequest==0 ? "No" : ""+totalRequest);
-        totalChat = chatFragment.toolbar.findViewById(R.id.toolbarTitle);
-        int totalChatNumber = chatFragment.database.getAllNoRequestChat().getCount();
-        totalChat.setText(totalChatNumber <= 1 ? "Chat (" + totalChatNumber + ")" : "Chats (" + totalChatNumber + ")");
-        requestButton.setOnClickListener(view1 -> {
+        chatFragment.requestButton = view.findViewById(R.id.requestButton);
+        chatFragment.setTotalRequest(chatFragment.database.getAllRequestChat().getCount());
+        chatFragment.setTotalChatNumber(chatFragment.database.getAllNoRequestChat().getCount());
+        chatFragment.requestButton.setText(totalRequest <= 1 ? totalRequest + " request" : totalRequest + " requests");//(totalRequest==0 ? "No" : ""+totalRequest);
+        chatFragment.totalChat = chatFragment.toolbar.findViewById(R.id.toolbarTitle);
+        chatFragment.requestButton.setOnClickListener(view1 -> {
+            Connection.isRequestDialogOpen = true;
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-            crossToRequestDialog(dialogBuilder, totalRequest);
+            crossToRequestDialog(dialogBuilder);
         });
 
-        noChatImageView = view.findViewById(R.id.noChatImageView);
-        noChatTextView = view.findViewById(R.id.noChatTextView);
+        chatFragment.noChatImageView = view.findViewById(R.id.noChatImageView);
+        chatFragment.noChatTextView = view.findViewById(R.id.noChatTextView);
 
         setupRecyclerView(view);
         return view;
     }
 
     public void setupRecyclerView(View view) {
-        position = chatAdapter.getPosition();
+        if (chatAdapter != null) position = chatAdapter.getPosition();
+        chatFragment.totalChat.setText(chatFragment.getTotalChatNumber() <= 1 ? "Chat (" + chatFragment.getTotalChatNumber() + ")" : "Chats (" + chatFragment.getTotalChatNumber() + ")");
+        chatFragment.requestButton.setText(chatFragment.getTotalRequest() <= 1 ? chatFragment.getTotalRequest() + " request" : chatFragment.getTotalRequest() + " requests");
         chatsList.clear();
         chatRecyclerView = view.findViewById(R.id.chatRecyclerView);
         chatCursor = chatFragment.database.getAllNoRequestChat();
@@ -117,13 +132,16 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             chatRecyclerView.setAdapter(chatAdapter);
             chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             defineRecyclerViewOnLong(chatRecyclerView);
+            MessageListener.getIstance().setChatAdapter(chatAdapter);
+            chatRecyclerView.scrollToPosition(position);
+            chatRecyclerView.setVisibility(View.VISIBLE);
+            noChatImageView.setVisibility(View.INVISIBLE);
+            noChatTextView.setVisibility(View.INVISIBLE);
         } else {
             chatRecyclerView.setVisibility(View.INVISIBLE);
             noChatImageView.setVisibility(View.VISIBLE);
             noChatTextView.setVisibility(View.VISIBLE);
         }
-        MessageListener.getIstance().setChatAdapter(chatAdapter);
-        chatRecyclerView.scrollToPosition(position);
     }
 
 
@@ -135,47 +153,66 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void crossToRequestDialog(AlertDialog.Builder dialogBuilder, int totalRequest) {
+    private void crossToRequestDialog(AlertDialog.Builder dialogBuilder) {
         dialogBuilder.setView(R.layout.dialog_request);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
-        TextView requestTextView = alertDialog.findViewById(R.id.requestTextView);
-        requestTextView.setText(totalRequest <= 1 ? " Request (" + totalRequest + ")" : " Requests (" + totalRequest + ")");
         alertDialog.findViewById(R.id.closeRequestDialog).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
             }
         });
-        setupRequestRecyclerView(alertDialog);
+        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Connection.isRequestDialogOpen = true;
+            }
+        });
+        chatFragment.setRequestAlertDialog(alertDialog);
+        setupRequestRecyclerView();
 
     }
 
-    private void setupRequestRecyclerView(AlertDialog view) {
-        RecyclerView recyclerView = view.findViewById(R.id.requestRecycleView);
-        Cursor cursor = chatFragment.database.getAllRequestChat();
-        if (cursor != null && cursor.getCount() > 0) {
-            RequestAdapter requestAdapter = new RequestAdapter(getContext(), cursor, chatFragment.database, chatFragment.chatController, requestButton);
-            recyclerView.setAdapter(requestAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        } else {
-            ImageView noRequestImageView = view.findViewById(R.id.noRequestImageView);
-            TextView noRequestTextView = view.findViewById(R.id.noRequestTextView);
-
-            if (recyclerView != null) {
-                recyclerView.setVisibility(View.INVISIBLE);
+    public static void setupRequestRecyclerView() {
+        chatFragment.requireActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog view = chatFragment.getRequestAlertDialog();
+                int totalRequest = chatFragment.getTotalRequest();
+                TextView requestTextView = view.findViewById(R.id.requestTextView);
+                requestTextView.setText(totalRequest <= 1 ? " Request (" + totalRequest + ")" : " Requests (" + totalRequest + ")");
+                chatFragment.requestButton.setText(chatFragment.getTotalRequest() <= 1 ? chatFragment.getTotalRequest() + " request" : chatFragment.getTotalRequest() + " requests");
+                RecyclerView recyclerView = view.findViewById(R.id.requestRecycleView);
+                ImageView noRequestImageView = view.findViewById(R.id.noRequestImageView);
+                TextView noRequestTextView = view.findViewById(R.id.noRequestTextView);
+                Cursor cursor = chatFragment.database.getAllRequestChat();
+                if (cursor != null && cursor.getCount() > 0) {
+                    RequestAdapter requestAdapter = new RequestAdapter(chatFragment.getContext(), cursor, chatFragment.database, chatFragment.chatController, chatFragment.requestButton, requestTextView);
+                    if (recyclerView != null) {
+                        recyclerView.setAdapter(requestAdapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(chatFragment.getContext()));
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+                    if (noRequestImageView != null) {
+                        noRequestImageView.setVisibility(View.INVISIBLE);
+                    }
+                    if (noRequestTextView != null) {
+                        noRequestTextView.setVisibility(View.INVISIBLE);
+                    }
+                } else {
+                    if (recyclerView != null) {
+                        recyclerView.setVisibility(View.INVISIBLE);
+                    }
+                    if (noRequestImageView != null) {
+                        noRequestImageView.setVisibility(View.VISIBLE);
+                    }
+                    if (noRequestTextView != null) {
+                        noRequestTextView.setVisibility(View.VISIBLE);
+                    }
+                }
             }
-
-            if (noRequestImageView != null) {
-                noRequestImageView.setVisibility(View.VISIBLE);
-            }
-
-            if (noRequestTextView != null) {
-                noRequestTextView.setVisibility(View.VISIBLE);
-            }
-
-        }
-
+        });
     }
 
     private void defineRecyclerViewOnLong(RecyclerView recyclerView) {
@@ -219,7 +256,6 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             } else {
                 multiselectList.add(id);
             }
-
             actionMode.setTitle(multiselectList.size() > 0 ? multiselectList.size() + " selected" : "0");
             refreshAdapter(position, false);
         }
@@ -261,6 +297,22 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
 
     public void setToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
+    }
+
+    public int getTotalChatNumber() {
+        return totalChatNumber;
+    }
+
+    public void setTotalChatNumber(int totalChatNumber) {
+        this.totalChatNumber = totalChatNumber;
+    }
+
+    public int getTotalRequest() {
+        return totalRequest;
+    }
+
+    public void setTotalRequest(int totalRequest) {
+        this.totalRequest = totalRequest;
     }
 
     private final ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
@@ -330,6 +382,9 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             chatsList.removeIf(chat -> chat.getId().equals(id));
         }
 
+        chatFragment.setTotalChatNumber(chatFragment.getTotalChatNumber() - multiselectList.size());
+        chatFragment.totalChat.setText(chatFragment.getTotalChatNumber() <= 1 ? "Chat (" + chatFragment.getTotalChatNumber() + ")" : "Chats (" + chatFragment.getTotalChatNumber() + ")");
+
         String snackbarText = multiselectList.size() > 1 ? multiselectList.size() + " chats deleted" : "1 chat deleted";
 
         Snackbar snackbar = Snackbar.make(getView(), "", Snackbar.LENGTH_LONG);
@@ -357,6 +412,14 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        if(Connection.amIComingFromChatActivity && Connection.isNewMessageArrived){
+            setupRecyclerView(chatFragment.getView());
+            if(Connection.isRequestDialogOpen){
+                setupRequestRecyclerView();
+            }
+        }
+        Connection.amIComingFromChatActivity = false;
+        Connection.isNewMessageArrived = false;
         try {
             chatAdapter.swapCursor(database.getAllNoRequestChat());
             chatRecyclerView.scrollToPosition(position);

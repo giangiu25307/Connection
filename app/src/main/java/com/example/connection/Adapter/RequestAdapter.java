@@ -7,9 +7,6 @@ import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,19 +22,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Database.Database;
 import com.example.connection.Controller.Task;
-import com.example.connection.Listener.MessageListener;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.ChatActivity;
+import com.example.connection.View.ChatFragment;
 import com.example.connection.View.Connection;
 
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.ZoneId;
 import java.util.Date;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> {
@@ -47,18 +41,20 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     private User user;
     private Database database;
     private Bitmap bitmap, bitmap2;
-    private Button button;
+    private Button requestButton;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     private Date date = new Date();
     private ChatController chatController;
+    private TextView dialogTitle;
 
 
-    public RequestAdapter(Context context, Cursor chatCursor, Database database, ChatController chatController, Button button) {
+    public RequestAdapter(Context context, Cursor chatCursor, Database database, ChatController chatController, Button requestButton, TextView dialogTitle) {
         this.context = context;
         this.chatCursor = chatCursor;
         this.database = database;
         this.chatController = chatController;
-        this.button = button;
+        this.requestButton = requestButton;
+        this.dialogTitle = dialogTitle;
         Log.v("Request Cursor Object", DatabaseUtils.dumpCursorToString(chatCursor));
     }
 
@@ -174,10 +170,16 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
         if (newCursor != null) {
             int totalRequest = chatCursor.getCount();
-            button.setText(totalRequest == 1 ? totalRequest + " request" : totalRequest + " requests");
-            notifyDataSetChanged();
+            ChatFragment.getIstance().setTotalRequest(totalRequest);
+            if(totalRequest == 0){
+                ChatFragment.setupRequestRecyclerView();
+            }else{
+                requestButton.setText(totalRequest <= 1 ? totalRequest + " request" : totalRequest + " requests");
+                dialogTitle.setText(totalRequest <= 1 ? " Request (" + totalRequest + ")" : " Requests (" + totalRequest + ")");
+                notifyDataSetChanged();
+            }
         }else{
-            button.setText(0 + " requests");
+            requestButton.setText(0 + " request");
         }
 
     }

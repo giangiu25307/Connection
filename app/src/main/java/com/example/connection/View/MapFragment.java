@@ -40,6 +40,7 @@ import com.example.connection.View.Layout.FlowLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MapFragment extends Fragment implements View.OnClickListener {
 
@@ -120,8 +121,13 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     }
 
     public void graphicRefresh() {
-        mapFragment.setUserList(mapFragment.database.getAllFilteredUsers());
-        mapFragment.drawController.init(getContext(), mapFragment.parent, mapFragment.parent.getHeight(), mapFragment.parent.getWidth(), mapFragment.userList);
+        requireActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mapFragment.setUserList(mapFragment.database.getAllFilteredUsers());
+                mapFragment.drawController.init(getContext(), mapFragment.parent, mapFragment.parent.getHeight(), mapFragment.parent.getWidth(), mapFragment.userList);
+            }
+        });
     }
 
     @Override

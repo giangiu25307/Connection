@@ -117,6 +117,9 @@ public class MessageListener extends BroadcastReceiver {
         if (intent.getStringExtra("intentType").equals("messageController")) {
             switch (intent.getStringExtra("communicationType")) {
                 case "tcp":
+                    ChatFragment.getIstance().setTotalRequest(messageListener.database.getAllRequestChat().getCount());
+                    ChatFragment.getIstance().setTotalChatNumber(messageListener.database.getAllNoRequestChat().getCount());
+                    Connection.isNewMessageArrived = true;
                     if (Connection.idChatOpen.equals(intent.getStringExtra("idChat"))) {
                         LastMessage lastMessage = messageListener.database.getLastMessageChat(intent.getStringExtra("idChat"));
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
@@ -127,10 +130,14 @@ public class MessageListener extends BroadcastReceiver {
                             e.printStackTrace();
                         }
                         messageListener.messageAdapter.addMessage(new Message(messageListener.database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString(), intent.getStringExtra("sent")));
-                    } else if (Connection.fragmentName.equals("CHAT")) {
-                        ChatFragment chatFragment = ChatFragment.getIstance();
-                        chatFragment.setupRecyclerView(chatFragment.requireView());
-                    } else {
+                    } else if (!messageListener.database.isUserBlocked(intent.getStringExtra("idChat"))) {
+                        if (Connection.fragmentName.equals("CHAT")) {
+                            ChatFragment chatFragment = ChatFragment.getIstance();
+                            chatFragment.setupRecyclerView(chatFragment.requireView());
+                        }
+                        if (Connection.isRequestDialogOpen){
+                            ChatFragment.setupRequestRecyclerView();
+                        }
                         User user = Connection.database.getUser(intent.getStringExtra("idChat"));
                         chatActivity.putExtra("idChat", user.getIdUser());
                         chatActivity.putExtra("username", user.getUsername());

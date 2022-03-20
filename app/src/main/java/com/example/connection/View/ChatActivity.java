@@ -90,6 +90,7 @@ public class ChatActivity extends AppCompatActivity {
         context = this;
         idChat = getIntent().getStringExtra("idChat");
         Connection.idChatOpen = idChat;
+        Connection.amIComingFromChatActivity = true;
         database.setReadAllMessages(idChat);
         user = database.getUser(idChat);
         String username = getIntent().getStringExtra("username");

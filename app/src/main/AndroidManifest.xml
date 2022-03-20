@@ -26,9 +26,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:requestLegacyExternalStorage="true">
-        <activity android:name=".View.ChatActivity"/>
-        <activity android:name=".View.EditProfileActivity"/>
-        <activity android:name=".View.ChatGlobalActivity"/>
+        <activity android:name=".View.ChatActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".View.EditProfileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".View.ChatGlobalActivity" android:screenOrientation="portrait"/>
 
         <service
             android:name=".Controller.AutoClicker"
@@ -48,7 +48,7 @@
             android:stopWithTask="true">
         </service>
 
-        <activity android:name=".View.Connection" android:launchMode="singleTop">
+        <activity android:name=".View.Connection" android:launchMode="singleTop" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
