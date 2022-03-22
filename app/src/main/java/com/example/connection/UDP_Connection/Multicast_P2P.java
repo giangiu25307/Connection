@@ -163,11 +163,15 @@ Multicast_P2P extends Multicast {
             multicastSocketGroupP2p = new MulticastSocket(6789);
             NetworkInterface networkInterface = MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName);
             multicastSocketGroupP2p.setNetworkInterface(networkInterface);
-            multicastSocketGroupP2p.joinGroup(sa,networkInterface);
+            multicastSocketGroupP2p.joinGroup(sa, networkInterface);
+            System.out.println("ci sono ");
+            sendGlobalMsg("prova");
         } catch (UnknownHostException e) {
+            System.out.println(e);
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println(e);
         }
     }
 
@@ -181,6 +185,7 @@ Multicast_P2P extends Multicast {
             multicastSocketGroupP2p.send(message);
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println(e);
         }
     }
 

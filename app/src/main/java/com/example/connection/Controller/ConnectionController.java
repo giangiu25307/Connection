@@ -125,7 +125,7 @@ ConnectionController {
 
             @Override
             public void onSuccess() {
-                if(bitch) {
+                if (bitch) { //non si sa il motivo ma dopo on failure riattiva l'onsuccess
                     bluetoothAdvertiser.stopAdvertising();
                     bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
                     bluetoothAdvertiser.startAdvertising();
@@ -139,7 +139,6 @@ ConnectionController {
                                 }
                                 myUser.setInetAddressP2P(MyNetworkInterface.p2pIpv6Address);
                                 database.setMyGroupOwnerIp(MyNetworkInterface.p2pIpv6Address, myUser.getIdUser());
-                                System.out.println(myUser.getInetAddressP2P().getHostAddress());
                             } catch (SocketException | UnknownHostException e) {
                                 e.printStackTrace();
                             }

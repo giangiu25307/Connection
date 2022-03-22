@@ -33,14 +33,12 @@ import androidx.fragment.app.FragmentManager;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.DrawController;
 import com.example.connection.Database.Database;
-import com.example.connection.Listener.MessageListener;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 import com.example.connection.View.Layout.FlowLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class MapFragment extends Fragment implements View.OnClickListener {
 
@@ -101,8 +99,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         setHasOptionsMenu(true);
         backButton = view.findViewById(R.id.backMapButton);
         nextButton = view.findViewById(R.id.nextButton);
-        if (mapFragment.userList.size() - (Connection.page * 25) <= 0) {
-            if(Connection.page != 0){
+        if (mapFragment.userList != null && mapFragment.userList.size() - (Connection.page * 25) <= 0) {
+            if (Connection.page != 0) {
                 Connection.page = 0;
             }
             nextButton.setClickable(false);
@@ -117,6 +115,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 graphicRefresh();
             }
         });
+
         return view;
     }
 

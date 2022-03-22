@@ -30,7 +30,6 @@ import com.example.connection.Controller.DrawController;
 import com.example.connection.Database.Database;
 import com.example.connection.R;
 import com.example.connection.Services.MyForegroundService;
-import com.example.connection.vpn.LocalVPNService;
 
 public class Connection extends AppCompatActivity {
     private Fragment fragment;
@@ -80,7 +79,7 @@ public class Connection extends AppCompatActivity {
             if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
                 database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
             } else {
-                database.addUser("1", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
+                database.addUser("1", "192.168.49.21", "Andrew01", "andrew1@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
 
             }
         }
