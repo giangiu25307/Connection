@@ -393,6 +393,12 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
 
+        if(chatsList.size() == 0){
+            chatFragment.chatRecyclerView.setVisibility(View.VISIBLE);
+            chatFragment.noChatImageView.setVisibility(View.INVISIBLE);
+            chatFragment.noChatTextView.setVisibility(View.INVISIBLE);
+        }
+
         View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
         TextView textView1 = snackView.findViewById(R.id.textView);
         textView1.setText(snackbarText);

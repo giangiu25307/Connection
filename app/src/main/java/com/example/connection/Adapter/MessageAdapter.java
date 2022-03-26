@@ -177,6 +177,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         holder.itemView.setTag(message.getIdMessage());
 
+        if(messagesList.size() > 2){
+            if(position == messagesList.size() - 1 && linearLayoutManager.findLastVisibleItemPosition() == messagesList.size() - 2){
+                recyclerView.scrollToPosition(messagesList.size() - 1);
+            }
+        }
+
     }
 
     @Override
