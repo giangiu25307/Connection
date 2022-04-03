@@ -25,18 +25,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Adapter.ChatAdapter;
-import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Adapter.RequestAdapter;
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Listener.MessageListener;
 import com.example.connection.Database.Database;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.Model.Chat;
 import com.example.connection.R;
 import com.example.connection.util.RecyclerItemClickListener;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ChatFragment extends Fragment implements View.OnClickListener {
 
@@ -166,7 +164,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                Connection.isRequestDialogOpen = true;
+                Connection.isRequestDialogOpen = false;
             }
         });
         chatFragment.setRequestAlertDialog(alertDialog);

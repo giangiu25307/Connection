@@ -29,7 +29,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class MessageListener extends BroadcastReceiver {
 
@@ -219,7 +218,7 @@ public class MessageListener extends BroadcastReceiver {
                     }
                     break;
                 case "reply":
-                    messageListener.database.setReadMessage(intent.getStringExtra("idChat"), database.getLastMessageId(intent.getStringExtra("idChat")));
+                    messageListener.database.setReadMessage(intent.getStringExtra("idChat"), messageListener.database.getLastMessageId(intent.getStringExtra("idChat")));
                     Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
                     if (remoteInput != null) {
                         //messageController.getTcpClient().sendMessage(String.valueOf(remoteInput.getCharSequence(KEY_TEXT_REPLY)),intent.getStringExtra("idChat"));

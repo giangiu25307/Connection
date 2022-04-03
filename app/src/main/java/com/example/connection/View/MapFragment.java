@@ -98,13 +98,13 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         backButton = view.findViewById(R.id.backMapButton);
-        nextButton = view.findViewById(R.id.nextButton);
+        mapFragment.nextButton = view.findViewById(R.id.nextButton);
         if (mapFragment.userList != null && mapFragment.userList.size() - (Connection.page * 25) <= 0) {
             if (Connection.page != 0) {
                 Connection.page = 0;
             }
-            nextButton.setClickable(false);
-            nextButton.setAlpha(0.5f);
+            mapFragment.nextButton.setClickable(false);
+            mapFragment.nextButton.setAlpha(0.5f);
         }
         mapFragment.parent = view.findViewById(R.id.mapFlowLayout);
         mapFragment.sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
