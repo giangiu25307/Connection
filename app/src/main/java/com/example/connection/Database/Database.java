@@ -205,7 +205,7 @@ public class Database extends SQLiteOpenHelper {
     public int countMessageNotRead(String idChat) {
         String query = "SELECT id_message " +
                 " FROM " + Task.TaskEntry.MESSAGE +
-                " WHERE " + Task.TaskEntry.IS_READ + " = 0";
+                " WHERE " + Task.TaskEntry.IS_READ + " = 0 AND " + Task.TaskEntry.ID_CHAT + " = " + idChat;
         Cursor cursor = db.rawQuery(query, null);
         return cursor.getCount();
     }

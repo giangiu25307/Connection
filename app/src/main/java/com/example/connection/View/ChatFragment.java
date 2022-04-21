@@ -25,18 +25,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Adapter.ChatAdapter;
-import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Adapter.RequestAdapter;
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Listener.MessageListener;
 import com.example.connection.Database.Database;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.Model.Chat;
 import com.example.connection.R;
 import com.example.connection.util.RecyclerItemClickListener;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ChatFragment extends Fragment implements View.OnClickListener {
 
@@ -166,7 +164,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                Connection.isRequestDialogOpen = true;
+                Connection.isRequestDialogOpen = false;
             }
         });
         chatFragment.setRequestAlertDialog(alertDialog);
@@ -392,6 +390,12 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         layout.setBackgroundColor(getContext().getColor(R.color.transparent));
         TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
+
+        if(chatsList.size() == 0){
+            chatFragment.chatRecyclerView.setVisibility(View.VISIBLE);
+            chatFragment.noChatImageView.setVisibility(View.INVISIBLE);
+            chatFragment.noChatTextView.setVisibility(View.INVISIBLE);
+        }
 
         View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
         TextView textView1 = snackView.findViewById(R.id.textView);

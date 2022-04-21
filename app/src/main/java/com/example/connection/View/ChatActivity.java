@@ -410,6 +410,12 @@ public class ChatActivity extends AppCompatActivity {
         TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
 
+        if(messageList.size() == 0){
+            recyclerView.setVisibility(View.VISIBLE);
+            noMessageImageView.setVisibility(View.INVISIBLE);
+            noMessageTextView.setVisibility(View.INVISIBLE);
+        }
+
         View snackView = ChatActivity.this.getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
         TextView textView1 = snackView.findViewById(R.id.textView);
         textView1.setText(snackbarText);

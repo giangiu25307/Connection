@@ -12,11 +12,9 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -29,12 +27,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Controller.ChatController;
-import com.example.connection.Database.Database;
 import com.example.connection.Controller.Task;
-import com.example.connection.Model.Chat;
+import com.example.connection.Database.Database;
 import com.example.connection.Model.Message;
 import com.example.connection.R;
-import com.example.connection.View.ChatActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -176,6 +172,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         messageTime.setText(String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes());
 
         holder.itemView.setTag(message.getIdMessage());
+
+        if(messagesList.size() > 2){
+            if(position == messagesList.size() - 1 && linearLayoutManager.findLastVisibleItemPosition() == messagesList.size() - 2){
+                recyclerView.scrollToPosition(messagesList.size() - 1);
+            }
+        }
 
     }
 
