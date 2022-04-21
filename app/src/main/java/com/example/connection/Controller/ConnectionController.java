@@ -338,7 +338,8 @@ ConnectionController {
 
     private void setUser() {
         String[] info = database.getMyInformation();
-        myUser = new User(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9], info[10]);
+        if(database.getMyInformation()!=null )
+            myUser = new User(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9], info[10]);
     }
 
     public void wifiConnection(String id) {

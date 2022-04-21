@@ -76,16 +76,19 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         gender = findViewById(R.id.genderButton);
         editTextCountry = findViewById(R.id.countryEditText);
 
-        User user = new User(database.getMyInformation()[0], database.getMyInformation()[1], database.getMyInformation()[2], database.getMyInformation()[3], database.getMyInformation()[4], database.getMyInformation()[5], database.getMyInformation()[6], database.getMyInformation()[7], database.getMyInformation()[8], database.getMyInformation()[9], database.getMyInformation()[10]);
+        if(database.getMyInformation()!=null) {
+            User user = new User(database.getMyInformation()[0], database.getMyInformation()[1], database.getMyInformation()[2], database.getMyInformation()[3], database.getMyInformation()[4], database.getMyInformation()[5], database.getMyInformation()[6], database.getMyInformation()[7], database.getMyInformation()[8], database.getMyInformation()[9], database.getMyInformation()[10]);
 
-        editTextCity.setText(user.getCity());
-        editTextUsername.setText(user.getUsername());
-        editTextMail.setText(user.getMail());
-        editTextName.setText(user.getName());
-        editTextSurname.setText(user.getSurname());
-        editTextPhoneNumber.setText(user.getNumber());
-        gender.setText(user.getGender());
-        editTextCountry.setText(user.getCountry());
+
+            editTextCity.setText(user.getCity());
+            editTextUsername.setText(user.getUsername());
+            editTextMail.setText(user.getMail());
+            editTextName.setText(user.getName());
+            editTextSurname.setText(user.getSurname());
+            editTextPhoneNumber.setText(user.getNumber());
+            gender.setText(user.getGender());
+            editTextCountry.setText(user.getCountry());
+        }
 
         takePhoto = findViewById(R.id.textView13);
         gallery = findViewById(R.id.textView14);

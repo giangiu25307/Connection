@@ -27,7 +27,7 @@ public class AccountController {
                 .build();
     }
 
-    public boolean login(String email,String password) throws IOException {
+    public Response login(String email,String password) throws IOException {
 
         // create your json here
         JSONObject jsonObject = new JSONObject();
@@ -49,11 +49,11 @@ public class AccountController {
 
         try {
             Response response = client.newCall(request).execute();
-            return response.isSuccessful();
+            return response;
         }catch (Exception e){
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     public Response register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number,String profilePic) throws IOException {

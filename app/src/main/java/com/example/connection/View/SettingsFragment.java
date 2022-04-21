@@ -301,7 +301,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 confirmTextview.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String data = database.getMyEmail();
+                        String data = database.getMyEmail(ConnectionController.myUser.getIdUser());
                         if (emailEditText.getText().toString().equals(data)) {
                             emailEditText.setBackgroundResource(R.drawable.bg_input_data);
                             alertDialog2.dismiss();

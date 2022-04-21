@@ -122,7 +122,7 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemViewType(int position) {
         messageCursor.moveToPosition(position);
-        if (!messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)).equals(database.getMyInformation()[0])) {
+        if (database.getMyInformation()!=null && !messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)).equals(database.getMyInformation()[0])) {
             return VIEW_TYPE_MESSAGE_RECEIVED;
         } else {
             return VIEW_TYPE_MESSAGE_SENT;

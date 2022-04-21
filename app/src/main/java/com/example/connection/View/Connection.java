@@ -73,8 +73,8 @@ public class Connection extends AppCompatActivity {
         countDownTimer.start();
 
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
-        boolean createMyUser = true;
-        if(createMyUser){
+        boolean createMyUser = false;
+        if (createMyUser) {
             String manufacturer = "xiaomi";
             if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
                 database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
@@ -372,12 +372,6 @@ public class Connection extends AppCompatActivity {
     }
 
     public boolean firstLogin() {
-        try {
-            if(database.getMyInformation()[0] != null);
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Utente non trovato");
-            return true;
-        }
-        return false;
+        return database.getMyInformation() == null;
     }
 }
