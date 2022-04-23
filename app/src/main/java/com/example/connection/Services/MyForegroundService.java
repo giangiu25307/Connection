@@ -24,6 +24,9 @@ public class MyForegroundService extends Service {
         return null;
     }
 
+    /**
+     * Notify that the app is working in background for google regulations
+     */
     @Override
     public void onCreate() {
         super.onCreate();

@@ -101,16 +101,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 try {
                     Response response = accountController.login(loginFragment.email.getText().toString(), loginFragment.password.getText().toString());
                     if (response != null && response.isSuccessful()) {
-                        String test = response.body().string();
-                        System.out.println("[RESPONSE BODY]" + test);
-                        test = test.replace("\"user\":{","");
-                        test = test.replace("}}","}");
-                        System.out.println("[MODIFIED BODY]" + test);
+                        //reading the response from server to create the user who is logging in
                         Gson g = new Gson();
-                        HashMap<String,String> map = g.fromJson(test,HashMap.class);
+                        HashMap<String,String> map = g.fromJson(response.body().string(),HashMap.class);
                         System.out.println(map.get("username"));
                         if(map.get("message").equals("Logged in!")) {
-                            loginFragment.database.addUser(map.get("id"), "", map.get("username"), map.get("email"), map.get("gender"), map.get("name"), map.get("surname"), map.get("country"), ""/*map.get("city")*/, map.get("birthday"), "", "");
+                            loginFragment.database.addUser(map.get("id"), "", map.get("username"), map.get("email"), map.get("gender"), map.get("name"), map.get("surname"), map.get("country"), map.get("city"), map.get("birthday"), "", "");
                             fragment = new HomeFragment().newInstance(loginFragment.connection, loginFragment.database, loginFragment.drawController);
                             loadFragment(fragment);
                         }else{

@@ -173,6 +173,18 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
+     * Set all the messages of the chat as read
+     *
+     * @param idChat    id of the person i'm speaking to
+     */
+    public void setReadAllChatMessages(String idChat) {
+        db = this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.IS_READ, "1");
+        db.update(Task.TaskEntry.MESSAGE, msgValues, Task.TaskEntry.ID_CHAT + " = '" + idChat + "'", null);
+    }
+
+    /**
      * Set message as sent or not
      *
      * @param idChat    id of the person i'm speaking to

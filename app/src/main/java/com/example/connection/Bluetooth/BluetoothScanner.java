@@ -52,6 +52,11 @@ public class BluetoothScanner {
         resetVariables();
     }
 
+    /**
+     * Start plus service scan
+     *
+     * @param service service found with the scan
+     */
     public void initPlusScan(String service) {
         switch (service) {
             default:
@@ -104,6 +109,11 @@ public class BluetoothScanner {
         }
     }
 
+    /**
+     * Start scan to look around me
+     *
+     * @param callbackType service found around me
+     */
     public void initScan(String callbackType) {
         resetVariables();
         switch (callbackType) {
@@ -244,7 +254,9 @@ public class BluetoothScanner {
         }
     }
 
-    // Device scan callback to find the nearest Connection groupOwner device who is hosting a group
+    /**
+     * Device scan callback to find the nearest Connection groupOwner device who is hosting a group
+     */
     private ScanCallback scanCallbackLookingForGroupOwner = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -271,7 +283,9 @@ public class BluetoothScanner {
         }
     };
 
-    // Device scan callback to find the nearest Connection groupOwner device who i ask to host the group
+    /**
+     * Device scan callback to find the nearest Connection groupOwner device who i ask to host the group
+     */
     private ScanCallback scanCallbackLookingForGroupOwnerId = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -298,7 +312,9 @@ public class BluetoothScanner {
         }
     };
 
-    // Device scan callback to find the nearest Connection groupOwner with id greater then mine
+    /**
+     * Device scan callback to find the nearest Connection groupOwner with id greater then mine
+     */
     private ScanCallback scanCallbackLookingForGroupOwnerWithGreaterId = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -325,7 +341,9 @@ public class BluetoothScanner {
         }
     };
 
-    // Device scan callback to FIND THE NEAREST DEVICE ID FROM A CLIENT WHICH IS CONNECTED TO A GROUP OWNER, AND ASK HIM TO BECOME GROUP OWNER
+    /**
+     * Device scan callback to FIND THE NEAREST DEVICE ID FROM A CLIENT WHICH IS CONNECTED TO A GROUP OWNER, AND ASK HIM TO BECOME GROUP OWNER
+     */
     private ScanCallback scanCallbackSearchAndRequestForIdNetwork = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -356,7 +374,9 @@ public class BluetoothScanner {
         }
     };
 
-    // Device scan callback to listening near client, if i find my id, i have to become a GO
+    /**
+     * Device scan callback to listening near client, if i find my id, i have to become a GO
+     */
     private ScanCallback scanCallbackClientListeningOtherClient = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -383,10 +403,18 @@ public class BluetoothScanner {
         }
     };
 
+    /**
+     * Set the id of the client who need to become group owner
+     *
+     * @param clientToRequestGroupId id of the client who need to become group owner
+     */
     public void setClientToRequestGroupId(String clientToRequestGroupId) {
         this.clientToRequestGroupId = clientToRequestGroupId;
     }
 
+    /**
+     * reset to beginning
+     */
     private void resetVariables() {
         identifierApp = "";
         idHostingService = "";
@@ -394,7 +422,9 @@ public class BluetoothScanner {
         idGroupOwner = "";
     }
 
-    // Plus device scan callback to find the nearest Connection groupOwner device who is hosting a group
+    /**
+     * Plus device scan callback to find the nearest Connection groupOwner device who is hosting a group
+     */
     private ScanCallback scanCallbackPlusSearchOrRequestNetwork = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -434,7 +464,9 @@ public class BluetoothScanner {
         }
     };
 
-    // Plus device scan callback to find the nearest Connection groupOwner device who i ask to host the group
+    /**
+     * Plus device scan callback to find the nearest Connection groupOwner device who i ask to host the group
+     */
     private ScanCallback scanCallbackPlusLookingForGroupOwnerId = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {

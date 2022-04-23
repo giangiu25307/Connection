@@ -31,22 +31,47 @@ public class ChatController {
         return istance;
     }
 
+    /**
+     * Set the tcpClient
+     *
+     * @param tcp  tcpClient to be set
+     */
     public void setTcp(TcpClient tcp) {
         this.tcp = tcp;
     }
 
+    /**
+     * Set the MulticastP2P
+     *
+     * @param udpP2p  MulticastP2P to be set
+     */
     public void setUdpP2p(Multicast_P2P udpP2p) {
         this.udpP2p = udpP2p;
     }
 
+    /**
+     * Set the MulticastWLAN
+     *
+     * @param udpWlan  MulticastWLAN to be set
+     */
     public void setUdpWlan(Multicast_WLAN udpWlan) {
         this.udpWlan = udpWlan;
     }
 
+    /**
+     * Set the ConnectionController
+     *
+     * @param connectionController  connectionController to be set
+     */
     public void setConnectionController(ConnectionController connectionController) {
         this.connectionController = connectionController;
     }
 
+    /**
+     * Set the Database
+     *
+     * @param database  database to be set
+     */
     private void setDatabase(Database database) {
         this.database = database;
     }
@@ -55,8 +80,11 @@ public class ChatController {
     public ChatController() {
     }
 
-
-    //Send a global message -------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Send a global message
+     *
+     * @param msg  message to send
+     */
     public void sendGlobalMsg(String msg) {
         if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION"))
             udpWlan.sendGlobalMsg(msg);
@@ -64,7 +92,12 @@ public class ChatController {
             udpP2p.sendGlobalMsg(msg);
     }
 
-    //send a direct message -------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Send a direct message
+     *
+     * @param msg         message to send
+     * @param idReceiver  id of the person to send the message
+     */
     public void sendTCPMsg(String msg, String idReceiver) {
         if (database.getSymmetricKey(idReceiver) != null) {
             tcp.sendMessage(msg, idReceiver);
@@ -74,7 +107,12 @@ public class ChatController {
 
     }
 
-    //send a direct message -------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Retry to send a direct message
+     *
+     * @param msg         message to send
+     * @param idReceiver  id of the person to send the message
+     */
     public void reSendTCPMsg(String msg, String idReceiver) {
         tcp.reSendMessage(msg, idReceiver);
     }
@@ -83,7 +121,12 @@ public class ChatController {
         tcp.sendShare(numberOrNickAndType, idReceiver);
     }
 
-    //send a direct image -------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Send a direct image
+     *
+     * @param path        path of the image to send
+     * @param idReceiver  id of the person to send the image
+     */
     public void sendTCPPath(Paths path, String idReceiver) {
         //DA FARE PER BENE
         /*tcp.sendMessage(path.toString(), idReceiver);//encoding to byte DA FARE

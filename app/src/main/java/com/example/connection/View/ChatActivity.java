@@ -89,6 +89,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.lyt_chat_activity);
         context = this;
         idChat = getIntent().getStringExtra("idChat");
+        database.setReadAllChatMessages(idChat);
         Connection.idChatOpen = idChat;
         Connection.amIComingFromChatActivity = true;
         database.setReadAllMessages(idChat);

@@ -105,7 +105,9 @@ ConnectionController {
 
     }
 
-    //Remove a group --------------------------------------------------------------------------------------------------------------------------------
+    /**
+    * Remove my group
+    */
     public void removeGroup() {
         bluetoothAdvertiser.stopAdvertising();
         wifiLock.release();
@@ -117,7 +119,9 @@ ConnectionController {
         }
     }
 
-    //Create a group --------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Create a new group
+     */
     @SuppressLint("MissingPermission")
     public void createGroup() {
         GO_leave = false;
@@ -183,7 +187,9 @@ ConnectionController {
         });
     }
 
-    //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Connect to a group when i'm a own a group
+     */
     public void connectToGroupWhenGroupOwner(String id) {//GroupOwner groupOwner){//
         tcpServer.close();
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
@@ -228,7 +234,9 @@ ConnectionController {
         });
     }
 
-    //Connect to a group -----------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Connect to a group
+     */
     public void connectToGroup(final String id) {
         wifiConnection(id);
         bluetoothAdvertiser.stopAdvertising();
@@ -282,8 +290,9 @@ ConnectionController {
         });
     }
 
-
-    //Disconnected to a group --------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Disconnected to a group
+     */
     public void disconnectToGroup() {
         if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null) {
             GOLeaves();
@@ -301,7 +310,9 @@ ConnectionController {
 
     }
 
-    //measure the power connection between me and the group owner --------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * measure the power connection between me and the group owner if it is to low i'm going to disconnect
+     */
     public void autoDisconnect() {
         int numberOfLevels = 5;
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
@@ -311,7 +322,9 @@ ConnectionController {
         }
     }
 
-    //The group owner is leaving the group :( --------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * The group owner is leaving the group :(
+     */
     private void GOLeaves() {
         multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
         int prec = LocalDateTime.now().getSecond();
@@ -321,13 +334,21 @@ ConnectionController {
         //TODO pulire dal db gli utenti connessi a me
     }
 
+    /**
+     * Starting to look around to check for group owners
+     */
     public void initProcess() {
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
     }
 
-    //GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
+    /**
+     *
+     * GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
+     *
+     * @param id id to which i will connect
+     */
     public void connectToGroupOwnerId(String id) {
         GO_leave = false;
         bluetoothScanner.setClientToRequestGroupId(id);
@@ -336,12 +357,20 @@ ConnectionController {
 
     //TESTING DISCONNECTION
 
+    /**
+     * set my user retrieving the info from db
+     */
     private void setUser() {
         String[] info = database.getMyInformation();
         if(database.getMyInformation()!=null )
             myUser = new User(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9], info[10]);
     }
 
+    /**
+     * connect with wifi to a certain group owner
+     *
+     * @param id group owner to which i will connect
+     */
     public void wifiConnection(String id) {
         NetworkSpecifier specifier =
                 new WifiNetworkSpecifier.Builder()
@@ -355,10 +384,16 @@ ConnectionController {
                 .build();
     }
 
+    /**
+     * get SSID
+     */
     public String getSSID() {
         return wifiManager.getConnectionInfo().getSSID();
     }
 
+    /**
+     * get wifi manager
+     */
     public WifiManager getWifiManager() {
         return wifiManager;
     }

@@ -27,6 +27,12 @@ public class AccountController {
                 .build();
     }
 
+    /**
+     * Check on the server if my account exist
+     *
+     * @param email    email to check
+     * @param password password to check
+     */
     public Response login(String email,String password) throws IOException {
 
         // create your json here
@@ -56,6 +62,21 @@ public class AccountController {
         return null;
     }
 
+    /**
+     * Sign my account on the server
+     *
+     * @param password   password to be signed
+     * @param username   username to be signed
+     * @param mail       mail to be signed
+     * @param gender     gender to be signed
+     * @param name       name to be signed
+     * @param surname    surname to be signed
+     * @param country    country to be signed
+     * @param city       city to be signed
+     * @param birth      birth to be signed
+     * @param number     number to be signed
+     * @param profilePic picture to be signed
+     */
     public Response register(String password,String username,String mail,String gender,String name,String surname,String country,String city,String birth,String number,String profilePic) throws IOException {
 
         // create your json here
@@ -68,11 +89,11 @@ public class AccountController {
             jsonObject.put("gender", gender);
             jsonObject.put("surname", surname);
             jsonObject.put("country", country);
-            // jsonObject.put("city", city);
+            jsonObject.put("city", city);
             jsonObject.put("birthday", birth);
             jsonObject.put("phoneNumber", number);
             jsonObject.put("phoneNumber", number);
-            // jsonObject.put("porfilePic",profilePic);
+            // jsonObject.put("profilePic",profilePic);
         } catch (
                 JSONException e) {
             e.printStackTrace();
@@ -95,18 +116,6 @@ public class AccountController {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private static String bodyToString(final Request request){
-
-        try {
-            final Request copy = request.newBuilder().build();
-            final Buffer buffer = new Buffer();
-            copy.body().writeTo(buffer);
-            return buffer.readUtf8();
-        } catch (final IOException e) {
-            return "did not work";
-        }
     }
 
 }

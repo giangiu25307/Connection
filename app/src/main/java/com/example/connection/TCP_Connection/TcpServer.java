@@ -56,11 +56,17 @@ public class TcpServer {
         this.multicastP2p = multicastP2p;
     }
 
+    /**
+     * Server close socket
+     */
     public void close() {
         AsyncServer.getDefault().dump();
         System.out.println("[Server] Server close socket");
     }
 
+    /**
+     * Server started setup
+     */
     public void setup() {
         try {
             System.out.println("[Server] Server started setup");
@@ -87,6 +93,10 @@ public class TcpServer {
         }
     }
 
+    /**
+     * Handle the connection
+     * @param socket
+     */
     private void handleAccept(final AsyncSocket socket) {
         System.out.println("[Server] New Connection " + socket.toString());
 
@@ -126,6 +136,11 @@ public class TcpServer {
         });
     }
 
+    /**
+     * Identify the message receive and choose what to do in base of it
+     * @param msg message received
+     * @return the operation to be resent to the other user for the successful communication
+     */
     public String messageIdentifier(String msg) {
         try {
             Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
@@ -289,7 +304,10 @@ public class TcpServer {
                     }
                     splittedR[1] += "€€" + ConnectionController.myUser.getIdUser();
                     splittedR[2] = database.getMyGroupOwnerIp();
-                    String string = this.arrayToString(splittedR);
+                    String string = "";
+                    for (int i = 0; i < splittedR.length; i++) {
+                        string += splittedR[i] + "£€";
+                    }
                     DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, InetAddress.getByName("234.0.0.0"), 6789);
                     multicastP2p.getMulticastP2P().send(message);
                     Multicast_P2P.dbUserEvent = false;
@@ -329,11 +347,4 @@ public class TcpServer {
         return "";
     }
 
-    private String arrayToString(String[] array) {
-        String string = "";
-        for (int i = 0; i < array.length; i++) {
-            string += array[i] + "£€";
-        }
-        return string;
-    }
 }

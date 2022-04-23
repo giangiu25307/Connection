@@ -34,6 +34,15 @@ public class DrawController {
         this.database = database;
     }
 
+    /**
+     *  Create the layout of the map to insert the user i will connect to
+     *
+     * @param context      context of the application
+     * @param parent       the layout in which i'm contained
+     * @param layoutHeight height of my smartphone
+     * @param layoutWidth  width of my smartphone
+     * @param userList     users to shown in the map
+     */
     public void init(Context context, FlowLayout parent, int layoutHeight, int layoutWidth, ArrayList<User> userList) {
         parent.removeAllViews();
         this.context = context;
@@ -42,6 +51,12 @@ public class DrawController {
         addViewToLayout(parent, userList);
     }
 
+    /**
+     *  Add view to the layout
+     *
+     * @param parent       the layout in which i'm contained
+     * @param userList     users to shown in the map
+     */
     private void addViewToLayout(FlowLayout parent, ArrayList<User> userList) {
         for (int i = (Connection.page * 25), j = 0; i < userList.size() - (Connection.page * 25) && j < 25; i++, j++) {
             User user = userList.get(i);
@@ -49,6 +64,11 @@ public class DrawController {
         }
     }
 
+    /**
+     *  Create the layout of the cell of the map
+     *
+     * @param user    user to shown in the layout
+     */
     private LinearLayout createLayout(User user) {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setTag(user.getIdUser());

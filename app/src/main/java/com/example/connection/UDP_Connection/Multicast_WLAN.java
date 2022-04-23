@@ -20,6 +20,9 @@ public class Multicast_WLAN extends Multicast {
         super(database, connectionController, tcp_client);
     }
 
+    /**
+     * listening for multicast wlan messages
+     */
     @Override
     public void run() {
         byte[] buf = new byte[1000];
@@ -146,7 +149,9 @@ public class Multicast_WLAN extends Multicast {
         }
     }
 
-    //send my info ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * send my info
+     */
     public void sendInfo() {
         try {
             String info = "info£€" + ConnectionController.myUser.getAllWlan();
@@ -158,7 +163,9 @@ public class Multicast_WLAN extends Multicast {
         }
     }
 
-    //send all group info ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * send all group info
+     */
     public void sendAllMyGroupInfo() {
         try {
             String info = "firstGroupInfo£€" + database.getAllMyGroupInfoWlan();
@@ -171,7 +178,9 @@ public class Multicast_WLAN extends Multicast {
         }
     }
 
-    //i'm telling everyone that i'm leaving the group ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * I'm telling everyone that i'm leaving the group
+     */
     public void imLeaving() {
         try {
             String leave = "leave£€" + ConnectionController.myUser.getIdUser();
@@ -185,6 +194,9 @@ public class Multicast_WLAN extends Multicast {
         }
     }
 
+    /**
+     * Create a multicast wlan on port 6789
+     */
     public void createMulticastSocketWlan0() {
         try {
             multicastSocketGroupwlan0 = new MulticastSocket(6789);
@@ -197,7 +209,10 @@ public class Multicast_WLAN extends Multicast {
 
     }
 
-    //Send a global message ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * send a global message
+     * @param msg message to sent
+     */
     public void sendGlobalMsg(String msg) {
         try {
             msg = "globalmessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
@@ -210,10 +225,17 @@ public class Multicast_WLAN extends Multicast {
         }
     }
 
+    /**
+     * set the multicast p2p
+     * @param multicastP2P multicast p2p to be set
+     */
     public void setMulticastP2P(MulticastSocket multicastP2P){
         multicastSocketGroupP2p = multicastP2P;
     }
 
+    /**
+     * @return the multicast wlan
+     */
     public MulticastSocket getMulticastWlan(){
         return multicastSocketGroupwlan0;
     }

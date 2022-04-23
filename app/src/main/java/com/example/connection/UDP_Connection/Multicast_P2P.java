@@ -19,6 +19,9 @@ Multicast_P2P extends Multicast {
         super(database, connectionController, tcp_client);
     }
 
+    /**
+     * Listening for multicast p2p messages
+     */
     @Override
     public void run() {
         byte[] buf = new byte[1000];
@@ -158,14 +161,15 @@ Multicast_P2P extends Multicast {
         }
     }
 
+    /**
+     * create a multicast p2p group on port 6789
+     */
     public void createMultigroupP2P() {
         try {
             multicastSocketGroupP2p = new MulticastSocket(6789);
             NetworkInterface networkInterface = MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName);
             multicastSocketGroupP2p.setNetworkInterface(networkInterface);
             multicastSocketGroupP2p.joinGroup(sa, networkInterface);
-            System.out.println("ci sono ");
-            sendGlobalMsg("prova");
         } catch (UnknownHostException e) {
             System.out.println(e);
             e.printStackTrace();
@@ -175,7 +179,10 @@ Multicast_P2P extends Multicast {
         }
     }
 
-    //Send a global message ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * Send a global message
+     * @param msg msg to sent
+     */
     public void sendGlobalMsg(String msg) {
         try {
             msg = "globalMessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
@@ -189,14 +196,24 @@ Multicast_P2P extends Multicast {
         }
     }
 
+    /**
+     * Close the multicast p2p group
+     */
     public void closeMultigroupP2p(){
         multicastSocketGroupP2p.close();
     }
 
+    /**
+     * set the multicast wlan
+     * @param multicastWlan multicast wlan to set
+     */
     public void setMulticastWlan(MulticastSocket multicastWlan){
         multicastSocketGroupwlan0 = multicastWlan;
     }
 
+    /**
+     * @return the multicast socket
+     */
     public MulticastSocket getMulticastP2P(){
         return multicastSocketGroupP2p;
     }

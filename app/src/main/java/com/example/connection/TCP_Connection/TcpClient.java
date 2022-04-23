@@ -50,6 +50,12 @@ public class TcpClient {
         counter = 0;
     }
 
+    /**
+     * Send a message without encrypting it because it is already crypt
+     * @param ip   ip to send the message
+     * @param text text to send
+     * @param id   id of the person which the message is for
+     */
     public void sendMessageNoKey(String ip, String text, String id) {
         noKey = true;
         oldIp = ip;
@@ -65,6 +71,12 @@ public class TcpClient {
         });
     }
 
+    /**
+     * HandShake to interchange the secret keys
+     * @param id        id of the person which the message is for
+     * @param publicKey key of the person which the message is for
+     * @param msg       message to send with AES key
+     */
     public void handShake(String id, String publicKey, String msg) {
         noKey = false;
         oldClearMsg = msg;
@@ -93,6 +105,11 @@ public class TcpClient {
         }
     }
 
+    /**
+     * Send a message to another user
+     * @param message message to be sent
+     * @param id      id of the person which the message is for
+     */
     public void sendMessage(String message, String id) {
         noKey = false;
         oldClearMsg = message;
@@ -115,6 +132,11 @@ public class TcpClient {
         }
     }
 
+    /**
+     * Retry to send a message
+     * @param message message to be sent
+     * @param id      id of the person which the message is for
+     */
     public void reSendMessage(String message, String id) {
         noKey = false;
         oldClearMsg = message;
@@ -137,6 +159,11 @@ public class TcpClient {
         }
     }
 
+    /**
+     * Send my number or my telegram or my whatsapp to another user
+     * @param message message to be sent
+     * @param id      id of the person which the message is for
+     */
     public void sendShare(String message, String id) {
         noKey = false;
         oldClearMsg = message;
@@ -159,6 +186,12 @@ public class TcpClient {
         }
     }
 
+    /**
+     * Send an image to another user
+     * @param imagePath image to be sent
+     * @param id        id of the person which the image is for
+     * @throws IOException
+     */
     public void sendImage(String imagePath, String id) throws IOException {
         noKey = false;
         Bitmap bmp = BitmapFactory.decodeFile(imagePath);
@@ -181,6 +214,10 @@ public class TcpClient {
         });
     }
 
+    /**
+     * Check the interface to use to send the message
+     * @param id id of the person to see which interface need to be used
+     */
     private void checkInterface(String id) {
         if (database.isOtherGroup(id)) {
             oldLocalAddress = MyNetworkInterface.wlanIpv6Address;
@@ -191,6 +228,10 @@ public class TcpClient {
         }
     }
 
+    /**
+     * Check if a date message is already presence for today inside the database for this chat, otherwise i send a blank message
+     * @param id id of the chat to be checked
+     */
     private void checkDate(String id) {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
@@ -216,6 +257,12 @@ public class TcpClient {
         }
     }
 
+    /**
+     * On connection completed i check if it all went correctly and choose what to do in base of the return message
+     * @param ex
+     * @param socket
+     * @param text   message to check the result of the tcp operation
+     */
     private void handleConnectCompleted(Exception ex, final AsyncSocket socket, String text) {
         if (ex != null) throw new RuntimeException(ex);
 

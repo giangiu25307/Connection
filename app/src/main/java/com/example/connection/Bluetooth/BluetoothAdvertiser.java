@@ -65,6 +65,16 @@ public class BluetoothAdvertiser {
 
     }
 
+    /**
+     * Set what the other user will see with BLE
+     *
+     * @param myId id to identify myself
+     * @param type type of information i'm showing {'serviceGroupOwner':'SGO', 'serviceClientConnectedToGroupOwner':'CTG',
+     *                                              'serviceRequestClientBecomeGroupOwner':'CBG','serviceLookingForGroupOwner':'LFG'
+     *                                              'serviceLookingForGroupOwnerWithSpecifiedId':'LGS','serviceLookingForGroupOwnerWithGreaterId':'LGG'
+     *                                              'servicePlusSearchingNetwork':'PSN'}
+     * @param idGroupOwner id of the group owner i'm connected to. Or my group owner if i'm not connected to anybody and i own a group
+     */
     public AdvertiseData setAdvertiseData(String myId, String type, String idGroupOwner) { //idGroupOwner can be null
         int length;
         if(myId.length()<7){
@@ -90,14 +100,23 @@ public class BluetoothAdvertiser {
         return advertiseData;
     }
 
+    /**
+     * Become visible to other devices with BLE
+     */
     public void startAdvertising(){
         bluetoothLeAdvertiser.startAdvertising(settings, advertiseData, advertiseCallback);
     }
 
+    /**
+     * Become invisible to other devices with BLE
+     */
     public void stopAdvertising(){
         bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
     }
 
+    /**
+     * get data
+     */
     public String getData() {
         return data;
     }

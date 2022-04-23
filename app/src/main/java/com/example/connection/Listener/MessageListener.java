@@ -108,7 +108,11 @@ public class MessageListener extends BroadcastReceiver {
 
     }
 
-
+    /**
+     * Listening for message which information is inside of the intent
+     * @param context context of the application
+     * @param intent  contains message information
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         Intent chatActivity = new Intent(messageListener.getContext(), ChatActivity.class);

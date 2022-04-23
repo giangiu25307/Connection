@@ -12,7 +12,11 @@ public class MyNetworkInterface extends java.net.SocketAddress {
     public static String wlanName = "";
     public static String wlanIpv6Address = "";
 
-    // MyNetworkInterface.p2pName name of the wi-fi direct interface
+    /**
+     * MyNetworkInterface.p2pName name of the wi-fi direct interface
+     * @param nicName name of the wi-fi direct interface
+     * @return name of the wi-fi direct interface
+     */
     public static NetworkInterface getMyP2pNetworkInterface(String nicName) {
         Enumeration<NetworkInterface> enumeration = null;
         try {
@@ -34,6 +38,10 @@ public class MyNetworkInterface extends java.net.SocketAddress {
         return null;
     }
 
+    /**
+     * set the network interfaces names
+     * @throws SocketException
+     */
     public static void setNetworkInterfacesNames() throws SocketException {
         Enumeration<NetworkInterface> enumeration = null;
         try {
