@@ -204,6 +204,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         this.position = position;
     }
 
+    public void hideUnreadMessageCount(String id){
+
+        for(int i = 0; i < chatsList.size(); i++){
+            if(chatsList.get(i).getId().equals(id)){
+                notifyItemChanged(i);
+                return;
+            }
+        }
+
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
 

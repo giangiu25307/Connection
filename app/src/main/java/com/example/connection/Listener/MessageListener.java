@@ -133,6 +133,7 @@ public class MessageListener extends BroadcastReceiver {
                             e.printStackTrace();
                         }
                         messageListener.messageAdapter.addMessage(new Message(messageListener.database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString(), intent.getStringExtra("sent")));
+                        messageListener.database.setReadAllChatMessages(intent.getStringExtra("idChat"));
                     } else if (!messageListener.database.isUserBlocked(intent.getStringExtra("idChat"))) {
                         if (Connection.fragmentName.equals("CHAT")) {
                             ChatFragment chatFragment = ChatFragment.getIstance();
@@ -175,6 +176,11 @@ public class MessageListener extends BroadcastReceiver {
                         replyIntent.putExtra("idChat", intent.getStringExtra("idChat"));
                         replyIntent.putExtra("username", user.getUsername());
 
+                        Intent markAsReadIntent = new Intent(context, this.getClass());
+                        markAsReadIntent.putExtra("intentType", "messageController");
+                        markAsReadIntent.putExtra("communicationType", "markAsRead");
+                        markAsReadIntent.putExtra("idChat", intent.getStringExtra("idChat"));
+
                         // Build a PendingIntent for the reply action to trigger.
                         PendingIntent replyPendingIntent =
                                 PendingIntent.getBroadcast(messageListener.getContext(),
@@ -182,12 +188,23 @@ public class MessageListener extends BroadcastReceiver {
                                         replyIntent,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
 
+                        PendingIntent markAsReadPendingIntent =
+                                PendingIntent.getBroadcast(messageListener.getContext(),
+                                        messageListener.getPendingIds().get(intent.getStringExtra("idChat")),
+                                        markAsReadIntent,
+                                        PendingIntent.FLAG_UPDATE_CURRENT);
+
                         // Create the reply action and add the remote input.
-                        NotificationCompat.Action action =
+                        NotificationCompat.Action replyAction =
                                 new NotificationCompat.Action.Builder(R.drawable.ic_send_from_notification,
                                         messageListener.getContext().getString(R.string.reply_label), replyPendingIntent)
                                         .addRemoteInput(remoteInput)
                                         .setAllowGeneratedReplies(true)
+                                        .build();
+
+                        // Create the mark as read action and add the remote input.
+                        NotificationCompat.Action markAsReadAction =
+                                new NotificationCompat.Action.Builder(null, messageListener.getContext().getString(R.string.mark_as_raed_label), markAsReadPendingIntent)
                                         .build();
 
                         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(messageListener.getContext(), "chatMessageNotification")
@@ -197,7 +214,8 @@ public class MessageListener extends BroadcastReceiver {
                                 .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                                 .setGroup("CHAT_GROUP")
                                 .setContentIntent(chatIntent)
-                                .addAction(action)
+                                .addAction(replyAction)
+                                .addAction(markAsReadAction)
                                 .setAutoCancel(true);
 
                         Notification summaryNotification = new NotificationCompat.Builder(messageListener.getContext(), "chatMessageNotification")
@@ -282,6 +300,12 @@ public class MessageListener extends BroadcastReceiver {
                         notificationManager.notify(messageListener.getPendingIds().get(intent.getStringExtra("idChat")), notificationBuilder.build());
                         notificationManager.notify(0, summaryNotification);
                     }
+                    break;
+                case "markAsRead":
+                    messageListener.database.setReadAllMessages(intent.getStringExtra("idChat"));
+                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(messageListener.getContext());
+                    notificationManager.cancel(messageListener.getPendingIds().get(intent.getStringExtra("idChat")));
+                    messageListener.chatAdapter.hideUnreadMessageCount(intent.getStringExtra("idChat"));
                     break;
                 default:
                     break;
