@@ -104,9 +104,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         //reading the response from server to create the user who is logging in
                         Gson g = new Gson();
                         HashMap<String,String> map = g.fromJson(response.body().string(),HashMap.class);
-                        System.out.println(map.get("username"));
                         if(map.get("message").equals("Logged in!")) {
-                            loginFragment.database.addUser(map.get("id"), "", map.get("username"), map.get("email"), map.get("gender"), map.get("name"), map.get("surname"), map.get("country"), map.get("city"), map.get("birthday"), "", "");
+                            loginFragment.database.addUser(map.get("id"), "", map.get("username"), map.get("email"), map.get("gender"), map.get("name"), map.get("surname"), map.get("country"), map.get("city"), map.get("birthday"), map.get("profilePic"), "");
                             fragment = new HomeFragment().newInstance(loginFragment.connection, loginFragment.database, loginFragment.drawController);
                             loadFragment(fragment);
                         }else{

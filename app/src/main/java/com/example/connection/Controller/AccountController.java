@@ -93,7 +93,7 @@ public class AccountController {
             jsonObject.put("birthday", birth);
             jsonObject.put("phoneNumber", number);
             jsonObject.put("phoneNumber", number);
-            // jsonObject.put("profilePic",profilePic);
+            jsonObject.put("profilePic",profilePic);
         } catch (
                 JSONException e) {
             e.printStackTrace();
