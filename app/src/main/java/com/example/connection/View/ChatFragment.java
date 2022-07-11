@@ -404,9 +404,9 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         textView.setVisibility(View.INVISIBLE);
 
         if(chatsList.size() == 0){
-            chatFragment.chatRecyclerView.setVisibility(View.VISIBLE);
-            chatFragment.noChatImageView.setVisibility(View.INVISIBLE);
-            chatFragment.noChatTextView.setVisibility(View.INVISIBLE);
+            chatFragment.chatRecyclerView.setVisibility(View.INVISIBLE);
+            chatFragment.noChatImageView.setVisibility(View.VISIBLE);
+            chatFragment.noChatTextView.setVisibility(View.VISIBLE);
         }
 
         View snackView = getActivity().getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
