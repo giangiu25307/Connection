@@ -42,4 +42,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     compileOnly group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.60'
     compileOnly group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.60'
+    implementation "junit:junit:4.13.2"
 }

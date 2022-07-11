@@ -29,7 +29,7 @@ import com.example.connection.R;
 public class XiaomiPermissionFragment extends Fragment {
 
     private Connection connection;
-    private XiaomiPermissionFragment xiaomiPermissionFragment;
+    private static XiaomiPermissionFragment xiaomiPermissionFragment;
     private Database database;
     private AccountController accountController;
     private DrawController drawController;
@@ -43,6 +43,10 @@ public class XiaomiPermissionFragment extends Fragment {
         xiaomiPermissionFragment.setDatabase(database);
         xiaomiPermissionFragment.setAccountController(accountController);
         xiaomiPermissionFragment.setDrawController(drawController);
+        return xiaomiPermissionFragment;
+    }
+
+    public static XiaomiPermissionFragment getIstance(){
         return xiaomiPermissionFragment;
     }
 
@@ -72,17 +76,19 @@ public class XiaomiPermissionFragment extends Fragment {
             }
         });
         ImageButton next = view.findViewById(R.id.imageView50);
+
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = xiaomiPermissionFragment.connection.getSupportFragmentManager().beginTransaction();
-                if (connection.firstLogin()) {
+                  FragmentTransaction transaction = xiaomiPermissionFragment.connection.getSupportFragmentManager().beginTransaction();
+                if (xiaomiPermissionFragment.connection.firstLogin()) {
                     transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                     transaction.replace(R.id.main_fragment, new LoginFragment().newInstance(xiaomiPermissionFragment.connection, xiaomiPermissionFragment.database, xiaomiPermissionFragment.accountController, xiaomiPermissionFragment.drawController));
                     transaction.commit();
                 } else {
                     transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                     transaction.replace(R.id.main_fragment, new HomeFragment().newInstance(xiaomiPermissionFragment.connection, xiaomiPermissionFragment.database, xiaomiPermissionFragment.drawController));
+                    transaction.commit();
                 }
             }
         });
