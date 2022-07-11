@@ -46,7 +46,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private Database database;
     private String idChat;
     private Bitmap bitmap;
-    SimpleDateFormat format = new SimpleDateFormat();
+    SimpleDateFormat format;
     Date date = new Date();
     int counter;
     LinearLayoutManager linearLayoutManager;
@@ -69,6 +69,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.recyclerView = recyclerView;
         this.noMessageImageView = noMessageImageView;
         this.noMessageTextView = noMessageTextView;
+        format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(messageCursor));
     }
 
@@ -83,9 +84,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             SentViewHolder sentViewHolder = new SentViewHolder(view, new SentViewHolder.OnAlertIconListener() {
                 @Override
                 public void openDialogMessageNotSent(int p) {
-                    if(database.findIp(idChat) == null){
+                    if (database.findIp(idChat) == null) {
                         Toast.makeText(context, "User not connected", Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else {
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.CustomAlertDialog);
                         dialogBuilder.setView(R.layout.dialog_retry_message);
                         final AlertDialog alertDialog = dialogBuilder.create();
@@ -131,9 +132,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView messageTime = null;
 
         String datetime = message.getDate();
-        if (datetime.split("£€")[0].equals("date")) if (checkDate()) return;
+        if (message.getMessage().equals("")) {
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+            checkDate();
+            ((SentViewHolder) holder).messageLayout.setLayoutParams(new LinearLayout.LayoutParams(0,0));
+            ((SentViewHolder) holder).messageLayout.setVisibility(View.INVISIBLE);
+            ((SentViewHolder) holder).progressBar.setVisibility(View.INVISIBLE);
+            ((SentViewHolder) holder).icError.setVisibility(View.INVISIBLE);
+            return;
+        }
+
         Date date = new Date();
         try {
             date = format.parse(datetime);
@@ -142,9 +150,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         if ((holder.getItemViewType() == VIEW_TYPE_MESSAGE_SENT)) {
-            if(selectedMessage.contains(message.getIdMessage())){
+            if (selectedMessage.contains(message.getIdMessage())) {
                 ((SentViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.secondaryColorSemiTransparent));
-            }else{
+            } else {
                 ((SentViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.transparent));
             }
             textMessage = ((SentViewHolder) holder).message;
@@ -152,15 +160,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             ((SentViewHolder) holder).progressBar.setVisibility(View.INVISIBLE);
 
-            if (message.getSent().equals("0")){
+            if (message.getSent().equals("0")) {
                 ((SentViewHolder) holder).icError.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 ((SentViewHolder) holder).icError.setVisibility(View.INVISIBLE);
             }
         } else if ((holder.getItemViewType() == VIEW_TYPE_MESSAGE_RECEIVED)) {
-            if(selectedMessage.contains(message.getIdMessage())){
+            if (selectedMessage.contains(message.getIdMessage())) {
                 ((ReceivedViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.secondaryColorSemiTransparent));
-            }else{
+            } else {
                 ((ReceivedViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.transparent));
             }
             textMessage = ((ReceivedViewHolder) holder).message;
@@ -168,13 +176,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         textMessage.setText(message.getMessage());
-        if (textMessage.getText().toString().length() > 400) setMessageWithClickableLink(textMessage);
+        if (textMessage.getText().toString().length() > 400)
+            setMessageWithClickableLink(textMessage);
         messageTime.setText(String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes());
 
         holder.itemView.setTag(message.getIdMessage());
 
-        if(messagesList.size() > 2){
-            if(position == messagesList.size() - 1 && linearLayoutManager.findLastVisibleItemPosition() == messagesList.size() - 2){
+        if (messagesList.size() > 2) {
+            if (position == messagesList.size() - 1 && linearLayoutManager.findLastVisibleItemPosition() == messagesList.size() - 2) {
                 recyclerView.scrollToPosition(messagesList.size() - 1);
             }
         }
@@ -183,7 +192,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if (database.getMyInformation()!=null && !messagesList.get(position).getIdSender().equals(database.getMyInformation()[0])) {
+        if (database.getMyInformation() != null && !messagesList.get(position).getIdSender().equals(database.getMyInformation()[0])) {
             return VIEW_TYPE_MESSAGE_RECEIVED;
         } else {
             return VIEW_TYPE_MESSAGE_SENT;
@@ -205,7 +214,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         messagesList.clear();
 
         do {
-            messagesList.add(new Message(newMessageList.getString(0), newMessageList.getString(1), newMessageList.getString(2), newMessageList.getString(4),messageCursor.getString(5)));
+            messagesList.add(new Message(newMessageList.getString(0), newMessageList.getString(1), newMessageList.getString(2), newMessageList.getString(4), messageCursor.getString(5)));
         } while (newMessageList.moveToNext());
 
         if (messagesList != null) {
@@ -214,12 +223,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
-    public void removeMessage(String id){
+    public void removeMessage(String id) {
         Iterator<Message> iterator = messagesList.iterator();
 
         while (iterator.hasNext()) {
             Message message = iterator.next();
-            if(message.getIdMessage().equals(id)){
+            if (message.getIdMessage().equals(id)) {
                 iterator.remove();
                 int position = messagesList.indexOf(message);
                 messagesList.remove(message);
@@ -229,8 +238,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    public void addMessage(Message message){
-        if(recyclerView.getVisibility() == View.INVISIBLE){
+    public void addMessage(Message message) {
+        if (recyclerView.getVisibility() == View.INVISIBLE) {
             recyclerView.setVisibility(View.VISIBLE);
             noMessageImageView.setVisibility(View.INVISIBLE);
             noMessageTextView.setVisibility(View.INVISIBLE);
@@ -302,11 +311,12 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         int count = 0;
         for (int i = firstPositionVisible; i < lastPositionVisible; i++) {
             messageCursor.moveToPosition(i);
+            String message = messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MESSAGE));
             String datetime = messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.DATETIME));
-            if (datetime.split("£€")[0].equals("date")) {
+            if (message.equals("")) {
                 count++;
                 try {
-                    date = format.parse(datetime.split("£€")[1]);
+                    date = format.parse(datetime);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -317,7 +327,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) != 0) {
                 if (count == 0 && previousCount == 1 && dateMessageLayout.getVisibility() == TextView.INVISIBLE) {
                     dateMessageLayout.setVisibility(TextView.VISIBLE);
-                    dateMessageLayout.setText(String.valueOf(date.getDay() < 10 ? '0' : "") + (date.getMonth() < 10 ? '0' : "") + (date.getYear() < 10 ? '0' : ""));
+                    dateMessageLayout.setText(String.valueOf(date.getDay() < 10 ? '0' : "") + "/" + (date.getMonth() < 10 ? '0' : "") + "/" + (date.getYear() < 10 ? '0' : ""));
                     return true;
                 } else if (count == 1 && dateMessageLayout.getVisibility() == TextView.VISIBLE) {
                     dateMessageLayout.setVisibility(TextView.INVISIBLE);

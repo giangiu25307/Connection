@@ -212,21 +212,8 @@ public class TcpServer {
                 case "message":
                     //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
-                        Date date = new Date();
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-                        String datetime = "";
-                        try {
-                            LastMessage lastMessage = database.getLastMessageChat(splittedR[1]);
-                            datetime = lastMessage.getDateTime();
-                        } catch (IndexOutOfBoundsException e) {
-                            datetime = String.valueOf(LocalDateTime.now());
-                        }
                         try {
                             String message = encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3])));
-                            date = format.parse(datetime);
-                            if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
-                                database.addMsg("", splittedR[3], splittedR[3]);
-                            }
                             database.addMsg(message, splittedR[3], splittedR[3]);
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
@@ -234,8 +221,6 @@ public class TcpServer {
                             intent.putExtra("idChat", splittedR[3]);
                             intent.putExtra("idUser", splittedR[3]);
                             connection.getApplicationContext().sendBroadcast(intent);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
                         } catch (GeneralSecurityException e) {
                             e.printStackTrace();
                         }
@@ -246,21 +231,8 @@ public class TcpServer {
                 case "reMessage":
                     //Add the receive msg to the db --------------------------------------------------------------------------------------------------------------------------------
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
-                        Date date = new Date();
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-                        String datetime = "";
-                        try {
-                            LastMessage lastMessage = database.getLastMessageChat(splittedR[1]);
-                            datetime = lastMessage.getDateTime();
-                        } catch (IndexOutOfBoundsException e) {
-                            datetime = String.valueOf(LocalDateTime.now());
-                        }
                         try {
                             String message = encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3])));
-                            date = format.parse(datetime);
-                            if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
-                                database.addMsg("", splittedR[3], splittedR[3]);
-                            }
                             database.addMsg(message, splittedR[3], splittedR[3]);
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
@@ -268,8 +240,6 @@ public class TcpServer {
                             intent.putExtra("idChat", splittedR[3]);
                             intent.putExtra("idUser", splittedR[3]);
                             connection.getApplicationContext().sendBroadcast(intent);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
                         } catch (GeneralSecurityException e) {
                             e.printStackTrace();
                         }
@@ -281,7 +251,6 @@ public class TcpServer {
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                         String message[] = encryption.decrypt(splittedR[2]).split("£€");
                         database.createChat(message[2], database.getUserName(message[2]), message[0]);
-                        database.addMsg("", message[2], message[2]);
                         database.addMsg(message[1], message[2], message[2]);
                         intent.putExtra("intentType", "messageController");
                         intent.putExtra("communicationType", "tcp");

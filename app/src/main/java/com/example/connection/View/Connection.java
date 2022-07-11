@@ -31,10 +31,15 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.DrawController;
 import com.example.connection.Database.Database;
+import com.example.connection.Model.LastMessage;
 import com.example.connection.R;
 import com.example.connection.Services.MyForegroundService;
 
 import java.io.ByteArrayOutputStream;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 
 public class Connection extends AppCompatActivity {
     private Fragment fragment;
@@ -192,7 +197,6 @@ public class Connection extends AppCompatActivity {
         foregroundService = new MyForegroundService();
         Intent notificationIntent = new Intent(this, foregroundService.getClass());
         this.startForegroundService(notificationIntent);
-
     }
 
     private void createNotificationChannels() {

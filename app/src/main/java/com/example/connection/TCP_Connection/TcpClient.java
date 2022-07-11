@@ -229,35 +229,6 @@ public class TcpClient {
     }
 
     /**
-     * Check if a date message is already presence for today inside the database for this chat, otherwise i send a blank message
-     * @param id id of the chat to be checked
-     */
-    private void checkDate(String id) {
-        Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        String datetime = "";
-        try {
-            LastMessage lastMessage = database.getLastMessageChat(id);
-            datetime = lastMessage.getDateTime();
-        } catch (IndexOutOfBoundsException e) {
-            datetime = String.valueOf(LocalDateTime.now());
-        }
-        try {
-            if(datetime != null) {
-                date = format.parse(datetime);
-                if (date.compareTo(format.parse(String.valueOf(LocalDateTime.now()))) < 0) {
-                    database.addMsg("", ConnectionController.myUser.getIdUser(), id);
-                }
-            }else{
-                date = format.parse(LocalDateTime.now().toString());
-                database.addMsg("", ConnectionController.myUser.getIdUser(), id);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * On connection completed i check if it all went correctly and choose what to do in base of the return message
      * @param ex
      * @param socket
@@ -305,7 +276,6 @@ public class TcpClient {
                         Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                         if (received.split("£€")[1].equals("handShake")) {
                             database.createChat(oldId, database.getUserName(oldId), oldSecretKey);
-                            checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
@@ -315,7 +285,6 @@ public class TcpClient {
                             intent.putExtra("sent", "1");
                             connection.getApplicationContext().sendBroadcast(intent);
                         } else if (received.split("£€")[1].equals("message")) {
-                            checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
@@ -325,7 +294,6 @@ public class TcpClient {
                             intent.putExtra("sent", "1");
                             connection.getApplicationContext().sendBroadcast(intent);
                         } else if (received.split("£€")[1].equals("reMessage")) {
-                            checkDate(oldId);
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
@@ -337,7 +305,6 @@ public class TcpClient {
                         } else if(received.split("£€")[1].equals("share")) {
                             //Non deve fare nulla, deve essere vuoto
                         }else { //Image
-                            checkDate(oldId);
                             database.addImage(oldImage, ConnectionController.myUser.getIdUser(), oldId);
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
