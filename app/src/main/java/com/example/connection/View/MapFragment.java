@@ -98,7 +98,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionsMenu(true);
         backButton = view.findViewById(R.id.backMapButton);
-        mapFragment.nextButton = view.findViewById(R.id.nextButton);
+        mapFragment.nextButton = view.findViewById(R.id.nextMapButton);
         if (mapFragment.userList != null && mapFragment.userList.size() - (Connection.page * 25) <= 0) {
             if (Connection.page != 0) {
                 Connection.page = 0;
