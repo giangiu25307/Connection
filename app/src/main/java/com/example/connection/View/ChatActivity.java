@@ -214,6 +214,9 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         setBackgroundImage();
         if (messageCursor != null && messageCursor.getCount() > 0) {
+            recyclerView.setVisibility(View.VISIBLE);
+            noMessageImageView.setVisibility(View.INVISIBLE);
+            noMessageTextView.setVisibility(View.INVISIBLE);
             fillMessagesArrayList(messageCursor);
             recyclerView.scrollToPosition(messageCursor.getCount() - 1);
             recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -412,9 +415,9 @@ public class ChatActivity extends AppCompatActivity {
         textView.setVisibility(View.INVISIBLE);
 
         if(messageList.size() == 0){
-            recyclerView.setVisibility(View.VISIBLE);
-            noMessageImageView.setVisibility(View.INVISIBLE);
-            noMessageTextView.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.INVISIBLE);
+            noMessageImageView.setVisibility(View.VISIBLE);
+            noMessageTextView.setVisibility(View.VISIBLE);
         }
 
         View snackView = ChatActivity.this.getLayoutInflater().inflate(R.layout.lyt_chats_messages_deleted_snackbar, null);
