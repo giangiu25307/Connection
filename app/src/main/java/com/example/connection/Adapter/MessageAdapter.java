@@ -1,6 +1,7 @@
 package com.example.connection.Adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -63,6 +66,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private ImageView noMessageImageView;
     private TextView noMessageTextView;
     private RecyclerView recyclerView;
+    private @ColorInt int dateLayoutTextColor;
 
     public MessageAdapter(Context context, Database database, String id, ArrayList<Message> messagesList, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView, ImageView noMessageImageView, TextView noMessageTextView) {
         this.context = context;
@@ -75,6 +79,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.noMessageTextView = noMessageTextView;
         format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(messageCursor));
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = context.getTheme();
+        theme.resolveAttribute(R.attr.textColor, typedValue, true);
+        dateLayoutTextColor = typedValue.data;
     }
 
     @NonNull
@@ -146,12 +154,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((SentViewHolder) holder).icError.setVisibility(View.INVISIBLE);
                 ((SentViewHolder) holder).messageLayout.setGravity(Gravity.CENTER);
                 ((SentViewHolder) holder).messageLayout.setPadding(0,0,0,0);
-                ((SentViewHolder) holder).textLayout.setBackgroundResource(R.drawable.bg_open_app_permission_for_xiaomi);
+                ((SentViewHolder) holder).textLayout.setBackgroundResource(R.drawable.bg_date_messages_layout);
+                ((SentViewHolder) holder).messageTime.setText("");
+                ((SentViewHolder) holder).messageTime.setLayoutParams(new LinearLayout.LayoutParams(0,0));
                 ((SentViewHolder) holder).message.setText((date.getDate() < 10 ? "0" + date.getDate() : "" + date.getDate()) + "/" +
                                                           (date.getMonth()+1 < 10 ? "0" + (date.getMonth()+1) : "" + (date.getMonth()+1)) + "/" +
                                                           (date.getYear()+1900));
-                ((SentViewHolder) holder).message.setTextColor(context.getResources().getColor(R.color.cardview_light_background));
-                ((SentViewHolder) holder).messageTime.setText("");
+                ((SentViewHolder) holder).message.setTextColor(dateLayoutTextColor);
                 //checkDate();
             } catch (ParseException e) {
                 e.printStackTrace();
