@@ -58,12 +58,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     TextView dateMessageLayout;
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
+    private static final int VIEW_TYPE_DATE_MESSAGE = 3;
     private ArrayList<Message> messagesList;
     public ArrayList<String> selectedMessage = new ArrayList<>();
     private ImageView noMessageImageView;
     private TextView noMessageTextView;
     private RecyclerView recyclerView;
-    private @ColorInt int dateLayoutTextColor;
+    private @ColorInt
+    int dateLayoutTextColor;
 
     public MessageAdapter(Context context, Database database, String id, ArrayList<Message> messagesList, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView, ImageView noMessageImageView, TextView noMessageTextView) {
         this.context = context;
@@ -123,6 +125,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
             view = inflater.inflate(R.layout.lyt_message_received, parent, false);
             return new ReceivedViewHolder(view);
+        } else if (viewType == VIEW_TYPE_DATE_MESSAGE) {
+            view = inflater.inflate(R.layout.lyt_date_message_layout, parent, false);
+            return new ReceivedViewHolder(view);
         }
         //dateMessageLayout = view.findViewById(R.id.dateMessageLayout);
         return null;
@@ -140,30 +145,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView messageTime = null;
 
         String datetime = message.getDate();
-        if (message.getMessage().equals("")) {
-
-            Date date = null;
-            try {
-                date = format.parse(datetime);
-                ((SentViewHolder) holder).progressBar.setLayoutParams(new LinearLayout.LayoutParams(0,0));
-                ((SentViewHolder) holder).icError.setLayoutParams(new LinearLayout.LayoutParams(0,0));
-                ((SentViewHolder) holder).progressBar.setVisibility(View.INVISIBLE);
-                ((SentViewHolder) holder).icError.setVisibility(View.INVISIBLE);
-                ((SentViewHolder) holder).messageLayout.setGravity(Gravity.CENTER);
-                ((SentViewHolder) holder).messageLayout.setPadding(0,0,0,0);
-                ((SentViewHolder) holder).textLayout.setBackgroundResource(R.drawable.bg_date_messages_layout);
-                ((SentViewHolder) holder).messageTime.setText("");
-                ((SentViewHolder) holder).messageTime.setLayoutParams(new LinearLayout.LayoutParams(0,0));
-                ((SentViewHolder) holder).message.setText((date.getDate() < 10 ? "0" + date.getDate() : "" + date.getDate()) + "/" +
-                                                          (date.getMonth()+1 < 10 ? "0" + (date.getMonth()+1) : "" + (date.getMonth()+1)) + "/" +
-                                                          (date.getYear()+1900));
-                ((SentViewHolder) holder).message.setTextColor(dateLayoutTextColor);
-                //checkDate();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return;
-        }
 
         Date date = new Date();
         try {
@@ -196,6 +177,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             textMessage = ((ReceivedViewHolder) holder).message;
             messageTime = ((ReceivedViewHolder) holder).messageTime;
+        } else if ((holder.getItemViewType() == VIEW_TYPE_DATE_MESSAGE)) {
+            ((SentViewHolder) holder).message.setText((date.getDate() < 10 ? "0" + date.getDate() : "" + date.getDate()) + "/" +
+                    (date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : "" + (date.getMonth() + 1)) + "/" +
+                    (date.getYear() + 1900));
         }
 
         textMessage.setText(message.getMessage());
@@ -215,7 +200,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if (database.getMyInformation() != null && !messagesList.get(position).getIdSender().equals(database.getMyInformation()[0])) {
+        if (messagesList.get(position).getMessage().isEmpty()) {
+            return VIEW_TYPE_DATE_MESSAGE;
+        } else if (database.getMyInformation() != null && !messagesList.get(position).getIdSender().equals(database.getMyInformation()[0])) {
             return VIEW_TYPE_MESSAGE_RECEIVED;
         } else {
             return VIEW_TYPE_MESSAGE_SENT;
@@ -324,6 +311,20 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public interface OnAlertIconListener {
             void openDialogMessageNotSent(int p);
+        }
+
+    }
+
+    public static class DateMessageViewHolder extends RecyclerView.ViewHolder {
+
+        private LinearLayout messageLayout;
+        private TextView message;
+
+        private DateMessageViewHolder(View itemView) {
+            super(itemView);
+
+            messageLayout = itemView.findViewById(R.id.messageLayout);
+            message = itemView.findViewById(R.id.message);
         }
 
     }
