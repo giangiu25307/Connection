@@ -127,7 +127,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return new ReceivedViewHolder(view);
         } else if (viewType == VIEW_TYPE_DATE_MESSAGE) {
             view = inflater.inflate(R.layout.lyt_date_message_layout, parent, false);
-            return new ReceivedViewHolder(view);
+            return new DateMessageViewHolder(view);
         }
         //dateMessageLayout = view.findViewById(R.id.dateMessageLayout);
         return null;
@@ -178,9 +178,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             textMessage = ((ReceivedViewHolder) holder).message;
             messageTime = ((ReceivedViewHolder) holder).messageTime;
         } else if ((holder.getItemViewType() == VIEW_TYPE_DATE_MESSAGE)) {
-            ((SentViewHolder) holder).message.setText((date.getDate() < 10 ? "0" + date.getDate() : "" + date.getDate()) + "/" +
+            ((DateMessageViewHolder) holder).message.setText((date.getDate() < 10 ? "0" + date.getDate() : "" + date.getDate()) + "/" +
                     (date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : "" + (date.getMonth() + 1)) + "/" +
                     (date.getYear() + 1900));
+            return;
         }
 
         textMessage.setText(message.getMessage());
