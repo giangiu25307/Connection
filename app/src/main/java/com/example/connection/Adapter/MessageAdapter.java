@@ -36,13 +36,10 @@ import com.example.connection.Database.Database;
 import com.example.connection.Model.Message;
 import com.example.connection.R;
 
-import org.junit.runner.manipulation.Ordering;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 

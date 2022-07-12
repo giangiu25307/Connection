@@ -158,7 +158,7 @@ public class Database extends SQLiteOpenHelper {
         try {
             date = getLastMessageChat("2").getDateTime().equals("") ? null : format.parse(this.getLastMessageChat("2").getDateTime());
             java.util.Date now = format.parse(String.valueOf(LocalDateTime.now()));
-            if (date == null || date.getDay() < now.getDay() && date.getMonth() <= now.getMonth() && date.getYear() <= now.getYear()) {
+            if (date == null || (date.getDate() < now.getDate() && date.getMonth() <= now.getMonth() && date.getYear() <= now.getYear())) {
                 msgValues.put(Task.TaskEntry.ID_CHAT, idChat);
                 msgValues.put(Task.TaskEntry.ID_SENDER, idSender);
                 msgValues.put(Task.TaskEntry.MSG, "");
