@@ -12,6 +12,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +33,13 @@ import com.example.connection.Database.Database;
 import com.example.connection.Model.Message;
 import com.example.connection.R;
 
+import org.junit.runner.manipulation.Ordering;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -76,7 +80,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = null;
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {
@@ -134,11 +137,25 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         String datetime = message.getDate();
         if (message.getMessage().equals("")) {
 
-            checkDate();
-            ((SentViewHolder) holder).messageLayout.setLayoutParams(new LinearLayout.LayoutParams(0,0));
-            ((SentViewHolder) holder).messageLayout.setVisibility(View.INVISIBLE);
-            ((SentViewHolder) holder).progressBar.setVisibility(View.INVISIBLE);
-            ((SentViewHolder) holder).icError.setVisibility(View.INVISIBLE);
+            Date date = null;
+            try {
+                date = format.parse(datetime);
+                ((SentViewHolder) holder).progressBar.setLayoutParams(new LinearLayout.LayoutParams(0,0));
+                ((SentViewHolder) holder).icError.setLayoutParams(new LinearLayout.LayoutParams(0,0));
+                ((SentViewHolder) holder).progressBar.setVisibility(View.INVISIBLE);
+                ((SentViewHolder) holder).icError.setVisibility(View.INVISIBLE);
+                ((SentViewHolder) holder).messageLayout.setGravity(Gravity.CENTER);
+                ((SentViewHolder) holder).messageLayout.setPadding(0,0,0,0);
+                ((SentViewHolder) holder).textLayout.setBackgroundResource(R.drawable.bg_open_app_permission_for_xiaomi);
+                ((SentViewHolder) holder).message.setText((date.getDate() < 10 ? "0" + date.getDate() : "" + date.getDate()) + "/" +
+                                                          (date.getMonth()+1 < 10 ? "0" + (date.getMonth()+1) : "" + (date.getMonth()+1)) + "/" +
+                                                          (date.getYear()+1900));
+                ((SentViewHolder) holder).message.setTextColor(context.getResources().getColor(R.color.cardview_light_background));
+                ((SentViewHolder) holder).messageTime.setText("");
+                //checkDate();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             return;
         }
 
