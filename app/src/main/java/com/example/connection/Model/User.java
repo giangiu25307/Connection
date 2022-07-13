@@ -1,5 +1,10 @@
 package com.example.connection.Model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
@@ -27,6 +32,7 @@ public class User {
     String publicKey;
     InetAddress inetAddressWlan;
     InetAddress inetAddressP2P;
+    String profilePicBase64;
 
     public User() {
         this.idUser = "";
@@ -84,11 +90,11 @@ public class User {
     }
 
     public String getAllWlan() {
-        return idUser + "£€" + inetAddressWlan.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic + "£€" + publicKey;
+        return idUser + "£€" + inetAddressWlan.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePicBase64 + "£€" + publicKey;
     }
 
     public String getAllP2P() {
-        return idUser + "£€" + inetAddressP2P.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic + "£€" + publicKey;
+        return idUser + "£€" + inetAddressP2P.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePicBase64 + "£€" + publicKey;
     }
 
     public String getIdUser() {
@@ -215,6 +221,18 @@ public class User {
                 ", profilePic='" + profilePic + '\'' +
                 ", age='" + getAge() + '\'' +
                 '}';
+    }
+
+    public void setProfilePicBase64(String path){
+        Bitmap bm = null;
+        if((bm=BitmapFactory.decodeFile(path))!=null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            profilePicBase64 = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+        }else{
+            profilePicBase64="noImage";
+        }
+
     }
 
 }
