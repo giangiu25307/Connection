@@ -188,6 +188,22 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 final EditText minAge = alertDialog.findViewById(R.id.editTextMinAge), maxAge = alertDialog.findViewById(R.id.editTextMaxAge);
                 cancelButton = alertDialog.findViewById(R.id.cancelTextView);
                 applyButton = alertDialog.findViewById(R.id.applyTextView);
+                if (Connection.minAge != 16)
+                    minAge.setText("" + Connection.minAge);
+                if (Connection.maxAge != 100)
+                    maxAge.setText("" + Connection.maxAge);
+                if (Connection.genders[0].equals("")){
+                    male.setTextAppearance(R.style.genderUnselected);
+                    male.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
+                }
+                if (Connection.genders[1].equals("")){
+                    female.setTextAppearance(R.style.genderUnselected);
+                    female.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
+                }
+                if (Connection.genders[2].equals("")){
+                    other.setTextAppearance(R.style.genderUnselected);
+                    other.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
+                }
 
                 //Gender
                 male.setOnClickListener(new View.OnClickListener() {
@@ -214,7 +230,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         } else {
                             female.setTextAppearance(R.style.genderUnselected);
                             female.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
-
                             Connection.genders[1] = "";
                         }
                     }
@@ -244,8 +259,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 applyButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Connection.minAge = Integer.parseInt(minAge.getText().toString());
-                        Connection.maxAge = Integer.parseInt(maxAge.getText().toString());
+                        Connection.minAge = Integer.parseInt(minAge.getText().toString().equals("") ? minAge.getHint().toString() : minAge.getText().toString());
+                        Connection.maxAge = Integer.parseInt(maxAge.getText().toString().equals("") ? maxAge.getHint().toString() : maxAge.getText().toString());
                         alertDialog.dismiss();
                         Fragment fragment = new MapFragment().newInstance(mapFragment.connectionController, mapFragment.database, mapFragment.drawController);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

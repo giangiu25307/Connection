@@ -258,18 +258,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         messagesList.add(message);
         notifyItemInserted(messagesList.size() - 1);
         recyclerView.scrollToPosition(messagesList.size()  - 1);
-        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v,
-                                       int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                try {
-                    recyclerView.smoothScrollToPosition(messagesList.size() - 1);
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Errore nella chat solitamente nulla");
-                }
-            }
-        });
     }
 
     public static class ReceivedViewHolder extends RecyclerView.ViewHolder {
