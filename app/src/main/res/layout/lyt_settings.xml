@@ -299,6 +299,70 @@
                 android:text="Security" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/blockedUsersSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_settings_card"
+                android:paddingVertical="5dp">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline10"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.5" />
+
+                <ImageView
+                    android:id="@+id/blockedUsersIcon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:contentDescription="Password icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_blocked_users"
+                    app:tint="?attr/toolbarAndSettingsCardIconColor" />
+
+                <TextView
+                    android:id="@+id/blockedUsersOption"
+                    style="@style/titleSettingsCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="Blocked users"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/blockedUsersIcon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <TextView
+                    android:id="@+id/textView44"
+                    style="@style/subTitleSettingsCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="2dp"
+                    android:text="View and manage blocked users"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/blockedUsersIcon"
+                    app:layout_constraintTop_toTopOf="@+id/guideline10"
+                    app:layout_constraintVertical_bias="0.0" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/changePasswordSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

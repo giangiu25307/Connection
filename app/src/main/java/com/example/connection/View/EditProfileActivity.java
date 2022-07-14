@@ -92,7 +92,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         takePhoto = findViewById(R.id.textView13);
         gallery = findViewById(R.id.textView14);
-        cancelButton = findViewById(R.id.cancelTextView);
+        cancelButton = findViewById(R.id.cancelButton);
         applyButton = findViewById(R.id.applyTextView);
         takePhoto.setOnClickListener(this);
         gallery.setOnClickListener(this);
@@ -189,7 +189,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             case R.id.textView13:
                 captureImage();
                 break;
-            case R.id.cancelTextView:
+            case R.id.cancelButton:
                 database.setProfilePic("0", previousProfilePic);
                 finish();
                 break;

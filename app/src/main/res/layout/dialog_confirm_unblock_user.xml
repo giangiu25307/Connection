@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/layoutBackground"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/unblockUserDialogTitle"
+        style="@style/dialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unblock" />
+
+    <TextView
+        android:id="@+id/unblockUserDialogSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/opensans_regular_custom"
+        android:text="Are you sure you want to unblock user?"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="15sp" />
+
+    <include
+        layout="@layout/lyt_cancel_confirm_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp" />
+
+</LinearLayout>

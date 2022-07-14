@@ -181,7 +181,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                 AlertDialog view = chatFragment.getRequestAlertDialog();
                 int totalRequest = chatFragment.getTotalRequest();
                 TextView requestTextView = view.findViewById(R.id.requestTextView);
-                requestTextView.setText(totalRequest <= 1 ? " Request (" + totalRequest + ")" : " Requests (" + totalRequest + ")");
+                requestTextView.setText(totalRequest == 1 ? " Request (" + totalRequest + ")" : " Requests (" + totalRequest + ")");
                 chatFragment.requestButton.setText(chatFragment.getTotalRequest() <= 1 ? chatFragment.getTotalRequest() + " request" : chatFragment.getTotalRequest() + " requests");
                 RecyclerView recyclerView = view.findViewById(R.id.requestRecycleView);
                 ImageView noRequestImageView = view.findViewById(R.id.noRequestImageView);

@@ -35,16 +35,21 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.connection.Adapter.BlockedUsersAdapter;
 import com.example.connection.BuildConfig;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Database.Database;
+import com.example.connection.Model.User;
 import com.example.connection.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -58,7 +63,7 @@ import okhttp3.Response;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
-    private ConstraintLayout themeSettings, changePasswordSettings, forgottenPasswordSettings, information, bugReport;
+    private ConstraintLayout themeSettings, blockedUsersSettings, changePasswordSettings, forgottenPasswordSettings, information, bugReport;
     private SharedPreferences sharedPreferences;
     private String newTheme;
     private ConnectionController connectionController;
@@ -153,6 +158,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         //themeOptionDescription = view.findViewById(R.id.themeOptionDescription);
         //themeOptionDescription.setText(Connection.lightOrDark);
 
+        blockedUsersSettings = view.findViewById(R.id.blockedUsersSettings);
+        blockedUsersSettings.setOnClickListener(this);
+
         changePasswordSettings = view.findViewById(R.id.changePasswordSettings);
         changePasswordSettings.setOnClickListener(this);
 
@@ -199,6 +207,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             case R.id.themeSettings:
                 manageTheme(dialogBuilder);
                 break;
+            case R.id.blockedUsersSettings:
+                showBlockedUsers(dialogBuilder);
+                break;
             case R.id.changePasswordSettings:
                 changePassword(dialogBuilder);
                 break;
@@ -227,6 +238,62 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    private void showBlockedUsers(AlertDialog.Builder dialogBuilder){
+        dialogBuilder.setView(R.layout.dialog_blocked_users);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+        RecyclerView recyclerView = alertDialog.findViewById(R.id.blockedUsersRecycleView);
+        TextView dialogTitle, noBlockedUsersTextView;
+        dialogTitle = alertDialog.findViewById(R.id.blockedUsersTextView);
+        ImageView noBlockedUsersImageView = alertDialog.findViewById(R.id.noRequestImageView);
+        noBlockedUsersTextView = alertDialog.findViewById(R.id.noRequestTextView);
+
+        Cursor cursor = database.getAllBlockedUsers();
+        if(cursor != null){
+            String dialogTitleText = cursor.getCount() == 1 ? "Blocked user" : "Blocked users";
+            dialogTitle.setText(dialogTitleText);
+        }
+        if (cursor != null && cursor.getCount() > 0) {
+
+            ArrayList<User> blockedUsers = new ArrayList<>();
+            do {
+                blockedUsers.add(new User(cursor.getString(0), cursor.getString(1), "", cursor.getString(2), "", "", "", "", "", cursor.getString(3), cursor.getString(4)));
+            } while (cursor.moveToNext());
+
+            BlockedUsersAdapter blockedUsersAdapter = new BlockedUsersAdapter(getContext(), recyclerView, blockedUsers, database, noBlockedUsersImageView, noBlockedUsersTextView);
+            if (recyclerView != null) {
+                recyclerView.setAdapter(blockedUsersAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setVisibility(View.VISIBLE);
+            }
+            if (noBlockedUsersImageView != null) {
+                noBlockedUsersImageView.setVisibility(View.INVISIBLE);
+            }
+            if (noBlockedUsersTextView != null) {
+                noBlockedUsersTextView.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            if (recyclerView != null) {
+                recyclerView.setVisibility(View.INVISIBLE);
+            }
+            if (noBlockedUsersImageView != null) {
+                noBlockedUsersImageView.setVisibility(View.VISIBLE);
+            }
+            if (noBlockedUsersTextView != null) {
+                noBlockedUsersTextView.setVisibility(View.VISIBLE);
+            }
+        }
+
+        Button closeButton = alertDialog.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
     }
 
     private void changePassword(AlertDialog.Builder dialogBuilder) {
@@ -273,8 +340,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         final TextView forgotPasswordTextView;
         final Button cancelButton, confirmButton;
         forgotPasswordTextView = alertDialog.findViewById(R.id.forgotPasswordButton);
-        cancelButton = alertDialog.findViewById(R.id.cancelTextView);
-        confirmButton = alertDialog.findViewById(R.id.confirmTextView);
+        cancelButton = alertDialog.findViewById(R.id.cancelButton);
+        confirmButton = alertDialog.findViewById(R.id.confirmButton);
 
         forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,8 +354,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
                 final Button cancelButton, confirmTextview;
                 final EditText emailEditText;
-                cancelButton = alertDialog2.findViewById(R.id.cancelTextView);
-                confirmTextview = alertDialog2.findViewById(R.id.confirmTextView);
+                cancelButton = alertDialog2.findViewById(R.id.cancelButton);
+                confirmTextview = alertDialog2.findViewById(R.id.confirmButton);
                 emailEditText = alertDialog2.findViewById(R.id.editTextEmail);
 
                 cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -381,7 +448,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         lightButton = alertDialog.findViewById(R.id.lightButton);
         darkButton = alertDialog.findViewById(R.id.darkButton);
         followSystemButton = alertDialog.findViewById(R.id.followSystemButton);
-        cancelButton = alertDialog.findViewById(R.id.cancelTextView);
+        cancelButton = alertDialog.findViewById(R.id.cancelButton);
         applyButton = alertDialog.findViewById(R.id.applyTextView);
 
         String currentTheme = sharedPreferences.getString("appTheme", "light");

@@ -748,7 +748,7 @@ public class Database extends SQLiteOpenHelper {
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.NUMBER, number);
-        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + "' = '" + idUser + "'", null);
+        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = '" + idUser + "'", null);
     }
 
     /**
@@ -1077,12 +1077,37 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
+     * Return all users that are blocked
+     */
+    public Cursor getAllBlockedUsers(){
+        db = this.getWritableDatabase();
+        String query = "SELECT " + Task.TaskEntry.ID_USER + Task.TaskEntry.USERNAME + Task.TaskEntry.GENDER + Task.TaskEntry.BIRTH + Task.TaskEntry.PROFILE_PIC
+                + " FROM " + Task.TaskEntry.USER + " WHERE " + Task.TaskEntry.MESSAGES_ACCEPTED + " = 'false'";
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            return cursor;
+        }
+        return null;
+    }
+
+    /**
      * Block the chat with the specified user
      */
     public void blockUser(String idUser) {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED, "false");
         db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = '" + idUser + "'", null);
+    }
+
+    /**
+     * Unblock the chat with the specified user
+     */
+    public void unblockUser(String id){
+        db = this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.MESSAGES_ACCEPTED, "true");
+        db.update(Task.TaskEntry.USER, msgValues, Task.TaskEntry.ID_USER + " = '" + id + "'", null);
     }
 
     /**

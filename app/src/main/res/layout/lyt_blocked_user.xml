@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/blockedUserLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/bg_request_card">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profilePic"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_profile_pic_image_view_secondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/userNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/opensans_semibold_custom"
+        android:maxLines="1"
+        android:text="TextView"
+        android:textColor="?attr/textColor"
+        android:textSize="16sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@+id/profilePic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/profilePic"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/informationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/opensans_regular_custom"
+        android:text="TextView"
+        android:textColor="?attr/textColor"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/profilePic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/profilePic"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/unblockButton"
+        style="@style/dialogActionButton"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_delete_block_logout_button"
+        android:maxHeight="48dp"
+        android:text="Unblock"
+        app:icon="@drawable/ic_block"
+        app:iconGravity="textStart"
+        app:iconTint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profilePic" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

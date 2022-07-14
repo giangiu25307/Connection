@@ -525,7 +525,7 @@ public class ChatActivity extends AppCompatActivity {
                                 dialogBuilder.setView(R.layout.dialog_telegram_username);
                                 final AlertDialog alertDialog = dialogBuilder.create();
                                 TextView telegramNick = alertDialog.findViewById(R.id.editTextTelegramNick);
-                                Button confirm = alertDialog.findViewById(R.id.confirmTextView);
+                                Button confirm = alertDialog.findViewById(R.id.confirmButton);
                                 confirm.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -535,7 +535,7 @@ public class ChatActivity extends AppCompatActivity {
                                         alertDialog.dismiss();
                                     }
                                 });
-                                Button cancel = alertDialog.findViewById(R.id.cancelTextView);
+                                Button cancel = alertDialog.findViewById(R.id.cancelButton);
                                 cancel.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
