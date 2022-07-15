@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -54,6 +55,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     ArrayList<User> userList;
     private static MapFragment mapFragment;
     private Button backButton, nextButton;
+    private CountDownTimer countDownTimer;
 
     public MapFragment() {
 
@@ -179,7 +181,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.scanAgainIcon:
-                connectionController.initProcess();
+                manageScanAgain(item);
                 break;
             case R.id.filterIcon:
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
@@ -289,6 +291,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(countDownTimer != null){
+            countDownTimer.cancel();
+        }
     }
 
     @Override
@@ -320,6 +325,25 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             default:
                 graphicRefresh();
                 break;
+        }
+    }
+
+    private void manageScanAgain(MenuItem menuItem){
+        menuItem.setEnabled(false);
+        if(countDownTimer == null){
+            countDownTimer = new CountDownTimer(300000, 1000) {
+                @Override
+                public void onTick(long l) {
+
+                }
+                @Override
+                public void onFinish() {
+                    menuItem.setEnabled(true);
+                }
+            }.start();
+
+        }else{
+            countDownTimer.start();
         }
     }
 }
