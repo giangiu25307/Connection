@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/layoutBackground"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/textView25"
+        style="@style/dialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Informations" />
+
+    <TextView
+        android:id="@+id/textView28"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_regular_custom"
+        android:layout_marginTop="16dp"
+        android:text="After this dialog will appear a system dialog where you've to choose a network to connect, you've to choose 'DIRECT-CONNECTION'.
+\nIf it takes too long to show the network or it dissapears by itself, you can try to scan again by clicking the following icon in the map screen"
+        android:textColor="?attr/textColor" />
+
+    <ImageView
+        android:id="@+id/imageView26"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/ic_scan_again"
+        app:tint="?attr/iconTint" />
+
+    <TextView
+        android:id="@+id/textView29"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_regular_custom"
+        android:layout_marginTop="16dp"
+        android:text="If you try this method many times and you can't find the connection, probably, can be that there isn't any person to connect"
+        android:textColor="?attr/textColor" />
+
+    <Button
+        android:id="@+id/okButton"
+        style="@style/cancelButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Ok"
+        android:textSize="16sp" />
+
+</LinearLayout>

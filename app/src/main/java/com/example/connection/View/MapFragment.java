@@ -172,12 +172,15 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        inflater.inflate(R.menu.home_menu, menu);
+        inflater.inflate(R.menu.map_menu, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.scanAgainIcon:
+                connectionController.initProcess();
+                break;
             case R.id.filterIcon:
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
                 dialogBuilder.setView(R.layout.dialog_map_filter);
@@ -192,15 +195,15 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     minAge.setText("" + Connection.minAge);
                 if (Connection.maxAge != 100)
                     maxAge.setText("" + Connection.maxAge);
-                if (Connection.genders[0].equals("")){
+                if (Connection.genders[0].equals("")) {
                     male.setTextAppearance(R.style.genderUnselected);
                     male.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
                 }
-                if (Connection.genders[1].equals("")){
+                if (Connection.genders[1].equals("")) {
                     female.setTextAppearance(R.style.genderUnselected);
                     female.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
                 }
-                if (Connection.genders[2].equals("")){
+                if (Connection.genders[2].equals("")) {
                     other.setTextAppearance(R.style.genderUnselected);
                     other.setBackgroundResource(R.drawable.bg_gender_filter_unselected);
                 }

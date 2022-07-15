@@ -338,6 +338,7 @@ ConnectionController {
      * Starting to look around to check for group owners
      */
     public void initProcess() {
+        bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);

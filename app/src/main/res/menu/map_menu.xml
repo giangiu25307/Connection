@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/scanAgainIcon"
+        android:icon="@drawable/ic_scan_again"
+        android:title="Scan again"
+        app:showAsAction="always"
+        app:iconTint="?attr/toolbarAndSettingsCardIconColor"/>
+
+    <item
         android:id="@+id/randomIcon"
         android:icon="@drawable/ic_random"
         android:title="Random chat"
