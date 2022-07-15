@@ -208,7 +208,7 @@ public class HomeFragment extends Fragment {
         });
         button.setClickable(false);
 
-        new CountDownTimer(10000, 1000) {
+        new CountDownTimer(50000, 1000) {
             @Override
             public void onTick(long l) {
                 button.setText("Ok (" + l + ")");
