@@ -26,6 +26,16 @@
         android:textColor="?attr/secondaryTextColor"
         android:textSize="15sp" />
 
+    <TextView
+        android:id="@+id/deleteDialogInformation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/opensans_regular_custom"
+        android:text="(The ... will be deleted locally, this mean that the other user will still be able to view the deleted ...)"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="14sp" />
+
     <include
         layout="@layout/lyt_cancel_delete_buttons"
         android:layout_width="match_parent"

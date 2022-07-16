@@ -349,11 +349,22 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
                     final AlertDialog alertDialog = dialogBuilder.create();
                     alertDialog.show();
                     int chatSelected = multiselectList.size();
-                    TextView titleTextView = alertDialog.findViewById(R.id.deleteDialogTitle);
-                    titleTextView.setText(chatSelected > 1 ? "Delete chats" : "Delete chat");
-                    TextView subtitleTextView = alertDialog.findViewById(R.id.deleteDialogSubtitle);
-                    subtitleTextView.setText(chatSelected > 1 ? "Are you sure you want to delete " + chatSelected + " chats? The operation cannot be undone"
-                            : "Are you sure you want to delete " + chatSelected + " chat? The operation cannot be undone");
+
+                    String chat = chatSelected > 1 ? "chats" : "chat";
+                    TextView titleTextView, subtitleTextView, informationTextView;
+
+                    String titleText = "Delete " + chat;
+                    titleTextView = alertDialog.findViewById(R.id.deleteDialogTitle);
+                    titleTextView.setText(titleText);
+
+                    String subtitleText = "Are you sure you want to delete " + chatSelected + " " + chat + "? This operation cannot be undone";
+                    subtitleTextView = alertDialog.findViewById(R.id.deleteDialogSubtitle);
+                    subtitleTextView.setText(subtitleText);
+
+                    String informationText = "(The " + chat + " will be deleted locally, this mean that the other user will still be able to view the deleted " + chat + ")";
+                    informationTextView = alertDialog.findViewById(R.id.deleteDialogInformation);
+                    informationTextView.setText(informationText);
+
                     alertDialog.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
