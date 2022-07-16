@@ -56,6 +56,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private static MapFragment mapFragment;
     private Button backButton, nextButton;
     private CountDownTimer countDownTimer;
+    private int waitToScan = 0;
 
     public MapFragment() {
 
@@ -109,6 +110,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             mapFragment.nextButton.setAlpha(0.5f);
         }
         mapFragment.parent = view.findViewById(R.id.mapFlowLayout);
+        mapFragment.waitToScan = 0;
         mapFragment.sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
         mapFragment.parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -159,6 +161,32 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             snackbar.show();
             sharedPreferences.edit().putBoolean("notificationsPopupShown", true).apply();
         }
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+        dialogBuilder.setView(R.layout.dialog_information_for_network);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+        Button button = alertDialog.findViewById(R.id.okButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                connectionController.initProcess();
+            }
+        });
+        button.setClickable(false);
+
+        new CountDownTimer(50000, 1000) {
+            @Override
+            public void onTick(long l) {
+                button.setText("Ok (" + ((int)l/1000) + ")");
+            }
+            @Override
+            public void onFinish() {
+                button.setText("Ok");
+                button.setClickable(true);
+            }
+        }.start();
     }
 
     private boolean isNotificationChannelEnabled(@Nullable String channelId) {
@@ -181,7 +209,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.scanAgainIcon:
-                manageScanAgain(item);
+                if(mapFragment.waitToScan == 0)
+                    manageScanAgain(item);
+                else
+                    Toast.makeText(mapFragment.getContext(), "Wait "+mapFragment.waitToScan +"s",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.filterIcon:
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
@@ -329,16 +360,16 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     }
 
     private void manageScanAgain(MenuItem menuItem){
-        menuItem.setEnabled(false);
+        mapFragment.connectionController.reScan();
         if(countDownTimer == null){
-            countDownTimer = new CountDownTimer(300000, 1000) {
+            countDownTimer = new CountDownTimer(30000, 1000) {
                 @Override
                 public void onTick(long l) {
-
+                    mapFragment.waitToScan = (int)l/1000;
                 }
                 @Override
                 public void onFinish() {
-                    menuItem.setEnabled(true);
+                    mapFragment.waitToScan = 0;
                 }
             }.start();
 

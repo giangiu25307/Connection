@@ -194,32 +194,6 @@ public class HomeFragment extends Fragment {
 
     public void setConnectionController() {
        this.connectionController = new ConnectionController(connection, database);
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-        dialogBuilder.setView(R.layout.dialog_map_filter);
-        final AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.setCancelable(false);
-        alertDialog.show();
-        Button button = alertDialog.findViewById(R.id.okButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                connectionController.initProcess();
-            }
-        });
-        button.setClickable(false);
-
-        new CountDownTimer(50000, 1000) {
-            @Override
-            public void onTick(long l) {
-                button.setText("Ok (" + l + ")");
-            }
-            @Override
-            public void onFinish() {
-                button.setText("Ok");
-                button.setClickable(true);
-            }
-        }.start();
     }
 
     public void setChatController(ChatController chatController) {

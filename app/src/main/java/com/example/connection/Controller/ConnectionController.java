@@ -59,7 +59,7 @@ ConnectionController {
     private Encryption encryption;
     private TcpClient tcpClient;
     private TcpServer tcpServer;
-    public static boolean GO_leave = false;
+    public static boolean GO_leave = false, amIGO;
     private WifiManager.WifiLock wifiLock;
     private PlusController plusController;
     private boolean CallbackWhenGO;
@@ -76,6 +76,7 @@ ConnectionController {
         this.database = database;
         setUser();
         myId = myUser.getIdUser();
+        amIGO = false;
         myUser.setPublicKey(encryption.convertPublicKeyToString());
         database.setPublicKey(encryption.convertPublicKeyToString());
         tcpClient = new TcpClient(database, encryption, connection);
@@ -125,6 +126,7 @@ ConnectionController {
     @SuppressLint("MissingPermission")
     public void createGroup() {
         GO_leave = false;
+        amIGO = true;
         mManager.createGroup(mChannel, mConfig, mActionListener = new WifiP2pManager.ActionListener() {
 
             @Override
@@ -338,10 +340,16 @@ ConnectionController {
      * Starting to look around to check for group owners
      */
     public void initProcess() {
-        bluetoothAdvertiser.stopAdvertising();
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
+    }
+
+    public void reScan(){
+        if(amIGO)
+            bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
+        else
+            bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
     }
 
     /**
