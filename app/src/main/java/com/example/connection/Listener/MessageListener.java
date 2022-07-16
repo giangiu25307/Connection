@@ -132,7 +132,7 @@ public class MessageListener extends BroadcastReceiver {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        messageListener.messageAdapter.addMessage(new Message(messageListener.database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString(), intent.getStringExtra("sent")));
+                        messageListener.messageAdapter.addMessage(new Message(messageListener.database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString(), intent.getStringExtra("sent"), ""));
                         messageListener.database.setReadAllChatMessages(intent.getStringExtra("idChat"));
                     } else if (!messageListener.database.isUserBlocked(intent.getStringExtra("idChat"))) {
                         if (Connection.fragmentName.equals("CHAT")) {

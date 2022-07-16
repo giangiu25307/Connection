@@ -205,9 +205,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-
-        recyclerView = findViewById(R.id.messageRecyclerView);
         Cursor messageCursor = Connection.database.getAllMsg(user.getIdUser());
+        recyclerView = findViewById(R.id.messageRecyclerView);
         messageAdapter = new MessageAdapter(this, Connection.database, user.getIdUser(), messageList, linearLayoutManager, recyclerView, noMessageImageView, noMessageTextView);
         MessageListener.getIstance().setMessageAdapter(messageAdapter);
         recyclerView.setAdapter(messageAdapter);
@@ -314,7 +313,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void fillMessagesArrayList(Cursor messageCursor) {
         do {
-            messageList.add(new Message(messageCursor.getString(0), messageCursor.getString(1), messageCursor.getString(2), messageCursor.getString(4), messageCursor.getString(5)));
+            messageList.add(new Message(messageCursor.getString(0), messageCursor.getString(1), messageCursor.getString(2), messageCursor.getString(4), messageCursor.getString(5), ""));
         } while (messageCursor.moveToNext());
     }
 

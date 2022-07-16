@@ -507,7 +507,7 @@ public class Database extends SQLiteOpenHelper {
      * Get all msg from global chat
      */
     public Cursor getAllGlobalMsg() {
-        String query = " SELECT m.id_sender,m.msg,m.datetime, u.username  " +
+        String query = " SELECT m.id_message,m.id_sender,m.msg,m.datetime, u.username  " +
                 " FROM " + Task.TaskEntry.GLOBAL_MESSAGE +
                 " m INNER JOIN " + Task.TaskEntry.USER + " u ON u." + Task.TaskEntry.ID_USER + " = m." + Task.TaskEntry.ID_SENDER +
                 " ORDER BY m." + Task.TaskEntry.DATETIME + " ASC ";

@@ -141,14 +141,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         Message message = messagesList.get(position);
 
-        TextView textMessage = null;
-        TextView messageTime = null;
+        TextView messageTextView = null, messageTimeTextView = null;
 
-        String datetime = message.getDate();
+        String dateTime = message.getDate();
 
         Date date = new Date();
         try {
-            date = format.parse(datetime);
+            date = format.parse(dateTime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -159,8 +158,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             } else {
                 ((SentViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.transparent));
             }
-            textMessage = ((SentViewHolder) holder).message;
-            messageTime = ((SentViewHolder) holder).messageTime;
+            messageTextView = ((SentViewHolder) holder).message;
+            messageTimeTextView = ((SentViewHolder) holder).messageTime;
 
             ((SentViewHolder) holder).progressBar.setVisibility(View.INVISIBLE);
 
@@ -175,8 +174,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             } else {
                 ((ReceivedViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.transparent));
             }
-            textMessage = ((ReceivedViewHolder) holder).message;
-            messageTime = ((ReceivedViewHolder) holder).messageTime;
+            messageTextView = ((ReceivedViewHolder) holder).message;
+            messageTimeTextView = ((ReceivedViewHolder) holder).messageTime;
         } else if ((holder.getItemViewType() == VIEW_TYPE_DATE_MESSAGE)) {
             ((DateMessageViewHolder) holder).message.setText((date.getDate() < 10 ? "0" + date.getDate() : "" + date.getDate()) + "/" +
                     (date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : "" + (date.getMonth() + 1)) + "/" +
@@ -184,10 +183,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return;
         }
 
-        textMessage.setText(message.getMessage());
-        if (textMessage.getText().toString().length() > 400)
-            setMessageWithClickableLink(textMessage);
-        messageTime.setText(String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes());
+        messageTextView.setText(message.getMessage());
+        if (messageTextView.getText().toString().length() > 400)
+            setMessageWithClickableLink(messageTextView);
+        messageTimeTextView.setText(String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes());
 
         holder.itemView.setTag(message.getIdMessage());
 
@@ -225,7 +224,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         messagesList.clear();
 
         do {
-            messagesList.add(new Message(newMessageList.getString(0), newMessageList.getString(1), newMessageList.getString(2), newMessageList.getString(4), messageCursor.getString(5)));
+            messagesList.add(new Message(newMessageList.getString(0), newMessageList.getString(1), newMessageList.getString(2), newMessageList.getString(4), messageCursor.getString(5), ""));
         } while (newMessageList.moveToNext());
 
         if (messagesList != null) {

@@ -15,22 +15,31 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
+import com.example.connection.Model.Message;
 import com.example.connection.R;
 import com.example.connection.View.BottomSheetNewChat;
+
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -48,13 +57,22 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
     TextView dateMessageLayout;
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
+    private static final int VIEW_TYPE_DATE_MESSAGE = 3;
+    private ArrayList<Message> messageList;
+    private RecyclerView recyclerView;
+    private ImageView noMessageImageView;
+    private TextView noMessageTextView;
+    public String idSelectedMessage;
 
-    public GlobalMessageAdapter(Context context, Database database, String id, Cursor messageCursor, LinearLayoutManager linearLayoutManager) {
+    public GlobalMessageAdapter(Context context, Database database, String id, ArrayList<Message> messageList, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView, ImageView noMessageImageView, TextView noMessageTextView) {
         this.context = context;
         this.database = database;
         this.idChat = id;
-        this.messageCursor = messageCursor;
+        this.messageList = messageList;
         this.linearLayoutManager = linearLayoutManager;
+        this.recyclerView = recyclerView;
+        this.noMessageImageView = noMessageImageView;
+        this.noMessageTextView = noMessageTextView;
         Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(messageCursor));
     }
 
@@ -66,7 +84,37 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
         View view = null;
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {
             view = inflater.inflate(R.layout.lyt_message_sent, parent, false);
-            return new SentViewHolder(view);
+            return new SentViewHolder(view, new SentViewHolder.OnAlertIconListener() {
+                @Override
+                public void openDialogMessageNotSent(int p) {
+                    //TODO Da verificare
+                    if (database.findIp(idChat) == null) {
+                        Toast.makeText(context, "User not connected", Toast.LENGTH_SHORT).show();
+                    } else {
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.CustomAlertDialog);
+                        dialogBuilder.setView(R.layout.dialog_retry_message);
+                        final AlertDialog alertDialog = dialogBuilder.create();
+                        alertDialog.show();
+                        alertDialog.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.dismiss();
+                            }
+                        });
+                        alertDialog.findViewById(R.id.retryButton).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                alertDialog.dismiss();
+                                ChatController chatController = ChatController.getInstance();
+                                Message message = messageList.get(p);
+                                database.deleteMessage(message.getIdMessage(), idChat);
+                                notifyItemRemoved(p);
+                                chatController.reSendTCPMsg(message.getMessage(), idChat);
+                            }
+                        });
+                    }
+                }
+            });
         } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
             view = inflater.inflate(R.layout.lyt_message_received, parent, false);
             return new ReceivedViewHolder(view, new ReceivedViewHolder.OnChatClickListener() {
@@ -74,9 +122,12 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
                 public void openChat(int p) {
                     messageCursor.moveToPosition(p);
                     BottomSheetNewChat bottomSheet = new BottomSheetNewChat(database.getAllUserInformation(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_USER))), false);
-                    bottomSheet.show(((AppCompatActivity)context).getSupportFragmentManager(), "ModalBottomSheet");
+                    bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), "ModalBottomSheet");
                 }
             });
+        } else if (viewType == VIEW_TYPE_DATE_MESSAGE) {
+            view = inflater.inflate(R.layout.lyt_date_message_layout, parent, false);
+            return new GlobalMessageAdapter.DateMessageViewHolder(view);
         }
         //dateMessageLayout = view.findViewById(R.id.dateMessageLayout);
         return null;
@@ -84,45 +135,77 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (!messageCursor.moveToPosition(position)) {
+        if (messageList.get(position) == null) {
             return;
         }
 
-        TextView message = null;
-        TextView messageTime = null;
+        Message message = messageList.get(position);
 
-        String datetime = messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.DATETIME));
-        if (datetime.split("£€")[0].equals("date")) if (checkDate()) return;
+        TextView messageTextView = null, messageTimeTextView = null;
+
+        String dateTime = message.getDate();
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         Date date = new Date();
         try {
-            date = format.parse(datetime);
+            date = format.parse(dateTime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         if ((holder.getItemViewType() == VIEW_TYPE_MESSAGE_SENT)) {
-            message = ((SentViewHolder) holder).message;
-            messageTime = ((SentViewHolder) holder).messageTime;
+            if (idSelectedMessage.equals(message.getIdMessage())) {
+                ((GlobalMessageAdapter.SentViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.secondaryColorSemiTransparent));
+            } else {
+                ((GlobalMessageAdapter.SentViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            }
+            messageTextView = ((SentViewHolder) holder).message;
+            messageTimeTextView = ((SentViewHolder) holder).messageTime;
+
+            ((GlobalMessageAdapter.SentViewHolder) holder).progressBar.setVisibility(View.INVISIBLE);
+
+            if (message.getSent().equals("0")) {
+                ((GlobalMessageAdapter.SentViewHolder) holder).icError.setVisibility(View.VISIBLE);
+            } else {
+                ((GlobalMessageAdapter.SentViewHolder) holder).icError.setVisibility(View.INVISIBLE);
+            }
         } else if ((holder.getItemViewType() == VIEW_TYPE_MESSAGE_RECEIVED)) {
-            ((ReceivedViewHolder) holder).username.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.USERNAME)));
-            message = ((ReceivedViewHolder) holder).message;
-            messageTime = ((ReceivedViewHolder) holder).messageTime;
+            ((ReceivedViewHolder) holder).username.setText(message.getUsername());
+            if (idSelectedMessage.equals(message.getIdMessage())) {
+                ((GlobalMessageAdapter.ReceivedViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.secondaryColorSemiTransparent));
+            } else {
+                ((GlobalMessageAdapter.ReceivedViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            }
+            messageTextView = ((ReceivedViewHolder) holder).message;
+            messageTimeTextView = ((ReceivedViewHolder) holder).messageTime;
+        } else if (holder.getItemViewType() == VIEW_TYPE_DATE_MESSAGE) {
+            ((GlobalMessageAdapter.DateMessageViewHolder) holder).message.setText((date.getDate() < 10 ? "0" + date.getDate() : "" + date.getDate()) + "/" +
+                    (date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : "" + (date.getMonth() + 1)) + "/" +
+                    (date.getYear() + 1900));
+            return;
         }
 
-        message.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG)));
-        if (message.getText().toString().length() > 400) setMessageWithClickableLink(message);
-        messageTime.setText(String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes());
+        messageTextView.setText(messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.MSG)));
+        if (messageTextView.getText().toString().length() > 400)
+            setMessageWithClickableLink(messageTextView);
+        messageTimeTextView.setText(String.valueOf(date.getHours() < 10 ? '0' : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : "") + date.getMinutes());
 
-        holder.itemView.setTag(idChat);
+        holder.itemView.setTag(message.getIdMessage());
+
+        if (messageList.size() > 2) {
+            if (position == messageList.size() - 1 && linearLayoutManager.findLastVisibleItemPosition() == messageList.size() - 2) {
+                recyclerView.scrollToPosition(messageList.size() - 1);
+            }
+        }
 
     }
 
     @Override
     public int getItemViewType(int position) {
         messageCursor.moveToPosition(position);
-        if (database.getMyInformation()!=null && !messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)).equals(database.getMyInformation()[0])) {
+        if (messageList.get(position).getMessage().isEmpty()) {
+            return VIEW_TYPE_DATE_MESSAGE;
+        } else if (database.getMyInformation() != null && !messageCursor.getString(messageCursor.getColumnIndex(Task.TaskEntry.ID_SENDER)).equals(database.getMyInformation()[0])) {
             return VIEW_TYPE_MESSAGE_RECEIVED;
         } else {
             return VIEW_TYPE_MESSAGE_SENT;
@@ -134,17 +217,29 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
         return messageCursor.getCount();
     }
 
-    public void swapCursor(Cursor newCursor) {
-        if (messageCursor != null) {
-            messageCursor.close();
-        }
+    public void swapCursor(Cursor newMessageList) {
+        newMessageList.moveToFirst();
+        messageList.clear();
 
-        messageCursor = newCursor;
+        do {
+            messageList.add(new Message(messageCursor.getString(0), messageCursor.getString(1), messageCursor.getString(2), messageCursor.getString(3), "", messageCursor.getString(4)));
+        } while (newMessageList.moveToNext());
 
-        if (newCursor != null) {
+        if (messageList != null) {
             notifyDataSetChanged();
         }
 
+    }
+
+    public void addMessage(Message message) {
+        if (recyclerView.getVisibility() == View.INVISIBLE) {
+            recyclerView.setVisibility(View.VISIBLE);
+            noMessageImageView.setVisibility(View.INVISIBLE);
+            noMessageTextView.setVisibility(View.INVISIBLE);
+        }
+        messageList.add(message);
+        notifyItemInserted(messageList.size() - 1);
+        recyclerView.scrollToPosition(messageList.size()  - 1);
     }
 
     public static class ReceivedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -185,20 +280,55 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     }
 
-    public static class SentViewHolder extends RecyclerView.ViewHolder {
+    public static class SentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        GlobalMessageAdapter.SentViewHolder.OnAlertIconListener listener;
 
         private LinearLayout messageLayout, textLayout;
         private TextView message, messageTime;
+        private ImageView icError;
+        private ProgressBar progressBar;
 
-        private SentViewHolder(View itemView) {
+        private SentViewHolder(View itemView, GlobalMessageAdapter.SentViewHolder.OnAlertIconListener listener) {
             super(itemView);
 
             messageLayout = itemView.findViewById(R.id.messageLayout);
             textLayout = itemView.findViewById(R.id.textLayout);
             messageTime = itemView.findViewById(R.id.messageTime);
             message = itemView.findViewById(R.id.message);
+            icError = itemView.findViewById(R.id.icErrorSendMessage);
+            progressBar = itemView.findViewById(R.id.progressBar);
 
+        }
+
+        @Override
+        public void onClick(View view) {
+
+            switch (view.getId()) {
+                case R.id.icErrorSendMessage:
+                    listener.openDialogMessageNotSent(this.getLayoutPosition());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public interface OnAlertIconListener {
+            void openDialogMessageNotSent(int p);
+        }
+
+    }
+
+    public static class DateMessageViewHolder extends RecyclerView.ViewHolder {
+
+        private LinearLayout messageLayout;
+        private TextView message;
+
+        private DateMessageViewHolder(View itemView) {
+            super(itemView);
+
+            messageLayout = itemView.findViewById(R.id.messageLayout);
+            message = itemView.findViewById(R.id.message);
         }
 
     }
