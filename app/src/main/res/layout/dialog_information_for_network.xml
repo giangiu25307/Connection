@@ -14,7 +14,7 @@
         style="@style/dialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Informations" />
+        android:text="Information" />
 
     <TextView
         android:id="@+id/textView28"

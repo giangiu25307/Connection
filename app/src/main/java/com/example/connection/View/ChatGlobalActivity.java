@@ -223,6 +223,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
 
                     if (actionMode == null) {
                         actionMode = toolbar.startActionMode(actionModeCallback);
+                        actionMode.setTitle("1 selected");
                     }
                 }
                 selectedMessagePosition = position;
@@ -236,15 +237,12 @@ public class ChatGlobalActivity extends AppCompatActivity {
         if (actionMode != null) {
 
             if (idSelectedMessage.equals(id)) {
-                idSelectedMessage = "";
+                refreshAdapter();
                 actionMode.finish();
             } else {
                 refreshAdapter();
                 idSelectedMessage = id;
-                actionMode.setTitle("1 selected");
                 refreshAdapter();
-                if (!contextMenu.findItem(R.id.copyIcon).isVisible())
-                    contextMenu.findItem(R.id.copyIcon).setVisible(true);
             }
 
         }
@@ -261,7 +259,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.chat_action_menu, menu);
+            inflater.inflate(R.menu.global_chat_menu, menu);
             contextMenu = menu;
             return true;
         }
