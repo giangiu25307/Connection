@@ -214,6 +214,7 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
+        if (messageCursor == null) return 0;
         return messageCursor.getCount();
     }
 

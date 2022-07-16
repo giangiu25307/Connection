@@ -100,6 +100,7 @@ public class Database extends SQLiteOpenHelper {
                 + ")";
 
         String CREATE_GLOBAL_MESSAGE_TABLE = "CREATE TABLE IF NOT EXISTS " + Task.TaskEntry.GLOBAL_MESSAGE + " ( "
+                + Task.TaskEntry.ID_MESSAGE + " TEXT PRIMARY KEY, "
                 + Task.TaskEntry.ID_SENDER + " TEXT NOT NULL, "
                 + Task.TaskEntry.MSG + " TEXT NOT NULL, "
                 + Task.TaskEntry.DATETIME + " TEXT, "
@@ -276,6 +277,23 @@ public class Database extends SQLiteOpenHelper {
                 " FROM " + Task.TaskEntry.MESSAGE +
                 " WHERE " + Task.TaskEntry.ID_CHAT + " = '" + idChat +
                 "' ORDER BY CAST(" + Task.TaskEntry.ID_MESSAGE + " AS UNSIGNED) DESC LIMIT 1";
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            if(cursor.getString(0) == null)
+                return "0";
+            return cursor.getString(0);
+        }
+        return "0";
+    }
+
+    /**
+     * Get the last message
+     */
+    public String getLastGlobalMessageId() {
+        String query = "SELECT id_message " +
+                " FROM " + Task.TaskEntry.GLOBAL_MESSAGE +
+                " ORDER BY CAST(" + Task.TaskEntry.ID_MESSAGE + " AS UNSIGNED) DESC LIMIT 1";
         Cursor cursor = db.rawQuery(query, null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -487,6 +505,8 @@ public class Database extends SQLiteOpenHelper {
      */
     public void addGlobalMsg(String msg, String idSender) {
         ContentValues msgValues = new ContentValues();
+        int lastId = Integer.parseInt(getLastGlobalMessageId());
+        msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId + 1);
         msgValues.put(Task.TaskEntry.ID_SENDER, idSender);
         msgValues.put(Task.TaskEntry.MSG, msg);
         db.insert(Task.TaskEntry.GLOBAL_MESSAGE, null, msgValues);

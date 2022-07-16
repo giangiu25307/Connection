@@ -176,10 +176,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         });
         button.setClickable(false);
 
-        new CountDownTimer(50000, 1000) {
+        new CountDownTimer(5000, 1000) {
             @Override
             public void onTick(long l) {
-                button.setText("Ok (" + ((int)l/1000) + ")");
+                button.setText("Ok (" + ((int)l/1000 + 1) + ")");
             }
             @Override
             public void onFinish() {
