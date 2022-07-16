@@ -90,6 +90,7 @@ public class ChatController {
             udpWlan.sendGlobalMsg(msg);
         if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null)
             udpP2p.sendGlobalMsg(msg);
+        database.addGlobalMsg(msg, ConnectionController.myUser.getIdUser());
     }
 
     /**
