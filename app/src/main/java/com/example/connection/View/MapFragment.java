@@ -161,32 +161,40 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             snackbar.show();
             sharedPreferences.edit().putBoolean("notificationsPopupShown", true).apply();
         }
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-        dialogBuilder.setView(R.layout.dialog_information_for_network);
-        final AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.setCancelable(false);
-        alertDialog.show();
-        Button button = alertDialog.findViewById(R.id.okButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                connectionController.initProcess();
-            }
-        });
-        button.setClickable(false);
+        if(mapFragment.sharedPreferences.getBoolean("hasInformationNetworkDialogBeenShown", false)){
+            connectionController.initProcess();
+        }else{
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+            dialogBuilder.setView(R.layout.dialog_information_for_network);
+            final AlertDialog alertDialog = dialogBuilder.create();
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+            Button button = alertDialog.findViewById(R.id.okButton);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    alertDialog.dismiss();
+                    connectionController.initProcess();
+                    mapFragment.sharedPreferences.edit().putBoolean("hasInformationNetworkDialogBeenShown", true).apply();
+                }
+            });
+            button.setClickable(false);
+            button.setAlpha(0.5f);
 
-        new CountDownTimer(5000, 1000) {
-            @Override
-            public void onTick(long l) {
-                button.setText("Ok (" + ((int)l/1000 + 1) + ")");
-            }
-            @Override
-            public void onFinish() {
-                button.setText("Ok");
-                button.setClickable(true);
-            }
-        }.start();
+            new CountDownTimer(5000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    button.setText("Ok (" + ((int)l/1000 + 1) + ")");
+                }
+                @Override
+                public void onFinish() {
+                    button.setText("Ok");
+                    button.setClickable(true);
+                    button.setAlpha(1f);
+                }
+            }.start();
+        }
+
     }
 
     private boolean isNotificationChannelEnabled(@Nullable String channelId) {
