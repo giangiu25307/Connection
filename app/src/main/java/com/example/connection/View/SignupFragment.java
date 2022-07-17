@@ -46,16 +46,19 @@ import com.example.connection.Adapter.SliderAdapter;
 import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.DrawController;
+import com.example.connection.Controller.ImageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.Message;
 import com.example.connection.Model.User;
 import com.example.connection.R;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -77,7 +80,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private boolean isPasswordShown;
     private View[] views;
     private Animation slideUp, slideDown;
-
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
             "(?=.*[a-z])" + //at least 1 lower case
@@ -218,12 +220,15 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         dialogBuilder.setView(R.layout.dialog_signup_loading);
                         final AlertDialog alertDialog = dialogBuilder.create();
                         alertDialog.show();
-                        Response response=accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePic());
+                        user.setProfilePicBase64(user.getProfilePic());
+                        Response response=accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePicBase64());
                         if(response.isSuccessful()){
                             alertDialog.dismiss();
-                            database.addUser("1", null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getProfilePic(), user.getPublicKey());
-                            database.setNumber("0", user.getNumber());
-                            Toast.makeText(getContext(),"Registration successful", Toast.LENGTH_LONG);
+                            Gson g = new Gson();
+                            HashMap<String,String> map = g.fromJson(response.body().string(),HashMap.class);
+                            database.addUser(map.get("id"), null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), ImageController.decodeImage(user.getProfilePicBase64(),getContext(),user.getIdUser()), user.getPublicKey());
+                            database.setNumber(map.get("id"), user.getNumber());
+                            Toast.makeText(getContext(),"Registration successful", Toast.LENGTH_LONG).show();
                             Fragment fragment = new LoginFragment().newInstance(connection,database,accountController,drawController);
                             loadFragment(fragment);
                         }else{
@@ -533,6 +538,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 if (cursor == null) return;
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                ImageController.myImagePathToCopy = imagePath;
                 user.setProfilePic(imagePath);//database.setProfilePic(imagePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 Drawable draw = new BitmapDrawable(getResources(), bitmap);
@@ -553,6 +559,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 // CALL THIS METHOD TO GET THE ACTUAL PATH
                 String imagePath = getRealPathFromURI(tempUri);
 
+                ImageController.myImagePathToCopy = imagePath;
+
+                File file = new File(imagePath);
                 user.setProfilePic(imagePath);//database.setProfilePic(imagePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 Drawable draw = new BitmapDrawable(getResources(), bitmap);

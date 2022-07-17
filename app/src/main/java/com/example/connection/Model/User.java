@@ -223,6 +223,10 @@ public class User {
                 '}';
     }
 
+    public String getProfilePicBase64(){
+        return profilePicBase64;
+    }
+
     public void setProfilePicBase64(String path){
         Bitmap bm = null;
         if((bm=BitmapFactory.decodeFile(path))!=null) {

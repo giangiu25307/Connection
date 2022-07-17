@@ -662,9 +662,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         try {
             Response response = client.newCall(request).execute();
             if(response.isSuccessful()){
-                Toast.makeText(getContext(),"Thanks for reporting", Toast.LENGTH_LONG);
+                Toast.makeText(getContext(),"Thanks for reporting", Toast.LENGTH_LONG).show();
             }else{
-                Toast.makeText(getContext(),"Something went wrong", Toast.LENGTH_LONG);
+                Toast.makeText(getContext(),"Something went wrong", Toast.LENGTH_LONG).show();
                 return false;
             }
         }catch (Exception e){

@@ -1,6 +1,7 @@
 package com.example.connection.UDP_Connection;
 
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.ImageController;
 import com.example.connection.Controller.PlusController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.UserPlus;
@@ -16,8 +17,8 @@ import java.nio.charset.StandardCharsets;
 
 public class Multicast_WLAN extends Multicast {
 
-    public Multicast_WLAN(Database database, ConnectionController connectionController, TcpClient tcp_client) {
-        super(database, connectionController, tcp_client);
+    public Multicast_WLAN(Database database, ConnectionController connectionController, TcpClient tcp_client, Connection connection) {
+        super(database, connectionController, tcp_client, connection);
     }
 
     /**
@@ -45,7 +46,7 @@ public class Multicast_WLAN extends Multicast {
                     switch (splittedR[0]) {
                         case "info":
                             splittedR[2] = splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName;
-                            database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
+                            database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], ImageController.decodeImage(splittedR[11], super.connection.getApplicationContext(), splittedR[1]), splittedR[12]);
                             database.setOtherGroup(splittedR[1]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION")) {
@@ -112,7 +113,7 @@ public class Multicast_WLAN extends Multicast {
                             for (int i = 1; i < splittedR.length - 14; i = i + 12) {
                                 if (i == 1)
                                     database.setMyGroupOwnerIp(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i]);
-                                database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                                database.addUser(splittedR[i], splittedR[2].split("%")[0]+"%"+MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], ImageController.decodeImage(splittedR[i + 10], super.connection.getApplicationContext(), splittedR[i]), splittedR[i + 11]);
                                 database.setOtherGroup(splittedR[i]);
                             }
                             //Check for the other group owner

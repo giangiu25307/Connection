@@ -7,6 +7,7 @@ import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.PlusController;
 import com.example.connection.Database.Database;
 import com.example.connection.TCP_Connection.TcpClient;
+import com.example.connection.View.Connection;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -24,11 +25,13 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     protected Database database;
     public static boolean dbUserEvent;
     protected PlusController plusController;
+    protected Connection connection;
 
-    public Multicast(Database database, ConnectionController connectionController, TcpClient tcp_client) {
+    public Multicast(Database database, ConnectionController connectionController, TcpClient tcp_client, Connection connection) {
         this.connectionController = connectionController;
         this.tcp_client = tcp_client;
         this.database = database;
+        this.connection = connection;
         dbUserEvent=true;
         try {
             group = InetAddress.getByName("234.0.0.0");
@@ -58,7 +61,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        new Thread(new Multicast(database, connectionController,tcp_client)).start();
+        new Thread(new Multicast(database, connectionController,tcp_client, connection)).start();
         return null;
     }
 

@@ -80,8 +80,8 @@ ConnectionController {
         myUser.setPublicKey(encryption.convertPublicKeyToString());
         database.setPublicKey(encryption.convertPublicKeyToString());
         tcpClient = new TcpClient(database, encryption, connection);
-        multicastP2P = new Multicast_P2P(database, this, tcpClient);
-        multicastWLAN = new Multicast_WLAN(database, this, tcpClient);
+        multicastP2P = new Multicast_P2P(database, this, tcpClient,connection);
+        multicastWLAN = new Multicast_WLAN(database, this, tcpClient,connection);
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection, this, bluetoothAdvertiser);
