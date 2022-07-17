@@ -339,6 +339,25 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
+     * Get the last message of global message chat
+     *
+     */
+    public String getLastGlobalMessageDateTime() {
+        String query = "SELECT datetime " +
+                " FROM " + Task.TaskEntry.GLOBAL_MESSAGE +
+                " ORDER BY datetime desc limit 1";
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor != null && cursor.getCount() > 0 ) {
+            cursor.moveToFirst();
+            Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
+            if(cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)) == null && cursor.getString(cursor.getColumnIndex(Task.TaskEntry.DATETIME)) == null)
+                return "";
+            return cursor.getString(cursor.getColumnIndex(Task.TaskEntry.DATETIME));
+        }
+        return "";
+    }
+
+    /**
      * Create a chat in the db
      */
     public void createChat(String idChat, String name, String symmetric) {
@@ -505,10 +524,27 @@ public class Database extends SQLiteOpenHelper {
      */
     public void addGlobalMsg(String msg, String idSender) {
         ContentValues msgValues = new ContentValues();
+        java.util.Date date = new java.util.Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         int lastId = Integer.parseInt(getLastGlobalMessageId());
+        try {
+            date = getLastGlobalMessageDateTime().equals("") ? null : format.parse(getLastGlobalMessageDateTime());
+            java.util.Date now = format.parse(String.valueOf(LocalDateTime.now()));
+            if (date == null || (date.getDate() < now.getDate() && date.getMonth() <= now.getMonth() && date.getYear() <= now.getYear())) {
+                msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId + 1);
+                msgValues.put(Task.TaskEntry.ID_SENDER, idSender);
+                msgValues.put(Task.TaskEntry.MSG, "");
+                msgValues.put(Task.TaskEntry.DATETIME, LocalDateTime.now().toString());
+                db.insert(Task.TaskEntry.GLOBAL_MESSAGE, null, msgValues);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        lastId = Integer.parseInt(getLastGlobalMessageId());
         msgValues.put(Task.TaskEntry.ID_MESSAGE, lastId + 1);
         msgValues.put(Task.TaskEntry.ID_SENDER, idSender);
         msgValues.put(Task.TaskEntry.MSG, msg);
+        msgValues.put(Task.TaskEntry.DATETIME, LocalDateTime.now().toString());
         db.insert(Task.TaskEntry.GLOBAL_MESSAGE, null, msgValues);
         lastGlobalMessageChat(msg, idSender);
     }

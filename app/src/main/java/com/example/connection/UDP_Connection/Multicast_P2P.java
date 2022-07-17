@@ -1,8 +1,11 @@
 package com.example.connection.UDP_Connection;
 
+import android.content.Intent;
+
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.ImageController;
 import com.example.connection.Database.Database;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.TCP_Connection.TcpClient;
 import com.example.connection.View.Connection;
 import com.example.connection.View.MapFragment;
@@ -63,6 +66,15 @@ Multicast_P2P extends Multicast {
                             //receiving a message -----------------------------------------------------------------------------------------------------------------------------------------------
 
                             database.addGlobalMsg(splittedR[3], splittedR[1]);
+                           ;
+                            Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
+                            intent.putExtra("intentType", "messageController");
+                            intent.putExtra("communicationType", "udp");
+                            intent.putExtra("msg", splittedR[3]);
+                            intent.putExtra("idUser", splittedR[1]);
+                            intent.putExtra("username", splittedR[2]);
+                            intent.putExtra("idMessage",  database.getLastGlobalMessageId());
+                            connection.getApplicationContext().sendBroadcast(intent);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION")) {
                                 splittedR[2]= database.findIp(ConnectionController.myUser.getIdUser());

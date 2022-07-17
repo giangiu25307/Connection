@@ -25,7 +25,7 @@ public class ImageController {
         String path = "";
         byte[] imgBytesData = android.util.Base64.decode(base64, android.util.Base64.DEFAULT);
         try {
-            File file = File.createTempFile(userId, null, context.getFilesDir());
+            File file = File.createTempFile("DIRECT-CONNECTION"+userId, null, context.getFilesDir());
             path = file.getPath();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);

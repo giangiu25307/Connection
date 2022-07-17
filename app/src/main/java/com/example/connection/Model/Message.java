@@ -7,15 +7,13 @@ public class Message {
     private String idSender;
     private String date;
     private String sent;
-    private String username;
 
-    public Message(String idMessage, String idSender, String message, String date, String sent, String username) {
+    public Message(String idMessage, String idSender, String message, String date, String sent) {
         this.idMessage = idMessage;
         this.idSender = idSender;
         this.message = message;
         this.date = date;
         this.sent = sent;
-        this.username = username;
     }
 
     public String getIdMessage() {
@@ -46,11 +44,4 @@ public class Message {
         return sent;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }

@@ -156,7 +156,8 @@ ConnectionController {
                             t1 = new Thread(multicastP2P);
                             t1.start();
                             bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
-                            tcpServer.setup();
+                            if(!tcpServer.isRunning())
+                                tcpServer.setup();
                             tcpServer.setMulticastP2p(multicastP2P);
                             wifiLock.acquire();
                         }
@@ -221,7 +222,8 @@ ConnectionController {
                             } catch (SocketException | UnknownHostException e) {
                                 e.printStackTrace();
                             }
-                            tcpServer.setup();
+                            if(!tcpServer.isRunning())
+                                tcpServer.setup();
                             tcpServer.setMulticastP2p(multicastP2P);
                             multicastWLAN.createMulticastSocketWlan0();
                             multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
@@ -260,7 +262,8 @@ ConnectionController {
                             wifiConnection(id);
                         else {
                             CallbackWhenGO = false;
-                            tcpServer.setup();
+                            if(!tcpServer.isRunning())
+                                tcpServer.setup();
                             try {
                                 while (MyNetworkInterface.wlanIpv6Address.equals("")) {
                                     MyNetworkInterface.setNetworkInterfacesNames();

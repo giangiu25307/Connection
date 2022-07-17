@@ -4,8 +4,8 @@ public class GlobalMessage extends Message {
 
     String name;
 
-    public GlobalMessage(String idSender, String message, String date,String name) {
-        super(null, idSender, message, date, null, name);
+    public GlobalMessage(String idMessage, String idSender, String message, String date,String name) {
+        super(idMessage, idSender, message, date, null);
         this.name=name;
     }
 

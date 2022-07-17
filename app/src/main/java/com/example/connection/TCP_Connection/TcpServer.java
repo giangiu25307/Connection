@@ -43,12 +43,14 @@ public class TcpServer {
     private SimpleDateFormat sdf;
     private TcpClient tcpClient;
     private Multicast_P2P multicastP2p;
+    private boolean isRunning;
 
     public TcpServer(Connection connection, Database database, Encryption encryption, TcpClient tcpClient) {
         this.connection = connection;
         this.database = database;
         this.encryption = encryption;
         this.tcpClient = tcpClient;
+        isRunning = false;
         port = 50000;
     }
 
@@ -64,12 +66,17 @@ public class TcpServer {
         System.out.println("[Server] Server close socket");
     }
 
+    public boolean isRunning(){
+        return isRunning;
+    }
+
     /**
      * Server started setup
      */
     public void setup() {
         try {
             System.out.println("[Server] Server started setup");
+
             AsyncServer.getDefault().listen(InetAddress.getByName("::"), port, new ListenCallback() {
 
                 @Override
@@ -80,11 +87,13 @@ public class TcpServer {
                 @Override
                 public void onListening(AsyncServerSocket socket) {
                     System.out.println("[Server] Server started listening for connections");
+                    isRunning = true;
                 }
 
                 @Override
                 public void onCompleted(Exception ex) {
                     if (ex != null) throw new RuntimeException(ex);
+                    isRunning = false;
                     System.out.println("[Server] Successfully shutdown server");
                 }
             });

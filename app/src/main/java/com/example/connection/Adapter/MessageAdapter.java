@@ -224,7 +224,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         messagesList.clear();
 
         do {
-            messagesList.add(new Message(newMessageList.getString(0), newMessageList.getString(1), newMessageList.getString(2), newMessageList.getString(4), messageCursor.getString(5), ""));
+            messagesList.add(new Message(newMessageList.getString(0), newMessageList.getString(1), newMessageList.getString(2), newMessageList.getString(4), messageCursor.getString(5)));
         } while (newMessageList.moveToNext());
 
         if (messagesList != null) {

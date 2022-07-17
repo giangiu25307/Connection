@@ -17,6 +17,7 @@ import com.example.connection.Adapter.GlobalMessageAdapter;
 import com.example.connection.Adapter.MessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Database.Database;
+import com.example.connection.Model.GlobalMessage;
 import com.example.connection.Model.LastMessage;
 import com.example.connection.Model.Message;
 import com.example.connection.Model.User;
@@ -27,6 +28,7 @@ import com.example.connection.View.Connection;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -132,7 +134,7 @@ public class MessageListener extends BroadcastReceiver {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        messageListener.messageAdapter.addMessage(new Message(messageListener.database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString(), intent.getStringExtra("sent"), ""));
+                        messageListener.messageAdapter.addMessage(new Message(messageListener.database.getLastMessageId(intent.getStringExtra("idChat")), intent.getStringExtra("idUser"), lastMessage.getLastMessage(), date.toString(), intent.getStringExtra("sent")));
                         messageListener.database.setReadAllChatMessages(intent.getStringExtra("idChat"));
                     } else if (!messageListener.database.isUserBlocked(intent.getStringExtra("idChat"))) {
                         if (Connection.fragmentName.equals("CHAT")) {
@@ -234,9 +236,8 @@ public class MessageListener extends BroadcastReceiver {
                 case "multicast":
                     //check if i'm in global chat
                     if (Connection.isGlobalChatOpen) {
-
-                    } else {
-                        //refresh chat
+                        messageListener.globalMessageAdapter.addMessage(new GlobalMessage(intent.getStringExtra("idMessage"),intent.getStringExtra("idUser"),
+                                intent.getStringExtra("msg"), intent.getStringExtra("data"),intent.getStringExtra("username")));
                     }
                     break;
                 case "reply":

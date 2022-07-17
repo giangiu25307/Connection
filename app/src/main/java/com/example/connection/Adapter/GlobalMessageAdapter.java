@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
+import com.example.connection.Model.GlobalMessage;
 import com.example.connection.Model.Message;
 import com.example.connection.R;
 import com.example.connection.View.BottomSheetNewChat;
@@ -58,13 +59,13 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
     private static final int VIEW_TYPE_DATE_MESSAGE = 3;
-    private ArrayList<Message> messageList;
+    private ArrayList<GlobalMessage> messageList;
     private RecyclerView recyclerView;
     private ImageView noMessageImageView;
     private TextView noMessageTextView;
     public String idSelectedMessage;
 
-    public GlobalMessageAdapter(Context context, Database database, String id, ArrayList<Message> messageList, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView, ImageView noMessageImageView, TextView noMessageTextView) {
+    public GlobalMessageAdapter(Context context, Database database, String id, ArrayList<GlobalMessage> messageList, LinearLayoutManager linearLayoutManager, RecyclerView recyclerView, ImageView noMessageImageView, TextView noMessageTextView) {
         this.context = context;
         this.database = database;
         this.idChat = id;
@@ -139,7 +140,7 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
             return;
         }
 
-        Message message = messageList.get(position);
+        GlobalMessage message = messageList.get(position);
 
         TextView messageTextView = null, messageTimeTextView = null;
 
@@ -170,7 +171,7 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
                 ((GlobalMessageAdapter.SentViewHolder) holder).icError.setVisibility(View.INVISIBLE);
             }
         } else if ((holder.getItemViewType() == VIEW_TYPE_MESSAGE_RECEIVED)) {
-            ((ReceivedViewHolder) holder).username.setText(message.getUsername());
+            ((ReceivedViewHolder) holder).username.setText(message.getName());
             if (idSelectedMessage.equals(message.getIdMessage())) {
                 ((GlobalMessageAdapter.ReceivedViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.secondaryColorSemiTransparent));
             } else {
@@ -223,7 +224,7 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
         messageList.clear();
 
         do {
-            messageList.add(new Message(messageCursor.getString(0), messageCursor.getString(1), messageCursor.getString(2), messageCursor.getString(3), "", messageCursor.getString(4)));
+            messageList.add(new GlobalMessage(messageCursor.getString(0), messageCursor.getString(1), messageCursor.getString(2), messageCursor.getString(3), messageCursor.getString(4)));
         } while (newMessageList.moveToNext());
 
         if (messageList != null) {
@@ -232,7 +233,7 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     }
 
-    public void addMessage(Message message) {
+    public void addMessage(GlobalMessage message) {
         if (recyclerView.getVisibility() == View.INVISIBLE) {
             recyclerView.setVisibility(View.VISIBLE);
             noMessageImageView.setVisibility(View.INVISIBLE);

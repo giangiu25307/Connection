@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.connection.Adapter.GlobalMessageAdapter;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Listener.MessageListener;
+import com.example.connection.Model.GlobalMessage;
 import com.example.connection.Model.Message;
 import com.example.connection.R;
 import com.example.connection.util.RecyclerItemClickListener;
@@ -202,7 +203,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
 
     private void fillMessagesArrayList(Cursor messageCursor) {
         do {
-            messageList.add(new Message(messageCursor.getString(0), messageCursor.getString(1), messageCursor.getString(2), messageCursor.getString(3), "", messageCursor.getString(4)));
+            messageList.add(new GlobalMessage(messageCursor.getString(0), messageCursor.getString(1), messageCursor.getString(2), messageCursor.getString(3), messageCursor.getString(4)));
         } while (messageCursor.moveToNext());
     }
 

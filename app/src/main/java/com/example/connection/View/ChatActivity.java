@@ -308,7 +308,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void fillMessagesArrayList(Cursor messageCursor) {
         do {
-            messageList.add(new Message(messageCursor.getString(0), messageCursor.getString(1), messageCursor.getString(2), messageCursor.getString(4), messageCursor.getString(5), ""));
+            messageList.add(new Message(messageCursor.getString(0), messageCursor.getString(1), messageCursor.getString(2), messageCursor.getString(4), messageCursor.getString(5)));
         } while (messageCursor.moveToNext());
     }
 
