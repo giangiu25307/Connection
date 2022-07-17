@@ -46,8 +46,8 @@ public class Chats {
         globals.remove(number);
     }
 
-    public void addGlobalMessage(String id, String message, String data, String name) {
-        globals.put(count, new GlobalMessage(id, message, data, name));
+    public void addGlobalMessage(String idMessage, String idSender, String message, String data, String username) {
+        globals.put(count, new GlobalMessage(idMessage, idSender, message, data, username));
         count++;
     }
 

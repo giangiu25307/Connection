@@ -35,8 +35,6 @@ import com.example.connection.Model.Message;
 import com.example.connection.R;
 import com.example.connection.View.BottomSheetNewChat;
 
-import org.w3c.dom.Text;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -171,7 +169,7 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
                 ((GlobalMessageAdapter.SentViewHolder) holder).icError.setVisibility(View.INVISIBLE);
             }
         } else if ((holder.getItemViewType() == VIEW_TYPE_MESSAGE_RECEIVED)) {
-            ((ReceivedViewHolder) holder).username.setText(message.getName());
+            ((ReceivedViewHolder) holder).username.setText(message.getUsername());
             if (idSelectedMessage.equals(message.getIdMessage())) {
                 ((GlobalMessageAdapter.ReceivedViewHolder) holder).messageLayout.setBackgroundColor(context.getResources().getColor(R.color.secondaryColorSemiTransparent));
             } else {
