@@ -35,13 +35,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/backImageView"
+            <ImageButton
+                android:id="@+id/backImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_general_image_button"
+                android:contentDescription="Go back"
+                android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -63,7 +66,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/backImageView"
+                app:layout_constraintStart_toEndOf="@+id/backImageButton"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -89,6 +92,7 @@
             android:layout_marginTop="12dp"
             android:elevation="2dp"
             android:text="TextView"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/messageRecyclerView"
@@ -126,7 +130,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:background="@null"
+                android:background="@drawable/bg_general_image_button"
                 android:contentDescription="Send image"
                 android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="@+id/sendView"

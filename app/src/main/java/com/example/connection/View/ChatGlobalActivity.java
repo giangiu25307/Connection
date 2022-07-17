@@ -76,8 +76,8 @@ public class ChatGlobalActivity extends AppCompatActivity {
         setContentView(R.layout.lyt_chat_global);
         context = this;
         toolbar = findViewById(R.id.toolbar2);
-        ImageView imageView = findViewById(R.id.backImageView);
-        imageView.setOnClickListener(view -> finish());
+        ImageButton backImageButton = findViewById(R.id.backImageButton);
+        backImageButton.setOnClickListener(view -> finish());
         messageInput = findViewById(R.id.message_input);
         sendView = findViewById(R.id.sendView);
         chatBackground = findViewById(R.id.chatBackground);

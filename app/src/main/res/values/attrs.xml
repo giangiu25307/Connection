@@ -24,6 +24,7 @@
         <attr name="bottomUnselectedColor" format="color"/>
         <attr name="topLineBottomSheetColor" format="color"/>
         <attr name="toolbarAndSettingsCardIconColor" format="color"/>
+        <attr name="rippleEffectColor" format="color"/>
 
         <!-- Other -->
         <attr name="vectorLogin" format="reference"/>

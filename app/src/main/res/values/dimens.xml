@@ -3,11 +3,13 @@
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
 
     <!-- Corners dimensions -->
-    <dimen name="signupButtonCorner">7.5dp</dimen>
+    <dimen name="mapUserRippleEffect">7.5dp</dimen>
+    <dimen name="generalImageButtonCorner">7.5dp</dimen>
 
     <dimen name="sendButtonCorner">8.75dp</dimen>
 
     <dimen name="nextLoginButtonCorner">10dp</dimen>
+    <dimen name="signupButtonCorner">10dp</dimen>
     <dimen name="genderFilterCorner">10dp</dimen>
     <dimen name="ageFilterCorner">10dp</dimen>
     <dimen name="messageCorner">10dp</dimen>
@@ -15,7 +17,7 @@
 
     <dimen name="dialogItemCorner">12.5dp</dimen>
     <dimen name="dialogButtonCorner">12.5dp</dimen>
-    <dimen name="buttonCorner">12.5dp</dimen>
+    <dimen name="generalButtonCorner">12.5dp</dimen>
     <dimen name="cardCorner">12.5dp</dimen>
     <dimen name="inputDataCorner">12.5dp</dimen>
     <dimen name="countrySpinnerCorner">12.5dp</dimen>

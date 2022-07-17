@@ -103,13 +103,8 @@ public class ChatActivity extends AppCompatActivity {
         nameTextView.setText(username);
         toolbar = findViewById(R.id.toolbar2);
         createAlertDialogChatInformation(toolbar, user);
-        ImageView imageView = findViewById(R.id.backImageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        ImageButton backImageButton = findViewById(R.id.backImageButton);
+        backImageButton.setOnClickListener(view -> finish());
         ImageView profilePicImageView = findViewById(R.id.profilePic);
         File profilePic = new File(user.getProfilePic());
         if (profilePic.exists()) {

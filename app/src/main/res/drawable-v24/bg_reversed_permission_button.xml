@@ -3,6 +3,6 @@
 
     <solid android:color="@color/transparent"/>
     <stroke android:color="?attr/textColor" android:width="0.6dp"/>
-    <corners android:radius="@dimen/buttonCorner" />
+    <corners android:radius="@dimen/generalButtonCorner" />
 
 </shape>

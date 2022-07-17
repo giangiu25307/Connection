@@ -30,6 +30,7 @@
         <item name="topLineBottomSheetColor">@color/topLineBottomSheetColor</item>
         <item name="toolbarAndSettingsCardIconColor">@color/toolbarAndSettingsCardIconColor</item>
         <item name="actionModeBackground">@color/backgroundColor</item>
+        <item name="rippleEffectColor">@color/rippleEffectColor</item>
         <item name="vectorLogin">@drawable/vector_login</item>
 
     </style>
@@ -60,6 +61,7 @@
         <item name="topLineBottomSheetColor">@color/darkTopLineBottomSheetColor</item>
         <item name="toolbarAndSettingsCardIconColor">@color/darkToolbarAndSettingsCardIconColor</item>
         <item name="actionModeBackground">@color/darkBackgroundColor</item>
+        <item name="rippleEffectColor">@color/darkRippleEffectColor</item>
         <item name="vectorLogin">@drawable/vector_login_dark</item>
 
     </style>
@@ -143,15 +145,8 @@
         <item name="android:ems">10</item>
     </style>
 
-    <style name="genderSelectionButton" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:background">@drawable/bg_general_button</item>
-        <item name="android:textColor">?attr/textColor</item>
+    <style name="genderSelectionButton" parent="generalButton">
         <item name="android:textSize">16sp</item>
-        <item name="android:fontFamily">@font/opensans_regular_custom</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:paddingVertical">8dp</item>
-        <item name="android:gravity">left|center_vertical</item>
-        <item name="backgroundTint">@null</item>
     </style>
 
     <!-- Cancel and apply/confirm dialog's buttons -->

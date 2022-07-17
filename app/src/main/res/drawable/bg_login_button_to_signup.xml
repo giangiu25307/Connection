@@ -4,14 +4,13 @@
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
             <solid android:color="?attr/rippleEffectColor" />
-            <corners android:radius="@dimen/dialogItemCorner" />
+            <corners android:radius="@dimen/nextLoginButtonCorner" />
         </shape>
     </item>
 
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
-            <solid android:color="?attr/itemBackground" />
-            <corners android:radius="@dimen/dialogItemCorner" />
+            <solid android:color="@color/transparent" />
         </shape>
     </item>
 </ripple>
