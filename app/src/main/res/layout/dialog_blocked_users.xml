@@ -42,7 +42,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:id="@+id/closeBlockedUsersDialog"
+        android:id="@+id/closeButton"
         style="@style/cancelButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

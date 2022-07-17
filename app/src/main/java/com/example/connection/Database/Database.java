@@ -1101,7 +1101,7 @@ public class Database extends SQLiteOpenHelper {
      */
     public Cursor getAllBlockedUsers(){
         db = this.getWritableDatabase();
-        String query = "SELECT " + Task.TaskEntry.ID_USER + Task.TaskEntry.USERNAME + Task.TaskEntry.GENDER + Task.TaskEntry.BIRTH + Task.TaskEntry.PROFILE_PIC
+        String query = "SELECT " + Task.TaskEntry.ID_USER + ", " + Task.TaskEntry.USERNAME + ", " + Task.TaskEntry.GENDER + ", " + Task.TaskEntry.BIRTH + ", " + Task.TaskEntry.PROFILE_PIC
                 + " FROM " + Task.TaskEntry.USER + " WHERE " + Task.TaskEntry.MESSAGES_ACCEPTED + " = 'false'";
         Cursor cursor = db.rawQuery(query, null);
         if (cursor != null) {
