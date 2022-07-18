@@ -93,7 +93,7 @@ public class Connection extends AppCompatActivity {
             }
         }
 
-        boolean createSample = false;
+        boolean createSample = true;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
             database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo", "");
@@ -107,7 +107,7 @@ public class Connection extends AppCompatActivity {
             database.addMsg("Messaggio 6", "2", "2");
             database.addMsg("Messaggio 7", "2", "2");
             database.setRequest("2", "false");
-
+            database.blockUser("2");
             database.addUser("23", "192.168.49.20", "Andrew123", "andrew@12gmail.com", "male", "Andrewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", "Wa131nd", "England", "London", "23-03-1997", "/photo", "");
             database.createChat("23", "Chat 2", null);
             database.addMsg("Ciaooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo", "23", "23");
@@ -207,8 +207,8 @@ public class Connection extends AppCompatActivity {
         notificationManager.createNotificationChannel(channel);
 
         //Global channel
-        channel = new NotificationChannel("globalMessageNotification", "Global message", NotificationManager.IMPORTANCE_DEFAULT);
-        notificationManager.createNotificationChannel(channel);
+        /*channel = new NotificationChannel("globalMessageNotification", "Global message", NotificationManager.IMPORTANCE_DEFAULT);
+        notificationManager.createNotificationChannel(channel);*/
 
     }
 

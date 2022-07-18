@@ -30,7 +30,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/blockedUsersRecycleView"
+        android:id="@+id/blockedUsersRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginTop="24dp"
@@ -52,11 +52,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blockedUsersRecycleView"
+        app:layout_constraintTop_toBottomOf="@+id/blockedUsersRecyclerView"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
-        android:id="@+id/noBlockedUserImageView"
+        android:id="@+id/noBlockedUsersImageView"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:layout_marginBottom="8dp"
@@ -70,7 +70,7 @@
         app:srcCompat="@drawable/empty" />
 
     <TextView
-        android:id="@+id/noBlockedUserTextView"
+        android:id="@+id/noBlockedUsersTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

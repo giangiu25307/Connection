@@ -101,7 +101,7 @@ public class BlockedUsersAdapter extends RecyclerView.Adapter<BlockedUsersAdapte
 
     @Override
     public int getItemCount() {
-        return 0;
+        return blockedUsersList.size();
     }
 
     private void removeUser(int position){
@@ -133,7 +133,7 @@ public class BlockedUsersAdapter extends RecyclerView.Adapter<BlockedUsersAdapte
             super(itemView);
             this.listener = listener;
             profilePic = itemView.findViewById(R.id.profilePic);
-            username = itemView.findViewById(R.id.usernameTextView);
+            username = itemView.findViewById(R.id.userNameTextView);
             information = itemView.findViewById(R.id.informationTextView);
             unblockButton = itemView.findViewById(R.id.unblockButton);
             unblockButton.setOnClickListener(this);

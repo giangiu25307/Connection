@@ -245,11 +245,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
 
-        RecyclerView recyclerView = alertDialog.findViewById(R.id.blockedUsersRecycleView);
+        RecyclerView recyclerView = alertDialog.findViewById(R.id.blockedUsersRecyclerView);
         TextView dialogTitle, noBlockedUsersTextView;
         dialogTitle = alertDialog.findViewById(R.id.blockedUsersTextView);
-        ImageView noBlockedUsersImageView = alertDialog.findViewById(R.id.noRequestImageView);
-        noBlockedUsersTextView = alertDialog.findViewById(R.id.noRequestTextView);
+        ImageView noBlockedUsersImageView = alertDialog.findViewById(R.id.noBlockedUsersImageView);
+        noBlockedUsersTextView = alertDialog.findViewById(R.id.noBlockedUsersTextView);
 
         Cursor cursor = database.getAllBlockedUsers();
         if(cursor != null){
@@ -259,15 +259,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         if (cursor != null && cursor.getCount() > 0) {
 
             ArrayList<User> blockedUsers = new ArrayList<>();
-            do {
-                blockedUsers.add(new User(cursor.getString(0), cursor.getString(1), "", cursor.getString(2), "", "", "", "", "", cursor.getString(3), cursor.getString(4)));
-            } while (cursor.moveToNext());
 
             BlockedUsersAdapter blockedUsersAdapter = new BlockedUsersAdapter(getContext(), recyclerView, blockedUsers, database, noBlockedUsersImageView, noBlockedUsersTextView);
             if (recyclerView != null) {
                 recyclerView.setAdapter(blockedUsersAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 recyclerView.setVisibility(View.VISIBLE);
+                do {
+                    blockedUsers.add(new User(cursor.getString(0), cursor.getString(1), "", cursor.getString(2), "", "", "", "", "", cursor.getString(3), cursor.getString(4)));
+                } while (cursor.moveToNext());
             }
             if (noBlockedUsersImageView != null) {
                 noBlockedUsersImageView.setVisibility(View.INVISIBLE);
