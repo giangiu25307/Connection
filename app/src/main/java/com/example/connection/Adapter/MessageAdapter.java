@@ -14,7 +14,6 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,7 +112,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 alertDialog.dismiss();
                                 ChatController chatController = ChatController.getInstance();
                                 Message message = messagesList.get(p);
-                                database.deleteMessage(message.getIdMessage(), idChat);
+                                database.deleteMessage(message.getIdMessage(), idChat,  message.getDate().split("T")[0]);
                                 notifyItemRemoved(p);
                                 chatController.reSendTCPMsg(message.getMessage(), idChat);
                             }
@@ -126,7 +125,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             view = inflater.inflate(R.layout.lyt_message_received, parent, false);
             return new ReceivedViewHolder(view);
         } else if (viewType == VIEW_TYPE_DATE_MESSAGE) {
-            view = inflater.inflate(R.layout.lyt_date_message_layout, parent, false);
+            view = inflater.inflate(R.layout.lyt_date_message, parent, false);
             return new DateMessageViewHolder(view);
         }
         //dateMessageLayout = view.findViewById(R.id.dateMessageLayout);
@@ -190,11 +189,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         holder.itemView.setTag(message.getIdMessage());
 
-        if (messagesList.size() > 2) {
+        /*if (messagesList.size() > 2) {
             if (position == messagesList.size() - 1 && linearLayoutManager.findLastVisibleItemPosition() == messagesList.size() - 2) {
                 recyclerView.scrollToPosition(messagesList.size() - 1);
             }
-        }
+        }*/
 
     }
 
@@ -241,6 +240,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (message.getIdMessage().equals(id)) {
                 iterator.remove();
                 int position = messagesList.indexOf(message);
+                String idMessage="";
+                if(!(idMessage=database.deleteMessage(id, idChat, message.getDate().split("T")[0])).equals("")){
+                    for (Message message1:messagesList) {
+                        if(message1.getIdMessage().equals(idMessage)){
+                            messagesList.remove(message1);
+                            break;
+                        }
+                    }
+                }
                 messagesList.remove(message);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, messagesList.size());
@@ -256,7 +264,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
         messagesList.add(message);
         notifyItemInserted(messagesList.size() - 1);
-        recyclerView.scrollToPosition(messagesList.size()  - 1);
+        if(getItemViewType(messagesList.size()  - 1) == 1)
+            recyclerView.scrollToPosition(messagesList.size()  - 1);
+        else if(getItemViewType(messagesList.size()  - 1) == 2 && linearLayoutManager.findLastVisibleItemPosition() == messagesList.size()  - 2){
+            recyclerView.scrollToPosition(messagesList.size()  - 1);
+        }
     }
 
     public static class ReceivedViewHolder extends RecyclerView.ViewHolder {

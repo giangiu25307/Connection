@@ -575,7 +575,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         dialogBuilder.setView(R.layout.dialog_information);
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
-        final LinearLayout rate, share;
+        final Button rate, share;
         final Button close;
         rate = alertDialog.findViewById(R.id.rate);
         share = alertDialog.findViewById(R.id.share);

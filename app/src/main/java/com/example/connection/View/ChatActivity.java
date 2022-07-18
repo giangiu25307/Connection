@@ -255,15 +255,17 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onItemLongClick(View view, int position) {
-                if (!isMultiSelect) {
-                    multiselectList = new ArrayList<>();
-                    isMultiSelect = true;
+                if(recyclerView.findViewHolderForAdapterPosition(position).itemView.getTag() != null) {
+                    if (!isMultiSelect) {
+                        multiselectList = new ArrayList<>();
+                        isMultiSelect = true;
 
-                    if (actionMode == null) {
-                        actionMode = toolbar.startActionMode(actionModeCallback);
+                        if (actionMode == null) {
+                            actionMode = toolbar.startActionMode(actionModeCallback);
+                        }
                     }
+                    addRemoveMultiSelect(recyclerView.findViewHolderForAdapterPosition(position).itemView.getTag().toString(), position);
                 }
-                addRemoveMultiSelect(recyclerView.findViewHolderForAdapterPosition(position).itemView.getTag().toString(), position);
             }
         }));
     }
@@ -409,7 +411,6 @@ public class ChatActivity extends AppCompatActivity {
     private void deleteSelectedMessage() {
 
         for (String id : multiselectList) {
-            database.deleteMessage(id, idChat);
             messageAdapter.removeMessage(id);
             messageList.removeIf(chat -> chat.getIdMessage().equals(id));
         }

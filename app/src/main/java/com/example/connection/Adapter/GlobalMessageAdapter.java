@@ -2,7 +2,6 @@ package com.example.connection.Adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.text.SpannableString;
@@ -11,28 +10,21 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.connection.Controller.ChatController;
-import com.example.connection.Controller.Task;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.GlobalMessage;
-import com.example.connection.Model.Message;
 import com.example.connection.R;
 import com.example.connection.View.BottomSheetNewChat;
 
@@ -93,7 +85,7 @@ public class GlobalMessageAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
             });
         } else if (viewType == VIEW_TYPE_DATE_MESSAGE) {
-            view = inflater.inflate(R.layout.lyt_date_message_layout, parent, false);
+            view = inflater.inflate(R.layout.lyt_date_message, parent, false);
             return new DateMessageViewHolder(view);
         }
         //dateMessageLayout = view.findViewById(R.id.dateMessageLayout);

@@ -387,14 +387,48 @@ public class Database extends SQLiteOpenHelper {
      *
      * @param idMessage
      * @param idChat
+     * @param data
      */
-    public void deleteMessage(String idMessage, String idChat) {
+    public String deleteMessage(String idMessage, String idChat, String data) {
         db = this.getWritableDatabase();
         String query = "DELETE FROM " + Task.TaskEntry.MESSAGE +
                 " WHERE " + Task.TaskEntry.ID_MESSAGE + " = '" + idMessage + "'";
         db.execSQL(query);
+        return deleteDateMessageFromChat(idChat, data);
     }
 
+    /**
+     * Return the id of the delete the date message if it is the last one remaining for that day
+     *
+     * @param idChat
+     * @param data
+     */
+    private String deleteDateMessageFromChat(String idChat, String data){
+        String idMessage = isLastDateMessage(idChat, data);
+        db = this.getWritableDatabase();
+        String query = "DELETE FROM MESSAGE" +
+                "            WHERE id_message = '"+idMessage+"'";
+        db.execSQL(query);
+        return idMessage;
+    }
+
+    /**
+     * Return the id of date message if it is the last one remaing for that day
+     *
+     * @param idChat
+     * @param data
+     */
+    private String isLastDateMessage(String idChat, String data){
+        String query = "SELECT CASE WHEN COUNT(*) > 1 THEN NULL ELSE id_message END " +
+                        " FROM MESSAGE " +
+                        "WHERE datetime like '%"+data+"%' AND id_chat = '"+idChat+"'";
+        Cursor c = db.rawQuery(query, null);
+        if (c != null) {
+            c.moveToFirst();
+            return c.getString(0)==null?"":c.getString(0);
+        }
+        return "";
+    }
 
     /**
      * Get all msg from a specified chat
