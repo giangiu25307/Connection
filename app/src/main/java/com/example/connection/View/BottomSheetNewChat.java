@@ -59,7 +59,7 @@ public class BottomSheetNewChat extends BottomSheetDialogFragment {
             public void onClick(View v) {
                 Intent myIntent = new Intent(getContext(), ChatActivity.class);
                 myIntent.putExtra("idChat", user.getIdUser());
-                myIntent.putExtra("name", user.getName());
+                myIntent.putExtra("username", user.getUsername());
                 getContext().startActivity(myIntent);
             }
         });

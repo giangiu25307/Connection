@@ -467,7 +467,7 @@ public class Database extends SQLiteOpenHelper {
      * Get all chat who i not already accepted and not blocked
      */
     public Cursor getAllRequestChat() {
-        String query = " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.birth, u.gender " +
+        String query = " SELECT c.id_chat, c.name, c.last_message, c.datetime, u.birth, u.gender, u.username " +
                 " FROM CHAT c INNER JOIN USER u on c.id_chat = u.id_user" +
                 " WHERE c.request = 'true' AND u.message_accept = 'true'" +
                 " ORDER BY c.datetime DESC";

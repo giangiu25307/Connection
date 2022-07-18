@@ -73,7 +73,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                 Intent myIntent = new Intent(context, ChatActivity.class);
                 // myIntent.putExtra("chatController", chatController); //Optional parameters\
                 myIntent.putExtra("idChat", id);
-                myIntent.putExtra("name", chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.NAME)));
+                myIntent.putExtra("username", chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.USERNAME)));
                 context.startActivity(myIntent);
 
             }
@@ -118,7 +118,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         TextView informationTextView2 = holder.information2;
         TextView lastMessageTextView = holder.lastMessage;
         TextView timeLastMessageTextView = holder.timeLastMessage;
-        informationTextView.setText(user.getName());
+        informationTextView.setText(user.getUsername());
         String temp = user.getAge() + ", " + user.getGender();
         informationTextView2.setText(temp);
         if (lastMessage != null) {
