@@ -63,6 +63,7 @@ public class TcpServer {
      */
     public void close() {
         AsyncServer.getDefault().dump();
+        isRunning = false;
         System.out.println("[Server] Server close socket");
     }
 

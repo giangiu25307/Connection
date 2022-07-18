@@ -161,9 +161,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             snackbar.show();
             sharedPreferences.edit().putBoolean("notificationsPopupShown", true).apply();
         }
-        if(mapFragment.sharedPreferences.getBoolean("hasInformationNetworkDialogBeenShown", false)){
-            connectionController.initProcess();
-        }else{
+        if(!mapFragment.sharedPreferences.getBoolean("hasInformationNetworkDialogBeenShown", false)){
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
             dialogBuilder.setView(R.layout.dialog_information_for_network);
             final AlertDialog alertDialog = dialogBuilder.create();
