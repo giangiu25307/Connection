@@ -54,10 +54,13 @@
         <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_chat.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_chat_activity.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_chat_fragment.xml" value="0.33" />
+        <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_chat_global.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_close_block_buttons.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_map.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_map_buttons.xml" value="0.25" />
+        <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_message_received_global.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_message_sent.xml" value="0.348731884057971" />
+        <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/layout/lyt_message_sent_global.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/menu/chat_action_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/gianl/StudioProjects/Connection/app/src/main/res/menu/chats_action_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/rikyfaso/AndroidStudioProjects/Connection/app/src/main/res/layout/lyt_chat.xml" value="0.25" />

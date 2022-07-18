@@ -95,12 +95,12 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/messageRecyclerView"
-            app:layout_constraintTop_toTopOf="@+id/messageRecyclerView"
+            app:layout_constraintStart_toStartOf="@+id/globalChatRecyclerView"
+            app:layout_constraintTop_toTopOf="@+id/globalChatRecyclerView"
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/messageRecyclerView"
+            android:id="@+id/globalChatRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"

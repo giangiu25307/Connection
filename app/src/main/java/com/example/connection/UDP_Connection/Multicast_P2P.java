@@ -16,9 +16,15 @@ import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 public class
 Multicast_P2P extends Multicast {
+
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     public Multicast_P2P(Database database, ConnectionController connectionController, TcpClient tcp_client, Connection connection) {
         super(database, connectionController, tcp_client, connection);
@@ -62,18 +68,19 @@ Multicast_P2P extends Multicast {
                             }
                             dbUserEvent = false;
                             break;
-                        case "globalMessage":
+                        case "globalmessage":
                             //receiving a message -----------------------------------------------------------------------------------------------------------------------------------------------
 
                             database.addGlobalMsg(splittedR[3], splittedR[1]);
                            ;
                             Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                             intent.putExtra("intentType", "messageController");
-                            intent.putExtra("communicationType", "udp");
+                            intent.putExtra("communicationType", "multicast");
                             intent.putExtra("msg", splittedR[3]);
                             intent.putExtra("idUser", splittedR[1]);
                             intent.putExtra("username", splittedR[2]);
                             intent.putExtra("idMessage",  database.getLastGlobalMessageId());
+                            intent.putExtra("data", LocalDateTime.now().toString());
                             connection.getApplicationContext().sendBroadcast(intent);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION")) {
@@ -203,7 +210,7 @@ Multicast_P2P extends Multicast {
      */
     public void sendGlobalMsg(String msg) {
         try {
-            msg = "globalMessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
+            msg = "globalmessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
             byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupP2p.setTimeToLive(255);

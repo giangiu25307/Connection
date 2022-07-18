@@ -322,7 +322,7 @@ ConnectionController {
         int numberOfLevels = 5;
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), numberOfLevels);
-        if (level <= 2 && !GO_leave) {
+        if (level <= 1 && !GO_leave) {
             disconnectToGroup();
         }
     }

@@ -1,12 +1,20 @@
 package com.example.connection.Controller;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.example.connection.Database.Database;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.TCP_Connection.TcpClient;
 import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.Multicast_WLAN;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
 
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 public class ChatController {
 
@@ -16,6 +24,7 @@ public class ChatController {
     private Database database;
     public static ChatController istance = null;
     private ConnectionController connectionController;
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     public static ChatController getInstance() {
         return istance;
@@ -85,12 +94,21 @@ public class ChatController {
      *
      * @param msg  message to send
      */
-    public void sendGlobalMsg(String msg) {
+    public void sendGlobalMsg(Context context, String msg) {
         if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION"))
             udpWlan.sendGlobalMsg(msg);
         if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null)
             udpP2p.sendGlobalMsg(msg);
         database.addGlobalMsg(msg, ConnectionController.myUser.getIdUser());
+        Intent intent = new Intent(context, MessageListener.getIstance().getClass());
+        intent.putExtra("intentType", "messageController");
+        intent.putExtra("communicationType", "multicast");
+        intent.putExtra("msg", msg);
+        intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+        intent.putExtra("username", ConnectionController.myUser.getUsername());
+        intent.putExtra("idMessage",  database.getLastGlobalMessageId());
+        intent.putExtra("data", LocalDateTime.now().toString());
+        context.sendBroadcast(intent);
     }
 
     /**

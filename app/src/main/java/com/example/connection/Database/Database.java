@@ -350,7 +350,7 @@ public class Database extends SQLiteOpenHelper {
         if (cursor != null && cursor.getCount() > 0 ) {
             cursor.moveToFirst();
             Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
-            if(cursor.getString(cursor.getColumnIndex(Task.TaskEntry.LAST_MESSAGE)) == null && cursor.getString(cursor.getColumnIndex(Task.TaskEntry.DATETIME)) == null)
+            if(cursor.getString(cursor.getColumnIndex(Task.TaskEntry.DATETIME)) == null)
                 return "";
             return cursor.getString(cursor.getColumnIndex(Task.TaskEntry.DATETIME));
         }

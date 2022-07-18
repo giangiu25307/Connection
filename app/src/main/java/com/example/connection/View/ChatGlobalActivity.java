@@ -60,7 +60,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
     private ConstraintLayout chatBackground;
     private int lastPosition;
     private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-    private ArrayList<Message> messageList = new ArrayList<>();
+    private ArrayList<GlobalMessage> messageList = new ArrayList<>();
     private Toolbar toolbar;
     ActionMode actionMode;
     Menu contextMenu;
@@ -72,6 +72,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Connection.isGlobalChatOpen = true;
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         loadTheme();
         setContentView(R.layout.lyt_chat_global);
@@ -118,7 +119,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
         setupRecyclerView();
 
         sendView.setOnClickListener(view -> {
-            chatController.sendGlobalMsg(messageInput.getText().toString());
+            chatController.sendGlobalMsg(getApplicationContext(), messageInput.getText().toString());
             MessageListener.getIstance().setGlobalMessageAdapter(globalMessageAdapter);
         });
 
@@ -162,7 +163,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         Cursor messageCursor = Connection.database.getAllGlobalMsg();
-        recyclerView = findViewById(R.id.messageRecyclerView);
+        recyclerView = findViewById(R.id.globalChatRecyclerView);
         globalMessageAdapter = new GlobalMessageAdapter(this, Connection.database, id, messageList, linearLayoutManager, recyclerView, noMessageImageView, noMessageTextView);
         MessageListener.getIstance().setGlobalMessageAdapter(globalMessageAdapter);
         recyclerView.setAdapter(globalMessageAdapter);
@@ -307,5 +308,23 @@ public class ChatGlobalActivity extends AppCompatActivity {
         Drawable draw = new BitmapDrawable(getResources(), bitmap);
         chatBackground.setBackground(draw);
         c.close();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Connection.isGlobalChatOpen = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Connection.isGlobalChatOpen = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Connection.isGlobalChatOpen = true;
     }
 }
