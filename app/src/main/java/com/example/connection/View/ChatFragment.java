@@ -123,7 +123,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         chatFragment.totalChat.setText(chatFragment.getTotalChatNumber() <= 1 ? "Chat (" + chatFragment.getTotalChatNumber() + ")" : "Chats (" + chatFragment.getTotalChatNumber() + ")");
         chatFragment.requestButton.setText(chatFragment.getTotalRequest() <= 1 ? chatFragment.getTotalRequest() + " request" : chatFragment.getTotalRequest() + " requests");
         chatsList.clear();
-        if(chatFragment.chatRecyclerView == null){
+        if (chatFragment.chatRecyclerView == null) {
             chatFragment.chatRecyclerView = view.findViewById(R.id.chatRecyclerView);
             defineRecyclerViewOnLong(chatFragment.chatRecyclerView);
         }
@@ -217,7 +217,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     }
 
     private void defineRecyclerViewOnLong(RecyclerView recyclerView) {
-        if(!recyclerView.hasOnClickListeners()){
+        if (!recyclerView.hasOnClickListeners()) {
             recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
@@ -259,8 +259,12 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
             } else {
                 multiselectList.add(id);
             }
-            actionMode.setTitle(multiselectList.size() > 0 ? multiselectList.size() + " selected" : "0");
-            refreshAdapter(position, false);
+            if (multiselectList.isEmpty()) {
+                actionMode.finish();
+            } else {
+                actionMode.setTitle(multiselectList.size() > 0 ? multiselectList.size() + " selected" : "0");
+                refreshAdapter(position, false);
+            }
         }
 
     }
@@ -415,7 +419,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
 
-        if(chatsList.size() == 0){
+        if (chatsList.size() == 0) {
             chatFragment.chatRecyclerView.setVisibility(View.INVISIBLE);
             chatFragment.noChatImageView.setVisibility(View.VISIBLE);
             chatFragment.noChatTextView.setVisibility(View.VISIBLE);
@@ -440,9 +444,9 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        if(Connection.amIComingFromChatActivity && Connection.isNewMessageArrived){
+        if (Connection.amIComingFromChatActivity && Connection.isNewMessageArrived) {
             setupRecyclerView(chatFragment.getView());
-            if(Connection.isRequestDialogOpen){
+            if (Connection.isRequestDialogOpen) {
                 setupRequestRecyclerView();
             }
         }
