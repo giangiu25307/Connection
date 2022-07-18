@@ -471,6 +471,8 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         database.blockUser(user.getIdUser());
+                        alertDialog.dismiss();
+                        finish();
                     }
                 });
 
