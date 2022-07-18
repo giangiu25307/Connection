@@ -5,6 +5,7 @@
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_back</item>
 
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -35,6 +36,7 @@
 
     <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_back</item>
 
         <item name="android:colorPrimary">@color/darkColorPrimary</item>
         <item name="android:colorPrimaryDark">@color/darkColorPrimaryDark</item>
