@@ -70,7 +70,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private Database database;
     private ChatController chatController;
     private int theme = R.style.AppTheme;
-    private TextView themeOptionDescription, wallpaperOptionDescription;
+    private TextView usernameTextView, ageTextView;
     private ImageButton editProfileButton, logoutButton;
     private int PICK_IMAGE = 1, CAPTURE_IMAGE = 1337;
     private ImageView profilePic, profilePics;
@@ -147,6 +147,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         sharedPreferences = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
 
+        usernameTextView = view.findViewById(R.id.textView4);
+        ageTextView = view.findViewById(R.id.textView6);
+
         editProfileButton = view.findViewById(R.id.editProfileButton);
         editProfileButton.setOnClickListener(this);
 
@@ -175,17 +178,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         profilePic = view.findViewById(R.id.profilePic);
 
-        //wallpaperOptionDescription = view.findViewById(R.id.wallpaperOptionDescription);
-
         setProfilePic();
-
-        Cursor c = database.getBackgroundImage();
-        if (c != null && c.getCount() > 0) {
-            c.moveToLast();
-            String imagePath = c.getString(0);
-            String string[] = imagePath.split("/");
-            wallpaperOptionDescription.setText(string[string.length - 1]);
-        }
+        usernameTextView.setText(ConnectionController.myUser.getUsername());
+        ageTextView.setText(ConnectionController.myUser.getAge());
         Connection.fragmentName = "SETTINGS";
         return view;
     }
@@ -699,8 +694,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
                 database.setBackgroundImage(imagePath);
-                String string[] = imagePath.split("/");
-                wallpaperOptionDescription.setText(string[string.length - 1]);
                 cursor.close();
             }
         } else if (requestCode == CAPTURE_IMAGE) {
