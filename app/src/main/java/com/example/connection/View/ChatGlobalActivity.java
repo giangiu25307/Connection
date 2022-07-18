@@ -62,16 +62,19 @@ public class ChatGlobalActivity extends AppCompatActivity {
     private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
     private ArrayList<GlobalMessage> messageList = new ArrayList<>();
     private Toolbar toolbar;
-    ActionMode actionMode;
-    Menu contextMenu;
-    boolean isMultiSelect = false;
-    String idSelectedMessage = "";
-    int selectedMessagePosition = 0;
+    private ActionMode actionMode;
+    private Menu contextMenu;
+    private boolean isMultiSelect = false;
+    private String idSelectedMessage = "";
+    private int selectedMessagePosition = 0;
+    private String oldFragment;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        oldFragment = Connection.fragmentName;
+        Connection.fragmentName = "";
         Connection.isGlobalChatOpen = true;
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         loadTheme();
@@ -314,6 +317,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Connection.isGlobalChatOpen = false;
+        Connection.fragmentName = oldFragment;
     }
 
     @Override

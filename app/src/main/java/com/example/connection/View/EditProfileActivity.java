@@ -55,10 +55,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             "[0-9]*" +
             ".{9,11}" +
             "$");
+    private String oldFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        oldFragment = Connection.fragmentName;
+        Connection.fragmentName = "";
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         loadTheme();
         setContentView(R.layout.lyt_edit_profile);
@@ -344,4 +347,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         return path;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Connection.fragmentName = oldFragment;
+    }
 }

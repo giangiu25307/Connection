@@ -136,6 +136,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Connection.fragmentName = "MAP";
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("utils", Context.MODE_PRIVATE);
         if (!isNotificationChannelEnabled("chatMessageNotification") && !sharedPreferences.getBoolean("notificationsPopupShown", false)) {
 

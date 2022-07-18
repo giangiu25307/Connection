@@ -114,6 +114,7 @@ public class ChatFragment extends Fragment implements View.OnClickListener {
         chatFragment.noChatTextView = view.findViewById(R.id.noChatTextView);
 
         setupRecyclerView(view);
+        Connection.fragmentName = "CHAT";
         return view;
     }
 

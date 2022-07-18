@@ -228,7 +228,7 @@ public class MessageListener extends BroadcastReceiver {
                                 .build();
                         notificationManager.notify(messageListener.getPendingIds().get(intent.getStringExtra("idChat")), notificationBuilder.build());
                         notificationManager.notify(0, summaryNotification);
-                        if (Connection.fragmentName.equals("chat")) {
+                        if (Connection.fragmentName.equals("CHAT")) {
                             messageListener.chatAdapter.swapCursor(Connection.database.getAllChat());
                         }
                     }

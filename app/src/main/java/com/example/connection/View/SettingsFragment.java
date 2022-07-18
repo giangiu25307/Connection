@@ -186,6 +186,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             String string[] = imagePath.split("/");
             wallpaperOptionDescription.setText(string[string.length - 1]);
         }
+        Connection.fragmentName = "SETTINGS";
         return view;
     }
 

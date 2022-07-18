@@ -232,21 +232,18 @@ public class HomeFragment extends Fragment {
     public void onPause() {
         super.onPause();
         homeFragment.setLastFragmentName(Connection.fragmentName);
-        Connection.fragmentName = "";
     }
 
     @Override
     public void onStop() {
         super.onStop();
         homeFragment.setLastFragmentName(Connection.fragmentName);
-        Connection.fragmentName = "";
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         homeFragment.setLastFragmentName(Connection.fragmentName);
-        Connection.fragmentName = "";
     }
 
     @Override

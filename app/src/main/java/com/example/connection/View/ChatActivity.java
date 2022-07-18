@@ -78,11 +78,14 @@ public class ChatActivity extends AppCompatActivity {
     boolean isMultiSelect = false;
     private ArrayList<Message> messageList = new ArrayList<>();
     ArrayList<String> multiselectList = new ArrayList<>();
+    private String oldFragment;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        oldFragment = Connection.fragmentName;
+        Connection.fragmentName = "";
         database = new Database(this);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         loadTheme();
@@ -636,6 +639,7 @@ public class ChatActivity extends AppCompatActivity {
         if (actionMode != null) {
             actionMode.finish();
         }
+        Connection.fragmentName = oldFragment;
     }
 
     @Override
