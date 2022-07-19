@@ -453,7 +453,7 @@ public class Database extends SQLiteOpenHelper {
      */
     public Cursor getAllChat() {
         String query = "SELECT " + Task.TaskEntry.ID_CHAT + ", " + Task.TaskEntry.NAME + ", " + Task.TaskEntry.LAST_MESSAGE + ", " + Task.TaskEntry.DATETIME +
-                " FROM " + Task.TaskEntry.CHAT + "INNER JOIN " + Task.TaskEntry.USER + " ON " + Task.TaskEntry.ID_USER + " = '" + Task.TaskEntry.ID_CHAT +
+                " FROM " + Task.TaskEntry.CHAT + " INNER JOIN " + Task.TaskEntry.USER + " ON " + Task.TaskEntry.ID_USER + " = '" + Task.TaskEntry.ID_CHAT +
                 "' AND " + Task.TaskEntry.MESSAGES_ACCEPTED + " = 'true'" +
                 " ORDER BY " + Task.TaskEntry.DATETIME + " DESC ";
         Cursor c = db.rawQuery(query, null);

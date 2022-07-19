@@ -54,6 +54,8 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.File;
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -446,11 +448,10 @@ public class ChatActivity extends AppCompatActivity {
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
 
-                ImageView profilePicImageView = findViewById(R.id.profilePicChatInformation);
+                CircleImageView profilePicImageView = alertDialog.findViewById(R.id.profilePicChatInformation);
                 File profilePic = new File(user.getProfilePic());
                 if (profilePic.exists()) {
-                    Bitmap myBitmap = BitmapFactory.decodeFile(user.getProfilePic());
-                    profilePicImageView.setImageBitmap(myBitmap);
+                    profilePicImageView.setImageDrawable(Drawable.createFromPath(profilePic.getAbsolutePath()));
                 }
 
                 Button chatterNumber = alertDialog.findViewById(R.id.chatterNumberButton);

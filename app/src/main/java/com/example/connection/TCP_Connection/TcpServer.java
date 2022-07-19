@@ -78,6 +78,7 @@ public class TcpServer {
     public void setup() {
         try {
             System.out.println("[Server] Server started setup");
+            isRunning = true;
 
             AsyncServer.getDefault().listen(InetAddress.getByName("::"), port, new ListenCallback() {
 
@@ -89,7 +90,6 @@ public class TcpServer {
                 @Override
                 public void onListening(AsyncServerSocket socket) {
                     System.out.println("[Server] Server started listening for connections");
-                    isRunning = true;
                 }
 
                 @Override

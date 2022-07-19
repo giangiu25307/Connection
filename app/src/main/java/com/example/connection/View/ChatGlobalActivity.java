@@ -124,6 +124,7 @@ public class ChatGlobalActivity extends AppCompatActivity {
         sendView.setOnClickListener(view -> {
             chatController.sendGlobalMsg(getApplicationContext(), messageInput.getText().toString());
             MessageListener.getIstance().setGlobalMessageAdapter(globalMessageAdapter);
+            messageInput.setText("");
         });
 
         //Database database = (Database) getIntent().getParcelableExtra("database");
