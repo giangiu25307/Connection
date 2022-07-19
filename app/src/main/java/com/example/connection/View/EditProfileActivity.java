@@ -295,10 +295,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 }
                 imagePath = getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser();
                 database.setProfilePic(ConnectionController.myUser.getIdUser(), imagePath);
-                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-                Drawable draw = new BitmapDrawable(getResources(), bitmap);
                 profilePic.setImageTintList(null);
-                profilePic.setImageDrawable(draw);
+                profilePic.setImageDrawable(Drawable.createFromPath(imagePath));
                 cursor.close();
             }
         } else if (requestCode == CAPTURE_IMAGE) {
@@ -314,10 +312,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 }
                 imagePath = getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser();
                 database.setProfilePic(ConnectionController.myUser.getIdUser(), imagePath);
-                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-                Drawable draw = new BitmapDrawable(getResources(), bitmap);
                 profilePic.setImageTintList(null);
-                profilePic.setImageDrawable(draw);
+                profilePic.setImageDrawable(Drawable.createFromPath(imagePath));
             }
 
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -334,10 +330,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         }
         c.moveToFirst();
         previousProfilePic = c.getString(0);
-        Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
-        Drawable draw = new BitmapDrawable(getResources(), bitmap);
         profilePic.setImageTintList(null);
-        profilePic.setImageDrawable(draw);
+        profilePic.setImageDrawable(Drawable.createFromPath(c.getString(0)));
         c.close();
     }
 

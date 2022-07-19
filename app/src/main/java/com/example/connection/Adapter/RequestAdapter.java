@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,8 +107,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
         File profilePic = new File(user.getProfilePic());
 
         if(profilePic.exists()){
-            Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
-            holder.profilePic.setImageBitmap(myBitmap);
+            holder.profilePic.setImageDrawable(Drawable.createFromPath(profilePic.getAbsolutePath()));
         }
 
         //String timeLastMessage = chatCursor.getString(chatCursor.getColumnIndex(Task.TaskEntry.DATE));

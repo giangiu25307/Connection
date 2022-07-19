@@ -93,7 +93,7 @@ public class Connection extends AppCompatActivity {
             }
         }
 
-        boolean createSample = false;
+        boolean createSample = true;
         if (createSample) {
             database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/data/user/0/com.example.connection/files/DIRECT-CONNECTION0", "");
             database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/data/user/0/com.example.connection/files/DIRECT-CONNECTION0", "");

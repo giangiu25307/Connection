@@ -111,8 +111,7 @@ public class ChatActivity extends AppCompatActivity {
         ImageView profilePicImageView = findViewById(R.id.profilePic);
         File profilePic = new File(user.getProfilePic());
         if (profilePic.exists()) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
-            profilePicImageView.setImageBitmap(myBitmap);
+            profilePicImageView.setImageDrawable(Drawable.createFromPath(profilePic.getAbsolutePath()));
         }
         message_input = findViewById(R.id.message_input);
         sendView = findViewById(R.id.sendView);

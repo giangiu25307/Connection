@@ -739,10 +739,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         }
         c.moveToFirst();
         previousProfilePic = c.getString(0);
-        Bitmap bitmap = BitmapFactory.decodeFile(c.getString(0));
-        Drawable draw = new BitmapDrawable(getResources(), bitmap);
         profilePic.setImageTintList(null);
-        profilePic.setImageDrawable(draw);
+        profilePic.setImageDrawable(Drawable.createFromPath(c.getString(0)));
         c.close();
     }
 

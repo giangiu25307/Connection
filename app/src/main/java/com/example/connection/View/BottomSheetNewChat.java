@@ -3,6 +3,7 @@ package com.example.connection.View;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,7 @@ public class BottomSheetNewChat extends BottomSheetDialogFragment {
             bottomSheetTitle.setText("New random chat");
         }
         CircleImageView profileImage = view.findViewById(R.id.profilePicMapAlertDialog2);
-        profileImage.setImageBitmap(BitmapFactory.decodeFile(user.getProfilePic()));
+        profileImage.setImageDrawable(Drawable.createFromPath(user.getProfilePic()));
         TextView name = view.findViewById(R.id.nameMapAlertDialog2),information = view.findViewById(R.id.informationMapAlertDialog2);
         name.setText(user.getUsername());
         String info = user.getGender() + " " + user.getAge();
