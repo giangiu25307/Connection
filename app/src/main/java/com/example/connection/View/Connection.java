@@ -49,7 +49,7 @@ public class Connection extends AppCompatActivity {
     private long secondsRemaining = 1000;
 
     private SharedPreferences sharedPreferences;
-    public static boolean boot = true, isGlobalChatOpen = false, isRequestDialogOpen = false, amIComingFromChatActivity = false, isNewMessageArrived = false;
+    public static boolean boot = true, isGlobalChatOpen = false, isRequestDialogOpen = false, amIComingFromChatActivity = false, isNewMessageArrived = false, initProcessStarted = false;
     public static Database database;
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_FINE_LOCATION = 1001;
     public static String fragmentName = "MAP", idChatOpen = "";
@@ -83,11 +83,11 @@ public class Connection extends AppCompatActivity {
         countDownTimer.start();
 
         //CHECKARE CI SIA QUALCUNO ALL'INTERNO DEL GRUPPO PRIMA DI MANDARE MESSAGGI INUTILI
-        boolean createMyUser = true;
+        boolean createMyUser = false;
         if (createMyUser) {
             String manufacturer = "xiaomi";
             if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
-                database.addUser("0", "", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
+                database.addUser("0", "", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/data/user/0/com.example.connection/files/DIRECT-CONNECTION0", "");
             } else {
                 database.addUser("1", "", "Andrew01", "andrew1@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
             }
@@ -95,8 +95,8 @@ public class Connection extends AppCompatActivity {
 
         boolean createSample = true;
         if (createSample) {
-            database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/photo", "");
-            database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/photo", "");
+            database.addUser("0", "192.168.49.20", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/data/user/0/com.example.connection/files/DIRECT-CONNECTION0", "");
+            database.addUser("2", "192.168.49.20", "Andrew1", "andrew@gmail.com", "male", "Andrew2", "Wand", "England", "London", "23-03-1997", "/data/user/0/com.example.connection/files/DIRECT-CONNECTION0", "");
             database.createChat("2", "Chat 1", null);
             database.addMsg("Messaggio 0", "0", "2");
             database.addMsg("Messaggio 1", "0", "2");

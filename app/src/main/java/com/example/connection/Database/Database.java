@@ -766,18 +766,21 @@ public class Database extends SQLiteOpenHelper {
      * Get the information of every person which are connected to me
      */
     public String getAllMyGroupInfoWlan() {
+        User user = new User();
         Cursor allUser = getAllUsersWithoutME();
         String allMyGroupInfo = ConnectionController.myUser.getAllWlan();
         for (int i = 0; i < allUser.getCount(); i++) {
             if (allUser.getString(16).equals("1")) {
+                user.setProfilePic(allUser.getString(10));
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + ConnectionController.myUser.getInetAddressWlan().getHostName() + "%" + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
-                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + user.getProfilePicBase64() + "£€"
                         + allUser.getString(11);
             } else {
+                user.setProfilePic(allUser.getString(10));
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
-                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + user.getProfilePicBase64() + "£€"
                         + allUser.getString(11);
 
             }
@@ -788,18 +791,21 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public String getAllMyGroupInfoP2P() {
+        User user = new User();
         Cursor allUser = getAllUsersWithoutME();
         String allMyGroupInfo = ConnectionController.myUser.getAllP2P();
         for (int i = 0; i < allUser.getCount(); i++) {
             if (allUser.getString(16).equals("1")) {
+                user.setProfilePic(allUser.getString(10));
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + ConnectionController.myUser.getInetAddressP2P().getHostName() + "%" + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
-                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + user.getProfilePicBase64() + "£€"
                         + allUser.getString(11);
             } else {
+                user.setProfilePic(allUser.getString(10));
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
-                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10) + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + user.getProfilePicBase64() + "£€"
                         + allUser.getString(11);
 
             }

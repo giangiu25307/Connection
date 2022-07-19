@@ -2,6 +2,7 @@ package com.example.connection.Adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -19,9 +20,12 @@ import androidx.annotation.Nullable;
 
 import com.example.connection.Model.User;
 import com.example.connection.R;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MapAdapter extends ArrayAdapter<User> {
 
@@ -34,8 +38,12 @@ public class MapAdapter extends ArrayAdapter<User> {
     public View getView(int position, @Nullable View view, @NonNull ViewGroup parent) {
         view = LayoutInflater.from(getContext()).inflate(R.layout.lyt_map_user, parent, false);
         User user = getItem(position);
-        ImageView userProfileIcon = view.findViewById(R.id.userProfileIcon);
-        userProfileIcon.setImageDrawable(Drawable.createFromPath(user.getProfilePic()));
+        ShapeableImageView userProfileIcon = view.findViewById(R.id.userProfileIcon);
+        Bitmap bitmap = BitmapFactory.decodeFile(user.getProfilePic());
+        Drawable draw = new BitmapDrawable(getContext().getResources(), bitmap);
+        userProfileIcon.setImageTintList(null);
+        userProfileIcon.setImageDrawable(draw);
+        //userProfileIcon.setImageDrawable(Drawable.createFromPath(user.getProfilePic()));
         TextView usernameTextView = view.findViewById(R.id.usernameTextView);
         usernameTextView.setText(user.getUsername());
         return view;

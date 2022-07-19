@@ -192,6 +192,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     button.setAlpha(1f);
                 }
             }.start();
+        }else if(!Connection.initProcessStarted){
+            connectionController.initProcess();
         }
 
     }

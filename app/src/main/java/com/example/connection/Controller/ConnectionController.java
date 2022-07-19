@@ -62,7 +62,6 @@ ConnectionController {
     public static boolean GO_leave = false, amIGO;
     private WifiManager.WifiLock wifiLock;
     private PlusController plusController;
-    private boolean CallbackWhenGO;
     private NetworkCallback callbackGO, callbackDirect;
     private WifiP2pManager.ActionListener mActionListener;
     private boolean bitch = true;
@@ -80,8 +79,8 @@ ConnectionController {
         myUser.setPublicKey(encryption.convertPublicKeyToString());
         database.setPublicKey(encryption.convertPublicKeyToString());
         tcpClient = new TcpClient(database, encryption, connection);
-        multicastP2P = new Multicast_P2P(database, this, tcpClient,connection);
-        multicastWLAN = new Multicast_WLAN(database, this, tcpClient,connection);
+        multicastP2P = new Multicast_P2P(database, this, tcpClient, connection);
+        multicastWLAN = new Multicast_WLAN(database, this, tcpClient, connection);
         wifiManager = (WifiManager) connection.getSystemService(Context.WIFI_SERVICE);
         bluetoothAdvertiser = new BluetoothAdvertiser();
         bluetoothScanner = new BluetoothScanner(connection, this, bluetoothAdvertiser);
@@ -107,11 +106,12 @@ ConnectionController {
     }
 
     /**
-    * Remove my group
-    */
+     * Remove my group
+     */
     public void removeGroup() {
         bluetoothAdvertiser.stopAdvertising();
         wifiLock.release();
+        System.out.println("MCHANNEL: "+mChannel);
         mManager.removeGroup(mChannel, null);
         try {
             mChannel.close();
@@ -156,7 +156,7 @@ ConnectionController {
                             t1 = new Thread(multicastP2P);
                             t1.start();
                             bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
-                            if(!tcpServer.isRunning())
+                            if (!tcpServer.isRunning())
                                 tcpServer.setup();
                             tcpServer.setMulticastP2p(multicastP2P);
                             wifiLock.acquire();
@@ -204,7 +204,6 @@ ConnectionController {
                 if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION"))
                     wifiConnection(id);
                 else {
-                    CallbackWhenGO = true;
                     new CountDownTimer(5000, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
@@ -222,7 +221,7 @@ ConnectionController {
                             } catch (SocketException | UnknownHostException e) {
                                 e.printStackTrace();
                             }
-                            if(!tcpServer.isRunning())
+                            if (!tcpServer.isRunning())
                                 tcpServer.setup();
                             tcpServer.setMulticastP2p(multicastP2P);
                             multicastWLAN.createMulticastSocketWlan0();
@@ -261,8 +260,7 @@ ConnectionController {
                         if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION"))
                             wifiConnection(id);
                         else {
-                            CallbackWhenGO = false;
-                            if(!tcpServer.isRunning())
+                            if (!tcpServer.isRunning())
                                 tcpServer.setup();
                             try {
                                 while (MyNetworkInterface.wlanIpv6Address.equals("")) {
@@ -299,20 +297,18 @@ ConnectionController {
      * Disconnected to a group
      */
     public void disconnectToGroup() {
+        tcpServer.close();
         if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null) {
             GOLeaves();
         }
         if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null) {
             multicastWLAN.imLeaving();
         }
-        if (CallbackWhenGO) {
+        if (callbackGO != null)
             connManager.unregisterNetworkCallback(callbackGO);
-        } else {
+        if (callbackDirect != null)
             connManager.unregisterNetworkCallback(callbackDirect);
-        }
         bluetoothAdvertiser.stopAdvertising();
-        tcpServer.close();
-
     }
 
     /**
@@ -331,11 +327,12 @@ ConnectionController {
      * The group owner is leaving the group :(
      */
     private void GOLeaves() {
-        multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId()));
+        multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId() == null ? "" : database.getMaxId()));
         int prec = LocalDateTime.now().getSecond();
         while (LocalDateTime.now().getSecond() - prec < 10) ;
-        this.removeGroup();
         multicastP2P.closeMultigroupP2p();
+        this.removeGroup();
+        mChannel.close();
         //TODO pulire dal db gli utenti connessi a me
     }
 
@@ -343,20 +340,20 @@ ConnectionController {
      * Starting to look around to check for group owners
      */
     public void initProcess() {
+        Connection.initProcessStarted = true;
         bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceLookingForGroupOwner, null);
         bluetoothAdvertiser.startAdvertising();
         bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
     }
 
-    public void reScan(){
-        if(amIGO)
+    public void reScan() {
+        if (amIGO)
             bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
         else
             bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwner);
     }
 
     /**
-     *
      * GROUP OWNER IS LEAVING SO I NEED TO CONNECT TO ANOTHER ONE, WHICH ID WAS GIVEN TO ME
      *
      * @param id id to which i will connect
@@ -374,7 +371,7 @@ ConnectionController {
      */
     private void setUser() {
         String[] info = database.getMyInformation();
-        if(database.getMyInformation()!=null ) {
+        if (database.getMyInformation() != null) {
             myUser = new User(info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8], info[9], info[10]);
             myUser.setProfilePicBase64(myUser.getProfilePic());
         }

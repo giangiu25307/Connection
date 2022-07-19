@@ -28,10 +28,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.ImageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -110,7 +113,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             profilePic.setImageTintList(null);
             profilePic.setImageDrawable(draw);
         }
-
+        setProfilePic();
 
     }
 
@@ -285,7 +288,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 if (cursor == null) return;
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
-                database.setProfilePic("0", imagePath);
+                try {
+                    ImageController.copy(new File(imagePath),new File(getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                imagePath = getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser();
+                database.setProfilePic(ConnectionController.myUser.getIdUser(), imagePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 Drawable draw = new BitmapDrawable(getResources(), bitmap);
                 profilePic.setImageTintList(null);
@@ -298,8 +307,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
                 Uri tempUri = getImageUri(this, photo);
                 // CALL THIS METHOD TO GET THE ACTUAL PATH
-                String imagePath = getRealPathFromURI(tempUri);
-                database.setProfilePic("0", imagePath);
+                String imagePath = getRealPathFromURI(tempUri);try {
+                    ImageController.copy(new File(imagePath),new File(getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                imagePath = getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser();
+                database.setProfilePic(ConnectionController.myUser.getIdUser(), imagePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 Drawable draw = new BitmapDrawable(getResources(), bitmap);
                 profilePic.setImageTintList(null);

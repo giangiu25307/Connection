@@ -62,6 +62,7 @@ public class User {
         this.number = number;
         this.birth = birth;
         this.profilePic = profilePic;
+        setProfilePicBase64(profilePic);
         this.password = "";
     }
 
@@ -203,6 +204,7 @@ public class User {
 
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
+        setProfilePicBase64(profilePic);
     }
 
     public String getPassword() {

@@ -42,6 +42,7 @@ import com.example.connection.Adapter.BlockedUsersAdapter;
 import com.example.connection.BuildConfig;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.ImageController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.User;
 import com.example.connection.R;
@@ -49,6 +50,8 @@ import com.example.connection.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -693,6 +696,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 if (cursor == null) return;
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                try {
+                    ImageController.copy(new File(imagePath),new File(getContext().getFilesDir().getAbsolutePath()+"/backgroundImage"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                imagePath = getContext().getFilesDir().getAbsolutePath()+"/backgroundImage";
                 database.setBackgroundImage(imagePath);
                 cursor.close();
             }
@@ -703,7 +712,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 Uri tempUri = getImageUri(getContext(), photo);
                 // CALL THIS METHOD TO GET THE ACTUAL PATH
                 String imagePath = getRealPathFromURI(tempUri);
-                database.setProfilePic("0", imagePath);
+                try {
+                    ImageController.copy(new File(imagePath),new File(getContext().getFilesDir().getAbsolutePath()+"/backgroundImage"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                imagePath = getContext().getFilesDir().getAbsolutePath()+"/backgroundImage";
+                database.setBackgroundImage(imagePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 Drawable draw = new BitmapDrawable(getResources(), bitmap);
                 profilePic.setImageTintList(null);
@@ -751,4 +766,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         return path;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setProfilePic();
+    }
 }
