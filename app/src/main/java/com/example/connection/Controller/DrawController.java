@@ -22,6 +22,8 @@ import com.example.connection.View.Layout.FlowLayout;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class DrawController {
 
@@ -73,7 +75,7 @@ public class DrawController {
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setTag(user.getIdUser());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        ImageView imageView = new ImageView(context);
+        CircleImageView imageView = new CircleImageView(context);
         imageView.setImageDrawable(Drawable.createFromPath(user.getProfilePic()));
         TextView textView = new TextView(context);
         TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f);
@@ -85,6 +87,7 @@ public class DrawController {
 
         textView.setTextColor(context.getTheme().obtainStyledAttributes(R.styleable.themeAttrs).getColor(R.styleable.themeAttrs_textColor, Color.WHITE));
 
+        linearLayout.setBackgroundResource(R.drawable.bg_map_user);
         linearLayout.addView(imageView);
         linearLayout.addView(textView);
         linearLayout.setOnClickListener(new View.OnClickListener() {

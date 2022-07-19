@@ -46,7 +46,7 @@ public class BlockedUsersAdapter extends RecyclerView.Adapter<BlockedUsersAdapte
             @Override
             public void unblockUser(int position) {
                 User user = blockedUsersList.get(position);
-                androidx.appcompat.app.AlertDialog.Builder dialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(context, R.style.CustomAlertDialog);
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.CustomAlertDialog);
                 dialogBuilder.setView(R.layout.dialog_confirm_unblock_user);
                 final AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
