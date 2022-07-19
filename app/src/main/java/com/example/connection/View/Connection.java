@@ -87,9 +87,9 @@ public class Connection extends AppCompatActivity {
         if (createMyUser) {
             String manufacturer = "xiaomi";
             if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
-                database.addUser("0", "", "Andrew00", "andrew@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/data/user/0/com.example.connection/files/DIRECT-CONNECTION0", "");
+                database.addUser("0", "", "Lucia", "lucia@gmail.com", "female", "Lucia", "Wand", "England", "London", "23-01-1997", "/data/user/0/com.example.connection/files/DIRECT-CONNECTION0", "");
             } else {
-                database.addUser("1", "", "Andrew01", "andrew1@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/data/user/0/com.example.connection/files/DIRECT-CONNECTION1", "");
+                database.addUser("1", "", "Andrew", "andrew1@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/data/user/0/com.example.connection/files/DIRECT-CONNECTION1", "");
             }
         }
 
