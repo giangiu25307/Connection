@@ -3,6 +3,7 @@ package com.example.connection.TCP_Connection;
 import android.content.Intent;
 
 import com.example.connection.Controller.ConnectionController;
+import com.example.connection.Controller.ImageController;
 import com.example.connection.Listener.MessageListener;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.LastMessage;
@@ -203,12 +204,12 @@ public class TcpServer {
                         if (!splittedR[i].equals(ConnectionController.myUser.getIdUser())) {
                             if (i == 1) {
                                 splittedR[2] = splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName;
-                                database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                                database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], ImageController.decodeImage(splittedR[i + 10], connection.getApplicationContext(), splittedR[i]), splittedR[i + 11]);
                                 database.setOtherGroup(splittedR[i]);
                                 database.setMyGroupOwnerIp(splittedR[i + 1], splittedR[i]);
                             } else {
                                 splittedR[i + 1] = splittedR[i + 1].split("%")[0] + "%" + MyNetworkInterface.wlanName;
-                                database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                                database.addUser(splittedR[i], splittedR[i + 1], splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], ImageController.decodeImage(splittedR[i + 10], connection.getApplicationContext(), splittedR[i]), splittedR[i + 11]);
                                 database.setOtherGroup(splittedR[i]);
                             }
                         }
@@ -277,7 +278,7 @@ public class TcpServer {
                         if (!splittedR[i].equals(ConnectionController.myUser.getIdUser())) {
                             if (i == 1)
                                 database.setMyGroupOwnerIp(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i]);
-                            database.addUser(splittedR[i], splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], splittedR[i + 10], splittedR[i + 11]);
+                            database.addUser(splittedR[i], splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], ImageController.decodeImage(splittedR[i + 10], connection.getApplicationContext(), splittedR[i]), splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
                         }
                     }
