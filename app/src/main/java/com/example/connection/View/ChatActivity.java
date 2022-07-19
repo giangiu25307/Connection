@@ -450,7 +450,7 @@ public class ChatActivity extends AppCompatActivity {
                 ImageView profilePicImageView = findViewById(R.id.profilePicChatInformation);
                 File profilePic = new File(user.getProfilePic());
                 if (profilePic.exists()) {
-                    Bitmap myBitmap = BitmapFactory.decodeFile(profilePic.getAbsolutePath());
+                    Bitmap myBitmap = BitmapFactory.decodeFile(user.getProfilePic());
                     profilePicImageView.setImageBitmap(myBitmap);
                 }
 
