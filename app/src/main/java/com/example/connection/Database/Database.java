@@ -774,13 +774,13 @@ public class Database extends SQLiteOpenHelper {
                 user.setProfilePic(allUser.getString(10));
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + ConnectionController.myUser.getInetAddressWlan().getHostName() + "%" + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
-                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + user.getProfilePicBase64() + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10)/*user.getProfilePicBase64()*/ + "£€"
                         + allUser.getString(11);
             } else {
                 user.setProfilePic(allUser.getString(10));
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
-                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + user.getProfilePicBase64() + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10)/*user.getProfilePicBase64()*/ + "£€"
                         + allUser.getString(11);
 
             }
@@ -799,13 +799,13 @@ public class Database extends SQLiteOpenHelper {
                 user.setProfilePic(allUser.getString(10));
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + ConnectionController.myUser.getInetAddressP2P().getHostName() + "%" + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
-                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + user.getProfilePicBase64() + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10)/*user.getProfilePicBase64()*/ + "£€"
                         + allUser.getString(11);
             } else {
                 user.setProfilePic(allUser.getString(10));
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
-                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + user.getProfilePicBase64() + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10)/*user.getProfilePicBase64()*/ + "£€"
                         + allUser.getString(11);
 
             }

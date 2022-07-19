@@ -56,7 +56,7 @@ Multicast_P2P extends Multicast {
                             //sending my info and receiving the others info -------------------------------------------------------------------------------------------------------------------
                             String groupInfo = "sendInfo£€" + database.getAllMyGroupInfoP2P();
                             splittedR[2] = splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName;
-                            database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], ImageController.decodeImage(splittedR[11], super.connection.getApplicationContext(), splittedR[1]), splittedR[12]);
+                            database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11]/*ImageController.decodeImage(splittedR[11], super.connection.getApplicationContext(), splittedR[1])*/, splittedR[12]);
                             tcp_client.sendMessageNoKey(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, groupInfo, splittedR[1]);
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION")) {

@@ -91,11 +91,11 @@ public class User {
     }
 
     public String getAllWlan() {
-        return idUser + "£€" + inetAddressWlan.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePicBase64 + "£€" + publicKey;
+        return idUser + "£€" + inetAddressWlan.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic/*profilePicBase64*/ + "£€" + publicKey;
     }
 
     public String getAllP2P() {
-        return idUser + "£€" + inetAddressP2P.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePicBase64 + "£€" + publicKey;
+        return idUser + "£€" + inetAddressP2P.getHostAddress() + "£€" + username + "£€" + mail + "£€" + gender + "£€" + name + "£€" + surname + "£€" + country + "£€" + city + "£€" + birth + "£€" + profilePic/*profilePicBase64*/ + "£€" + publicKey;
     }
 
     public String getIdUser() {
