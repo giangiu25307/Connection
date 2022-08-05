@@ -98,7 +98,7 @@ ConnectionController {
             @Override
             public void run() {
                 disconnectToGroup();
-                android.os.Process.killProcess(android.os.Process.myPid());
+                //android.os.Process.killProcess(android.os.Process.myPid());
             }
         }));
 
@@ -111,7 +111,7 @@ ConnectionController {
     public void removeGroup() {
         bluetoothAdvertiser.stopAdvertising();
         wifiLock.release();
-        System.out.println("MCHANNEL: "+mChannel);
+        System.out.println("MCHANNEL: " + mChannel);
         mManager.removeGroup(mChannel, null);
         try {
             mChannel.close();
@@ -131,7 +131,7 @@ ConnectionController {
 
             @Override
             public void onSuccess() {
-                if (bitch) { //non si sa il motivo ma dopo on failure riattiva l'onsuccess
+                if (bitch && myUser != null) { //non si sa il motivo ma dopo on failure riattiva l'onsuccess
                     bluetoothAdvertiser.stopAdvertising();
                     bluetoothAdvertiser.setAdvertiseData(myId, Task.ServiceEntry.serviceGroupOwner, myId);
                     bluetoothAdvertiser.startAdvertising();
@@ -139,27 +139,29 @@ ConnectionController {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            try {
-                                while (MyNetworkInterface.p2pIpv6Address.equals("")) {
-                                    MyNetworkInterface.setNetworkInterfacesNames();
+                            if (myUser != null) {
+                                try {
+                                    while (MyNetworkInterface.p2pIpv6Address.equals("")) {
+                                        MyNetworkInterface.setNetworkInterfacesNames();
+                                    }
+                                    myUser.setInetAddressP2P(MyNetworkInterface.p2pIpv6Address);
+                                    database.setMyGroupOwnerIp(MyNetworkInterface.p2pIpv6Address, myUser.getIdUser());
+                                } catch (SocketException | UnknownHostException e) {
+                                    e.printStackTrace();
                                 }
-                                myUser.setInetAddressP2P(MyNetworkInterface.p2pIpv6Address);
-                                database.setMyGroupOwnerIp(MyNetworkInterface.p2pIpv6Address, myUser.getIdUser());
-                            } catch (SocketException | UnknownHostException e) {
-                                e.printStackTrace();
+                                multicastP2P.createMultigroupP2P();
+                                if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION")) {
+                                    multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
+                                    multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
+                                }
+                                t1 = new Thread(multicastP2P);
+                                t1.start();
+                                bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
+                                if (!tcpServer.isRunning())
+                                    tcpServer.setup();
+                                tcpServer.setMulticastP2p(multicastP2P);
+                                wifiLock.acquire();
                             }
-                            multicastP2P.createMultigroupP2P();
-                            if (wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION")) {
-                                multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
-                                multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
-                            }
-                            t1 = new Thread(multicastP2P);
-                            t1.start();
-                            bluetoothScanner.initScan(Task.ServiceEntry.serviceLookingForGroupOwnerWithGreaterId);
-                            if (!tcpServer.isRunning())
-                                tcpServer.setup();
-                            tcpServer.setMulticastP2p(multicastP2P);
-                            wifiLock.acquire();
                         }
                     }, 3000);
                 }
@@ -204,34 +206,38 @@ ConnectionController {
                 if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION"))
                     wifiConnection(id);
                 else {
-                    new CountDownTimer(5000, 1000) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
+                    if (database.getMyInformation() != null) {
+                        new CountDownTimer(5000, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
 
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            try {
-                                while (MyNetworkInterface.wlanIpv6Address.equals("")) {
-                                    MyNetworkInterface.setNetworkInterfacesNames();
-                                }
-                                myUser.setInetAddressWlan(MyNetworkInterface.wlanIpv6Address);
-                                database.setIp(myUser.getIdUser(), myUser.getInetAddressWlan().getHostAddress());
-                            } catch (SocketException | UnknownHostException e) {
-                                e.printStackTrace();
                             }
-                            if (!tcpServer.isRunning())
-                                tcpServer.setup();
-                            tcpServer.setMulticastP2p(multicastP2P);
-                            multicastWLAN.createMulticastSocketWlan0();
-                            multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
-                            multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
-                            Thread t1 = new Thread(multicastWLAN);
-                            t1.start();
-                            multicastWLAN.sendAllMyGroupInfo();
-                        }
-                    }.start();
+
+                            @Override
+                            public void onFinish() {
+                                if (myUser != null) {
+                                    try {
+                                        while (MyNetworkInterface.wlanIpv6Address.equals("")) {
+                                            MyNetworkInterface.setNetworkInterfacesNames();
+                                        }
+                                        myUser.setInetAddressWlan(MyNetworkInterface.wlanIpv6Address);
+                                        database.setIp(myUser.getIdUser(), myUser.getInetAddressWlan().getHostAddress());
+                                    } catch (SocketException | UnknownHostException e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (!tcpServer.isRunning())
+                                        tcpServer.setup();
+                                    tcpServer.setMulticastP2p(multicastP2P);
+                                    multicastWLAN.createMulticastSocketWlan0();
+                                    multicastP2P.setMulticastWlan(multicastWLAN.getMulticastWlan());
+                                    multicastWLAN.setMulticastP2P(multicastP2P.getMulticastP2P());
+                                    Thread t1 = new Thread(multicastWLAN);
+                                    t1.start();
+                                    multicastWLAN.sendAllMyGroupInfo();
+                                }
+                            }
+                        }.start();
+                    }
                 }
             }
         });
@@ -248,47 +254,48 @@ ConnectionController {
         connManager.requestNetwork(networkRequest, callbackDirect = new NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
+                if (myUser != null) {
+                    new CountDownTimer(100, 10) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
 
-                new CountDownTimer(100, 10) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION"))
-                            wifiConnection(id);
-                        else {
-                            if (!tcpServer.isRunning())
-                                tcpServer.setup();
-                            try {
-                                while (MyNetworkInterface.wlanIpv6Address.equals("")) {
-                                    MyNetworkInterface.setNetworkInterfacesNames();
-                                }
-                                myUser.setInetAddressWlan(MyNetworkInterface.wlanIpv6Address);
-                                database.setIp(myUser.getIdUser(), myUser.getInetAddressWlan().getHostAddress());
-                            } catch (SocketException | UnknownHostException e) {
-                                e.printStackTrace();
-                            }
-                            multicastWLAN.createMulticastSocketWlan0();
-                            Thread t1 = new Thread(multicastWLAN);
-                            t1.start();
-                            multicastWLAN.sendInfo();
-                            bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    while (true) {
-                                        autoDisconnect();
-                                    }
-                                }
-                            }).start();
                         }
-                    }
-                }.start();
 
-
+                        @Override
+                        public void onFinish() {
+                            if (myUser != null) {
+                                if (!wifiManager.getConnectionInfo().getSSID().contains("DIRECT-CONNECTION"))
+                                    wifiConnection(id);
+                                else {
+                                    if (!tcpServer.isRunning())
+                                        tcpServer.setup();
+                                    try {
+                                        while (MyNetworkInterface.wlanIpv6Address.equals("")) {
+                                            MyNetworkInterface.setNetworkInterfacesNames();
+                                        }
+                                        myUser.setInetAddressWlan(MyNetworkInterface.wlanIpv6Address);
+                                        database.setIp(myUser.getIdUser(), myUser.getInetAddressWlan().getHostAddress());
+                                    } catch (SocketException | UnknownHostException e) {
+                                        e.printStackTrace();
+                                    }
+                                    multicastWLAN.createMulticastSocketWlan0();
+                                    Thread t1 = new Thread(multicastWLAN);
+                                    t1.start();
+                                    multicastWLAN.sendInfo();
+                                    bluetoothScanner.initScan(Task.ServiceEntry.serviceClientConnectedToGroupOwner);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            while (true) {
+                                                autoDisconnect();
+                                            }
+                                        }
+                                    }).start();
+                                }
+                            }
+                        }
+                    }.start();
+                }
             }
         });
     }

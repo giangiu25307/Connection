@@ -64,7 +64,6 @@ public class Connection extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        deleteDatabase("Connection");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -309,7 +308,7 @@ public class Connection extends AppCompatActivity {
         return new HomeFragment().newInstance(this, database, drawController);
     }
 
-    private LoginFragment createLoginFragment() {
+    public LoginFragment createLoginFragment() {
         return new LoginFragment().newInstance(this, database, accountController, drawController);
     }
 

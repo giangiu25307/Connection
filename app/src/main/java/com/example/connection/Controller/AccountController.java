@@ -118,4 +118,39 @@ public class AccountController {
         return null;
     }
 
+    /**
+     * Request to delete my account on the server
+     *
+     * @param id id of the account to be deleted
+     */
+    public Response deleteAccount(String id) throws IOException {
+
+        // create your json here
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("deleteId", id);
+        } catch (
+                JSONException e) {
+            e.printStackTrace();
+        }
+
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(jsonObject.toString(),mediaType);
+
+        Request request = new Request.Builder()
+                .url("https://isconnection.herokuapp.com/auth/delete/")
+                .post(body)
+                .build();
+
+        Call call = client.newCall(request);
+        try {
+            Response response = client.newCall(request).execute();
+            return response;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

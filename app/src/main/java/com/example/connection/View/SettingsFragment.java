@@ -40,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connection.Adapter.BlockedUsersAdapter;
 import com.example.connection.BuildConfig;
+import com.example.connection.Controller.AccountController;
 import com.example.connection.Controller.ChatController;
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.ImageController;
@@ -563,7 +564,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Implementare logica per effettuare il logout
+                //Puliamo il db
+                alertDialog.dismiss();
+                ConnectionController.myUser = null;
+                connectionController.disconnectToGroup();
+                getContext().deleteDatabase("Connection");
+                if(LoginFragment.getInstance()==null)
+                    connection.createLoginFragment();
+                LoginFragment loginFragment = LoginFragment.getInstance();
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_fragment, loginFragment);
+                transaction.commit();
             }
         });
 
