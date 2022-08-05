@@ -210,7 +210,8 @@ Multicast_P2P extends Multicast {
      */
     public void sendGlobalMsg(String msg) {
         try {
-            msg = "globalmessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
+            if(!msg.startsWith("GO_LEAVES_BYE"))
+                msg = "globalmessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
             byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
             multicastSocketGroupP2p.setTimeToLive(255);

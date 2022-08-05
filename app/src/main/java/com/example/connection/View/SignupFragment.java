@@ -16,10 +16,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -80,6 +83,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private boolean isPasswordShown;
     private View[] views;
     private Animation slideUp, slideDown;
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog alertDialogLoading;
     private static final Pattern regexPassword = Pattern.compile("^" +
             "(?=.*[0-9])" + //at least 1 digit
             "(?=.*[a-z])" + //at least 1 lower case
@@ -140,6 +145,10 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         slideDown = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_left);
 
         slideUp = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.slide_right);
+
+        dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+        dialogBuilder.setView(R.layout.dialog_signup_loading);
+        alertDialogLoading = dialogBuilder.create();
 
         ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -215,15 +224,22 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     } else viewPager.setCurrentItem(currentPage);
                 } else {
                     //send user info to server
+                    /*dialogBuilder.setView(R.layout.dialog_signup_loading);
+                    final AlertDialog alertDialog = dialogBuilder.create();
+                    alertDialog.show();
+                    Window window = alertDialog.getWindow();
+                    WindowManager.LayoutParams wlp = window.getAttributes();
+
+                    wlp.gravity = Gravity.TOP;
+                    wlp.flags &= ~WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
+                    window.setAttributes(wlp);*/
+                    alertDialogLoading.show();
                     try {
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
-                        dialogBuilder.setView(R.layout.dialog_signup_loading);
-                        final AlertDialog alertDialog = dialogBuilder.create();
-                        alertDialog.show();
+
                         user.setProfilePicBase64(user.getProfilePic());
                         Response response=accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePicBase64());
                         if(response.isSuccessful()){
-                            alertDialog.dismiss();
+                            alertDialogLoading.dismiss();
                             Gson g = new Gson();
                             HashMap<String,String> map = g.fromJson(response.body().string(),HashMap.class);
                             database.addUser(map.get("id"), null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), ImageController.decodeImage(user.getProfilePicBase64(),getContext(),user.getIdUser()), user.getPublicKey());
@@ -232,14 +248,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                             Fragment fragment = new LoginFragment().newInstance(connection,database,accountController,drawController);
                             loadFragment(fragment);
                         }else{
-                            alertDialog.dismiss();
+                            alertDialogLoading.dismiss();
                             dialogBuilder.setView(R.layout.dialog_signup_loading);
                             final AlertDialog errorAlertDialog = dialogBuilder.create();
                             errorAlertDialog.show();
                             TextView dialogTitle = errorAlertDialog.findViewById(R.id.dialogTitle);
                             dialogTitle.setText("Signup error");
-                            TextView dialogErrorMessagge = errorAlertDialog.findViewById(R.id.dialogErrorMessagge);
-                            dialogErrorMessagge.setText("Signup error, please try again");
+                            TextView dialogErrorMessage = errorAlertDialog.findViewById(R.id.dialogErrorMessage);
+                            dialogErrorMessage.setText("Signup error, please try again");
                             errorAlertDialog.findViewById(R.id.closeButton).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -343,7 +359,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 gender.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
                         dialogBuilder.setView(R.layout.dialog_gender);
                         final AlertDialog alertDialog = dialogBuilder.create();
                         alertDialog.show();

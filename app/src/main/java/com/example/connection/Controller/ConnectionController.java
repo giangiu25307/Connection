@@ -334,7 +334,9 @@ ConnectionController {
      * The group owner is leaving the group :(
      */
     private void GOLeaves() {
-        multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(database.getMaxId() == null ? "" : database.getMaxId()));
+        String maxId;
+        if((maxId=database.getMaxId())!=null)
+            multicastP2P.sendGlobalMsg("GO_LEAVES_BYE£€".concat(maxId));
         int prec = LocalDateTime.now().getSecond();
         while (LocalDateTime.now().getSecond() - prec < 10) ;
         multicastP2P.closeMultigroupP2p();

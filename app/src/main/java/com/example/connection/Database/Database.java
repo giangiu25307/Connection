@@ -1070,7 +1070,7 @@ public class Database extends SQLiteOpenHelper {
                 " WHERE " + Task.TaskEntry.IP + " IN (SELECT " + Task.TaskEntry.IP +
                 "                   FROM " + Task.TaskEntry.USER + " " +
                 "                   GROUP BY " + Task.TaskEntry.IP + "" +
-                "                   HAVING count(" + Task.TaskEntry.IP + ") = 1 ) AND 0 = " + Task.TaskEntry.OTHER_GROUP + " AND NOT " + Task.TaskEntry.ID_USER + " = '" + ConnectionController.myUser.getIdUser() + "'";
+                "                   HAVING count(" + Task.TaskEntry.IP + ") = 1 ) AND 0 = " + Task.TaskEntry.OTHER_GROUP + " AND NOT " + Task.TaskEntry.ID_USER + " = " + (ConnectionController.myUser==null?"NULL":"'"+ConnectionController.myUser.getIdUser()+ "'");
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
             c.moveToFirst();

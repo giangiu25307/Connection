@@ -25,7 +25,7 @@
         app:tint="?attr/iconTint" />
 
     <TextView
-        android:id="@+id/dialogErrorMessagge"
+        android:id="@+id/dialogErrorMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/opensans_regular_custom"
