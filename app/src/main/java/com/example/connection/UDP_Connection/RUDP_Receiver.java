@@ -10,11 +10,14 @@ import java.util.Arrays;
 import java.util.zip.CRC32;
 public class RUDP_Receiver {
     static int pkt_size = 1000;
-
+    Multicast_WLAN multicast_wlan;
+    Multicast_P2P multicast_p2p;
+    Multicast multicast;
     // Receiver constructor
-    public RUDP_Receiver(int sk2_dst_port, int sk3_dst_port, String path) {
-        DatagramSocket sk2, sk3;
-        System.out.println("Receiver: sk2_dst_port=" + sk2_dst_port + ", " + "sk3_dst_port=" + sk3_dst_port + ".");
+    public RUDP_Receiver(Multicast_WLAN multicast_wlan, Multicast_P2P multicast_p2p, Multicast multicast, String path) {
+        this.multicast_wlan=multicast_wlan;
+        this.multicast_p2p=multicast_p2p;
+        this.multicast=multicast;
 
         int prevSeqNum = -1;				// previous sequence number received in-order
         int nextSeqNum = 0;					// next expected sequence number
@@ -22,13 +25,9 @@ public class RUDP_Receiver {
 
         // create sockets
         try {
-            sk2 = new DatagramSocket(sk2_dst_port);	// incoming channel
-            sk3 = new DatagramSocket();				// outgoing channel
-            System.out.println("Receiver: Listening");
             try {
                 byte[] in_data = new byte[pkt_size];									// message data in packet
                 DatagramPacket in_pkt = new DatagramPacket(in_data,	in_data.length);	// incoming packet
-                InetAddress dst_addr = InetAddress.getByName("127.0.0.1");
 
                 FileOutputStream fos = null;
                 // make directory

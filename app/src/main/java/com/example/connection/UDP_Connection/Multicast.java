@@ -14,6 +14,9 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.zip.CRC32;
 
 public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     protected InetAddress group;
@@ -26,19 +29,21 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
     public static boolean dbUserEvent;
     protected PlusController plusController;
     protected Connection connection;
+    protected int port;
 
     public Multicast(Database database, ConnectionController connectionController, TcpClient tcp_client, Connection connection) {
         this.connectionController = connectionController;
         this.tcp_client = tcp_client;
         this.database = database;
         this.connection = connection;
+        port=6789;
         dbUserEvent=true;
         try {
             group = InetAddress.getByName("234.0.0.0");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        this.sa = new InetSocketAddress(group, 6789);
+        this.sa = new InetSocketAddress(group, port);
     }
 
     public Multicast(Database database, PlusController plusController){
@@ -50,7 +55,7 @@ public class Multicast extends AsyncTask<Void, Void, Void> implements Runnable {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        this.sa = new InetSocketAddress(group, 6789);
+        this.sa = new InetSocketAddress(group, port);
     }
 
     @Override

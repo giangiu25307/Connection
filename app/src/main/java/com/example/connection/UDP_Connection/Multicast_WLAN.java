@@ -190,7 +190,7 @@ public class Multicast_WLAN extends Multicast {
             String info = "firstGroupInfo£€" + database.getAllMyGroupInfoWlan();
             System.out.println(info);
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
+            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, port);
             multicastSocketGroupwlan0.send(message);
         } catch (IOException e) {
             e.printStackTrace();
@@ -204,7 +204,7 @@ public class Multicast_WLAN extends Multicast {
         try {
             String leave = "leave£€" + ConnectionController.myUser.getIdUser();
             byte[] bytes = leave.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
+            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, port);
             multicastSocketGroupwlan0.send(message);
             database.deleteAllUser();
             multicastSocketGroupwlan0.close();
@@ -218,7 +218,7 @@ public class Multicast_WLAN extends Multicast {
      */
     public void createMulticastSocketWlan0() {
         try {
-            multicastSocketGroupwlan0 = new MulticastSocket(6789);
+            multicastSocketGroupwlan0 = new MulticastSocket(port);
             NetworkInterface networkInterface = MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName);
             multicastSocketGroupwlan0.setNetworkInterface(networkInterface);
             multicastSocketGroupwlan0.joinGroup(sa, networkInterface);
@@ -244,7 +244,12 @@ public class Multicast_WLAN extends Multicast {
             e.printStackTrace();
         }
     }
-
+    public MulticastSocket getmulticastSocketGroupwlan0(){
+        return super.multicastSocketGroupwlan0;
+    }
+    public MulticastSocket getmulticastSocketGroupP2p(){
+        return super.multicastSocketGroupP2p;
+    }
     /**
      * set the multicast p2p
      * @param multicastP2P multicast p2p to be set

@@ -191,7 +191,7 @@ Multicast_P2P extends Multicast {
      */
     public void createMultigroupP2P() {
         try {
-            multicastSocketGroupP2p = new MulticastSocket(6789);
+            multicastSocketGroupP2p = new MulticastSocket(port);
             NetworkInterface networkInterface = MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName);
             multicastSocketGroupP2p.setNetworkInterface(networkInterface);
             multicastSocketGroupP2p.joinGroup(sa, networkInterface);
@@ -213,7 +213,7 @@ Multicast_P2P extends Multicast {
             if(!msg.startsWith("GO_LEAVES_BYE"))
                 msg = "globalmessage£€" + ConnectionController.myUser.getIdUser() + "£€" + ConnectionController.myUser.getUsername() + "£€" + msg;
             byte[] bytes = msg.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
+            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, port);
             multicastSocketGroupP2p.setTimeToLive(255);
             multicastSocketGroupP2p.send(message);
         } catch (IOException e) {

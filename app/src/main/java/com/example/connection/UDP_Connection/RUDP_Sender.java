@@ -1,9 +1,11 @@
 package com.example.connection.UDP_Connection;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Timer;
@@ -16,38 +18,25 @@ import java.util.zip.CRC32;
 public class RUDP_Sender {
     static int data_size = 988;            // (checksum:8, seqNum:4, data<=988) Bytes : 1000 Bytes total
     static int win_size = 10;
-    static int timeoutVal = 300;        // 300ms until timeout
 
     int base;                    // base sequence number of window
     int nextSeqNum;                // next sequence number in window
     String path;                // path of file to be sent
     String fileName;            // filename to be saved by receiver
     Vector<byte[]> packetsList;    // list of generated packets
-    Timer timer;                // for timeouts
-    Semaphore s;                // guard CS for base, nextSeqNum
     boolean isTransferComplete;    // if receiver has completely received the file
-
-    // to start or stop the timer
-    public void setTimer(boolean isNewTimer) {
-        if (timer != null) timer.cancel();
-        if (isNewTimer) {
-            timer = new Timer();
-            timer.schedule(new Timeout(), timeoutVal);
-        }
-    }
+    Multicast_WLAN multicast_wlan;
+    Multicast_P2P multicast_p2p;
+    Multicast multicast;
 
     // CLASS OutThread
     public class OutThread extends Thread {
-        private DatagramSocket sk_out;
-        private int dst_port;
-        private InetAddress dst_addr;
-        private int recv_port;
+        private MulticastSocket multicastSocket;
+
 
         // OutThread constructor
-        public OutThread(DatagramSocket sk_out, int dst_port, int recv_port) {
-            this.sk_out = sk_out;
-            this.dst_port = dst_port;
-            this.recv_port = recv_port;
+        public OutThread(MulticastSocket multicastSocket) {
+            this.multicastSocket = multicastSocket;
         }
 
         // constructs the packet prepended with header information
@@ -71,7 +60,6 @@ public class RUDP_Sender {
         // sending process (updates nextSeqNum)
         public void run() {
             try {
-                dst_addr = InetAddress.getByName("127.0.0.1"); // resolve dst_addr
                 // create byte stream
                 FileInputStream fis = new FileInputStream(new File(path));
 
@@ -80,10 +68,6 @@ public class RUDP_Sender {
                     while (!isTransferComplete) {
                         // send packets if window is not yet full
                         if (nextSeqNum < base + win_size) {
-
-                            s.acquire();    /***** enter CS *****/
-                            if (base == nextSeqNum)
-                                setTimer(true);    // if first packet of window, start timer
 
                             byte[] out_data = new byte[10];
                             boolean isFinalSeqNum = false;
@@ -126,20 +110,16 @@ public class RUDP_Sender {
                             }
 
                             // send the packet
-                            sk_out.send(new DatagramPacket(out_data, out_data.length, dst_addr, dst_port));
+                            multicastSocket.send(new DatagramPacket(out_data, out_data.length,multicast.group , multicast.port));
                             System.out.println("Sender: Sent seqNum " + nextSeqNum);
 
                             // update nextSeqNum if currently not at FinalSeqNum
                             if (!isFinalSeqNum) nextSeqNum++;
-                            s.release();    /***** leave CS *****/
                         }
-                        sleep(5);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    setTimer(false);    // close timer
-                    sk_out.close();        // close outgoing socket
                     fis.close();        // close FileInputStream
                     System.out.println("Sender: sk_out closed!");
                 }
@@ -152,11 +132,13 @@ public class RUDP_Sender {
 
     // CLASS InThread
     public class InThread extends Thread {
-        private DatagramSocket sk_in;
+        private MulticastSocket sk_in;
+        private OutThread outThread;
 
         // InThread constructor
-        public InThread(DatagramSocket sk_in) {
+        public InThread(MulticastSocket sk_in,OutThread outThread) {
             this.sk_in = sk_in;
+            this.outThread=outThread;
         }
 
         // returns -1 if corrupted, else return Ack number
@@ -178,92 +160,54 @@ public class RUDP_Sender {
                 DatagramPacket in_pkt = new DatagramPacket(in_data, in_data.length);
                 try {
                     // while there are still packets yet to be received by receiver
-                    while (!isTransferComplete) {
+                    while (true) {
 
                         sk_in.receive(in_pkt);
                         int ackNum = decodePacket(in_data);
                         System.out.println("Sender: Received Ack " + ackNum);
 
                         // if ack is not corrupted
-                        if (ackNum != -1) {
-                            // if duplicate ack
-                            if (base == ackNum + 1) {
-                                s.acquire();    /***** enter CS *****/
-                                setTimer(false);        // off timer
-                                nextSeqNum = base;        // resets nextSeqNum
-                                s.release();    /***** leave CS *****/
-                            }
-                            // else if teardown ack
-                            else if (ackNum == -2) isTransferComplete = true;
-                                // else normal ack
-                            else {
-                                base = ackNum++;    // update base number
-                                s.acquire();    /***** enter CS *****/
-                                if (base == nextSeqNum)
-                                    setTimer(false);    // if no more unacknowledged packets in pipe, off timer
-                                else
-                                    setTimer(true);                        // else packet acknowledged, restart timer
-                                s.release();    /***** leave CS *****/
-                            }
+                        if (ackNum == -1) {
+                            outThread.start();
                         }
-                        // else if ack corrupted, do nothing
                     }
-                } catch (Exception e) {
+                }// END CLASS InThread
+                catch (IOException e) {
                     e.printStackTrace();
-                } finally {
-                    sk_in.close();
-                    System.out.println("Sender: sk_in closed!");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                System.exit(-1);
             }
         }
-    }// END CLASS InThread
+    }
 
-
-    // Timeout task
-    public class Timeout extends TimerTask {
-        public void run() {
-            try {
-                s.acquire();    /***** enter CS *****/
-                System.out.println("Sender: Timeout!");
-                nextSeqNum = base;    // resets nextSeqNum
-                s.release();    /***** leave CS *****/
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }// END CLASS Timeout
-
-    // sender constructor
-    public RUDP_Sender(int sk1_dst_port, int sk4_dst_port, String path, String fileName) {
+            // sender constructor
+    public RUDP_Sender( String path, String fileName,Multicast multicast) {
         base = 0;
         nextSeqNum = 0;
         this.path = path;
         this.fileName = fileName;
         packetsList = new Vector<byte[]>(win_size);
         isTransferComplete = false;
-        DatagramSocket sk1, sk4;
-        s = new Semaphore(1);
-        System.out.println("Sender: sk1_dst_port=" + sk1_dst_port + ", sk4_dst_port=" + sk4_dst_port + ", inputFilePath=" + path + ", outputFileName=" + fileName);
-
-        try {
-            // create sockets
-            sk1 = new DatagramSocket();                // outgoing channel
-            sk4 = new DatagramSocket(sk4_dst_port);    // incoming channel
-
-            // create threads to process data
-            InThread th_in = new InThread(sk4);
-            OutThread th_out = new OutThread(sk1, sk1_dst_port, sk4_dst_port);
-            th_in.start();
-            th_out.start();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        this.multicast=multicast;
+        System.out.println("Sender: inputFilePath=" + path + ", outputFileName=" + fileName);
     }// END Sender constructor
+
+    public void setMulticast_wlan(Multicast_WLAN multicast_wlan) {
+        this.multicast_wlan = multicast_wlan;
+        OutThread th_out = new OutThread(multicast_wlan.multicastSocketGroupwlan0);
+        InThread th_in = new InThread(multicast_wlan.multicastSocketGroupwlan0,th_out);
+        th_in.start();
+        th_out.start();
+    }
+
+    public void setMulticast_p2p(Multicast_P2P multicast_p2p) {
+        this.multicast_p2p = multicast_p2p;
+        OutThread th_out = new OutThread(multicast_p2p.multicastSocketGroupP2p);
+        InThread th_in = new InThread(multicast_p2p.multicastSocketGroupP2p,th_out);
+        th_in.start();
+        th_out.start();
+    }
 
     // same as Arrays.copyOfRange in 1.6
     public byte[] copyOfRange(byte[] srcArr, int start, int end) {
