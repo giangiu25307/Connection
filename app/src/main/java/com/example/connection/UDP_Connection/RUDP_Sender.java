@@ -1,4 +1,6 @@
 package com.example.connection.UDP_Connection;
+import com.example.connection.Controller.ConnectionController;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,47 +20,38 @@ import java.util.zip.CRC32;
 public class RUDP_Sender {
     static int data_size = 988;            // (checksum:8, seqNum:4, data<=988) Bytes : 1000 Bytes total
     static int win_size = 10;
-
     int base;                    // base sequence number of window
     int nextSeqNum;                // next sequence number in window
     String path;                // path of file to be sent
     String fileName;            // filename to be saved by receiver
     Vector<byte[]> packetsList;    // list of generated packets
     boolean isTransferComplete;    // if receiver has completely received the file
-    Multicast_WLAN multicast_wlan;
-    Multicast_P2P multicast_p2p;
     Multicast multicast;
-
-    // CLASS OutThread
-    public class OutThread extends Thread {
-        private MulticastSocket multicastSocket;
+    MulticastSocket multicastSocket;
 
 
-        // OutThread constructor
-        public OutThread(MulticastSocket multicastSocket) {
-            this.multicastSocket = multicastSocket;
-        }
-
-        // constructs the packet prepended with header information
         public byte[] generatePacket(int seqNum, byte[] dataBytes) {
             byte[] seqNumBytes = ByteBuffer.allocate(4).putInt(seqNum).array();                // Seq num (4 bytes)
-
             // generate checksum
             CRC32 checksum = new CRC32();
+            checksum.update(("image£€"+ ConnectionController.myUser.getIdUser()+"£€").getBytes());
             checksum.update(seqNumBytes);
             checksum.update(dataBytes);
             byte[] checksumBytes = ByteBuffer.allocate(8).putLong(checksum.getValue()).array();    // checksum (8 bytes)
 
             // generate packet
-            ByteBuffer pktBuf = ByteBuffer.allocate(8 + 4 + dataBytes.length);
+            ByteBuffer pktBuf =null;
+            pktBuf.put(("image£€"+ ConnectionController.myUser.getIdUser()+"£€").getBytes());
             pktBuf.put(checksumBytes);
+            pktBuf.put("£€".getBytes());
             pktBuf.put(seqNumBytes);
+            pktBuf.put("£€".getBytes());
             pktBuf.put(dataBytes);
             return pktBuf.array();
         }
 
         // sending process (updates nextSeqNum)
-        public void run() {
+        public void sendImage(String path,String fileName) {
             try {
                 // create byte stream
                 FileInputStream fis = new FileInputStream(new File(path));
@@ -66,19 +59,9 @@ public class RUDP_Sender {
                 try {
                     // while there are still packets yet to be received by receiver
                     while (!isTransferComplete) {
-                        // send packets if window is not yet full
-                        if (nextSeqNum < base + win_size) {
 
                             byte[] out_data = new byte[10];
                             boolean isFinalSeqNum = false;
-
-                            // if packet is in packetsList, retrieve from list
-                            if (nextSeqNum < packetsList.size()) {
-                                out_data = packetsList.get(nextSeqNum);
-                            }
-                            // else construct packet and add to list
-                            else {
-                                // if first packet, special handling: prepend file information
                                 if (nextSeqNum == 0) {
                                     byte[] fileNameBytes = fileName.getBytes();
                                     byte[] fileNameLengthBytes = ByteBuffer.allocate(4).putInt(fileNameBytes.length).array();
@@ -107,7 +90,7 @@ public class RUDP_Sender {
                                     }
                                 }
                                 packetsList.add(out_data);    // add to packetsList
-                            }
+
 
                             // send the packet
                             multicastSocket.send(new DatagramPacket(out_data, out_data.length,multicast.group , multicast.port));
@@ -115,8 +98,8 @@ public class RUDP_Sender {
 
                             // update nextSeqNum if currently not at FinalSeqNum
                             if (!isFinalSeqNum) nextSeqNum++;
-                        }
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -128,86 +111,21 @@ public class RUDP_Sender {
                 System.exit(-1);
             }
         }
-    }// END CLASS OutThread
 
-    // CLASS InThread
-    public class InThread extends Thread {
-        private MulticastSocket sk_in;
-        private OutThread outThread;
 
-        // InThread constructor
-        public InThread(MulticastSocket sk_in,OutThread outThread) {
-            this.sk_in = sk_in;
-            this.outThread=outThread;
-        }
-
-        // returns -1 if corrupted, else return Ack number
-        int decodePacket(byte[] pkt) {
-            byte[] received_checksumBytes = copyOfRange(pkt, 0, 8);
-            byte[] ackNumBytes = copyOfRange(pkt, 8, 12);
-            CRC32 checksum = new CRC32();
-            checksum.update(ackNumBytes);
-            byte[] calculated_checksumBytes = ByteBuffer.allocate(8).putLong(checksum.getValue()).array();// checksum (8 bytes)
-            if (Arrays.equals(received_checksumBytes, calculated_checksumBytes))
-                return ByteBuffer.wrap(ackNumBytes).getInt();
-            else return -1;
-        }
-
-        // receiving process (updates base)
-        public void run() {
-            try {
-                byte[] in_data = new byte[12];    // ack packet with no data
-                DatagramPacket in_pkt = new DatagramPacket(in_data, in_data.length);
-                try {
-                    // while there are still packets yet to be received by receiver
-                    while (true) {
-
-                        sk_in.receive(in_pkt);
-                        int ackNum = decodePacket(in_data);
-                        System.out.println("Sender: Received Ack " + ackNum);
-
-                        // if ack is not corrupted
-                        if (ackNum == -1) {
-                            outThread.start();
-                        }
-                    }
-                }// END CLASS InThread
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-            // sender constructor
-    public RUDP_Sender( String path, String fileName,Multicast multicast) {
+    public RUDP_Sender( Multicast multicast,MulticastSocket multicastSocket) {
         base = 0;
         nextSeqNum = 0;
-        this.path = path;
-        this.fileName = fileName;
         packetsList = new Vector<byte[]>(win_size);
+        data_size+=("image£€"+ ConnectionController.myUser.getIdUser()+"£€").getBytes().length+("£€".getBytes().length)*2;
         isTransferComplete = false;
         this.multicast=multicast;
-        System.out.println("Sender: inputFilePath=" + path + ", outputFileName=" + fileName);
-    }// END Sender constructor
+        this.multicastSocket=multicastSocket;
 
-    public void setMulticast_wlan(Multicast_WLAN multicast_wlan) {
-        this.multicast_wlan = multicast_wlan;
-        OutThread th_out = new OutThread(multicast_wlan.multicastSocketGroupwlan0);
-        InThread th_in = new InThread(multicast_wlan.multicastSocketGroupwlan0,th_out);
-        th_in.start();
-        th_out.start();
     }
 
-    public void setMulticast_p2p(Multicast_P2P multicast_p2p) {
-        this.multicast_p2p = multicast_p2p;
-        OutThread th_out = new OutThread(multicast_p2p.multicastSocketGroupP2p);
-        InThread th_in = new InThread(multicast_p2p.multicastSocketGroupP2p,th_out);
-        th_in.start();
-        th_out.start();
-    }
+
+
 
     // same as Arrays.copyOfRange in 1.6
     public byte[] copyOfRange(byte[] srcArr, int start, int end) {

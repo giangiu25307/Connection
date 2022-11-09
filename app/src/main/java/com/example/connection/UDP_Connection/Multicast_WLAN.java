@@ -21,13 +21,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Multicast_WLAN extends Multicast {
-
+    private RUDP_Sender rudp_sender;
+    HashMap<Integer,String> hashMap=new HashMap<>();
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     public Multicast_WLAN(Database database, ConnectionController connectionController, TcpClient tcp_client, Connection connection) {
         super(database, connectionController, tcp_client, connection);
+        rudp_sender=new RUDP_Sender(this,this.multicastSocketGroupwlan0);
     }
 
     /**
@@ -154,6 +157,23 @@ public class Multicast_WLAN extends Multicast {
                             }
                             dbUserEvent=false;
                             break;
+                        case "image":
+                            RUDP_Receiver rudp_receiver=new RUDP_Receiver();
+                            HashMap<Integer,String > TempMap=rudp_receiver.receiveImage(splittedR,hashMap);
+                            if(TempMap==null){
+
+                            }
+                            else{
+                            hashMap=rudp_receiver.receiveImage(splittedR,hashMap);
+                            }
+                            if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.p2pName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION")) {
+                                splittedR[1] += "€€" + ConnectionController.myUser.getIdUser();
+                                splittedR[2] = database.getMyGroupOwnerIp();
+                                String string = this.arrayToString(splittedR);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
+                                multicastSocketGroupP2p.send(message);
+                            }
+                                break;
                         default:
                             break;
                     }
@@ -175,12 +195,15 @@ public class Multicast_WLAN extends Multicast {
         try {
             String info = "info£€" + ConnectionController.myUser.getAllWlan();
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
+            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, port);
             multicastSocketGroupwlan0.send(message);
+            rudp_sender.sendImage( connection.getApplicationContext().getFilesDir().getAbsolutePath(),
+                    "DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     /**
      * send all group info
