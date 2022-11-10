@@ -16,10 +16,8 @@ import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 
 public class
@@ -66,7 +64,7 @@ Multicast_P2P extends Multicast {
                                 splittedR[2] = database.findIp(ConnectionController.myUser.getIdUser());
                                 splittedR[1] += "€€" + ConnectionController.myUser.getIdUser();
                                 String string = this.arrayToString(splittedR);
-                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, port);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             dbUserEvent = false;
@@ -90,7 +88,7 @@ Multicast_P2P extends Multicast {
                                 splittedR[2]= database.findIp(ConnectionController.myUser.getIdUser());
                                 splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
                                 String string = this.arrayToString(splittedR);
-                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, port);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             /*} else if (database.checkGroupId(splittedR[0])) {
@@ -106,7 +104,7 @@ Multicast_P2P extends Multicast {
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION")) {
                                 splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
                                 String string = this.arrayToString(splittedR);
-                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, port);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             dbUserEvent=false;
@@ -117,7 +115,7 @@ Multicast_P2P extends Multicast {
                                 String newMessage = database.detectAllOtherGroupClientByIp(splittedR[2]);
                                 database.deleteAllIdUser(newMessage);
                                 newMessage = "userToDelete£€" + newMessage;
-                                DatagramPacket message = new DatagramPacket(newMessage.getBytes(), newMessage.getBytes().length, group, 6789);
+                                DatagramPacket message = new DatagramPacket(newMessage.getBytes(), newMessage.getBytes().length, group, port);
                                 multicastSocketGroupwlan0.send(message);
                             } else {
                                 database.deleteAllUser();
@@ -139,7 +137,7 @@ Multicast_P2P extends Multicast {
                                 splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
                                 splittedR[2]= database.findIp(ConnectionController.myUser.getIdUser());
                                 String string = this.arrayToString(splittedR);
-                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, port);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             dbUserEvent=false;
@@ -157,7 +155,7 @@ Multicast_P2P extends Multicast {
                                 splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
                                 // splittedR[2]= database.findIp(ConnectionController.myUser.getIdUser());
                                 String string = this.arrayToString(splittedR);
-                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, port);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             dbUserEvent=false;
@@ -167,7 +165,7 @@ Multicast_P2P extends Multicast {
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION")) {
                                 splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
                                 String string = this.arrayToString(splittedR);
-                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, port);
                                 multicastSocketGroupwlan0.send(message);
                             }
                             dbUserEvent=false;
@@ -175,19 +173,24 @@ Multicast_P2P extends Multicast {
                         case "image":
                             RUDP_Receiver rudp_receiver=new RUDP_Receiver();
                             HashMap<Integer,String > TempMap=rudp_receiver.receiveImage(splittedR,hashMap);
-                            if(TempMap==null){
+                            if(TempMap==null) {
+                                if (ImageController.check_Image(hashMap) == null) {
+                                    ImageController.storage_Image(hashMap, connection.getApplicationContext(), splittedR[1]);
+                                } else {
 
-                            }
-                            else{
-                                hashMap=rudp_receiver.receiveImage(splittedR,hashMap);
+                                }
+                            } else {
+                                hashMap = TempMap;
                             }
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION")) {
-                                splittedR[1]+="€€"+ConnectionController.myUser.getIdUser();
+                                splittedR[1] += "€€" + ConnectionController.myUser.getIdUser();
                                 String string = this.arrayToString(splittedR);
-                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, 6789);
+                                DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, group, port);
                                 multicastSocketGroupwlan0.send(message);
                             }
-                                break;
+                            break;
+                        case "resendImage":
+                            break;
                         case "promotion":
                             break;
                         default:

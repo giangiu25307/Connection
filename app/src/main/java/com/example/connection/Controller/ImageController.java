@@ -1,12 +1,6 @@
 package com.example.connection.Controller;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.util.Base64;
-
-import org.junit.runner.manipulation.Ordering;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -16,6 +10,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ImageController {
 
@@ -53,4 +51,39 @@ public class ImageController {
         }
     }
 
+    public static ArrayList<Integer> check_Image(HashMap<Integer, String> hashMap) {
+        Map<Integer, String> sortedMap = new TreeMap<>(hashMap);
+        int i = 0;
+        ArrayList<Integer> value = new ArrayList<>();
+        while (i <= sortedMap.size()) {
+            if (!sortedMap.containsKey(i)) {
+                value.add(i);
+            }
+        }
+        if (!value.isEmpty()) {
+            return value;
+        } else {
+            return null;
+        }
+    }
+
+    public static String storage_Image(HashMap<Integer, String> hashMap, Context context, String userId) {
+        String concat = String.join("", hashMap.values());
+        String path = "";
+        byte[] imgBytesData = concat.getBytes();
+        try {
+            File file = File.createTempFile("DIRECT-CONNECTION" + userId, null, context.getFilesDir());
+            path = file.getPath();
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+            bufferedOutputStream.write(imgBytesData);
+            bufferedOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return "";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
 }

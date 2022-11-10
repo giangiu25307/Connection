@@ -4,9 +4,8 @@ import android.content.Intent;
 
 import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.ImageController;
-import com.example.connection.Listener.MessageListener;
 import com.example.connection.Database.Database;
-import com.example.connection.Model.LastMessage;
+import com.example.connection.Listener.MessageListener;
 import com.example.connection.UDP_Connection.Multicast;
 import com.example.connection.UDP_Connection.Multicast_P2P;
 import com.example.connection.UDP_Connection.MyNetworkInterface;
@@ -30,9 +29,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class TcpServer {
@@ -288,7 +285,7 @@ public class TcpServer {
                     for (int i = 0; i < splittedR.length; i++) {
                         string += splittedR[i] + "£€";
                     }
-                    DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, InetAddress.getByName("234.0.0.0"), 6789);
+                    DatagramPacket message = new DatagramPacket(string.getBytes(), string.getBytes().length, InetAddress.getByName("234.0.0.0"), port);
                     multicastP2p.getMulticastP2P().send(message);
                     Multicast_P2P.dbUserEvent = false;
                     if (Connection.fragmentName.equals("MAP")) {

@@ -1,6 +1,5 @@
 package com.example.connection.UDP_Connection;
 
-import com.example.connection.Controller.ConnectionController;
 import com.example.connection.Controller.PlusController;
 import com.example.connection.Database.Database;
 import com.example.connection.Model.UserPlus;
@@ -39,7 +38,7 @@ public class MulticastPlus extends Multicast {
         try {
             String info = "promotion£€" + userPlus.getId() + "£€" /*+ userPlus.getPromotionPage() */+ "£€" + userPlus.getPromotionMessage();
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
-            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, 6789);
+            DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, port);
             multicastSocketGroupwlan0.send(message);
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,7 +47,7 @@ public class MulticastPlus extends Multicast {
 
     public void createMulticastSocketPlus() {
         try {
-            multicastSocketGroupwlan0 = new MulticastSocket(6789);
+            multicastSocketGroupwlan0 = new MulticastSocket(port);
             NetworkInterface networkInterface = MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName);
             multicastSocketGroupwlan0.setNetworkInterface(networkInterface);
             multicastSocketGroupwlan0.joinGroup(sa, networkInterface);
