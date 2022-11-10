@@ -16,7 +16,7 @@ public class RudpImages {
     }
 
     public ArrayList<Integer> getLostPieces(){
-        Integer keys[] = (Integer[])pieces.keySet().toArray();
+        Integer keys[] = pieces.keySet().toArray(new Integer[pieces.size()]);
         int previous = 0;
         ArrayList<Integer> lostPieces = new ArrayList<Integer>();
         for(int i = 0; i < keys.length; i++){
