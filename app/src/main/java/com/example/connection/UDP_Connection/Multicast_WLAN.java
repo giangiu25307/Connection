@@ -173,6 +173,7 @@ public class Multicast_WLAN extends Multicast {
             byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
             DatagramPacket message = new DatagramPacket(bytes, bytes.length, group, port);
             multicastSocketGroupwlan0.send(message);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

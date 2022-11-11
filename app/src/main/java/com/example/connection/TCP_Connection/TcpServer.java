@@ -30,7 +30,9 @@ import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class TcpServer {
 
@@ -42,6 +44,7 @@ public class TcpServer {
     private TcpClient tcpClient;
     private Multicast_P2P multicastP2p;
     private boolean isRunning;
+    private HashMap<String, ArrayList<String>> hashMap;
 
     public TcpServer(Connection connection, Database database, Encryption encryption, TcpClient tcpClient) {
         this.connection = connection;
@@ -50,6 +53,7 @@ public class TcpServer {
         this.tcpClient = tcpClient;
         isRunning = false;
         port = 50000;
+        hashMap = new HashMap<>();
     }
 
     public void setMulticastP2p(Multicast_P2P multicastP2p) {
@@ -153,7 +157,7 @@ public class TcpServer {
         try {
             Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
             String[] splittedR = msg.split("£€");
-            if (database.isUserBlocked(splittedR[1])) {
+            if (database.isUserBlocked(splittedR[3])) {
                 return "";
             }
             switch (splittedR[0]) {
@@ -211,6 +215,7 @@ public class TcpServer {
                             }
                         }
                     }
+                    tcpClient.sendMyImageToEveryone();
                     Multicast.dbUserEvent = false;
                     if (Connection.fragmentName.equals("MAP")) {
                         MapFragment mapFragment = MapFragment.getIstance();
@@ -316,6 +321,22 @@ public class TcpServer {
                 */
                 case "sendImageZipped":
 
+                    return "sendImageZipped";
+                case "imageToEveryone":
+                    if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
+                        String[] split = encryption.decrypt(splittedR[2]).split("£€");
+                        if(!hashMap.containsKey(split[0])) hashMap.put(split[0],new ArrayList<>());
+                        hashMap.get(split[0]).add(split[2]);
+                        if (split.length == 4 && split[3].equals("endImage")){
+                            String completedImage = "";
+                            for (String s : hashMap.get(split[0])) {
+                                completedImage += s;
+                            }
+                            ImageController.decodeImage(completedImage,connection.getApplicationContext(),split[0]);
+                        }
+                    } else {
+                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
+                    }
                     return "sendImageZipped";
                 default:
                     return "";
