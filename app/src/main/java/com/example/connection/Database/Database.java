@@ -17,10 +17,20 @@ import com.example.connection.Model.User;
 import com.example.connection.Model.UserPlus;
 import com.example.connection.View.Connection;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class Database extends SQLiteOpenHelper {
 
@@ -799,20 +809,116 @@ public class Database extends SQLiteOpenHelper {
                 user.setProfilePic(allUser.getString(10));
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + ConnectionController.myUser.getInetAddressP2P().getHostName() + "%" + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
-                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10)/*user.getProfilePicBase64()*/ + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + ""/*user.getProfilePicBase64()*/ + "£€"
                         + allUser.getString(11);
             } else {
                 user.setProfilePic(allUser.getString(10));
                 allMyGroupInfo += "£€" + allUser.getString(0) + "£€" + allUser.getString(12) + "£€" + allUser.getString(1) + "£€" + allUser.getString(2) + "£€"
                         + allUser.getString(3) + "£€" + allUser.getString(4) + "£€" + allUser.getString(5) + "£€" + allUser.getString(6) + "£€"
-                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + allUser.getString(10)/*user.getProfilePicBase64()*/ + "£€"
+                        + allUser.getString(7) + "£€" + allUser.getString(9) + "£€" + ""/*user.getProfilePicBase64()*/ + "£€"
                         + allUser.getString(11);
 
             }
             System.out.println(allMyGroupInfo);
             allUser.moveToNext();
         }
+        try {
+            zipFolder(context.getFilesDir().getAbsolutePath(), context.getFilesDir().getAbsolutePath());
+        }catch(Exception e){
+            System.out.println("Error on zipping file");
+        }
         return allMyGroupInfo;
+    }
+
+    public void zipFolder(String srcFolder, String destZipFile)
+            throws Exception {
+        ZipOutputStream zip = null;
+        FileOutputStream fileWriter = null;
+        fileWriter = new FileOutputStream(context.getFilesDir().getAbsolutePath()+"/Images.zip");
+        zip = new ZipOutputStream(fileWriter);
+        addFolderToZip(context.getFilesDir().getAbsolutePath(), zip);
+        zip.flush();
+        zip.close();
+    }
+
+    private void addFileToZip(String path, String srcFile,
+                                     ZipOutputStream zip) throws Exception {
+        File folder = new File(srcFile);
+        if (!folder.isDirectory()) {
+            byte[] buf = new byte[1024];
+            int len;
+            FileInputStream in = new FileInputStream(srcFile);
+            zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+            while ((len = in.read(buf)) > 0) {
+                zip.write(buf, 0, len);
+            }
+        }
+    }
+
+    private void addFolderToZip(String srcFolder,
+                                       ZipOutputStream zip) throws Exception {
+        File folder = new File(srcFolder);
+        for (String fileName : folder.list()) {
+            addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
+        }
+    }
+
+    private void unzip(String src, String dest){
+
+        final int BUFFER_SIZE = 4096;
+
+        BufferedOutputStream bufferedOutputStream = null;
+        FileInputStream fileInputStream;
+        try {
+            fileInputStream = new FileInputStream(src);
+            ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(fileInputStream));
+            ZipEntry zipEntry;
+
+            while ((zipEntry = zipInputStream.getNextEntry()) != null){
+
+                String zipEntryName = zipEntry.getName();
+
+                File FileName = new File(dest);
+                if (!FileName.isDirectory()) {
+                    try {
+                        if (FileName.mkdir()) {
+                        } else {
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                File file = new File(dest+"/" +zipEntryName);
+
+                if (file.exists()){
+
+                } else {
+                    if(zipEntry.isDirectory()){
+                        file.mkdirs();
+                    }else{
+                        byte buffer[] = new byte[BUFFER_SIZE];
+                        FileOutputStream fileOutputStream = new FileOutputStream(file);
+                        bufferedOutputStream = new BufferedOutputStream(fileOutputStream, BUFFER_SIZE);
+                        int count;
+
+                        while ((count = zipInputStream.read(buffer, 0, BUFFER_SIZE)) != -1) {
+                            bufferedOutputStream.write(buffer, 0, count);
+                        }
+
+                        bufferedOutputStream.flush();
+                        bufferedOutputStream.close();
+                    }
+                }
+            }
+            zipInputStream.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**

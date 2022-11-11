@@ -51,22 +51,6 @@ public class ImageController {
         }
     }
 
-    public static ArrayList<Integer> check_Image(HashMap<Integer, String> hashMap) {
-        Map<Integer, String> sortedMap = new TreeMap<>(hashMap);
-        int i = 0;
-        ArrayList<Integer> value = new ArrayList<>();
-        while (i <= sortedMap.size()) {
-            if (!sortedMap.containsKey(i)) {
-                value.add(i);
-            }
-        }
-        if (!value.isEmpty()) {
-            return value;
-        } else {
-            return null;
-        }
-    }
-
     public static String storage_Image(HashMap<Integer, String> hashMap, Context context, String userId) {
         String concat = String.join("", hashMap.values());
         String path = "";

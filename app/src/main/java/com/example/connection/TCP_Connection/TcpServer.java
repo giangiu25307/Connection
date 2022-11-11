@@ -314,6 +314,9 @@ public class TcpServer {
                         }
                         break;
                 */
+                case "sendImageZipped":
+
+                    return "sendImageZipped";
                 default:
                     return "";
             }
