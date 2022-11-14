@@ -43,7 +43,7 @@
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="TouchTargetSizeCheck" />
 
-    <com.example.connection.View.MyViewPager
+    <com.ConnectionProject.connection.View.MyViewPager
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="350dp"

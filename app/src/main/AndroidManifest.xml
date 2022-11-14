@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.ConnectionProject.connection">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -31,7 +32,8 @@
 
         <service
             android:name=".Controller.AutoClicker"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -47,7 +49,8 @@
             android:stopWithTask="true">
         </service>
 
-        <activity android:name=".View.Connection" android:launchMode="singleTop" android:screenOrientation="portrait">
+        <activity android:name=".View.Connection" android:launchMode="singleTop" android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -55,8 +58,9 @@
         </activity>
 
         <service
-            android:name="com.example.connection.vpn.LocalVPNService"
-            android:permission="android.permission.BIND_VPN_SERVICE">
+            android:name=".vpn.LocalVPNService"
+            android:permission="android.permission.BIND_VPN_SERVICE"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.net.VpnService" />
             </intent-filter>

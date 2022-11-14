@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">connection</string>
     <string name="prova">prova</string>
-    <string name="packagename">com.example.connection</string>
+    <string name="packagename">com.connectionProject.connection</string>
     <string-array name="CountryCodes">
         <item>93,AF</item>
         <item>355,AL</item>

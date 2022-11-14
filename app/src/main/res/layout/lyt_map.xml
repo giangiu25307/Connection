@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.example.connection.View.Layout.FlowLayout
+        <com.ConnectionProject.connection.View.Layout.FlowLayout
             android:id="@+id/mapFlowLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
