@@ -157,7 +157,7 @@ public class TcpServer {
         try {
             Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
             String[] splittedR = msg.split("£€");
-            if (database.isUserBlocked(splittedR[3])) {
+            if (database.isUserBlocked(splittedR[2])) {
                 return "";
             }
             switch (splittedR[0]) {
@@ -319,7 +319,7 @@ public class TcpServer {
                         }
                         break;
                 */
-                case "sendImageZipped":
+                case "sendImagesZipped":
 
                     return "sendImageZipped";
                 case "imageToEveryone":
@@ -337,7 +337,7 @@ public class TcpServer {
                     } else {
                         tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
                     }
-                    return "sendImageZipped";
+                    return "imageToEveryone";
                 default:
                     return "";
             }

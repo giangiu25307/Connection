@@ -227,19 +227,25 @@ public class TcpClient {
         Cursor c = database.getAllUsersWithoutME();
         User user;
         String imageToSend = ConnectionController.myUser.getProfilePicBase64();
-        if (imageToSend.isEmpty()) return;
+        if (imageToSend.equals("noImage")) return;
 
-        while (c.moveToNext()) {
+        //while (!c.isAfterLast()) {
             boolean needToReadImage = true;
             user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-            for (int i = 0; needToReadImage; i++) {
-                if ((i + 1) * 2048 < imageToSend.length()) {
-                    imageString = ConnectionController.myUser.getIdUser() + "£€" + i + "£€" + imageToSend.substring(i * 2048, (i + 1) * 2048);
+            user.setPublicKey(c.getString(11));
+            int i = 1;
+            //for (int i = 0; needToReadImage; i++) {
+                if ((i + 1) * 200 < imageToSend.length()) {
+                    imageString = ConnectionController.myUser.getIdUser() + "£€" + i + "£€" + imageToSend.substring(i * 200, (i + 1) * 200);
                 } else {
-                    imageString = ConnectionController.myUser.getIdUser() + "£€" + i + "£€" + imageToSend.substring(i * 2048) + "£€endImage"; //if you alter the length alter it in the receive
+                    imageString = ConnectionController.myUser.getIdUser() + "£€" + i + "£€" + imageToSend.substring(i * 200) + "£€endImage"; //if you alter the length alter it in the receive
                     needToReadImage = false;
                 }
+                oldIp = database.findIp(user.getIdUser());
+                System.out.println(oldIp);
+                oldId = user.getIdUser();
                 try {
+                    //System.out.println(imageString);
                     String msg = encryption.encrypt(imageString, encryption.convertStringToPublicKey(user.getPublicKey()));
                     oldMsg = "imageToEveryone£€" + user.getIdUser() + "£€" + msg + "£€" + ConnectionController.myUser.getIdUser();
                     AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
@@ -252,8 +258,9 @@ public class TcpClient {
                 } catch (GeneralSecurityException e) {
                     e.printStackTrace();
                 }
-            }
-        }
+            //}
+            c.moveToNext();
+        //}
     }
 
     /**
@@ -284,7 +291,7 @@ public class TcpClient {
         Util.writeAll(socket, text.getBytes(), new CompletedCallback() {
             @Override
             public void onCompleted(Exception ex) {
-                if (ex != null) throw new RuntimeException(ex);
+                if (ex != null) throw new RuntimeException("[RUNTIME - CLIENT] "+ex);
                 System.out.println("[Client] Successfully wrote message");
 
             }
@@ -346,7 +353,8 @@ public class TcpClient {
                             intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
                             intent.putExtra("sent", "2");
                             connection.getApplicationContext().sendBroadcast(intent);
-                        } else if (received.split("£€")[1].equals("share")) {
+                        } else if (received.split("£€")[1].equals("share") || received.split("£€")[1].equals("imageToEveryone")
+                                || received.split("£€")[1].equals("sendImageZipped")) {
                             //Non deve fare nulla, deve essere vuoto
                         } else { //Image
                             database.addImage(oldImage, ConnectionController.myUser.getIdUser(), oldId);

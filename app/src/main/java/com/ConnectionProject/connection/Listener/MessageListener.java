@@ -305,7 +305,9 @@ public class MessageListener extends BroadcastReceiver {
                     messageListener.database.setReadAllMessages(intent.getStringExtra("idChat"));
                     NotificationManagerCompat notificationManager = NotificationManagerCompat.from(messageListener.getContext());
                     notificationManager.cancel(messageListener.getPendingIds().get(intent.getStringExtra("idChat")));
-                    messageListener.chatAdapter.hideUnreadMessageCount(intent.getStringExtra("idChat"));
+                    if (Connection.fragmentName.equals("CHAT")) {
+                        messageListener.chatAdapter.hideUnreadMessageCount(intent.getStringExtra("idChat"));
+                    }
                     break;
                 default:
                     break;

@@ -57,23 +57,23 @@ Multicast_P2P extends Multicast {
                             String groupInfo = "sendInfo£€" + database.getAllMyGroupInfoP2P();
                             splittedR[2] = splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName;
 
-                            try {
+                            /*try {
                                 FileHandle.zipFolder(connection.getApplicationContext().getFilesDir().getAbsolutePath(),
                                         connection.getApplicationContext().getFilesDir().getAbsolutePath(), connection.getApplicationContext());
                             } catch (Exception e) {
                                 System.out.println("Error on zipping file");
                             }
                             byte[] fileContent = Files.readAllBytes(Paths.get(connection.getApplicationContext().getFilesDir().getAbsolutePath() + "/Images.zip"));
-                            String zippedImages = new String(fileContent, StandardCharsets.UTF_8);
+                            String zippedImages = new String(fileContent, StandardCharsets.UTF_8);*/
                             database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
                             tcp_client.sendMessageNoKey(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, groupInfo, splittedR[1]);
 
-                            for (int i = 0; i * 4096 < zippedImages.length(); i++) {
+                            /*for (int i = 0; i * 4096 < zippedImages.length(); i++) {
                                 int start = i * 4096;
                                 int end = i * 4096 + 4096;
                                 if (end > zippedImages.length()) end = zippedImages.length();
-                                tcp_client.sendMessageNoKey(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, "sendzippedImagesZipped£€" + ConnectionController.myUser.getIdUser() + "£€part" + i + "£€" + zippedImages.substring(start, end), splittedR[1]);
-                            }
+                                tcp_client.sendMessageNoKey(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, "sendImagesZipped£€" + ConnectionController.myUser.getIdUser() + "£€part" + i + "£€" + zippedImages.substring(start, end), splittedR[1]);
+                            }*/
                             //Check for the other group owner
                             if (MyNetworkInterface.getMyP2pNetworkInterface(MyNetworkInterface.wlanName) != null && connectionController.getSSID().contains("DIRECT-CONNECTION")) {
                                 splittedR[2] = database.findIp(ConnectionController.myUser.getIdUser());
