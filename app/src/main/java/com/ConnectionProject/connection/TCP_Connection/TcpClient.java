@@ -201,12 +201,12 @@ public class TcpClient {
         bmp.compress(Bitmap.CompressFormat.JPEG, 50, bos);
         String imageString = "image£€" + id + "£€";
         oldImage = imagePath;
+        checkInterface(id);
         try {
             imageString += encryption.encryptAES(new String(bos.toByteArray(), StandardCharsets.UTF_8), encryption.convertStringToSecretKey(database.getSymmetricKey(id)));
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
-        checkInterface(id);
         AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
             @Override
             public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
@@ -243,6 +243,7 @@ public class TcpClient {
                 }
                 oldIp = database.findIp(user.getIdUser());
                 System.out.println(oldIp);
+                checkInterface(user.getIdUser());
                 oldId = user.getIdUser();
                 try {
                     //System.out.println(imageString);
