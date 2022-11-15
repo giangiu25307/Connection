@@ -327,7 +327,7 @@ public class TcpServer {
                         String[] split = encryption.decrypt(splittedR[2]).split("£€");
                         if(!hashMap.containsKey(split[0])) hashMap.put(split[0],new HashMap<Integer,String>());
                         hashMap.get(split[0]).put(Integer.getInteger(split[1]),split[2]);
-                        if (split.length == 4 && split[3].equals("endImage")){
+                        if (split.length == 4 && split[3].equals("endImage") && hashMap.size() == Integer.parseInt(split[1]) + 1){
                             String completedImage = "";
                             TreeMap<Integer,String> sorted = new TreeMap<>();
                             sorted.putAll(hashMap.get(split[0]));
