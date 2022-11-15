@@ -229,12 +229,11 @@ public class TcpClient {
         String imageToSend = ConnectionController.myUser.getProfilePicBase64();
         if (imageToSend.equals("noImage")) return;
 
-        //while (!c.isAfterLast()) {
+        while (!c.isAfterLast()) {
             boolean needToReadImage = true;
             user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
             user.setPublicKey(c.getString(11));
-            int i = 1;
-            //for (int i = 0; needToReadImage; i++) {
+            for (int i = 0; needToReadImage; i++) {
                 if ((i + 1) * 200 < imageToSend.length()) {
                     imageString = ConnectionController.myUser.getIdUser() + "£€" + i + "£€" + imageToSend.substring(i * 200, (i + 1) * 200);
                 } else {
@@ -259,9 +258,9 @@ public class TcpClient {
                 } catch (GeneralSecurityException e) {
                     e.printStackTrace();
                 }
-            //}
+            }
             c.moveToNext();
-        //}
+        }
     }
 
     /**
