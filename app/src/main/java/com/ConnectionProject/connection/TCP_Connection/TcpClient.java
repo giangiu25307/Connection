@@ -241,7 +241,7 @@ public class TcpClient {
                     needToReadImage = false;
                 }
                 oldIp = database.findIp(user.getIdUser());
-                System.out.println(oldIp);
+                //System.out.println(oldIp);
                 checkInterface(user.getIdUser());
                 oldId = user.getIdUser();
                 try {
