@@ -31,8 +31,7 @@ public class SFTPServer extends AsyncTask<UtilsObject, Void, String> {
             }
         }
         catch(Exception e){
-            System.out.println(e.toString());
-            e.printStackTrace();
+            System.out.println("[FTP-SERVER] ERROR: "+ e);
         }
         finally{
             try

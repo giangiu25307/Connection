@@ -2,11 +2,25 @@ package com.ConnectionProject.connection.SFTP;
 
 import android.os.AsyncTask;
 
+import com.ConnectionProject.connection.Controller.ConnectionController;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 public class SFTPClient extends AsyncTask<String, Void, Integer> {
 
 
     protected Integer doInBackground(String... params) {
-        //TODO CONNECTION TO SERVER, SEND STRING @ID£€@IMAGE64 CRIPTATI CON CHIAVE SIMMETRICA
+        //CONNECTION TO SERVER,ip = params[0] | SEND STRING @ID = params[1] | @IMAGE64 = params[2] CRIPTATO CON CHIAVE SIMMETRICA
+        System.out.println(params[0] + " " + params[1] + " " + params[2]);
+        try {
+            Socket socket = new Socket(params[0], 41000);
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(params[1] + "£E" + params[2]);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 
