@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
@@ -22,10 +23,12 @@ import com.ConnectionProject.connection.Model.LastMessage;
 import com.ConnectionProject.connection.Model.Message;
 import com.ConnectionProject.connection.Model.User;
 import com.ConnectionProject.connection.R;
+import com.ConnectionProject.connection.TCP_Connection.TcpClient;
 import com.ConnectionProject.connection.View.ChatActivity;
 import com.ConnectionProject.connection.View.ChatFragment;
 import com.ConnectionProject.connection.View.Connection;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,17 +46,19 @@ public class MessageListener extends BroadcastReceiver {
     private int counter = 2;
     private Database database;
     private ChatController chatController;
+    private TcpClient tcpClient;
 
     // Key for the string that's delivered in the action's intent.
     private static final String KEY_TEXT_REPLY = "key_text_reply";
 
-    public static MessageListener newInstance(Context context, Database database, ChatController chatController) {
+    public static MessageListener newInstance(Context context, Database database, ChatController chatController, TcpClient tcpClient) {
         messageListener = new MessageListener();
         messageListener.setContext(context);
         messageListener.setMessagingStyleHashMap();
         messageListener.setPendingIds();
         messageListener.setDatabase(database);
         messageListener.setChatController(chatController);
+        messageListener.setTcpClient(tcpClient);
         return messageListener;
     }
 
@@ -75,6 +80,10 @@ public class MessageListener extends BroadcastReceiver {
 
     public void setGlobalMessageAdapter(GlobalMessageAdapter globalMessageAdapter) {
         this.globalMessageAdapter = globalMessageAdapter;
+    }
+
+    public void setTcpClient(TcpClient tcpClient) {
+        this.tcpClient = tcpClient;
     }
 
     public void setContext(Context context) {
@@ -111,6 +120,7 @@ public class MessageListener extends BroadcastReceiver {
 
     /**
      * Listening for message which information is inside of the intent
+     *
      * @param context context of the application
      * @param intent  contains message information
      */
@@ -140,7 +150,7 @@ public class MessageListener extends BroadcastReceiver {
                             ChatFragment chatFragment = ChatFragment.getIstance();
                             chatFragment.setupRecyclerView(chatFragment.requireView());
                         }
-                        if (Connection.isRequestDialogOpen){
+                        if (Connection.isRequestDialogOpen) {
                             ChatFragment.setupRequestRecyclerView();
                         }
                         User user = Connection.database.getUser(intent.getStringExtra("idChat"));
@@ -159,10 +169,10 @@ public class MessageListener extends BroadcastReceiver {
                         }
                         PendingIntent chatIntent;
                         try {
-                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.getPendingIds().get(intent.getStringExtra("idChat")), chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.getPendingIds().get(intent.getStringExtra("idChat")), chatActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_MUTABLE);
                         } catch (NullPointerException e) {
                             messageListener.getPendingIds().put(intent.getStringExtra("idChat"), messageListener.counter);
-                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.counter, chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.counter, chatActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_MUTABLE);
                             messageListener.counter++;
                         }
 
@@ -187,13 +197,13 @@ public class MessageListener extends BroadcastReceiver {
                                 PendingIntent.getBroadcast(messageListener.getContext(),
                                         messageListener.getPendingIds().get(intent.getStringExtra("idChat")),
                                         replyIntent,
-                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
 
                         PendingIntent markAsReadPendingIntent =
                                 PendingIntent.getBroadcast(messageListener.getContext(),
                                         messageListener.getPendingIds().get(intent.getStringExtra("idChat")),
                                         markAsReadIntent,
-                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
 
                         // Create the reply action and add the remote input.
                         NotificationCompat.Action replyAction =
@@ -235,8 +245,8 @@ public class MessageListener extends BroadcastReceiver {
                 case "multicast":
                     //check if i'm in global chat
                     if (Connection.isGlobalChatOpen) {
-                        messageListener.globalMessageAdapter.addMessage(new GlobalMessage(intent.getStringExtra("idMessage"),intent.getStringExtra("idUser"),
-                                intent.getStringExtra("msg"), intent.getStringExtra("data"),intent.getStringExtra("username")));
+                        messageListener.globalMessageAdapter.addMessage(new GlobalMessage(intent.getStringExtra("idMessage"), intent.getStringExtra("idUser"),
+                                intent.getStringExtra("msg"), intent.getStringExtra("data"), intent.getStringExtra("username")));
                     }
                     break;
                 case "reply":
@@ -261,7 +271,7 @@ public class MessageListener extends BroadcastReceiver {
                                 PendingIntent.getBroadcast(messageListener.getContext(),
                                         messageListener.getPendingIds().get(intent.getStringExtra("idChat")),
                                         intent,
-                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
 
                         // Create the reply action and add the remote input.
                         NotificationCompat.Action action =
@@ -273,10 +283,10 @@ public class MessageListener extends BroadcastReceiver {
 
                         PendingIntent chatIntent;
                         try {
-                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.getPendingIds().get(intent.getStringExtra("idChat")), chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.getPendingIds().get(intent.getStringExtra("idChat")), chatActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_MUTABLE);
                         } catch (NullPointerException e) {
                             messageListener.getPendingIds().put(intent.getStringExtra("idChat"), messageListener.counter);
-                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.counter, chatActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            chatIntent = PendingIntent.getActivity(messageListener.getContext(), messageListener.counter, chatActivity, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_MUTABLE);
                             messageListener.counter++;
                         }
 
@@ -307,6 +317,21 @@ public class MessageListener extends BroadcastReceiver {
                     notificationManager.cancel(messageListener.getPendingIds().get(intent.getStringExtra("idChat")));
                     if (Connection.fragmentName.equals("CHAT")) {
                         messageListener.chatAdapter.hideUnreadMessageCount(intent.getStringExtra("idChat"));
+                    }
+                    break;
+                case "sendImage":
+                    try {
+
+                        Cursor c = messageListener.database.getAllUsersWithoutME();
+                        while (!c.isAfterLast()) {
+                            User user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
+                            messageListener.tcpClient.handShake(user.getIdUser(), c.getString(11), "");
+                            while(messageListener.database.getSymmetricKey(c.getString(0)) == null);
+                            messageListener.tcpClient.sendMyImageToEveryone(user, messageListener.database.getSymmetricKey(c.getString(0)));
+                            c.moveToNext();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                     break;
                 default:

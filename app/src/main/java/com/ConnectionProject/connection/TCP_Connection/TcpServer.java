@@ -6,6 +6,7 @@ import com.ConnectionProject.connection.Controller.ConnectionController;
 import com.ConnectionProject.connection.Controller.ImageController;
 import com.ConnectionProject.connection.Database.Database;
 import com.ConnectionProject.connection.Listener.MessageListener;
+import com.ConnectionProject.connection.Model.ImageTcp;
 import com.ConnectionProject.connection.UDP_Connection.Multicast;
 import com.ConnectionProject.connection.UDP_Connection.Multicast_P2P;
 import com.ConnectionProject.connection.UDP_Connection.MyNetworkInterface;
@@ -44,7 +45,7 @@ public class TcpServer {
     private TcpClient tcpClient;
     private Multicast_P2P multicastP2p;
     private boolean isRunning;
-    private HashMap<String, HashMap<Integer, String>> hashMap;
+    private HashMap<String, ImageTcp> hashMap;
 
     public TcpServer(Connection connection, Database database, Encryption encryption, TcpClient tcpClient) {
         this.connection = connection;
@@ -53,7 +54,7 @@ public class TcpServer {
         this.tcpClient = tcpClient;
         isRunning = false;
         port = 50000;
-        hashMap = new HashMap<String, HashMap<Integer, String>>();
+        hashMap = new HashMap<String, ImageTcp>();
     }
 
     public void setMulticastP2p(Multicast_P2P multicastP2p) {
@@ -215,7 +216,9 @@ public class TcpServer {
                             }
                         }
                     }
-                    tcpClient.sendMyImageToEveryone();
+                    intent.putExtra("intentType", "messageController");
+                    intent.putExtra("communicationType", "sendImage");
+                    connection.getApplicationContext().sendBroadcast(intent);
                     Multicast.dbUserEvent = false;
                     if (Connection.fragmentName.equals("MAP")) {
                         MapFragment mapFragment = MapFragment.getIstance();
@@ -264,6 +267,9 @@ public class TcpServer {
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
                         String message[] = encryption.decrypt(splittedR[2]).split("£€");
                         database.createChat(message[2], database.getUserName(message[2]), message[0]);
+                        if(message[1].isEmpty()) {
+                            return "handShake";
+                        }
                         database.addMsg(message[1], message[2], message[2]);
                         intent.putExtra("intentType", "messageController");
                         intent.putExtra("communicationType", "tcp");
@@ -324,14 +330,17 @@ public class TcpServer {
                     return "sendImageZipped";
                 case "imageToEveryone":
                     if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
-                        String[] split = encryption.decrypt(splittedR[2]).split("£€");
-                        if(!hashMap.containsKey(split[0])) hashMap.put(split[0],new HashMap<Integer,String>());
-                        hashMap.get(split[0]).put(Integer.getInteger(split[1]),split[2]);
-                        if (split.length == 4 && split[3].equals("endImage") && hashMap.size() == Integer.parseInt(split[1]) + 1){
+                        String[] split = encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3]))).split("£€");
+                        if(!hashMap.containsKey(split[0])) hashMap.put(split[0],new ImageTcp());
+                        hashMap.get(split[0]).put(Integer.parseInt(split[1]),split[2]);
+                        if(split.length == 4 && split[3].equals("endImage")){
+                            hashMap.get(split[0]).setLength(Integer.parseInt(split[1]) + 1);
+                            System.out.println("Fine arrivata: " + split[1]);
+                        }
+                        System.out.println(hashMap.get(split[0]).length());
+                        if (hashMap.get(split[0]).length() == hashMap.get(split[0]).getLength()){
                             String completedImage = "";
-                            TreeMap<Integer,String> sorted = new TreeMap<>();
-                            sorted.putAll(hashMap.get(split[0]));
-                            for (String s : sorted.values()) {
+                            for (String s : hashMap.get(split[0]).getPackets().values()) {
                                 completedImage += s;
                             }
                             ImageController.decodeImage(completedImage,connection.getApplicationContext(),split[0]);
@@ -345,6 +354,8 @@ public class TcpServer {
             }
         } catch (IOException e) {
             //report exception somewhere.
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
         return "";

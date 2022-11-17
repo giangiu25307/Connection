@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.CountDownTimer;
 import android.widget.Toast;
 
 import com.ConnectionProject.connection.Controller.ConnectionController;
@@ -221,45 +222,39 @@ public class TcpClient {
      *
      * @throws IOException
      */
-    public void sendMyImageToEveryone() throws IOException {
+    public void sendMyImageToEveryone(User user, String secretKey) throws IOException {
+
         noKey = false;
         String imageString = "";
-        Cursor c = database.getAllUsersWithoutME();
-        User user;
         String imageToSend = ConnectionController.myUser.getProfilePicBase64();
         if (imageToSend.equals("noImage")) return;
-
-        while (!c.isAfterLast()) {
-            boolean needToReadImage = true;
-            user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
-            user.setPublicKey(c.getString(11));
-            for (int i = 0; needToReadImage; i++) {
-                if ((i + 1) * 200 < imageToSend.length()) {
-                    imageString = ConnectionController.myUser.getIdUser() + "£€" + i + "£€" + imageToSend.substring(i * 200, (i + 1) * 200);
-                } else {
-                    imageString = ConnectionController.myUser.getIdUser() + "£€" + i + "£€" + imageToSend.substring(i * 200) + "£€endImage"; //if you alter the length alter it in the receive
-                    needToReadImage = false;
-                }
-                oldIp = database.findIp(user.getIdUser());
-                //System.out.println(oldIp);
-                checkInterface(user.getIdUser());
-                oldId = user.getIdUser();
-                try {
-                    //System.out.println(imageString);
-                    String msg = encryption.encrypt(imageString, encryption.convertStringToPublicKey(user.getPublicKey()));
-                    oldMsg = "imageToEveryone£€" + user.getIdUser() + "£€" + msg + "£€" + ConnectionController.myUser.getIdUser();
-                    AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
-                        @Override
-                        public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
-                            System.out.println("Done");
-                            handleConnectCompleted(ex, socket, oldMsg);
-                        }
-                    });
-                } catch (GeneralSecurityException e) {
-                    e.printStackTrace();
-                }
+        boolean needToReadImage = true;
+        int size = 800;
+        for (int i = 0; needToReadImage; i++) {
+            if ((i + 1) * size < imageToSend.length()) {
+                imageString = ConnectionController.myUser.getIdUser() + "£€" + i + "£€" + imageToSend.substring(i * size, (i + 1) * size);
+            } else {
+                imageString = ConnectionController.myUser.getIdUser() + "£€" + i + "£€" + imageToSend.substring(i * size) + "£€endImage"; //if you alter the length alter it in the receive
+                needToReadImage = false;
             }
-            c.moveToNext();
+            oldIp = database.findIp(user.getIdUser());
+            checkInterface(user.getIdUser());
+            oldId = user.getIdUser();
+            try {
+                String msg = encryption.encryptAES(imageString, encryption.convertStringToSecretKey(secretKey));
+                oldMsg = "imageToEveryone£€" + user.getIdUser() + "£€" + msg + "£€" + ConnectionController.myUser.getIdUser();
+                AsyncServer.getDefault().connectSocket(new InetSocketAddress(oldIp, port), new ConnectCallback() {
+                    @Override
+                    public void onConnectCompleted(Exception ex, final AsyncSocket socket) {
+                        System.out.println("Done");
+                        handleConnectCompleted(ex, socket, oldMsg);
+                    }
+                });
+            } catch (GeneralSecurityException e) {
+                e.printStackTrace();
+            }
+            long l = System.currentTimeMillis();
+            while (l + 200 > System.currentTimeMillis()) ;
         }
     }
 
@@ -291,7 +286,7 @@ public class TcpClient {
         Util.writeAll(socket, text.getBytes(), new CompletedCallback() {
             @Override
             public void onCompleted(Exception ex) {
-                if (ex != null) throw new RuntimeException("[RUNTIME - CLIENT] "+ex);
+                if (ex != null) throw new RuntimeException("[RUNTIME - CLIENT] " + ex);
                 System.out.println("[Client] Successfully wrote message");
 
             }

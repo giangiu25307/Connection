@@ -324,6 +324,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     private void setProfilePic() {
         Cursor c = database.getProfilePic(ConnectionController.myUser.getIdUser());
+        ConnectionController.myUser.setProfilePic(c.getString(0));
         if (c == null || c.getCount() == 0) {
             profilePic.setImageTintList(ColorStateList.valueOf(android.R.attr.iconTint));
             return;
