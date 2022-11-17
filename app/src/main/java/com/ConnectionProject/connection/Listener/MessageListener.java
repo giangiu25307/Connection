@@ -25,6 +25,7 @@ import com.ConnectionProject.connection.Model.Message;
 import com.ConnectionProject.connection.Model.User;
 import com.ConnectionProject.connection.R;
 import com.ConnectionProject.connection.SFTP.SFTPClient;
+import com.ConnectionProject.connection.SFTP.SFTPServer;
 import com.ConnectionProject.connection.TCP_Connection.Encryption;
 import com.ConnectionProject.connection.TCP_Connection.TcpClient;
 import com.ConnectionProject.connection.UDP_Connection.MyNetworkInterface;
@@ -339,7 +340,6 @@ public class MessageListener extends BroadcastReceiver {
                             User user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
                             messageListener.tcpClient.handShake(user.getIdUser(), c.getString(11), "");
                             while(messageListener.database.getSymmetricKey(c.getString(0)) == null);
-                            SFTPClient sftpClient = new SFTPClient();
                             String[] params = new String[3];
                             String ip = "";
                             if (messageListener.database.isOtherGroup(user.getIdUser())) {
@@ -355,7 +355,13 @@ public class MessageListener extends BroadcastReceiver {
                                     ConnectionController.myUser.getProfilePicBase64()
                                     ,messageListener.encryption.convertStringToSecretKey(messageListener.database.getSymmetricKey(c.getString(0)))
                             );
-                            sftpClient.execute(params);
+                            //TODO CARICO E SPERANZOSO??? devo farli partire con dei thread.... sono già thread zio can
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    new SFTPClient(params);
+                                }
+                            }).start();
                             //messageListener.tcpClient.sendMyImageToEveryone(user, messageListener.database.getSymmetricKey(c.getString(0)));
                             c.moveToNext();
                         }

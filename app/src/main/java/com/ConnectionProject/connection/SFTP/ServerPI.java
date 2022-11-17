@@ -36,9 +36,11 @@ public class ServerPI implements Runnable {
         String imageToBeDecrypted = "", imageClear = "";
         String userId = "";
         String msg = "";
-        while ((line = in.readLine()) != null) {
-            msg += line;
+        while (true) {
+            msg += in.readLine();
+            if(msg.endsWith("£€END"))break;
         }
+        System.out.println("MESSAGGIO: "+ msg);
         userId = msg.split("£€")[0];
         imageToBeDecrypted = msg.split("£€")[1];
         imageClear = encryption.decryptAES(imageToBeDecrypted,

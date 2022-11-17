@@ -95,12 +95,16 @@ ConnectionController {
         tcpServer = new TcpServer(connection, database, encryption, tcpClient);
         ChatController chatController = new ChatController().newIstance(database, tcpClient, multicastP2P, multicastWLAN, this);
         MessageListener messageListener = new MessageListener().newInstance(connection.getApplicationContext(), database, chatController, tcpClient, encryption);
-        SFTPServer sftpServer = new SFTPServer();
         UtilsObject utilsObject = new UtilsObject();
         utilsObject.setContext(connection.getApplicationContext());
         utilsObject.setDatabase(database);
         utilsObject.setEncryption(encryption);
-        sftpServer.execute(utilsObject);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                new SFTPServer(utilsObject);
+            }
+        }).start();
         wifiLock = wifiManager.createWifiLock(1, "testLock");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
