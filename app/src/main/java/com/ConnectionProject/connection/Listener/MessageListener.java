@@ -17,18 +17,24 @@ import com.ConnectionProject.connection.Adapter.ChatAdapter;
 import com.ConnectionProject.connection.Adapter.GlobalMessageAdapter;
 import com.ConnectionProject.connection.Adapter.MessageAdapter;
 import com.ConnectionProject.connection.Controller.ChatController;
+import com.ConnectionProject.connection.Controller.ConnectionController;
 import com.ConnectionProject.connection.Database.Database;
 import com.ConnectionProject.connection.Model.GlobalMessage;
 import com.ConnectionProject.connection.Model.LastMessage;
 import com.ConnectionProject.connection.Model.Message;
 import com.ConnectionProject.connection.Model.User;
 import com.ConnectionProject.connection.R;
+import com.ConnectionProject.connection.SFTP.SFTPClient;
+import com.ConnectionProject.connection.TCP_Connection.Encryption;
 import com.ConnectionProject.connection.TCP_Connection.TcpClient;
+import com.ConnectionProject.connection.UDP_Connection.MyNetworkInterface;
 import com.ConnectionProject.connection.View.ChatActivity;
 import com.ConnectionProject.connection.View.ChatFragment;
 import com.ConnectionProject.connection.View.Connection;
+import com.ConnectionProject.connection.libs.AsyncServer;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,11 +53,12 @@ public class MessageListener extends BroadcastReceiver {
     private Database database;
     private ChatController chatController;
     private TcpClient tcpClient;
+    private Encryption encryption;
 
     // Key for the string that's delivered in the action's intent.
     private static final String KEY_TEXT_REPLY = "key_text_reply";
 
-    public static MessageListener newInstance(Context context, Database database, ChatController chatController, TcpClient tcpClient) {
+    public static MessageListener newInstance(Context context, Database database, ChatController chatController, TcpClient tcpClient, Encryption encryption) {
         messageListener = new MessageListener();
         messageListener.setContext(context);
         messageListener.setMessagingStyleHashMap();
@@ -59,7 +66,12 @@ public class MessageListener extends BroadcastReceiver {
         messageListener.setDatabase(database);
         messageListener.setChatController(chatController);
         messageListener.setTcpClient(tcpClient);
+        messageListener.setEncryption(encryption);
         return messageListener;
+    }
+
+    public void setEncryption(Encryption encryption) {
+        this.encryption = encryption;
     }
 
     public void setDatabase(Database database) {
@@ -327,10 +339,27 @@ public class MessageListener extends BroadcastReceiver {
                             User user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
                             messageListener.tcpClient.handShake(user.getIdUser(), c.getString(11), "");
                             while(messageListener.database.getSymmetricKey(c.getString(0)) == null);
-                            messageListener.tcpClient.sendMyImageToEveryone(user, messageListener.database.getSymmetricKey(c.getString(0)));
+                            SFTPClient sftpClient = new SFTPClient();
+                            String[] params = new String[3];
+                            String ip = "";
+                            if (messageListener.database.isOtherGroup(user.getIdUser())) {
+                                ip = MyNetworkInterface.wlanIpv6Address;
+                                AsyncServer.getDefault().setLocalAddress(ip);
+                            } else {
+                                ip = MyNetworkInterface.p2pIpv6Address;
+                                AsyncServer.getDefault().setLocalAddress(ip);
+                            }
+                            params[0] = ip;
+                            params[1] = user.getIdUser();
+                            params[2] = messageListener.encryption.encryptAES(
+                                    ConnectionController.myUser.getProfilePicBase64()
+                                    ,messageListener.encryption.convertStringToSecretKey(messageListener.database.getSymmetricKey(c.getString(0)))
+                            );
+                            sftpClient.execute(params);
+                            //messageListener.tcpClient.sendMyImageToEveryone(user, messageListener.database.getSymmetricKey(c.getString(0)));
                             c.moveToNext();
                         }
-                    } catch (IOException e) {
+                    }  catch (InvalidKeyException e) {
                         e.printStackTrace();
                     }
                     break;
