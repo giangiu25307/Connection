@@ -341,21 +341,14 @@ public class MessageListener extends BroadcastReceiver {
                             messageListener.tcpClient.handShake(user.getIdUser(), c.getString(11), "");
                             while(messageListener.database.getSymmetricKey(c.getString(0)) == null);
                             String[] params = new String[3];
-                            String ip = "";
-                            if (messageListener.database.isOtherGroup(user.getIdUser())) {
-                                ip = MyNetworkInterface.wlanIpv6Address;
-                                AsyncServer.getDefault().setLocalAddress(ip);
-                            } else {
-                                ip = MyNetworkInterface.p2pIpv6Address;
-                                AsyncServer.getDefault().setLocalAddress(ip);
-                            }
+                            String ip = messageListener.database.findIp(user.getIdUser());
                             params[0] = ip;
-                            params[1] = user.getIdUser();
+                            params[1] = ConnectionController.myUser.getIdUser();
                             params[2] = messageListener.encryption.encryptAES(
                                     ConnectionController.myUser.getProfilePicBase64()
                                     ,messageListener.encryption.convertStringToSecretKey(messageListener.database.getSymmetricKey(c.getString(0)))
                             );
-                            //TODO CARICO E SPERANZOSO??? devo farli partire con dei thread.... sono già thread zio can
+
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {

@@ -8,7 +8,6 @@ import android.os.Looper;
 import com.ConnectionProject.connection.Database.Database;
 import com.ConnectionProject.connection.Model.UtilsObject;
 import com.ConnectionProject.connection.TCP_Connection.Encryption;
-import com.guichaguri.minimalftp.FTPServer;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -21,7 +20,6 @@ public class SFTPServer {
 
     public SFTPServer(UtilsObject utilsObject) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        //TPServer ftpServer = new FTPServer();
 
         ServerSocket s = null;
         Socket incoming = null;

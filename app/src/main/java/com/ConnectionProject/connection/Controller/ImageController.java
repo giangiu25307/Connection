@@ -17,21 +17,25 @@ public class ImageController {
     public static String myImagePathToCopy;
 
     public static String decodeImage(String base64, Context context, String userId) {
+        //ToDO /data/user/0/com.ConnectionProject.connection/files/DIRECT-CONNECTION0.jpg
+        //TODO /data/user/0/com.ConnectionProject.connection/files/DIRECT-CONNECTION0
         String path = "";
         byte[] imgBytesData = android.util.Base64.decode(base64, android.util.Base64.DEFAULT);
         try {
-            File file = File.createTempFile("DIRECT-CONNECTION"+userId, null, context.getFilesDir());
+            File file = new File(context.getFilesDir().getAbsolutePath() + "/DIRECT-CONNECTION"+userId+".jpg");
             path = file.getPath();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
             bufferedOutputStream.write(imgBytesData);
             bufferedOutputStream.close();
+            fileOutputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return "";
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(path);
         return path;
     }
 
@@ -48,23 +52,4 @@ public class ImageController {
         }
     }
 
-    public static String storage_Image(HashMap<Integer, String> hashMap, Context context, String userId) {
-        String concat = String.join("", hashMap.values());
-        String path = "";
-        byte[] imgBytesData = concat.getBytes();
-        try {
-            File file = File.createTempFile("DIRECT-CONNECTION" + userId, null, context.getFilesDir());
-            path = file.getPath();
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-            bufferedOutputStream.write(imgBytesData);
-            bufferedOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return "";
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return path;
-    }
 }
