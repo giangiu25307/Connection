@@ -44,7 +44,7 @@ public class ServerPI implements Runnable {
         userId = msg.split("£€")[0];
         imageToBeDecrypted = msg.split("£€")[1];
         imageClear = encryption.decryptAES(imageToBeDecrypted,
-                encryption.convertStringToSecretKey(database.getSymmetricKey(userId)));
+        encryption.convertStringToSecretKey(database.getSymmetricKey(userId)));
         ImageController.decodeImage(imageClear, context, userId);
     }
 

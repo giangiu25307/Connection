@@ -1,6 +1,7 @@
 package com.ConnectionProject.connection.Controller;
 
 import android.content.Context;
+import android.os.Environment;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -22,11 +23,12 @@ public class ImageController {
         String path = "";
         byte[] imgBytesData = android.util.Base64.decode(base64, android.util.Base64.DEFAULT);
         try {
-            File file = new File(context.getFilesDir().getAbsolutePath() + "/DIRECT-CONNECTION"+userId+".jpg");
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),  "/DIRECT-CONNECTION"+userId+".jpg");
             path = file.getPath();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
             bufferedOutputStream.write(imgBytesData);
+            bufferedOutputStream.flush();
             bufferedOutputStream.close();
             fileOutputStream.close();
         } catch (FileNotFoundException e) {
