@@ -37,6 +37,7 @@ Multicast_P2P extends Multicast {
     public void run() {
         byte[] buf = new byte[1000];
         DatagramPacket recv = new DatagramPacket(buf, buf.length);
+        Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
         try {
             while (true) {
                 multicastSocketGroupP2p.receive(recv);
@@ -67,7 +68,10 @@ Multicast_P2P extends Multicast {
                             String zippedImages = new String(fileContent, StandardCharsets.UTF_8);*/
                             database.addUser(splittedR[1], splittedR[2], splittedR[3], splittedR[4], splittedR[5], splittedR[6], splittedR[7], splittedR[8], splittedR[9], splittedR[10], splittedR[11], splittedR[12]);
                             tcp_client.sendMessageNoKey(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName, groupInfo, splittedR[1]);
-
+                            intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
+                            intent.putExtra("intentType", "messageController");
+                            intent.putExtra("communicationType", "sendImage");
+                            connection.getApplicationContext().sendBroadcast(intent);
                             /*for (int i = 0; i * 4096 < zippedImages.length(); i++) {
                                 int start = i * 4096;
                                 int end = i * 4096 + 4096;
@@ -88,7 +92,7 @@ Multicast_P2P extends Multicast {
                             //receiving a message -----------------------------------------------------------------------------------------------------------------------------------------------
 
                             database.addGlobalMsg(splittedR[3], splittedR[1]);
-                            Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
+                            intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "multicast");
                             intent.putExtra("msg", splittedR[3]);
@@ -143,7 +147,7 @@ Multicast_P2P extends Multicast {
 
                                 database.addUser(splittedR[i], splittedR[2].split("%")[0] + "%" + MyNetworkInterface.p2pName,
                                         splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7],
-                                        splittedR[i + 8], splittedR[i + 9], ImageController.decodeImage(splittedR[i + 10], super.connection.getApplicationContext(), splittedR[i]),
+                                        splittedR[i + 8], splittedR[i + 9], "",
                                         splittedR[i + 11]);
                             }
                             //Check for the other group owner

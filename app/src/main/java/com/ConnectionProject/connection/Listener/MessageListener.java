@@ -340,7 +340,7 @@ public class MessageListener extends BroadcastReceiver {
                             User user = new User(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6), c.getString(7), c.getString(8), c.getString(9), c.getString(10));
                             messageListener.tcpClient.handShake(user.getIdUser(), c.getString(11), "");
                             while(messageListener.database.getSymmetricKey(c.getString(0)) == null);
-                            String[] params = new String[3];
+                            String[] params = new String[4];
                             String ip = messageListener.database.findIp(user.getIdUser());
                             params[0] = ip;
                             params[1] = ConnectionController.myUser.getIdUser();
@@ -348,7 +348,7 @@ public class MessageListener extends BroadcastReceiver {
                                     ConnectionController.myUser.getProfilePicBase64()
                                     ,messageListener.encryption.convertStringToSecretKey(messageListener.database.getSymmetricKey(c.getString(0)))
                             );
-
+                            params[3] = ConnectionController.myUser.getProfilePic().split("\\.")[ConnectionController.myUser.getProfilePic().split("\\.").length - 1];
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {

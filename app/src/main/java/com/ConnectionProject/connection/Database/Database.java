@@ -95,7 +95,7 @@ public class Database extends SQLiteOpenHelper {
                 + Task.TaskEntry.NAME + " TEXT, "
                 + Task.TaskEntry.DATETIME + " TEXT, "
                 + Task.TaskEntry.NOT_READ_MESSAGE + " INTEGER, "
-                + Task.TaskEntry.REQUEST + " TEXT DEFAULT 'true', "
+                + Task.TaskEntry.REQUEST + " TEXT DEFAULT 'middle', "
                 + Task.TaskEntry.SYMMETRIC_KEY + " TEXT"
                 + ")";
 
@@ -146,6 +146,7 @@ public class Database extends SQLiteOpenHelper {
      */
     public void addMsg(String msg, String idSender, String idChat) {
         //if (idSender.equals("0")) setRequest(idChat, "false");
+        updateMiddleRequest(idChat);
         db = this.getWritableDatabase();
         ContentValues msgValues = new ContentValues();
         java.util.Date date = new java.util.Date();
@@ -239,11 +240,12 @@ public class Database extends SQLiteOpenHelper {
      * @param idChat id of the person i'm speaking to
      */
     public int countMessageNotRead(String idChat) {
-        String query = "SELECT id_message " +
+        String query = "SELECT count(id_message) " +
                 " FROM " + Task.TaskEntry.MESSAGE +
                 " WHERE " + Task.TaskEntry.IS_READ + " = 0 AND " + Task.TaskEntry.ID_CHAT + " = " + idChat;
         Cursor cursor = db.rawQuery(query, null);
-        return cursor.getCount();
+        cursor.moveToFirst();
+        return cursor.getInt(0);
     }
 
     /**
@@ -455,6 +457,7 @@ public class Database extends SQLiteOpenHelper {
         String query = "SELECT " + Task.TaskEntry.ID_CHAT + ", " + Task.TaskEntry.NAME + ", " + Task.TaskEntry.LAST_MESSAGE + ", " + Task.TaskEntry.DATETIME +
                 " FROM " + Task.TaskEntry.CHAT + " INNER JOIN " + Task.TaskEntry.USER + " ON " + Task.TaskEntry.ID_USER + " = '" + Task.TaskEntry.ID_CHAT +
                 "' AND " + Task.TaskEntry.MESSAGES_ACCEPTED + " = 'true'" +
+                "  AND " + Task.TaskEntry.REQUEST + " <> 'middle'" +
                 " ORDER BY " + Task.TaskEntry.DATETIME + " DESC ";
         Cursor c = db.rawQuery(query, null);
         if (c != null) {
@@ -501,6 +504,16 @@ public class Database extends SQLiteOpenHelper {
         ContentValues msgValues = new ContentValues();
         msgValues.put(Task.TaskEntry.REQUEST, value);
         db.update(Task.TaskEntry.CHAT, msgValues, Task.TaskEntry.ID_CHAT + "='" + id + "'", null);
+    }
+
+    /**
+     * Set request false if i accept the person to write me
+     */
+    public void updateMiddleRequest(String id) {
+        db = this.getWritableDatabase();
+        ContentValues msgValues = new ContentValues();
+        msgValues.put(Task.TaskEntry.REQUEST, "true");
+        db.update(Task.TaskEntry.CHAT, msgValues, Task.TaskEntry.ID_CHAT + "='" + id + "' AND 'middle' = " + Task.TaskEntry.REQUEST, null);
     }
 
     /**

@@ -69,7 +69,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private String[] signupInformation = {"Account information", "Personal information", "Personal information", "Profile pic"};
     private ArrayList<String> nations = new ArrayList<String>();
     private int yearText = 0, monthText = 0, dayText = 0;
-    private String countryCode="";
+    private String countryCode = "";
     private DrawController drawController;
     private boolean isPasswordShown;
     private View[] views;
@@ -126,7 +126,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new LoginFragment().newInstance(connection,database,accountController,drawController);
+                Fragment fragment = new LoginFragment().newInstance(connection, database, accountController, drawController);
                 loadFragment(fragment);
             }
         });
@@ -170,12 +170,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 showHidePassword.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!isPasswordShown){
+                        if (!isPasswordShown) {
                             password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                             showHidePassword.setImageResource(R.drawable.ic_hide_password);
                             password.setSelection(password.getText().length());
                             isPasswordShown = true;
-                        }else{
+                        } else {
                             password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                             showHidePassword.setImageResource(R.drawable.ic_show_password);
                             password.setSelection(password.getText().length());
@@ -206,10 +206,10 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         views[currentPage].setBackgroundResource(R.drawable.bg_signup_page_indicator_selected);
                         viewPager.setCurrentItem(currentPage + 1);
                         animTextView(true, currentPage);
-                        if(currentPage == 1){
+                        if (currentPage == 1) {
                             back.setAlpha(1f);
                         }
-                        if(currentPage == 3){
+                        if (currentPage == 3) {
                             next.setImageResource(R.drawable.ic_done);
                         }
                     } else viewPager.setCurrentItem(currentPage);
@@ -228,17 +228,17 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     try {
 
                         user.setProfilePicBase64(user.getProfilePic());
-                        Response response=accountController.register(user.getPassword(),user.getUsername(),user.getMail(),user.getGender(),user.getName(),user.getSurname(),user.getCountry(),user.getCity(),user.getBirth(),user.getNumber(),user.getProfilePicBase64());
-                        if(response.isSuccessful()){
+                        Response response = accountController.register(user.getPassword(), user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), user.getNumber(), user.getProfilePicBase64());
+                        if (response.isSuccessful()) {
                             alertDialogLoading.dismiss();
                             Gson g = new Gson();
-                            HashMap<String,String> map = g.fromJson(response.body().string(),HashMap.class);
-                            database.addUser(map.get("id"), null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), ImageController.decodeImage(user.getProfilePicBase64(),getContext(),user.getIdUser()), user.getPublicKey());
+                            HashMap<String, String> map = g.fromJson(response.body().string(), HashMap.class);
+                            database.addUser(map.get("id"), null, user.getUsername(), user.getMail(), user.getGender(), user.getName(), user.getSurname(), user.getCountry(), user.getCity(), user.getBirth(), ImageController.decodeImage(user.getProfilePicBase64(), getContext(), user.getIdUser(), user.getProfilePic().split("\\.")[user.getProfilePic().split("\\.").length - 1]), user.getPublicKey());
                             database.setNumber(map.get("id"), user.getNumber());
-                            Toast.makeText(getContext(),"Registration successful", Toast.LENGTH_LONG).show();
-                            Fragment fragment = new LoginFragment().newInstance(connection,database,accountController,drawController);
+                            Toast.makeText(getContext(), "Registration successful", Toast.LENGTH_LONG).show();
+                            Fragment fragment = new LoginFragment().newInstance(connection, database, accountController, drawController);
                             loadFragment(fragment);
-                        }else{
+                        } else {
                             alertDialogLoading.dismiss();
                             dialogBuilder.setView(R.layout.dialog_signup_loading);
                             final AlertDialog errorAlertDialog = dialogBuilder.create();
@@ -260,8 +260,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.backButton:
-                if (currentPage > 0){
-                    if(currentPage == 3){
+                if (currentPage > 0) {
+                    if (currentPage == 3) {
                         next.setImageResource(R.drawable.ic_next_long);
                     }
                     viewPager.setCurrentItem(currentPage - 1);
@@ -295,11 +295,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 showHidePassword.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!isPasswordShown){
+                        if (!isPasswordShown) {
                             password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                             showHidePassword.setImageResource(R.drawable.ic_hide_password);
                             isPasswordShown = true;
-                        }else{
+                        } else {
                             password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                             showHidePassword.setImageResource(R.drawable.ic_show_password);
                             isPasswordShown = false;
@@ -442,7 +442,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             case 2:
                 final TextView telephone = viewPager.findViewById(R.id.telephone), cities = viewPager.findViewById(R.id.city), numberCode = viewPager.findViewById(R.id.numberCode);
                 Spinner country = viewPager.findViewById(R.id.country);
-                if(!user.getNumber().equals(""))telephone.setText(user.getNumber());
+                if (!user.getNumber().equals("")) telephone.setText(user.getNumber());
                 String number = telephone.getText().toString().trim();
                 String city = cities.getText().toString().trim();
                 if (!regexPhoneNumber.matcher(number).matches()) {
@@ -505,13 +505,13 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void animTextView(boolean isNext, int currentPage){
+    private void animTextView(boolean isNext, int currentPage) {
         signupInformationTextView.setText(signupInformation[currentPage]);
         signupInformationTextView.clearAnimation();
 
-        if(isNext){
+        if (isNext) {
             signupInformationTextView.startAnimation(slideDown);
-        }else{
+        } else {
             signupInformationTextView.startAnimation(slideUp);
         }
     }
@@ -543,7 +543,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 Cursor cursor = getContext().getContentResolver().query(pickedImage, filePath, null, null, null);
                 if (cursor == null) return;
                 cursor.moveToFirst();
-                String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                int index = cursor.getColumnIndex(filePath[0]);
+                if (index < 0) return;
+                String imagePath = cursor.getString(index);
                 ImageController.myImagePathToCopy = imagePath;
                 user.setProfilePic(imagePath);//database.setProfilePic(imagePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
@@ -617,7 +619,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         String[] locales = Locale.getISOCountries();
         for (String countryCode : locales) {
             Locale obj = new Locale("", countryCode);
-            this.countryCode=countryCode;
+            this.countryCode = countryCode;
             nations.add(obj.getDisplayCountry());
         }
     }
@@ -626,15 +628,15 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         String[] locales = Locale.getISOCountries();
         for (String countryCode : locales) {
             Locale obj = new Locale("", countryCode);
-            if(user.getCountry().equals(obj.getDisplayCountry()))this.countryCode=countryCode;
+            if (user.getCountry().equals(obj.getDisplayCountry())) this.countryCode = countryCode;
         }
     }
 
-    public void setConnection(Connection connection){
+    public void setConnection(Connection connection) {
         this.connection = connection;
     }
 
-    public void setUser(){
+    public void setUser() {
         user = new User();
     }
 

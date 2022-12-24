@@ -322,14 +322,16 @@ public class TcpClient {
                         Intent intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                         if (received.split("£€")[1].equals("handShake")) {
                             database.createChat(oldId, database.getUserName(oldId), oldSecretKey);
-                            database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
-                            intent.putExtra("intentType", "messageController");
-                            intent.putExtra("communicationType", "tcp");
-                            intent.putExtra("msg", oldClearMsg);
-                            intent.putExtra("idChat", oldId);
-                            intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
-                            intent.putExtra("sent", "1");
-                            connection.getApplicationContext().sendBroadcast(intent);
+                            if(!oldClearMsg.isEmpty()) {
+                                database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
+                                intent.putExtra("intentType", "messageController");
+                                intent.putExtra("communicationType", "tcp");
+                                intent.putExtra("msg", oldClearMsg);
+                                intent.putExtra("idChat", oldId);
+                                intent.putExtra("idUser", ConnectionController.myUser.getIdUser());
+                                intent.putExtra("sent", "1");
+                                connection.getApplicationContext().sendBroadcast(intent);
+                            }
                         } else if (received.split("£€")[1].equals("message")) {
                             database.addMsg(oldClearMsg, ConnectionController.myUser.getIdUser(), oldId);
                             intent.putExtra("intentType", "messageController");
@@ -361,7 +363,8 @@ public class TcpClient {
                             intent.putExtra("sent", "1");
                             connection.getApplicationContext().sendBroadcast(intent);
                         }
-                        database.setRequest(oldId, "false");
+                        if(!received.split("£€")[1].equals("handShake"))
+                            database.setRequest(oldId, "false");
                     }
                 }
             }

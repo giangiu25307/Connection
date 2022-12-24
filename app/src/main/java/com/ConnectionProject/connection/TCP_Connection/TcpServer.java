@@ -190,6 +190,7 @@ public class TcpServer {
                         fos.write(msg.getBytes());
                         fos.close();
                         database.addMsg(connection.getApplicationContext().getCacheDir() + currentDateandTime + ".jpeg", splittedR[1], splittedR[1]);
+                        intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                         intent.putExtra("intentType", "messageController");
                         intent.putExtra("communicationType", "tcp");
                         intent.putExtra("idUser", splittedR[1]);
@@ -216,6 +217,7 @@ public class TcpServer {
                             }
                         }
                     }
+                    intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                     intent.putExtra("intentType", "messageController");
                     intent.putExtra("communicationType", "sendImage");
                     connection.getApplicationContext().sendBroadcast(intent);
@@ -231,6 +233,7 @@ public class TcpServer {
                         try {
                             String message = encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3])));
                             database.addMsg(message, splittedR[3], splittedR[3]);
+                            intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", message);
@@ -250,6 +253,7 @@ public class TcpServer {
                         try {
                             String message = encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3])));
                             database.addMsg(message, splittedR[3], splittedR[3]);
+                            intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                             intent.putExtra("intentType", "messageController");
                             intent.putExtra("communicationType", "tcp");
                             intent.putExtra("msg", message);
@@ -271,6 +275,7 @@ public class TcpServer {
                             return "handShake";
                         }
                         database.addMsg(message[1], message[2], message[2]);
+                        intent = new Intent(connection.getApplicationContext(), MessageListener.getIstance().getClass());
                         intent.putExtra("intentType", "messageController");
                         intent.putExtra("communicationType", "tcp");
                         intent.putExtra("msg", message[1]);
@@ -286,7 +291,7 @@ public class TcpServer {
                         if (!splittedR[i].equals(ConnectionController.myUser.getIdUser())) {
                             if (i == 1)
                                 database.setMyGroupOwnerIp(splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i]);
-                            database.addUser(splittedR[i], splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], ImageController.decodeImage(splittedR[i + 10], connection.getApplicationContext(), splittedR[i]), splittedR[i + 11]);
+                            database.addUser(splittedR[i], splittedR[2].split("%")[0] + "%" + MyNetworkInterface.wlanName, splittedR[i + 2], splittedR[i + 3], splittedR[i + 4], splittedR[i + 5], splittedR[i + 6], splittedR[i + 7], splittedR[i + 8], splittedR[i + 9], "", splittedR[i + 11]);
                             database.setOtherGroup(splittedR[i]);
                         }
                     }
@@ -304,58 +309,11 @@ public class TcpServer {
                         mapFragment.graphicRefresh();
                     }
                     return "groupInfo";
-                    /*case "REQUEST-MEET":
-                        //bergo's stuff popup richiesta se vuoi incontrarmi return si/no
-                        //database.setAccept(valore ritornato da bergo);
-                        tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
-                        tcp_client.sendMessage("RESPONSE-MEET£€" + database.getMyInformation()[0] + "£€"/*+valore di bergo*//*, "");
-                        break;
-                    case "RESPONSE-MEET":
-                        database.setAccept(splittedR[1], splittedR[2]);
-                        break;*/
-                    /*case "RESULT-MEET":
-                        if (database.getAccept(splittedR[1]).equals("yes")) {
-                            tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
-                            tcp_client.sendMessage("RESULT-MEET£€" + database.getMyInformation()[0] + splittedR[2] + "£€" + localizationController.gpsDirection(Double.parseDouble(splittedR[3]), Double.parseDouble(splittedR[4])), "");
-                            //modifica gui luca
-
-                        } else {
-                            tcp_client.startConnection(clientSocket.getInetAddress().toString(), 50000);
-                            tcp_client.sendMessage("RESPONSE-MEET£€" + database.getMyInformation()[0] + "£€"/*+valore di bergo, "");
-                        }
-                        break;
-                */
-                case "sendImagesZipped":
-
-                    return "sendImageZipped";
-                case "imageToEveryone":
-                    if (splittedR[1].equals(ConnectionController.myUser.getIdUser())) {
-                        String[] split = encryption.decryptAES(splittedR[2], encryption.convertStringToSecretKey(database.getSymmetricKey(splittedR[3]))).split("£€");
-                        if(!hashMap.containsKey(split[0])) hashMap.put(split[0],new ImageTcp());
-                        hashMap.get(split[0]).put(Integer.parseInt(split[1]),split[2]);
-                        if(split.length == 4 && split[3].equals("endImage")){
-                            hashMap.get(split[0]).setLength(Integer.parseInt(split[1]) + 1);
-                            System.out.println("Fine arrivata: " + split[1]);
-                        }
-                        System.out.println(hashMap.get(split[0]).length());
-                        if (hashMap.get(split[0]).length() == hashMap.get(split[0]).getLength()){
-                            String completedImage = "";
-                            for (String s : hashMap.get(split[0]).getPackets().values()) {
-                                completedImage += s;
-                            }
-                            ImageController.decodeImage(completedImage,connection.getApplicationContext(),split[0]);
-                        }
-                    } else {
-                        tcpClient.sendMessageNoKey(database.findIp(splittedR[1]), msg, splittedR[1]);
-                    }
-                    return "imageToEveryone";
                 default:
                     return "";
             }
         } catch (IOException e) {
             //report exception somewhere.
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
         return "";

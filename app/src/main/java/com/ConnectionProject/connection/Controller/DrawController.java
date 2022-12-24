@@ -3,6 +3,7 @@ package com.ConnectionProject.connection.Controller;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
@@ -75,13 +76,15 @@ public class DrawController {
         linearLayout.setTag(user.getIdUser());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         CircleImageView imageView = new CircleImageView(context);
+        imageView.setPadding(25, 0, 25, 0);
         imageView.setImageDrawable(Drawable.createFromPath(user.getProfilePic()));
         TextView textView = new TextView(context);
         TableLayout.LayoutParams tableLayoutParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f);
-        tableLayoutParams.setMargins(0, 5, 0, 0);
-        textView.setLayoutParams(tableLayoutParams);
         textView.setText(user.getUsername());
         textView.measure(0, 0);
+        textView.setGravity(Gravity.CENTER);
+        tableLayoutParams.setMargins(0, -35, 0,0 );
+        textView.setLayoutParams(tableLayoutParams);
         imageView.setLayoutParams(new ViewGroup.LayoutParams(layoutWidth / 5 - 2, layoutHeight / 5 - 2 - textView.getMeasuredHeight() - 5));
 
         textView.setTextColor(context.getTheme().obtainStyledAttributes(R.styleable.themeAttrs).getColor(R.styleable.themeAttrs_textColor, Color.WHITE));

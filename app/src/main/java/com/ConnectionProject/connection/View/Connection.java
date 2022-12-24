@@ -59,6 +59,7 @@ public class Connection extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.deleteDatabase("Connection");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -81,9 +82,9 @@ public class Connection extends AppCompatActivity {
         if (createMyUser) {
             String manufacturer = "xiaomi";
             if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
-                database.addUser("0", "", "Lucia", "lucia@gmail.com", "female", "Lucia", "Wand", "England", "London", "23-01-1997", "/data/user/0/com.connectionProject.connection/files/DIRECT-CONNECTION0", "");
+                database.addUser("0", "", "Lucia", "lucia@gmail.com", "female", "Lucia", "Wand", "England", "London", "23-01-1997", "/data/user/0/com.connectionProject.connection/files/DIRECT-CONNECTION0.jpg", "");
             } else {
-                database.addUser("1", "", "Andrew", "andrew1@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/data/user/0/com.connectionProject.connection/files/DIRECT-CONNECTION1", "");
+                database.addUser("1", "", "Andrew", "andrew1@gmail.com", "male", "Andrew", "Wand", "England", "London", "23-03-1997", "/data/user/0/com.connectionProject.connection/files/DIRECT-CONNECTION1.jpg", "");
             }
         }
 

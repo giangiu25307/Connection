@@ -5,6 +5,8 @@ import android.content.Context;
 import com.ConnectionProject.connection.Controller.ImageController;
 import com.ConnectionProject.connection.Database.Database;
 import com.ConnectionProject.connection.TCP_Connection.Encryption;
+import com.ConnectionProject.connection.View.Connection;
+import com.ConnectionProject.connection.View.MapFragment;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,16 +38,24 @@ public class ServerPI implements Runnable {
         String imageToBeDecrypted = "", imageClear = "";
         String userId = "";
         String msg = "";
+        String extension = "";
         while (true) {
             msg += in.readLine();
             if(msg.endsWith("£€END"))break;
         }
         System.out.println("MESSAGGIO: "+ msg);
         userId = msg.split("£€")[0];
-        imageToBeDecrypted = msg.split("£€")[1];
+        extension = msg.split("£€")[1];
+        imageToBeDecrypted = msg.split("£€")[2];
         imageClear = encryption.decryptAES(imageToBeDecrypted,
         encryption.convertStringToSecretKey(database.getSymmetricKey(userId)));
-        ImageController.decodeImage(imageClear, context, userId);
+        if(!ImageController.decodeImage(imageClear, context, userId, extension).isEmpty()) {
+            if (Connection.fragmentName.equals("MAP")) {
+                MapFragment mapFragment = MapFragment.getIstance();
+                mapFragment.graphicRefresh();
+            }
+        }
+
     }
 
     public int reply(int statusCode, String statusMessage) {

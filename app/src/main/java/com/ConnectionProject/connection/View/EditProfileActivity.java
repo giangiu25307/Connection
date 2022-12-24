@@ -289,11 +289,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 cursor.moveToFirst();
                 String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
                 try {
-                    ImageController.copy(new File(imagePath),new File(getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser()));
+                    ImageController.copy(new File(imagePath),new File(getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser()+ "." + imagePath.split("\\.")[imagePath.split("\\.").length - 1]));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                imagePath = getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser();
+                imagePath = getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser()
+                        + "." + imagePath.split("\\.")[imagePath.split("\\.").length - 1];
                 database.setProfilePic(ConnectionController.myUser.getIdUser(), imagePath);
                 profilePic.setImageTintList(null);
                 profilePic.setImageDrawable(Drawable.createFromPath(imagePath));
@@ -306,11 +307,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 Uri tempUri = getImageUri(this, photo);
                 // CALL THIS METHOD TO GET THE ACTUAL PATH
                 String imagePath = getRealPathFromURI(tempUri);try {
-                    ImageController.copy(new File(imagePath),new File(getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser()));
+                    ImageController.copy(new File(imagePath),new File(getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser()+ "." + imagePath.split("\\.")[imagePath.split("\\.").length - 1]));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                imagePath = getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser();
+                imagePath = getApplicationContext().getFilesDir().getAbsolutePath()+"/DIRECT-CONNECTION"+ConnectionController.myUser.getIdUser()
+                        + "." +  imagePath.split("\\.")[imagePath.split("\\.").length - 1];
                 database.setProfilePic(ConnectionController.myUser.getIdUser(), imagePath);
                 profilePic.setImageTintList(null);
                 profilePic.setImageDrawable(Drawable.createFromPath(imagePath));

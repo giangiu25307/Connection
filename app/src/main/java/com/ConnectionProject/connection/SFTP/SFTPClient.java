@@ -19,13 +19,13 @@ public class SFTPClient {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                //CONNECTION TO SERVER,ip = params[0] | SEND STRING @ID = params[1] | @IMAGE64 = params[2] CRIPTATO CON CHIAVE SIMMETRICA
-                System.out.println(params[0] + " " + params[1] + " " + params[2]);
+                //CONNECTION TO SERVER,ip = params[0] | SEND STRING @ID = params[1] | @IMAGE64 = params[2] CRIPTATO CON CHIAVE SIMMETRICA | params[3] = estensione file
+                System.out.println(params[0] + " " + params[1] + " " + params[2]+ " "+ params[3]);
                 try {
                     String imageString = "";
                     Socket socket = new Socket(params[0], 41000);
                     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                    out.println(params[1] + "£€");
+                    out.println(params[1] + "£€" + params[3] + "£€");
                     boolean needToReadImage = true;
                     int size = 800;
                     for (int i = 0; needToReadImage; i++) {

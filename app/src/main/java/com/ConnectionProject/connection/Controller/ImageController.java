@@ -17,13 +17,13 @@ public class ImageController {
 
     public static String myImagePathToCopy;
 
-    public static String decodeImage(String base64, Context context, String userId) {
+    public static String decodeImage(String base64, Context context, String userId, String ex) {
         //ToDO /data/user/0/com.ConnectionProject.connection/files/DIRECT-CONNECTION0.jpg
         //TODO /data/user/0/com.ConnectionProject.connection/files/DIRECT-CONNECTION0
         String path = "";
         byte[] imgBytesData = android.util.Base64.decode(base64, android.util.Base64.DEFAULT);
         try {
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),  "/DIRECT-CONNECTION"+userId+".jpg");
+            File file = new File(context.getFilesDir().getAbsolutePath(),  "/DIRECT-CONNECTION"+userId+ "." +ex);
             path = file.getPath();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
